@@ -12,6 +12,12 @@ import { CinemaCanvas } from '../components/cinema/CinemaCanvas';
     runway remain so motion-reduced users still see the codex content.
   -->
 
+  <!-- Skip intro: discreet escape hatch for repeat visits / users who don't want the cinema. -->
+  <a href="/pandora/intro"
+     class="fixed top-6 right-6 z-50 text-xs uppercase tracking-[0.25em] text-eywa-text-muted/60 hover:text-eywa-bio-primary transition-colors font-display">
+    Passer l'intro →
+  </a>
+
   <!-- Cinema island: WebGL canvas (fixed bg) + scroll driver. Hydrated client-side ONLY (R3F can't SSR). -->
   <CinemaCanvas client:only="react" />
 
