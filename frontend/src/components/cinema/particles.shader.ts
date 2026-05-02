@@ -17,8 +17,10 @@ export const particlesVertex = /* glsl */ `
     vDepth = -mvPosition.z;
     gl_Position = projectionMatrix * mvPosition;
 
-    // Size attenuation by depth + density factor
-    gl_PointSize = uSize * uDensity * (300.0 / -mvPosition.z);
+    // Size attenuation by depth + density factor.
+    // Clamp so particles too close to the camera don't blow up to fullscreen
+    // (the additive blend then saturates and obscures all typography).
+    gl_PointSize = clamp(uSize * uDensity * (300.0 / -mvPosition.z), 0.0, 40.0);
   }
 `;
 
@@ -38,6 +40,6 @@ export const particlesFragment = /* glsl */ `
     vec3 color = mix(uColorA, uColorB, vSeed);
     // Soften far particles (depth fog)
     float fog = 1.0 - smoothstep(15.0, 35.0, vDepth);
-    gl_FragColor = vec4(color, alpha * fog * 0.6);
+    gl_FragColor = vec4(color, alpha * fog * 0.45);
   }
 `;
