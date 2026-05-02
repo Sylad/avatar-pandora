@@ -174,7 +174,7 @@ export default {
           bg: '#0a0a1f',           // deep navy-violet
           'bio-primary': '#5fffe6', // cyan-turquoise
           'bio-secondary': '#ff5dc4', // magenta-rose
-          'eywa-green': '#7fff8f',  // luminescent green
+          'sacred-green': '#7fff8f',  // sacred green — Eywa divine network of Pandora
           'fire-ash': '#ff8c2a',    // amber/orange (3rd film)
           text: '#e8e6dd',          // pale cream
           'text-muted': '#9994a3',  // dimmed for secondary text
