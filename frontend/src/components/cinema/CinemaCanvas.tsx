@@ -75,7 +75,7 @@ export function CinemaCanvas() {
   }
 
   return (
-    <div className="fixed inset-0 -z-10 bg-eywa-bg pointer-events-none">
+    <div className="fixed inset-0 z-0 pointer-events-none">
       <Canvas
         camera={{ position: [0, 0, 8], fov: 60 }}
         dpr={[1, 2]}
