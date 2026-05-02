@@ -6,6 +6,22 @@ services:
     container_name: avatar-pandora-eywa-frontend-1
     ports:
       - "4203:80"
+    depends_on:
+      - eywa-backend
+    restart: unless-stopped
+    networks:
+      - eywa-net
+
+  eywa-backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: avatar-pandora-eywa-backend-1
+    expose:
+      - "3003"
+    environment:
+      PORT: 3003
+      CORS_ORIGIN: "http://nas:4203"
     restart: unless-stopped
     networks:
       - eywa-net
