@@ -5,7 +5,9 @@ const codexEntrySchema = z.object({
   title: z.string(),
   summary: z.string(),
   order: z.number().optional(),
-  cover: z.string().url().optional(),
+  // cover is either a wiki search query (resolved via /api/wiki-image?q=...)
+  // OR a full URL (for non-wiki images). Both forms accepted.
+  cover: z.string().optional(),
 });
 
 const makeCollection = (folder: string) =>

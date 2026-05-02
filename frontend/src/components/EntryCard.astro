@@ -1,0 +1,39 @@
+---
+interface Props {
+  href: string;
+  title: string;
+  summary: string;
+  cover?: string;
+}
+const { href, title, summary, cover } = Astro.props;
+
+// Resolve cover: if it's a full URL, use as-is; otherwise it's a wiki query → use the proxy.
+let imgSrc: string | undefined;
+if (cover) {
+  imgSrc = cover.startsWith('http') ? cover : `/api/wiki-image?q=${encodeURIComponent(cover)}`;
+}
+---
+<a href={href}
+   class="group block rounded overflow-hidden border border-eywa-text-muted/20 bg-eywa-text/[0.02] hover:border-eywa-bio-primary/40 hover:shadow-glow-bio transition-all">
+  {imgSrc ? (
+    <div class="aspect-[16/10] bg-eywa-bg overflow-hidden">
+      <img src={imgSrc}
+           alt={title}
+           loading="lazy"
+           class="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500"
+           onerror="this.style.display='none'" />
+    </div>
+  ) : (
+    <div class="aspect-[16/10] bg-gradient-to-br from-eywa-bg to-eywa-bio-primary/10 flex items-center justify-center">
+      <span class="font-display text-eywa-bio-primary/50 tracking-widest text-sm">EYWA</span>
+    </div>
+  )}
+  <div class="p-5">
+    <h3 class="font-display text-lg text-eywa-text group-hover:text-eywa-bio-primary tracking-wide mb-2 transition-colors">
+      {title}
+    </h3>
+    <p class="text-sm text-eywa-text-muted font-body leading-relaxed line-clamp-3">
+      {summary}
+    </p>
+  </div>
+</a>
