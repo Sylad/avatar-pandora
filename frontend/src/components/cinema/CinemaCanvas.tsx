@@ -2,13 +2,9 @@ import { Canvas, useThree } from '@react-three/fiber';
 import { useEffect, useMemo, useRef } from 'react';
 import type { MutableRefObject } from 'react';
 import * as THREE from 'three';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ParticleField } from './ParticleField';
 import { SceneState, sampleScene } from './scene-timeline';
 import { useReducedMotion } from './useReducedMotion';
-
-gsap.registerPlugin(ScrollTrigger);
 
 // Inner scene drives uniforms + camera every frame from a shared progress ref.
 function SceneDriver({ progressRef }: { progressRef: MutableRefObject<number> }) {
@@ -52,44 +48,42 @@ function SceneDriver({ progressRef }: { progressRef: MutableRefObject<number> })
 export function CinemaCanvas() {
   const reduced = useReducedMotion();
   const progressRef = useRef(0);
-  const sentinelRef = useRef<HTMLDivElement>(null);
 
+  // Direct scroll listener — drives progressRef from window.scrollY / total scrollable height.
+  // Replaces the GSAP ScrollTrigger sentinel pattern (which was watching an empty div in the
+  // wrong scope and never produced motion). This matches the same math as the overlay fades.
   useEffect(() => {
-    if (reduced || !sentinelRef.current) return;
-    const trigger = ScrollTrigger.create({
-      trigger: sentinelRef.current,
-      start: 'top top',
-      end: 'bottom bottom',
-      scrub: 0.6,
-      onUpdate: (self) => {
-        progressRef.current = self.progress;
-      },
-    });
-    return () => trigger.kill();
+    if (reduced || typeof window === 'undefined') return;
+    const handler = () => {
+      const total = document.body.scrollHeight - window.innerHeight;
+      progressRef.current =
+        total > 0 ? Math.max(0, Math.min(1, window.scrollY / total)) : 0;
+    };
+    window.addEventListener('scroll', handler, { passive: true });
+    window.addEventListener('resize', handler, { passive: true });
+    handler();
+    return () => {
+      window.removeEventListener('scroll', handler);
+      window.removeEventListener('resize', handler);
+    };
   }, [reduced]);
 
   if (reduced) {
-    // Static fallback: render nothing fancy. The parent landing shows the V1-style logo + CTA.
+    // No canvas rendered when motion is reduced — overlay text in the parent
+    // landing still shows because its fade script is opacity-based, not animated.
     return null;
   }
 
   return (
-    <>
-      {/* Fixed full-page canvas behind page content */}
-      <div className="fixed inset-0 -z-10 bg-eywa-bg pointer-events-none">
-        <Canvas
-          camera={{ position: [0, 0, 8], fov: 60 }}
-          dpr={[1, 2]}
-          gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
-        >
-          <ParticleField count={typeof window !== 'undefined' && window.innerWidth < 768 ? 1500 : 3500} />
-          <SceneDriver progressRef={progressRef} />
-        </Canvas>
-      </div>
-      {/* Sentinel: long scroll area that drives the timeline. Filled by HTML overlays in parent. */}
-      <div ref={sentinelRef} className="relative">
-        {/* slot for typographic overlays, rendered in index.astro */}
-      </div>
-    </>
+    <div className="fixed inset-0 -z-10 bg-eywa-bg pointer-events-none">
+      <Canvas
+        camera={{ position: [0, 0, 8], fov: 60 }}
+        dpr={[1, 2]}
+        gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
+      >
+        <ParticleField count={typeof window !== 'undefined' && window.innerWidth < 768 ? 1500 : 3500} />
+        <SceneDriver progressRef={progressRef} />
+      </Canvas>
+    </div>
   );
 }

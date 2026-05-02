@@ -38,6 +38,6 @@ export const particlesFragment = /* glsl */ `
     vec3 color = mix(uColorA, uColorB, vSeed);
     // Soften far particles (depth fog)
     float fog = 1.0 - smoothstep(15.0, 35.0, vDepth);
-    gl_FragColor = vec4(color, alpha * fog * 0.85);
+    gl_FragColor = vec4(color, alpha * fog);
   }
 `;

@@ -12,7 +12,7 @@ export interface SceneZone {
 }
 
 export const SCENE_ZONES: SceneZone[] = [
-  { label: 'cold-open',    at: 0.00, colorA: '#000000', colorB: '#000000', density: 0.0, cameraZ: 8 },
+  { label: 'cold-open',    at: 0.00, colorA: '#5fffe6', colorB: '#7fdcff', density: 0.35, cameraZ: 8 },
   { label: 'forest',       at: 0.18, colorA: '#5fffe6', colorB: '#7fff8f', density: 1.0, cameraZ: 6 },
   { label: 'hometree',     at: 0.36, colorA: '#7fdcff', colorB: '#ffd07f', density: 1.2, cameraZ: 4 },
   { label: 'mountains',    at: 0.54, colorA: '#4a4a8f', colorB: '#9a7fff', density: 0.9, cameraZ: 2 },

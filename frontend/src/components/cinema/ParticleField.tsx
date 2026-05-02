@@ -27,7 +27,7 @@ export function ParticleField({ count = 3500, spread = 30 }: Props) {
   const uniforms = useMemo(
     () => ({
       uTime: { value: 0 },
-      uSize: { value: 6.0 },
+      uSize: { value: 14.0 }, // bumped from 6.0 — small dots disappeared on 1080p+
       uDensity: { value: 1.0 },
       uColorA: { value: new THREE.Color('#5fffe6') },
       uColorB: { value: new THREE.Color('#ff5dc4') },
