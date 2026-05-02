@@ -22,6 +22,6 @@ export const collections = {
   bestiaire: makeCollection('bestiaire'),
   flore: makeCollection('flore'),
   personnages: makeCollection('personnages'),
-  langue: makeCollection('langue'),
+  // langue is a standalone page (src/pages/langue.astro) — no entries collection
   films: makeCollection('films'),
 };
