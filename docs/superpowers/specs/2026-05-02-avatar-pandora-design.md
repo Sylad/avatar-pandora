@@ -55,7 +55,7 @@ Structure narrative inspirée du New York Times "Snow Fall" mais en Pandora.
 
 1. Écran noir → citation introductive d'Avatar qui s'écrit (ex: « *I see you* »).
 2. Scroll → descente 3D sur Pandora, particules pollen, bioluminescence qui s'allume progressivement.
-3. 4-5 scènes clés s'enchaînent au scroll :
+3. 5 scènes clés s'enchaînent au scroll :
    - Forêt d'Eywa (canopée bioluminescente)
    - Hometree (arbre-mère Omatikaya)
    - Montagnes flottantes Hallelujah
