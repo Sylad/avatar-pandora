@@ -8,10 +8,10 @@ import { CinemaCanvas } from '../components/cinema/CinemaCanvas';
   <CinemaCanvas client:load />
 
   <!--
-    Landing scroll area: 600vh (= 6 viewport heights of scroll runway for the 6 timeline beats).
+    Landing scroll area: 700vh (= 7 viewport heights of scroll runway for cold open + 5 scenes + reveal).
     Each scene block is sticky-positioned for its slice and contains the overlay typography.
   -->
-  <div class="relative" style="height: 600vh;">
+  <div class="relative" style="height: 700vh;">
 
     <!-- Cold open (0–18%) -->
     <section class="absolute inset-x-0 top-0 h-[100vh] flex items-center justify-center text-center px-6">
@@ -44,8 +44,59 @@ import { CinemaCanvas } from '../components/cinema/CinemaCanvas';
       </div>
     </section>
 
-    <!-- placeholder spacers for scenes 4-6, filled in Task 10 -->
-    <div class="absolute inset-x-0 top-[300vh] h-[300vh]"></div>
+    <!-- Hallelujah Mountains (54–72%) -->
+    <section class="absolute inset-x-0 top-[300vh] h-[100vh] flex items-center justify-center text-center px-6">
+      <div class="max-w-2xl opacity-0" data-cinema-fade="0.56">
+        <p class="text-xs uppercase tracking-[0.3em] text-eywa-bio-primary mb-4">III — Hallelujah</p>
+        <h2 class="font-display text-3xl md:text-4xl text-eywa-text mb-3">Les montagnes flottantes</h2>
+        <p class="text-eywa-text-muted font-body italic max-w-xl mx-auto">
+          La magnétite leur ordonne de léviter. Eywa accepte la défiance de la gravité.
+        </p>
+      </div>
+    </section>
+
+    <!-- Metkayina ocean (72–88%) -->
+    <section class="absolute inset-x-0 top-[400vh] h-[100vh] flex items-center justify-center text-center px-6">
+      <div class="max-w-2xl opacity-0" data-cinema-fade="0.74">
+        <p class="text-xs uppercase tracking-[0.3em] text-eywa-bio-primary mb-4">IV — Metkayina</p>
+        <h2 class="font-display text-3xl md:text-4xl text-eywa-text mb-3">L'océan vivant</h2>
+        <p class="text-eywa-text-muted font-body italic max-w-xl mx-auto">
+          Tulkun, ilu, lumières sous l'eau. La voie de l'eau est la voie de tout ce qui est.
+        </p>
+      </div>
+    </section>
+
+    <!-- Fire & Ash volcano (88–100%) -->
+    <section class="absolute inset-x-0 top-[500vh] h-[100vh] flex items-center justify-center text-center px-6">
+      <div class="max-w-2xl opacity-0" data-cinema-fade="0.90">
+        <p class="text-xs uppercase tracking-[0.3em] text-eywa-fire-ash mb-4">V — Fire & Ash</p>
+        <h2 class="font-display text-3xl md:text-4xl text-eywa-text mb-3">La Tribu des Cendres</h2>
+        <p class="text-eywa-text-muted font-body italic max-w-xl mx-auto">
+          Le volcan respire, la cendre tombe, le clan veille.
+        </p>
+      </div>
+    </section>
+
+    <!-- Final reveal — the sticky logo + CTAs land here -->
+    <section class="absolute inset-x-0 top-[600vh] h-[100vh] flex flex-col items-center justify-center text-center px-6">
+      <div class="opacity-0" data-cinema-fade="1.00">
+        <EywaLogo size={420} />
+        <p class="mt-8 max-w-xl text-eywa-text-muted text-lg italic font-body">
+          « Je te vois. »<br/>
+          Un codex visuel de Pandora — la lune, ses clans, sa faune, sa langue.
+        </p>
+        <div class="mt-12 flex gap-4 justify-center">
+          <a href="/pandora/intro"
+             class="px-6 py-3 rounded border border-eywa-bio-primary text-eywa-bio-primary hover:shadow-glow-bio transition-shadow">
+            Explorer le codex
+          </a>
+          <a href="/about"
+             class="px-6 py-3 rounded text-eywa-text-muted hover:text-eywa-text transition-colors">
+            À propos
+          </a>
+        </div>
+      </div>
+    </section>
 
   </div>
 </BaseLayout>
