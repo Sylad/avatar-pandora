@@ -106,6 +106,19 @@ L'accent ambre/orange est réservé à la section "Fire & Ash" (3ᵉ film) pour 
 - **Display** : police "alien-ish" élégante — à arbitrer parmi : Audiowide, Orbitron, Exo 2, ou import custom Na'vi-inspired.
 - **Body** : serif lisible — Cormorant Garamond ou Lora.
 
+### Logo — révélation EVA dans EYWA
+
+Le logo est typographique : le mot **EYWA** est écrit, et **trois lettres sont mises en lumière** (couleur bioluminescente primaire, glow accentué) pour faire apparaître **EVA** en surimpression :
+
+- **E** → éclat bio primaire
+- **Y** → couleur secondaire atténuée
+- **W** → divisé visuellement en deux moitiés ; la **moitié gauche** (= un **V** typographique) en éclat bio primaire, la moitié droite atténuée
+- **A** → éclat bio primaire
+
+L'œil lit d'abord **EYWA** comme un tout, puis le contraste fait remonter **EVA** comme une révélation. Élégant, typographique, sans surenchère.
+
+Implémentation possible : SVG custom où chaque lettre est un path indépendant, le W est composé de deux paths "V" séparés. CSS/Tailwind contrôle l'opacité et le filtre `drop-shadow` (glow) par classe.
+
 ### Ambiance permanente
 
 - Particules pollen flottantes en background (R3F, optimisé pour ne pas peser sur les perfs).
