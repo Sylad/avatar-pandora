@@ -1,0 +1,50 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import EywaLogo from '../components/EywaLogo.astro';
+---
+<BaseLayout title="À propos — Eywa" description="Le pourquoi d'Eywa, et un mot pour Eva.">
+  <main class="max-w-3xl mx-auto px-8 py-20">
+    <div class="text-center mb-16">
+      <EywaLogo size={280} />
+      <p class="mt-6 text-eywa-text-muted text-sm uppercase tracking-widest">À propos</p>
+    </div>
+
+    <section class="space-y-6 font-body text-lg leading-relaxed">
+      <h2 class="font-display text-2xl text-eywa-bio-primary">Pour Eva</h2>
+      <p>
+        Le nom <strong class="text-eywa-bio-primary">Eywa</strong> est celui de la déesse-réseau de Pandora — la conscience planétaire qui relie toute vie sur la lune. Mais regarde bien : <strong>E_<span class="text-eywa-bio-primary">V</span>_A</strong> est presque caché dans <strong>E_W_A</strong>, à une lettre près. Sur le logo, les trois lettres en lumière (E, la moitié gauche du W qui forme un V, et A) recomposent ton prénom.
+      </p>
+      <p>
+        Ce site est un cadeau. Une promenade dans Pandora à offrir à une fan du film.
+      </p>
+
+      <h2 class="font-display text-2xl text-eywa-bio-primary mt-12">Vibe coded with Claude Code</h2>
+      <p>
+        Ce site fait partie d'un labo perso où j'explore des stacks que je ne croise pas dans mon métier. Construit en collaboration humain + IA :
+      </p>
+      <ul class="list-disc list-inside space-y-1">
+        <li><strong>Claude Code</strong> — pair-programmation, génération de code, structure du projet</li>
+        <li><strong>ChatGPT</strong> — visuels, idées de mise en scène, références UX</li>
+        <li><strong>Moi</strong> — direction, choix tech, validation, écriture du contenu</li>
+      </ul>
+
+      <h2 class="font-display text-2xl text-eywa-bio-primary mt-12">Stack technique</h2>
+      <ul class="list-disc list-inside space-y-1">
+        <li><strong>Astro 6</strong> — framework statique-first (paradigme islands)</li>
+        <li><strong>React 19</strong> — îlots interactifs (Plan 2)</li>
+        <li><strong>Tailwind CSS 4</strong> — styling utilitaire (vite plugin + tokens @theme)</li>
+        <li><strong>R3F + GSAP</strong> — animation + WebGL (Plan 2)</li>
+        <li><strong>Docker + nginx</strong> — déploiement NAS Synology</li>
+      </ul>
+
+      <h2 class="font-display text-2xl text-eywa-bio-primary mt-12">Si tu veux faire pareil</h2>
+      <p>
+        Prends un sujet qui t'enflamme, ouvre Claude Code, décris en langage naturel ce que tu veux construire — et laisse-toi guider, étape par étape. Tu n'as pas besoin de tout savoir ; tu as juste besoin de savoir ce que tu veux.
+      </p>
+    </section>
+
+    <div class="mt-20 text-center">
+      <a href="/" class="text-eywa-text-muted hover:text-eywa-bio-primary transition">← retour à l'accueil</a>
+    </div>
+  </main>
+</BaseLayout>
