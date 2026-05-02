@@ -1,0 +1,53 @@
+---
+interface Props {
+  size?: number;
+  glowing?: boolean;
+}
+const { size = 120, glowing = true } = Astro.props;
+
+// Lit color = bio primary (cyan-turquoise)
+// Muted color = pale text at 35% opacity for the "ghost" letters
+const lit = '#5fffe6';
+const muted = 'rgba(232, 230, 221, 0.35)';
+const filter = glowing ? 'drop-shadow(0 0 8px rgba(95, 255, 230, 0.6))' : 'none';
+
+// SVG canvas: viewBox 280×80
+// Letters laid out at x positions roughly:
+//   E:   x=0    width=~50
+//   Y:   x=58   width=~52
+//   W:   x=115..185 (split into two Vs)
+//   A:   x=193  width=~50
+// The W is decomposed into two stroked polylines sharing an apex:
+//   Left V  (lit)   = the V that joins E and A to spell EVA
+//   Right V (muted) = the ghost half
+---
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 280 80"
+  width={size}
+  height={Math.round(size * 80 / 280)}
+  aria-label="Eywa"
+  role="img"
+  style={`filter: ${filter}; font-family: 'Orbitron', sans-serif;`}
+>
+  <!-- E (lit) -->
+  <text x="0" y="60" font-size="64" font-weight="700" fill={lit}>E</text>
+
+  <!-- Y (muted) -->
+  <text x="58" y="60" font-size="64" font-weight="700" fill={muted}>Y</text>
+
+  <!--
+    W decomposed into two stroked polylines:
+    - Left V from (115, 18) → (134, 60) → (148, 18) is lit (= the V of EVA)
+    - Right V from (148, 18) → (162, 60) → (181, 18) is muted
+    The two Vs share the apex (148, 18) so the W looks like one letter.
+    stroke-width 8 and stroke-linecap=round give a typographic feel close to Orbitron weight 700.
+  -->
+  <g fill="none" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="115,18 134,60 148,18" stroke={lit} />
+    <polyline points="148,18 162,60 181,18" stroke={muted} />
+  </g>
+
+  <!-- A (lit) -->
+  <text x="193" y="60" font-size="64" font-weight="700" fill={lit}>A</text>
+</svg>

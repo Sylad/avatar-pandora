@@ -1,13 +1,22 @@
 ---
+import EywaLogo from '../components/EywaLogo.astro';
 import '../styles/global.css';
 ---
 <html lang="fr">
-  <head><meta charset="utf-8" /><title>Theme smoke test</title></head>
-  <body class="bg-eywa-bg text-eywa-text min-h-screen p-10 font-body">
-    <h1 class="font-display text-4xl text-eywa-bio-primary shadow-glow-bio inline-block px-4 py-2">EYWA — theme test</h1>
-    <p class="mt-4 text-eywa-text-muted italic">Body text in Cormorant Garamond.</p>
-    <p class="mt-2 text-eywa-fire-ash">Fire & Ash accent.</p>
-    <p class="mt-2 text-eywa-sacred-green">Eywa green accent.</p>
-    <p class="mt-2 text-eywa-bio-secondary">Bio secondary (magenta).</p>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Eywa — Logo preview</title>
+  </head>
+  <body class="bg-eywa-bg flex flex-col items-center justify-center min-h-screen gap-8 p-10">
+    <!-- Large hero version with glow -->
+    <EywaLogo size={400} />
+
+    <!-- Smaller version no glow, to verify the prop works -->
+    <EywaLogo size={200} glowing={false} />
+
+    <p class="text-eywa-text-muted text-sm uppercase tracking-widest font-display">
+      Logo preview — E + V (left half of W) + A in cyan
+    </p>
   </body>
 </html>
