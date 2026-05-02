@@ -1,1 +1,36 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Cormorant+Garamond:wght@300;400;500;600&display=swap');
 @import "tailwindcss";
+
+@theme {
+  /* Palette bioluminescente Pandora */
+  --color-eywa-bg: #0a0a1f;
+  --color-eywa-bio-primary: #5fffe6;
+  --color-eywa-bio-secondary: #ff5dc4;
+  --color-eywa-eywa-green: #7fff8f;
+  --color-eywa-fire-ash: #ff8c2a;
+  --color-eywa-text: #e8e6dd;
+  --color-eywa-text-muted: #9994a3;
+
+  /* Typographies */
+  --font-display: 'Orbitron', sans-serif;
+  --font-body: 'Cormorant Garamond', serif;
+
+  /* Glow shadows pour interactivité bioluminescente */
+  --shadow-glow-bio: 0 0 20px rgba(95, 255, 230, 0.4);
+  --shadow-glow-bio-strong: 0 0 40px rgba(95, 255, 230, 0.6);
+}
+
+@layer base {
+  html {
+    background: var(--color-eywa-bg);
+    color: var(--color-eywa-text);
+    font-family: var(--font-body);
+  }
+  body {
+    min-height: 100vh;
+  }
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    letter-spacing: 0.05em;
+  }
+}
