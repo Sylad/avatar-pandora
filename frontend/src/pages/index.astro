@@ -1,22 +1,25 @@
 ---
+import BaseLayout from '../layouts/BaseLayout.astro';
 import EywaLogo from '../components/EywaLogo.astro';
-import '../styles/global.css';
 ---
-<html lang="fr">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Eywa — Logo preview</title>
-  </head>
-  <body class="bg-eywa-bg flex flex-col items-center justify-center min-h-screen gap-8 p-10">
-    <!-- Large hero version with glow -->
-    <EywaLogo size={400} />
+<BaseLayout title="Eywa — Codex de Pandora" description="Un codex visuel de Pandora — la lune, ses clans, sa faune, sa langue.">
+  <main class="min-h-screen flex flex-col items-center justify-center text-center px-6 py-20">
+    <EywaLogo size={420} />
 
-    <!-- Smaller version no glow, to verify the prop works -->
-    <EywaLogo size={200} glowing={false} />
-
-    <p class="text-eywa-text-muted text-sm uppercase tracking-widest font-display">
-      Logo preview — E + V (left half of W) + A in cyan
+    <p class="mt-10 max-w-xl text-eywa-text-muted text-lg leading-relaxed font-body italic">
+      « Je te vois. »<br/>
+      Un codex visuel de Pandora — la lune, ses clans, sa faune, sa langue.
     </p>
-  </body>
-</html>
+
+    <div class="mt-12 flex gap-4">
+      <a href="/pandora/intro"
+         class="px-6 py-3 rounded border border-eywa-bio-primary text-eywa-bio-primary hover:shadow-glow-bio transition-shadow">
+        Explorer le codex
+      </a>
+      <a href="/about"
+         class="px-6 py-3 rounded text-eywa-text-muted hover:text-eywa-text transition-colors">
+        À propos
+      </a>
+    </div>
+  </main>
+</BaseLayout>
