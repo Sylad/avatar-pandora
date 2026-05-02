@@ -1,12 +1,13 @@
-# Avatar Pandora — Design Document
+# Eywa — Design Document
 
 **Date** : 2026-05-02
 **Auteur** : Sylvain Ladoire (avec Claude Code)
 **Statut** : Validé — prêt pour planning d'implémentation
+**Nom du site** : **Eywa** — la déesse-réseau de Pandora (la conscience planétaire, l'All-Mother). Choix personnel : le prénom de la destinataire (**Eva**) est presque caché dans **Eywa** (E_W_A / E_V_A, une lettre d'écart). Une dédicace discrète figurera en page À propos ou en easter egg de la page d'accueil.
 
 ## Contexte & vision
 
-Site cadeau personnel destiné à la nièce de l'auteur (18 ans), fan absolue de l'univers Avatar (James Cameron). C'est aussi le 4ᵉ site du laboratoire technique personnel — chaque app sert à explorer un angle nouveau.
+Site cadeau personnel destiné à la nièce de l'auteur (Eva, 18 ans), fan absolue de l'univers Avatar (James Cameron). C'est aussi le 4ᵉ site du laboratoire technique personnel — chaque app sert à explorer un angle nouveau.
 
 L'expérience se déroule en deux temps :
 
@@ -82,6 +83,7 @@ Pattern identique aux 3 autres sites de l'auteur :
 - "Vibe coded with Claude Code" — philosophie labo perso, exploration tech.
 - Mention de la collaboration ChatGPT (visuels, dossier UX, mockups).
 - Stack technique listée (sources : `package.json`, infra Docker).
+- **Dédicace à Eva** : explication du nom (Eva ↔ Eywa), motivation du cadeau, ton chaleureux mais sans surenchère.
 - CTA "encouragement à l'action" : *« Si tu veux faire pareil — prends un sujet qui t'enflamme, ouvre Claude Code, décris en langage naturel… »*.
 
 ## Identité visuelle
@@ -189,6 +191,6 @@ Le projet vit dans `/volume2/docker/developpeur/avatar-pandora/`, dossier neuf. 
 
 ## Décisions encore ouvertes (à arbitrer en début d'implémentation)
 
-- **Nom de domaine / titre** : "Pandora", "Eywa", ou "Skyworld". Décision rapide, n'affecte pas l'architecture.
 - **Police display** : Audiowide / Orbitron / Exo 2 / autre. À tester sur mockup réel.
 - **Curseur custom** : à valider une fois la V1 de l'ambiance posée.
+- **Forme de la dédicace "pour Eva"** : easter egg à l'accueil (révélation au scroll), mention en page À propos, ou les deux.
