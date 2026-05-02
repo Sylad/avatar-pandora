@@ -1,50 +1,187 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import EywaLogo from '../components/EywaLogo.astro';
+
+const STACK = [
+  {
+    group: 'Frontend',
+    items: [
+      'Astro 6 (paradigme islands, statique-first)',
+      'React 19 (îlots interactifs — Plan 2)',
+      'TypeScript strict',
+      'Tailwind CSS 4 (vite plugin + tokens @theme)',
+      'Astro Content Collections (markdown + Zod)',
+      'SVG inline pour le logo',
+    ],
+  },
+  {
+    group: 'Identité',
+    items: [
+      'Palette bioluminescente Pandora (cyan, magenta, vert sacré, ambre Fire & Ash)',
+      'Typo Orbitron (display) + Cormorant Garamond (body)',
+      'Logo SVG custom : EVA caché dans EYWA',
+      'Logo & maquettes co-conçus avec ChatGPT',
+    ],
+  },
+  {
+    group: 'Infra',
+    items: [
+      'Docker multi-stage (node:22-alpine → nginx:alpine)',
+      'docker-compose Synology NAS',
+      'nginx avec compression + cache long terme assets',
+      'Hostname réseau : nas:4203',
+      'Build statique → CDN-ready (option publication ouverte)',
+    ],
+  },
+];
+
+const SOURCES = [
+  {
+    name: 'Pandorapedia',
+    by: 'Disney / 20th Century Studios',
+    why: 'Source canonique officielle pour le lore Avatar — biomes, clans, créatures, technologies humaines.',
+    url: 'https://www.pandorapedia.com/',
+  },
+  {
+    name: 'Avatar Wiki (Fandom)',
+    by: 'Communauté de fans',
+    why: 'Couverture détaillée des personnages, scènes des films, et des évolutions de l\'univers entre les trois films.',
+    url: 'https://james-camerons-avatar.fandom.com/',
+  },
+  {
+    name: 'Travaux du Dr Paul Frommer',
+    by: 'Paul Frommer (linguiste)',
+    why: 'La langue Na\'vi est une vraie langue construite, avec grammaire et lexique. Source pour la section Langue.',
+    url: 'https://naviteri.org/',
+  },
+  {
+    name: 'refactoringui.com',
+    by: 'Adam Wathan & Steve Schoger',
+    why: 'Le bouquin de chevet pour les non-designers : grille, contraste, hiérarchie, espacement.',
+    url: 'https://refactoringui.com/',
+  },
+];
 ---
 <BaseLayout title="À propos — Eywa" description="Le pourquoi d'Eywa, et un mot pour Eva.">
-  <main class="max-w-3xl mx-auto px-8 py-20">
-    <div class="text-center mb-16">
-      <EywaLogo size={280} />
-      <p class="mt-6 text-eywa-text-muted text-sm uppercase tracking-widest">À propos</p>
-    </div>
+  <main class="max-w-4xl mx-auto px-6 lg:px-8 py-16 lg:py-20 space-y-10">
 
-    <section class="space-y-6 font-body text-lg leading-relaxed">
-      <h2 class="font-display text-2xl text-eywa-bio-primary">Pour Eva</h2>
-      <p>
-        Le nom <strong class="text-eywa-bio-primary">Eywa</strong> est celui de la déesse-réseau de Pandora — la conscience planétaire qui relie toute vie sur la lune. Mais regarde bien : <strong>E_<span class="text-eywa-bio-primary">V</span>_A</strong> est presque caché dans <strong>E_W_A</strong>, à une lettre près. Sur le logo, les trois lettres en lumière (E, la moitié gauche du W qui forme un V, et A) recomposent ton prénom.
+    <header class="flex flex-col gap-2 mb-2">
+      <p class="text-[11px] uppercase tracking-[0.22em] text-eywa-text-muted font-display font-semibold">
+        À propos · Eywa
       </p>
-      <p>
-        Ce site est un cadeau. Une promenade dans Pandora à offrir à une fan du film.
+      <h1 class="font-display text-3xl lg:text-4xl font-bold text-eywa-bio-primary">
+        Vibe coded with Claude Code
+      </h1>
+      <p class="text-eywa-text-muted max-w-2xl font-body text-lg">
+        Un codex visuel de Pandora — construit comme un cadeau, exécuté comme un labo.
       </p>
+    </header>
 
-      <h2 class="font-display text-2xl text-eywa-bio-primary mt-12">Vibe coded with Claude Code</h2>
-      <p>
-        Ce site fait partie d'un labo perso où j'explore des stacks que je ne croise pas dans mon métier. Construit en collaboration humain + IA :
-      </p>
-      <ul class="list-disc list-inside space-y-1">
-        <li><strong>Claude Code</strong> — pair-programmation, génération de code, structure du projet</li>
-        <li><strong>ChatGPT</strong> — visuels, idées de mise en scène, références UX</li>
-        <li><strong>Moi</strong> — direction, choix tech, validation, écriture du contenu</li>
-      </ul>
-
-      <h2 class="font-display text-2xl text-eywa-bio-primary mt-12">Stack technique</h2>
-      <ul class="list-disc list-inside space-y-1">
-        <li><strong>Astro 6</strong> — framework statique-first (paradigme islands)</li>
-        <li><strong>React 19</strong> — îlots interactifs (Plan 2)</li>
-        <li><strong>Tailwind CSS 4</strong> — styling utilitaire (vite plugin + tokens @theme)</li>
-        <li><strong>R3F + GSAP</strong> — animation + WebGL (Plan 2)</li>
-        <li><strong>Docker + nginx</strong> — déploiement NAS Synology</li>
-      </ul>
-
-      <h2 class="font-display text-2xl text-eywa-bio-primary mt-12">Si tu veux faire pareil</h2>
-      <p>
-        Prends un sujet qui t'enflamme, ouvre Claude Code, décris en langage naturel ce que tu veux construire — et laisse-toi guider, étape par étape. Tu n'as pas besoin de tout savoir ; tu as juste besoin de savoir ce que tu veux.
-      </p>
+    <section class="relative overflow-hidden rounded-md border border-eywa-text-muted/20 bg-eywa-text/[0.02] p-6 lg:p-8">
+      <div class="absolute -top-12 -right-12 w-64 h-64 rounded-full bg-eywa-bio-primary/10 blur-3xl pointer-events-none"></div>
+      <div class="absolute -bottom-16 -left-12 w-64 h-64 rounded-full bg-eywa-bio-secondary/10 blur-3xl pointer-events-none"></div>
+      <div class="relative flex flex-col sm:flex-row items-start gap-6">
+        <div class="shrink-0">
+          <EywaLogo size={140} />
+        </div>
+        <div class="flex-1 min-w-0 font-body text-eywa-text leading-relaxed space-y-4">
+          <h2 class="font-display text-xl font-bold text-eywa-bio-primary mb-1">
+            L'histoire courte
+          </h2>
+          <p>
+            À mon <span class="text-eywa-bio-secondary">Gremlins de nièce</span>, fan absolue des
+            schtroumpfs géants. Moi je trouve ça moyen, mais bon — les goûts, les couleurs, et la
+            bioluminescence.
+          </p>
+          <p>
+            Le nom <strong class="text-eywa-bio-primary">Eywa</strong> est celui de la déesse-réseau
+            de Pandora, la conscience planétaire qui relie toute vie sur la lune. Mais regarde le
+            logo deux secondes : le <strong class="text-eywa-bio-primary">E</strong>, la moitié
+            gauche du <strong class="text-eywa-bio-primary">W</strong> (qui dessine un V), et le
+            <strong class="text-eywa-bio-primary">A</strong> — éclats cyan — recomposent
+            <strong class="text-eywa-bio-primary">EVA</strong>. La déesse t'a emprunté trois
+            lettres.
+          </p>
+          <p>
+            Pour le reste, dev Java côté serveur depuis vingt-et-un ans, mais novice sur tout ce
+            qui scintille en frontend moderne. J'avais envie d'un terrain de jeu où Pandora serait
+            l'excuse pour explorer Astro, le WebGL et les animations qui pulsent. Cadeau et labo
+            d'un coup — l'avantage des projets perso.
+          </p>
+          <p>
+            Construit en discutant avec
+            <a href="https://claude.com/claude-code" target="_blank" rel="noopener"
+               class="text-eywa-bio-primary hover:underline font-medium">Claude Code</a>
+            (pair-programmation, structure, code) et avec
+            <a href="https://chat.openai.com/" target="_blank" rel="noopener"
+               class="text-eywa-bio-secondary hover:underline font-medium">ChatGPT</a>
+            (visuels, ambiance, idées de mise en scène). Moi je trace la vision, valide les choix,
+            repère ce qui cloche. Une vraie collab à trois.
+          </p>
+        </div>
+      </div>
     </section>
 
-    <div class="mt-20 text-center">
-      <a href="/" class="text-eywa-text-muted hover:text-eywa-bio-primary transition">← retour à l'accueil</a>
+    <section class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+      {STACK.map((s) => (
+        <div class="rounded-md border border-eywa-text-muted/20 bg-eywa-text/[0.02] p-5 hover:border-eywa-bio-primary/40 transition-colors">
+          <h3 class="font-display font-semibold text-eywa-bio-primary tracking-wide text-sm uppercase mb-4 pb-3 border-b border-eywa-text-muted/20">
+            {s.group}
+          </h3>
+          <ul class="space-y-2 text-sm text-eywa-text-muted font-body">
+            {s.items.map((it) => (
+              <li class="flex items-start gap-2">
+                <span class="text-eywa-bio-primary/60 select-none mt-0.5">›</span>
+                <span>{it}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </section>
+
+    <section class="rounded-md border border-eywa-text-muted/20 bg-eywa-text/[0.02] p-6">
+      <h3 class="font-display text-lg font-semibold text-eywa-bio-primary mb-1">
+        Sources & inspirations
+      </h3>
+      <p class="text-sm text-eywa-text-muted mb-5 font-body">
+        Pas une copie, mais des sources que j'ai consultées ou des principes que j'ai essayé d'appliquer.
+      </p>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+        {SOURCES.map((i) => (
+          <a href={i.url} target="_blank" rel="noopener"
+             class="group rounded-md border border-eywa-text-muted/15 bg-eywa-text/[0.02] p-4 flex flex-col gap-1.5 hover:border-eywa-bio-primary/40 hover:bg-eywa-text/[0.04] transition-all">
+            <div class="flex items-center justify-between">
+              <span class="font-display font-semibold text-eywa-text group-hover:text-eywa-bio-primary transition-colors">
+                {i.name}
+              </span>
+              <span class="text-eywa-text-muted/60 group-hover:text-eywa-bio-primary text-xs transition-colors">↗</span>
+            </div>
+            <span class="text-[10px] uppercase tracking-wider text-eywa-text-muted/80 font-display">
+              par {i.by}
+            </span>
+            <p class="text-xs text-eywa-text-muted leading-relaxed mt-1 font-body">{i.why}</p>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <section class="rounded-md border border-eywa-text-muted/20 bg-eywa-text/[0.02] p-6 text-center">
+      <p class="text-eywa-text-muted text-sm leading-relaxed max-w-2xl mx-auto font-body">
+        Si tu veux faire pareil : prends un sujet qui t'enflamme, ouvre Claude Code, décris en
+        langage naturel ce que tu rêves de voir exister, et itère. Tu seras surpris de ce qu'on
+        peut construire en quelques sessions.
+      </p>
+      <div class="text-[10px] uppercase tracking-[0.2em] text-eywa-text-muted/60 mt-4 font-display">
+        Eywa te voit · Made with curiosity · v1
+      </div>
+    </section>
+
+    <div class="text-center pt-8">
+      <a href="/" class="text-eywa-text-muted hover:text-eywa-bio-primary transition font-body">
+        ← retour à l'accueil
+      </a>
     </div>
+
   </main>
 </BaseLayout>
