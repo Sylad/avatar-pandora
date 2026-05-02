@@ -5,8 +5,12 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.setGlobalPrefix('api');
   app.enableCors({ origin: process.env.CORS_ORIGIN ?? true });
-  const port = Number(process.env.PORT ?? 3003);
+  const port = parseInt(process.env.PORT ?? '3003', 10) || 3003;
   await app.listen(port, '0.0.0.0');
   console.log(`Eywa backend listening on http://0.0.0.0:${port}/api`);
 }
-bootstrap();
+
+bootstrap().catch((err) => {
+  console.error('Bootstrap failed:', err);
+  process.exit(1);
+});
