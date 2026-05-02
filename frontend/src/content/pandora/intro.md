@@ -2,6 +2,7 @@
 title: "Pandora — la lune jungle"
 summary: "Lune habitable d'Alpha Centauri A, foyer des Na'vi et de la conscience-réseau Eywa."
 order: 1
+cover: "Pandora (Avatar)"
 ---
 
 Pandora est une lune de la géante gazeuse **Polyphème**, en orbite dans le système d'Alpha Centauri A. Plus grande que la Terre par sa biosphère mais plus petite par sa gravité — environ 0,8 g — elle abrite une jungle tropicale dense, des montagnes flottantes saturées de magnétite (les *Hallelujah Mountains*), des océans profonds et une atmosphère riche en sulfure d'hydrogène toxique pour les humains.
