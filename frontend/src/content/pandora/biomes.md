@@ -21,7 +21,7 @@ Aux latitudes plus basses, l'océan prend la main. Les récifs coraliens des arc
 
 ## Les plaines Anurai et les volcans Mangkwan
 
-Plus loin encore, vers des territoires que les deux premiers films effleurent à peine, s'étendent les steppes cendreuses de la région Anurai et les chaînes volcaniques Mangkwan : paysages de lave refroidie, de savanes grises ponctuées de geysers et de forêts rases où la végétation a appris à survivre dans l'acidité. Ces zones, promises à explorer davantage dans *The Way of Fire*, rappellent que Pandora n'est pas uniquement le paradis vert que les humains ont voulu conquérir — c'est aussi un monde tectoniquement actif, brûlant, et d'une hostilité toute différente.
+Plus loin encore, vers des territoires que les deux premiers films effleurent à peine, s'étendent les steppes cendreuses de la région Anurai et les chaînes volcaniques Mangkwan : paysages de lave refroidie, de savanes grises ponctuées de geysers et de forêts rases où la végétation a appris à survivre dans l'acidité. Ces zones, promises à explorer davantage dans *Fire and Ash*, rappellent que Pandora n'est pas uniquement le paradis vert que les humains ont voulu conquérir — c'est aussi un monde tectoniquement actif, brûlant, et d'une hostilité toute différente.
 
 Chaque biome obéit à ses propres règles, porte ses propres équilibres. Mais tous partagent un fil invisible : le réseau d'Eywa, qui relie les racines de la forêt aux récifs du fond marin et aux flancs des montagnes flottantes. Pandora n'est pas plusieurs mondes rassemblés par hasard — c'est un seul organisme dont la peau prend mille visages.
 

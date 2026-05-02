@@ -9,4 +9,4 @@ Pandora est une lune de la géante gazeuse **Polyphème**, en orbite dans le sys
 
 Toute la vie sur Pandora est connectée par un réseau neural biologique baptisé **Eywa** — la déesse-mère, la conscience planétaire. Les arbres communiquent, les animaux portent des terminaisons nerveuses tressables, et les Na'vi peuvent former le *tsaheylu*, lien spirituel et mental, avec leurs montures et leurs ancêtres.
 
-> *Section d'introduction. Le contenu détaillé (biomes, faune, flore, sites sacrés) sera enrichi en Plan 3.*
+> Source : Pandorapedia + Avatar Wiki Fandom
