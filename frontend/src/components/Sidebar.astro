@@ -1,0 +1,42 @@
+---
+interface Props {
+  current?: string;
+}
+const { current } = Astro.props;
+
+const sections = [
+  { slug: 'pandora', label: 'Pandora', href: '/pandora/intro' },
+  { slug: 'clans', label: 'Clans Na\'vi', href: '/clans/index' },
+  { slug: 'bestiaire', label: 'Bestiaire', href: '/bestiaire/index' },
+  { slug: 'flore', label: 'Flore', href: '/flore/index' },
+  { slug: 'personnages', label: 'Personnages', href: '/personnages/index' },
+  { slug: 'langue', label: 'Langue Na\'vi', href: '/langue/index' },
+  { slug: 'films', label: 'Les films', href: '/films/index' },
+];
+---
+<aside class="w-80 shrink-0 sticky top-0 h-screen overflow-y-auto border-r border-eywa-text-muted/20 px-6 py-10 flex flex-col">
+  <a href="/" class="block mb-10">
+    <span class="font-display tracking-widest text-2xl text-eywa-bio-primary">EYWA</span>
+    <span class="block text-xs uppercase text-eywa-text-muted mt-1">Codex de Pandora</span>
+  </a>
+
+  <nav class="flex flex-col gap-1">
+    {sections.map((s) => (
+      <a
+        href={s.href}
+        class:list={[
+          'block px-3 py-2 rounded text-sm font-display tracking-wide transition-colors',
+          current === s.slug
+            ? 'bg-eywa-bio-primary/10 text-eywa-bio-primary'
+            : 'text-eywa-text-muted hover:text-eywa-text hover:bg-eywa-text/5',
+        ]}
+      >
+        {s.label}
+      </a>
+    ))}
+  </nav>
+
+  <div class="mt-auto pt-10 text-xs text-eywa-text-muted/60">
+    <a href="/about" class="hover:text-eywa-text-muted transition">À propos</a>
+  </div>
+</aside>
