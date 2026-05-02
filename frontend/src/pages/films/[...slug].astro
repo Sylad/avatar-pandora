@@ -1,0 +1,24 @@
+---
+import { getCollection, render } from 'astro:content';
+import CodexLayout from '../../layouts/CodexLayout.astro';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('films');
+  return entries.map((entry) => ({
+    params: { slug: entry.id },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+---
+<CodexLayout title={`${entry.data.title} — Eywa`} current="films">
+  <article class="prose prose-invert max-w-none">
+    <h1 class="font-display text-4xl text-eywa-bio-primary mb-3">{entry.data.title}</h1>
+    <p class="text-eywa-text-muted text-lg italic mb-10">{entry.data.summary}</p>
+    <div class="text-eywa-text leading-relaxed font-body text-lg">
+      <Content />
+    </div>
+  </article>
+</CodexLayout>
