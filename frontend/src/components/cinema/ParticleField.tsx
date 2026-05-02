@@ -8,7 +8,7 @@ interface Props {
   spread?: number;
 }
 
-export function ParticleField({ count = 3500, spread = 30 }: Props) {
+export function ParticleField({ count = 2000, spread = 30 }: Props) {
   const ref = useRef<THREE.Points>(null!);
   const matRef = useRef<THREE.ShaderMaterial>(null!);
 
@@ -27,7 +27,7 @@ export function ParticleField({ count = 3500, spread = 30 }: Props) {
   const uniforms = useMemo(
     () => ({
       uTime: { value: 0 },
-      uSize: { value: 14.0 }, // bumped from 6.0 — small dots disappeared on 1080p+
+      uSize: { value: 7.0 }, // tuned post-z-fix — 14 saturated additive blending
       uDensity: { value: 1.0 },
       uColorA: { value: new THREE.Color('#5fffe6') },
       uColorB: { value: new THREE.Color('#ff5dc4') },

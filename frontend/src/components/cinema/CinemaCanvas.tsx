@@ -81,7 +81,7 @@ export function CinemaCanvas() {
         dpr={[1, 2]}
         gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
       >
-        <ParticleField count={typeof window !== 'undefined' && window.innerWidth < 768 ? 1500 : 3500} />
+        <ParticleField count={typeof window !== 'undefined' && window.innerWidth < 768 ? 1000 : 2000} />
         <SceneDriver progressRef={progressRef} />
       </Canvas>
     </div>
