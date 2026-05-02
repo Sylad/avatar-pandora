@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import axios from 'axios';
+import { WIKI_USER_AGENT } from './wiki-image.constants';
 
 @Injectable()
 export class WikiImageService {
@@ -9,7 +10,7 @@ export class WikiImageService {
       'action=query&format=json&prop=pageimages&piprop=original&titles=' +
       encodeURIComponent(query).replace(/'/g, '%27');
     const res = await axios.get(url, {
-      headers: { 'User-Agent': 'eywa-codex/1.0 (sylvain.ladoire@gmail.com)' },
+      headers: { 'User-Agent': WIKI_USER_AGENT },
       timeout: 5000,
     });
     const pages = res.data?.query?.pages ?? {};
