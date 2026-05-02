@@ -1,0 +1,30 @@
+---
+import { getCollection } from 'astro:content';
+import CodexLayout from '../layouts/CodexLayout.astro';
+import EntryCard from '../components/EntryCard.astro';
+
+const entries = await getCollection('pandora');
+entries.sort((a, b) => (a.data.order ?? 999) - (b.data.order ?? 999));
+---
+<CodexLayout title="Pandora — Eywa" current="pandora">
+  <header class="mb-12">
+    <p class="text-xs uppercase tracking-[0.25em] text-eywa-text-muted font-display mb-3">
+      I — Pandora
+    </p>
+    <h1 class="font-display text-4xl text-eywa-bio-primary mb-4">La lune jungle</h1>
+    <p class="text-lg text-eywa-text-muted font-body italic max-w-2xl">
+      Lune habitable d'Alpha Centauri A, foyer des Na'vi et de la conscience-réseau Eywa.
+    </p>
+  </header>
+
+  <section class="grid grid-cols-1 md:grid-cols-2 gap-5">
+    {entries.map((entry) => (
+      <EntryCard
+        href={`/pandora/${entry.id}`}
+        title={entry.data.title}
+        summary={entry.data.summary}
+        cover={entry.data.cover}
+      />
+    ))}
+  </section>
+</CodexLayout>
