@@ -34,8 +34,8 @@ import { CinemaCanvas } from '../components/cinema/CinemaCanvas';
   -->
   <div class="motion-reduce:hidden">
 
-  <!-- Cinema island: WebGL canvas (fixed bg) + scroll driver. Hydrated client-side. -->
-  <CinemaCanvas client:load />
+  <!-- Cinema island: WebGL canvas (fixed bg) + scroll driver. Hydrated client-side ONLY (R3F can't SSR). -->
+  <CinemaCanvas client:only="react" />
 
   <!--
     Landing scroll area: 700vh (= 7 viewport heights of scroll runway for cold open + 5 scenes + reveal).
@@ -136,9 +136,10 @@ import { CinemaCanvas } from '../components/cinema/CinemaCanvas';
 <script>
   // Fade-in overlays: each [data-cinema-fade="<at>"] element fades in
   // when scroll progress passes its `at` value.
-  // Smooth opacity tied to scroll via rAF + scroll listener.
-  document.addEventListener('astro:page-load', () => {
+  // Robust attach: works whether the script runs before, during, or after DOM ready.
+  function setupCinemaFades() {
     const fades = document.querySelectorAll<HTMLElement>('[data-cinema-fade]');
+    if (fades.length === 0) return;
     const onScroll = () => {
       const total = document.body.scrollHeight - window.innerHeight;
       const progress = total > 0 ? window.scrollY / total : 0;
@@ -150,6 +151,14 @@ import { CinemaCanvas } from '../components/cinema/CinemaCanvas';
       });
     };
     window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll, { passive: true });
     onScroll();
-  });
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setupCinemaFades);
+  } else {
+    setupCinemaFades();
+  }
+  // Also re-run on Astro view transition page-load (no-op if not used)
+  document.addEventListener('astro:page-load', setupCinemaFades);
 </script>
