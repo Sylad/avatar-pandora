@@ -1,0 +1,15 @@
+services:
+  eywa-frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: avatar-pandora-eywa-frontend-1
+    ports:
+      - "4203:80"
+    restart: unless-stopped
+    networks:
+      - eywa-net
+
+networks:
+  eywa-net:
+    driver: bridge
