@@ -1,25 +1,72 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import EywaLogo from '../components/EywaLogo.astro';
+import { CinemaCanvas } from '../components/cinema/CinemaCanvas';
 ---
 <BaseLayout title="Eywa — Codex de Pandora" description="Un codex visuel de Pandora — la lune, ses clans, sa faune, sa langue.">
-  <main class="min-h-screen flex flex-col items-center justify-center text-center px-6 py-20">
-    <EywaLogo size={420} />
+  <!-- Cinema island: WebGL canvas (fixed bg) + scroll driver. Hydrated client-side. -->
+  <CinemaCanvas client:load />
 
-    <p class="mt-10 max-w-xl text-eywa-text-muted text-lg leading-relaxed font-body italic">
-      « Je te vois. »<br/>
-      Un codex visuel de Pandora — la lune, ses clans, sa faune, sa langue.
-    </p>
+  <!--
+    Landing scroll area: 600vh (= 6 viewport heights of scroll runway for the 6 timeline beats).
+    Each scene block is sticky-positioned for its slice and contains the overlay typography.
+  -->
+  <div class="relative" style="height: 600vh;">
 
-    <div class="mt-12 flex gap-4">
-      <a href="/pandora/intro"
-         class="px-6 py-3 rounded border border-eywa-bio-primary text-eywa-bio-primary hover:shadow-glow-bio transition-shadow">
-        Explorer le codex
-      </a>
-      <a href="/about"
-         class="px-6 py-3 rounded text-eywa-text-muted hover:text-eywa-text transition-colors">
-        À propos
-      </a>
-    </div>
-  </main>
+    <!-- Cold open (0–18%) -->
+    <section class="absolute inset-x-0 top-0 h-[100vh] flex items-center justify-center text-center px-6">
+      <div class="max-w-2xl">
+        <p class="font-display text-eywa-bio-primary text-3xl md:text-5xl tracking-wide opacity-0" data-cinema-fade="0.02">
+          Je te vois.
+        </p>
+      </div>
+    </section>
+
+    <!-- Forêt Eywa (18–36%) -->
+    <section class="absolute inset-x-0 top-[100vh] h-[100vh] flex items-center justify-center text-center px-6">
+      <div class="max-w-2xl opacity-0" data-cinema-fade="0.20">
+        <p class="text-xs uppercase tracking-[0.3em] text-eywa-bio-primary mb-4">I — La Forêt d'Eywa</p>
+        <h2 class="font-display text-3xl md:text-4xl text-eywa-text mb-3">Sous la canopée</h2>
+        <p class="text-eywa-text-muted font-body italic max-w-xl mx-auto">
+          Le pollen flotte, la mousse pulse, les arbres se parlent.
+        </p>
+      </div>
+    </section>
+
+    <!-- Hometree (36–54%) -->
+    <section class="absolute inset-x-0 top-[200vh] h-[100vh] flex items-center justify-center text-center px-6">
+      <div class="max-w-2xl opacity-0" data-cinema-fade="0.38">
+        <p class="text-xs uppercase tracking-[0.3em] text-eywa-bio-primary mb-4">II — Hometree</p>
+        <h2 class="font-display text-3xl md:text-4xl text-eywa-text mb-3">L'arbre-mère</h2>
+        <p class="text-eywa-text-muted font-body italic max-w-xl mx-auto">
+          Foyer du clan Omatikaya. Plus haut qu'une cathédrale, plus vivant qu'une ville.
+        </p>
+      </div>
+    </section>
+
+    <!-- placeholder spacers for scenes 4-6, filled in Task 10 -->
+    <div class="absolute inset-x-0 top-[300vh] h-[300vh]"></div>
+
+  </div>
 </BaseLayout>
+
+<script>
+  // Fade-in overlays: each [data-cinema-fade="<at>"] element fades in
+  // when scroll progress passes its `at` value.
+  // Smooth opacity tied to scroll via rAF + scroll listener.
+  document.addEventListener('astro:page-load', () => {
+    const fades = document.querySelectorAll<HTMLElement>('[data-cinema-fade]');
+    const onScroll = () => {
+      const total = document.body.scrollHeight - window.innerHeight;
+      const progress = total > 0 ? window.scrollY / total : 0;
+      fades.forEach((el) => {
+        const at = parseFloat(el.dataset.cinemaFade ?? '0');
+        const dist = Math.abs(progress - at);
+        const opacity = Math.max(0, 1 - dist * 8);
+        el.style.opacity = opacity.toFixed(3);
+      });
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  });
+</script>
