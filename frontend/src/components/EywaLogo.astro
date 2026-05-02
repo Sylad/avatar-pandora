@@ -5,10 +5,9 @@ interface Props {
 }
 const { size = 120, glowing = true } = Astro.props;
 
-// Lit color = bio primary (cyan-turquoise)
-// Muted color = pale text at 35% opacity for the "ghost" letters
-const lit = '#5fffe6';
-const muted = 'rgba(232, 230, 221, 0.35)';
+// Reference the @theme tokens defined in global.css so palette changes propagate automatically.
+const lit = 'var(--color-eywa-bio-primary)';
+const muted = 'var(--color-eywa-text-ghost)';
 const filter = glowing ? 'drop-shadow(0 0 8px rgba(95, 255, 230, 0.6))' : 'none';
 
 // SVG canvas: viewBox 280×80
@@ -28,7 +27,7 @@ const filter = glowing ? 'drop-shadow(0 0 8px rgba(95, 255, 230, 0.6))' : 'none'
   height={Math.round(size * 80 / 280)}
   aria-label="Eywa"
   role="img"
-  style={`filter: ${filter}; font-family: 'Orbitron', sans-serif;`}
+  style={`filter: ${filter}; font-family: var(--font-display);`}
 >
   <!-- E (lit) -->
   <text x="0" y="60" font-size="64" font-weight="700" fill={lit}>E</text>
