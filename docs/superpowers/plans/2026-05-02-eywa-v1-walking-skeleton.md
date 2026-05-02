@@ -6,7 +6,13 @@
 
 **Architecture:** Astro 5 static site. React 19 islands available for any interactive bits but not used yet in V1. Tailwind 4 for styling with custom theme tokens for the bioluminescent Pandora palette. Astro Content Collections for codex content (markdown + frontmatter schema validated by Zod). nginx alpine Dockerized for serving the built static site. No backend in V1 — deferred to Plan 2 when we wire the wiki-image proxy.
 
-**Tech Stack:** Astro 5, React 19, Tailwind CSS 4, TypeScript strict, Docker (multi-stage build node:20-alpine → nginx:alpine).
+**Tech Stack:** Astro 5+, React 19, Tailwind CSS 4, TypeScript strict, Docker (multi-stage build node:22-alpine → nginx:alpine).
+
+> **Plan amendments observed during execution:**
+> - `npm create astro@latest` produced **Astro 6.2.1** (newer than the original "Astro 5" target — backward compatible for Content Collections / islands / layouts).
+> - **Tailwind 4** with the `@tailwindcss/vite` plugin (no `tailwind.config.mjs` — config goes via `@theme` in `src/styles/global.css`).
+> - **Node 22.x** required by Astro 6 (`engines.node >=22.12.0` in `package.json`). `.nvmrc` committed at repo root with `22`.
+> - Therefore Docker builder image is **`node:22-alpine`** (not `node:20-alpine` as drafted).
 
 **Repo paths:**
 - Local source : `/home/sylvain_ladoire/projects/developpeur/avatar-pandora/`
@@ -1007,7 +1013,7 @@ Create `frontend/Dockerfile`:
 
 ```dockerfile
 # Build stage
-FROM node:20-alpine AS builder
+FROM node:22-alpine AS builder
 WORKDIR /app
 COPY package*.json ./
 RUN npm ci
