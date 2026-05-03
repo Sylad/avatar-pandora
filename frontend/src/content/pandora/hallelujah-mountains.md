@@ -1,7 +1,7 @@
 ---
 title: "Montagnes Hallelujah — la pierre qui ne tombe pas"
 summary: "Masses rocheuses saturées de magnétite, lévitant à cinq mille mètres dans un champ magnétique permanent, cascades dans le vide — et lieu du rite Iknimaya pour les Omatikaya."
-order: 5
+order: 6
 cover: "Hallelujah Mountains"
 ---
 

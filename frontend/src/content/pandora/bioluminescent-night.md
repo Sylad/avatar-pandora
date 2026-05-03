@@ -1,7 +1,7 @@
 ---
 title: "La nuit bioluminescente — quand Pandora s'allume"
 summary: "À la tombée de la nuit, toute la lune s'éclaire — champignons, mousses, lianes, créatures, et même le sol sous vos pas. Ce n'est pas de la magie : c'est de la chimie, et elle est plus belle que la magie."
-order: 7
+order: 8
 cover: "Pandora"
 ---
 

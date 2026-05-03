@@ -1,7 +1,7 @@
 ---
 title: "Vallée Mo'ara — le cœur meurtri du Peuple"
 summary: "Là où se dressait le Hometree, là où il a brûlé — la vallée centrale du territoire Omatikaya porte deux mémoires en même temps : la perte et la résilience."
-order: 6
+order: 7
 cover: "Mo'ara Valley"
 ---
 

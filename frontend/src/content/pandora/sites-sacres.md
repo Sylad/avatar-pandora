@@ -1,7 +1,7 @@
 ---
 title: "Sites sacrés"
 summary: "L'Arbre des Âmes, l'Arbre des Voix, Iknimaya — lieux où Eywa parle plus fort qu'ailleurs."
-order: 3
+order: 4
 cover: "Tree of Souls Avatar"
 ---
 

@@ -1,7 +1,7 @@
 ---
 title: "Biomes de Pandora"
 summary: "Forêt tropicale, montagnes flottantes, océans abyssaux, plaines volcaniques — la lune assemble plusieurs mondes en un."
-order: 2
+order: 3
 cover: "Forest"
 ---
 

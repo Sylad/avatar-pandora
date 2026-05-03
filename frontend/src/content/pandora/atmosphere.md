@@ -1,7 +1,7 @@
 ---
 title: "Atmosphère & gravité"
 summary: "Air toxique pour les humains, gravité 0,8 g, magnétite à profusion — Pandora ne pardonne pas la respiration distraite."
-order: 4
+order: 5
 cover: "Atmosphere of Pandora"
 ---
 
