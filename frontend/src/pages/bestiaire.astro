@@ -2,29 +2,22 @@
 import { getCollection } from 'astro:content';
 import CodexLayout from '../layouts/CodexLayout.astro';
 import EntryCard from '../components/EntryCard.astro';
+import SectionHero from '../components/SectionHero.astro';
 
 const entries = await getCollection('bestiaire');
 entries.sort((a, b) => (a.data.order ?? 999) - (b.data.order ?? 999));
 ---
 <CodexLayout title="Bestiaire — Eywa" current="bestiaire">
-  <header class="mb-12">
-    <p class="text-xs uppercase tracking-[0.25em] text-eywa-text-muted font-display mb-3">
-      III — Bestiaire
-    </p>
-    <h1 class="font-display text-4xl text-eywa-bio-primary mb-4">La faune de Pandora</h1>
-    <p class="text-lg text-eywa-text-muted font-body italic max-w-2xl">
-      Ikran, toruk, thanator — créatures sublimes et létales.
-    </p>
-  </header>
-
+  <SectionHero
+    roman="III"
+    label="Bestiaire"
+    title="La faune de Pandora"
+    tagline="Ikran, toruk, thanator — créatures sublimes et létales."
+    cover="Toruk Makto"
+  />
   <section class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-5">
     {entries.map((entry) => (
-      <EntryCard
-        href={`/bestiaire/${entry.id}/`}
-        title={entry.data.title}
-        summary={entry.data.summary}
-        cover={entry.data.cover}
-      />
+      <EntryCard href={`/bestiaire/${entry.id}/`} title={entry.data.title} summary={entry.data.summary} cover={entry.data.cover} />
     ))}
   </section>
 </CodexLayout>

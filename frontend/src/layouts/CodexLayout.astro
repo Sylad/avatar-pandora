@@ -16,6 +16,10 @@ const { title, current } = Astro.props;
     Mimics the "Pandora floor lights up under footstep" sensation across
     the entire codex.
   -->
+  <!-- Forest backdrop : a real Pandora image faded behind everything. Gives
+       the codex pages the sensation of reading inside the bioluminescent
+       jungle rather than on a flat dark page. -->
+  <div class="forest-backdrop" aria-hidden="true"></div>
   <CodexAmbient client:only="react" />
   <div class="bio-ambient" aria-hidden="true"></div>
   <div class="cursor-glow" aria-hidden="true"></div>
@@ -94,6 +98,22 @@ const { title, current } = Astro.props;
 </script>
 
 <style>
+  /* Faded Pandora forest behind the WebGL particles. The image comes
+     from /api/wiki-image?q=Pandora — Avatar Fandom returns the floating
+     mountains / forest hero. Heavily blurred and faded so it reads as
+     atmosphere, not foreground. */
+  .forest-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background-image: url('/api/wiki-image?q=Pandora');
+    background-size: cover;
+    background-position: center;
+    opacity: 0.18;
+    filter: blur(3px) saturate(1.15);
+  }
+
   .bio-ambient {
     position: fixed;
     inset: 0;

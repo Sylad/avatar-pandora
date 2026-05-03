@@ -2,20 +2,19 @@
 import { getCollection } from 'astro:content';
 import CodexLayout from '../layouts/CodexLayout.astro';
 import EntryCard from '../components/EntryCard.astro';
+import SectionHero from '../components/SectionHero.astro';
 
 const entries = await getCollection('engins');
 entries.sort((a, b) => (a.data.order ?? 999) - (b.data.order ?? 999));
 ---
 <CodexLayout title="Engins — Eywa" current="engins">
-  <header class="mb-12">
-    <p class="text-xs uppercase tracking-[0.25em] text-eywa-text-muted font-display mb-3">
-      VIII — Engins
-    </p>
-    <h1 class="font-display text-4xl text-eywa-bio-primary mb-4">La technologie humaine</h1>
-    <p class="text-lg text-eywa-text-muted font-body italic max-w-2xl">
-      Vaisseaux interstellaires, mechs blindés, hélicoptères, sous-marins — l'arsenal que la RDA a porté jusqu'à Pandora.
-    </p>
-  </header>
+  <SectionHero
+    roman="VIII"
+    label="Engins"
+    title="La technologie humaine"
+    tagline="Vaisseaux interstellaires, mechs blindés, hélicoptères, sous-marins — l'arsenal que la RDA a porté jusqu'à Pandora."
+    cover="Dragon Assault Ship"
+  />
   <section class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-5">
     {entries.map((entry) => (
       <EntryCard href={`/engins/${entry.id}/`} title={entry.data.title} summary={entry.data.summary} cover={entry.data.cover} />

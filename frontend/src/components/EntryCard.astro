@@ -84,18 +84,19 @@ if (cover) {
     opacity: 1;
   }
 
-  /* Media area */
+  /* Media area — taller 4:3 for more dominant Pandora imagery */
   .entry-card__media {
     position: relative;
-    aspect-ratio: 16 / 10;
+    aspect-ratio: 4 / 3;
     background: var(--color-eywa-bg);
     overflow: hidden;
   }
 
   .entry-card__media--placeholder {
-    background: linear-gradient(135deg,
-      var(--color-eywa-bg),
-      rgba(95, 255, 230, 0.10));
+    background:
+      radial-gradient(ellipse at 30% 30%, rgba(95, 255, 230, 0.18), transparent 60%),
+      radial-gradient(ellipse at 70% 70%, rgba(127, 255, 143, 0.12), transparent 60%),
+      linear-gradient(135deg, var(--color-eywa-bg), rgba(74, 74, 143, 0.20));
     display: flex;
     align-items: center;
     justify-content: center;
