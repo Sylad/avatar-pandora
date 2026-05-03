@@ -5,81 +5,77 @@ import { WikiImageService } from './wiki-image.service';
 vi.mock('axios');
 const axiosMock = axios as unknown as { get: ReturnType<typeof vi.fn> };
 
+const ok = (originalimage: string) => ({
+  status: 200,
+  data: { originalimage: { source: originalimage } },
+});
+const notFound = { status: 404, data: { type: 'https://mediawiki.org/wiki/HyperSwitch/errors/not_found' } };
+const noImage = { status: 200, data: {} };
+const searchTop = (title: string) => ({
+  status: 200,
+  data: { query: { search: [{ title }] } },
+});
+const searchEmpty = { status: 200, data: { query: { search: [] } } };
+
 describe('WikiImageService', () => {
   beforeEach(() => {
     axiosMock.get = vi.fn();
   });
 
-  it('resolves the original image URL for a known title (EN direct hit)', async () => {
-    // EN direct returns the original on first call.
-    axiosMock.get.mockResolvedValueOnce({
-      data: {
-        query: {
-          pages: {
-            '42': {
-              original: { source: 'https://upload.wikimedia.org/foo.jpg' },
-            },
-          },
-        },
-      },
-    });
+  it('resolves the original image URL for a known title (EN summary direct hit)', async () => {
+    axiosMock.get.mockResolvedValueOnce(
+      ok('https://upload.wikimedia.org/foo.jpg'),
+    );
     const svc = new WikiImageService();
-    const url = await svc.resolveImageUrl('Neytiri');
+    const url = await svc.resolveImageUrl('Avatar (2009 film)');
     expect(url).toBe('https://upload.wikimedia.org/foo.jpg');
-    // Hit EN first, no need to fall through.
     expect(axiosMock.get).toHaveBeenCalledTimes(1);
-    expect(axiosMock.get).toHaveBeenNthCalledWith(
-      1,
-      expect.stringContaining('en.wikipedia.org'),
+    expect(axiosMock.get).toHaveBeenCalledWith(
+      expect.stringContaining('en.wikipedia.org/api/rest_v1/page/summary'),
       expect.any(Object),
     );
   });
 
-  it('falls back to FR when EN has no image, then to search', async () => {
-    // EN direct: page missing.
-    axiosMock.get.mockResolvedValueOnce({
-      data: { query: { pages: { '-1': { missing: true } } } },
-    });
-    // FR direct: page missing.
-    axiosMock.get.mockResolvedValueOnce({
-      data: { query: { pages: { '-1': { missing: true } } } },
-    });
-    // EN search: returns a top result.
-    axiosMock.get.mockResolvedValueOnce({
-      data: { query: { search: [{ title: 'Avatar (2009 film)' }] } },
-    });
-    // EN direct on the searched title: returns image.
-    axiosMock.get.mockResolvedValueOnce({
-      data: {
-        query: {
-          pages: {
-            '99': {
-              original: { source: 'https://upload.wikimedia.org/poster.jpg' },
-            },
-          },
-        },
-      },
-    });
+  it('falls back to FR when EN has no image', async () => {
+    axiosMock.get.mockResolvedValueOnce(noImage);
+    axiosMock.get.mockResolvedValueOnce(
+      ok('https://upload.wikimedia.org/fr-only.jpg'),
+    );
     const svc = new WikiImageService();
-    const url = await svc.resolveImageUrl('Tipani');
-    expect(url).toBe('https://upload.wikimedia.org/poster.jpg');
+    const url = await svc.resolveImageUrl('Truc Bien Français');
+    expect(url).toBe('https://upload.wikimedia.org/fr-only.jpg');
+    expect(axiosMock.get).toHaveBeenCalledTimes(2);
+    expect(axiosMock.get).toHaveBeenNthCalledWith(
+      2,
+      expect.stringContaining('fr.wikipedia.org'),
+      expect.any(Object),
+    );
+  });
+
+  it('falls back to search when both direct lookups have no image', async () => {
+    axiosMock.get.mockResolvedValueOnce(noImage);          // EN summary
+    axiosMock.get.mockResolvedValueOnce(noImage);          // FR summary
+    axiosMock.get.mockResolvedValueOnce(searchTop('Pandora (Avatar)')); // EN search
+    axiosMock.get.mockResolvedValueOnce(
+      ok('https://upload.wikimedia.org/searched.jpg'),
+    );                                                     // EN summary of top result
+    const svc = new WikiImageService();
+    const url = await svc.resolveImageUrl('Hometree');
+    expect(url).toBe('https://upload.wikimedia.org/searched.jpg');
     expect(axiosMock.get).toHaveBeenCalledTimes(4);
   });
 
-  it('returns null when every strategy fails', async () => {
-    // Use the sticky mock so every call returns the empty shape.
-    axiosMock.get.mockResolvedValue({
-      data: { query: { pages: { '-1': { missing: true } }, search: [] } },
-    });
+  it('returns null when EN 404, FR 404, and search empty', async () => {
+    axiosMock.get.mockResolvedValueOnce(notFound);    // EN summary 404
+    axiosMock.get.mockResolvedValueOnce(notFound);    // FR summary 404
+    axiosMock.get.mockResolvedValueOnce(searchEmpty); // EN search empty
     const svc = new WikiImageService();
     const url = await svc.resolveImageUrl('AbsolutelyNotARealPage12345');
     expect(url).toBeNull();
   });
 
-  it('encodes the query in the wikipedia API call (apostrophe → %27)', async () => {
-    axiosMock.get.mockResolvedValue({
-      data: { query: { pages: {}, search: [] } },
-    });
+  it('encodes the query (apostrophe → %27)', async () => {
+    axiosMock.get.mockResolvedValue(noImage); // sticky
     const svc = new WikiImageService();
     await svc.resolveImageUrl("Avatar : la voie de l'eau");
     expect(axiosMock.get).toHaveBeenCalledWith(

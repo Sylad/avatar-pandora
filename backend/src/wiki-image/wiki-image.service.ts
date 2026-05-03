@@ -5,70 +5,75 @@ import { WIKI_USER_AGENT } from './wiki-image.constants';
 /**
  * Resolves Wikipedia image URLs for codex covers.
  *
- * Strategy: try EN Wikipedia first (much better coverage of Avatar lore),
- * fall back to FR for European-French topics that Anglophone Wikipedia might
- * miss. If both direct page lookups fail, do a search query and return the
- * top result's image — turns "Hometree" or "Tipani" (no dedicated wiki page)
- * into "the closest related Avatar page that has a poster/image".
+ * Uses Wikipedia's REST `/page/summary/` endpoint (NOT the action API's
+ * `prop=pageimages`, which returns nothing for many film/franchise pages
+ * because the Wikipedia "page image" property isn't set even when the
+ * infobox has a poster). The REST summary returns `originalimage.source`
+ * for any page that has an infobox image — much higher hit rate for
+ * Avatar lore.
+ *
+ * Strategy:
+ *   1. EN summary direct (best Avatar coverage)
+ *   2. FR summary direct (some FR-only articles)
+ *   3. Action API search on EN, then summary of the top result
  */
 @Injectable()
 export class WikiImageService {
   async resolveImageUrl(query: string): Promise<string | null> {
-    // 1. Try direct page lookup on EN
-    const direct = await this.fetchOriginal('en', query);
-    if (direct) return direct;
+    const en = await this.fetchSummaryImage('en', query);
+    if (en) return en;
 
-    // 2. Try direct page lookup on FR (some FR-only articles e.g. local trans.)
-    const frDirect = await this.fetchOriginal('fr', query);
-    if (frDirect) return frDirect;
+    const fr = await this.fetchSummaryImage('fr', query);
+    if (fr) return fr;
 
-    // 3. Last resort: full-text search on EN, take the first result's image.
-    //    This salvages queries like "Hometree" or "Tipani" that have no
-    //    dedicated page but appear on other Avatar pages with images.
-    const searched = await this.searchAndFetchOriginal(query);
-    if (searched) return searched;
+    const top = await this.searchTop('en', query);
+    if (top) {
+      const searched = await this.fetchSummaryImage('en', top);
+      if (searched) return searched;
+    }
 
     return null;
   }
 
-  private async fetchOriginal(
+  private async fetchSummaryImage(
     lang: 'en' | 'fr',
     query: string,
   ): Promise<string | null> {
     const url =
-      `https://${lang}.wikipedia.org/w/api.php?` +
-      'action=query&format=json&prop=pageimages&piprop=original&redirects=1&titles=' +
+      `https://${lang}.wikipedia.org/api/rest_v1/page/summary/` +
       encodeURIComponent(query).replace(/'/g, '%27');
     try {
       const res = await axios.get(url, {
         headers: { 'User-Agent': WIKI_USER_AGENT },
         timeout: 5000,
+        validateStatus: (s) => s < 500, // 404 is a normal "not found", not an error
       });
-      const pages = res.data?.query?.pages ?? {};
-      for (const k of Object.keys(pages)) {
-        const original = pages[k]?.original?.source;
-        if (typeof original === 'string') return original;
-      }
+      if (res.status >= 400) return null;
+      const original = res.data?.originalimage?.source;
+      if (typeof original === 'string') return original;
     } catch {
-      // network/timeout — fall through to next strategy
+      // network/timeout — fall through
     }
     return null;
   }
 
-  private async searchAndFetchOriginal(query: string): Promise<string | null> {
-    const searchUrl =
-      'https://en.wikipedia.org/w/api.php?' +
+  private async searchTop(
+    lang: 'en' | 'fr',
+    query: string,
+  ): Promise<string | null> {
+    const url =
+      `https://${lang}.wikipedia.org/w/api.php?` +
       'action=query&format=json&list=search&srlimit=1&srsearch=' +
       encodeURIComponent(query + ' Avatar Pandora').replace(/'/g, '%27');
     try {
-      const sres = await axios.get(searchUrl, {
+      const res = await axios.get(url, {
         headers: { 'User-Agent': WIKI_USER_AGENT },
         timeout: 5000,
       });
-      const top = sres.data?.query?.search?.[0]?.title;
-      if (typeof top === 'string') return await this.fetchOriginal('en', top);
+      const top = res.data?.query?.search?.[0]?.title;
+      if (typeof top === 'string') return top;
     } catch {
-      // search failed — surface as null
+      // search failed
     }
     return null;
   }
