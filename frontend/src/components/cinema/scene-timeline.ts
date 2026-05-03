@@ -12,15 +12,18 @@ export interface SceneZone {
 }
 
 export const SCENE_ZONES: SceneZone[] = [
-  // density tuned post first deploy — the additive shader saturates fast,
-  // values above ~0.8 blow out to white and obscure the typography overlays.
-  { label: 'cold-open',    at: 0.00, colorA: '#5fffe6', colorB: '#7fdcff', density: 0.12, cameraZ: 10 },
-  { label: 'forest',       at: 0.18, colorA: '#5fffe6', colorB: '#7fff8f', density: 0.7,  cameraZ: 7 },
-  { label: 'hometree',     at: 0.36, colorA: '#7fdcff', colorB: '#ffd07f', density: 0.55, cameraZ: 5 },
-  { label: 'mountains',    at: 0.54, colorA: '#4a4a8f', colorB: '#9a7fff', density: 0.45, cameraZ: 3 },
+  // Reveal at the top — the user lands here. Cyan + magenta peaceful.
+  { label: 'reveal',       at: 0.00, colorA: '#5fffe6', colorB: '#ff5dc4', density: 0.35, cameraZ: 4 },
+  // Then if they scroll, they enter Pandora's depths : cold open first,
+  // sparse, dark — the cinematic intro begins.
+  { label: 'cold-open',    at: 0.16, colorA: '#5fffe6', colorB: '#7fdcff', density: 0.18, cameraZ: 10 },
+  { label: 'forest',       at: 0.30, colorA: '#5fffe6', colorB: '#7fff8f', density: 0.7,  cameraZ: 7 },
+  { label: 'hometree',     at: 0.44, colorA: '#7fdcff', colorB: '#ffd07f', density: 0.55, cameraZ: 5 },
+  { label: 'mountains',    at: 0.58, colorA: '#4a4a8f', colorB: '#9a7fff', density: 0.45, cameraZ: 3 },
   { label: 'ocean',        at: 0.72, colorA: '#5fffe6', colorB: '#ff5dc4', density: 0.8,  cameraZ: 1 },
   { label: 'volcano',      at: 0.88, colorA: '#ff8c2a', colorB: '#ff4040', density: 0.6,  cameraZ: -1 },
-  { label: 'reveal',       at: 1.00, colorA: '#5fffe6', colorB: '#ff5dc4', density: 0.4,  cameraZ: -3 },
+  // End of the journey — back to peaceful for the bottom of the page.
+  { label: 'fade-out',     at: 1.00, colorA: '#5fffe6', colorB: '#ff5dc4', density: 0.3,  cameraZ: -3 },
 ];
 
 const tmpA = new THREE.Color();

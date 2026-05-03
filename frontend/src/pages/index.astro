@@ -5,40 +5,58 @@ import { CinemaCanvas } from '../components/cinema/CinemaCanvas';
 ---
 <BaseLayout title="Eywa — Codex de Pandora" description="Un codex visuel de Pandora — la lune, ses clans, sa faune, sa langue.">
 
-  <!--
-    Cinematic landing for everyone. The CinemaCanvas component itself
-    short-circuits the WebGL render when prefers-reduced-motion is set
-    (no canvas mounted, no scroll-trigger), but the overlay text + scroll
-    runway remain so motion-reduced users still see the codex content.
-  -->
-
-  <!-- Skip intro: discreet escape hatch for repeat visits / users who don't want the cinema. -->
-  <a href="/pandora/intro/"
-     class="fixed top-6 right-6 z-50 text-xs uppercase tracking-[0.25em] text-eywa-text-muted/60 hover:text-eywa-bio-primary transition-colors font-display">
-    Passer l'intro →
-  </a>
-
-  <!-- Cinema island: WebGL canvas (fixed bg) + scroll driver. Hydrated client-side ONLY (R3F can't SSR). -->
+  <!-- Cinema island: WebGL canvas (fixed bg) + scroll driver. -->
   <CinemaCanvas client:only="react" />
 
   <!--
-    Landing scroll area: 700vh (= 7 viewport heights of scroll runway for cold open + 5 scenes + reveal).
-    Each scene block is sticky-positioned for its slice and contains the overlay typography.
+    Landing — full viewport on arrival : logo, tagline, CTAs.
+    The bioluminescent particle field shifts behind from cyan/magenta
+    (peaceful, reveal palette) here, then evolves through Pandora's
+    biomes as the visitor scrolls down. No mandatory scroll : the user
+    can click straight into the codex from the first viewport.
   -->
-  <div class="relative" style="height: 700vh;">
+  <section class="relative min-h-screen flex flex-col items-center justify-center text-center px-6 py-20">
+    <EywaLogo size={420} />
+    <p class="mt-8 max-w-xl text-eywa-text-muted text-lg italic font-body">
+      « Je te vois. »<br/>
+      Un codex visuel de Pandora — la lune, ses clans, sa faune, sa langue.
+    </p>
+    <div class="mt-12 flex gap-4 justify-center">
+      <a href="/pandora/intro/"
+         class="px-6 py-3 rounded border border-eywa-bio-primary text-eywa-bio-primary hover:shadow-glow-bio transition-shadow">
+        Explorer le codex
+      </a>
+      <a href="/about/"
+         class="px-6 py-3 rounded text-eywa-text-muted hover:text-eywa-text transition-colors">
+        À propos
+      </a>
+    </div>
+    <a href="#cinema" class="mt-20 text-xs uppercase tracking-[0.3em] text-eywa-text-muted/50 hover:text-eywa-bio-primary transition-colors font-display animate-pulse">
+      ↓ Descendre dans Pandora
+    </a>
+  </section>
 
-    <!-- Cold open (0–18%) -->
+  <!--
+    Cinema scroll — for those who want the immersive descent.
+    600vh of scroll runway over which the particle field shifts through
+    Pandora's biomes : cold open → forêt → Hometree → Hallelujah →
+    Metkayina → Fire & Ash → fade out. Each scene block is sticky-
+    positioned for its progress slice.
+  -->
+  <div id="cinema" class="relative" style="height: 600vh;">
+
+    <!-- Cold open at the top of the cinema (16% scroll) -->
     <section class="absolute inset-x-0 top-0 h-[100vh] flex items-center justify-center text-center px-6">
       <div class="max-w-2xl">
-        <p class="font-display text-eywa-bio-primary text-3xl md:text-5xl tracking-wide opacity-0" data-cinema-fade="0.02">
+        <p class="font-display text-eywa-bio-primary text-3xl md:text-5xl tracking-wide opacity-0" data-cinema-fade="0.16">
           Je te vois.
         </p>
       </div>
     </section>
 
-    <!-- Forêt Eywa (18–36%) -->
+    <!-- Forêt Eywa (30%) -->
     <section class="absolute inset-x-0 top-[100vh] h-[100vh] flex items-center justify-center text-center px-6">
-      <div class="max-w-2xl opacity-0" data-cinema-fade="0.20">
+      <div class="max-w-2xl opacity-0" data-cinema-fade="0.30">
         <p class="text-xs uppercase tracking-[0.3em] text-eywa-bio-primary mb-4">I — La Forêt d'Eywa</p>
         <h2 class="font-display text-3xl md:text-4xl text-eywa-text mb-3">Sous la canopée</h2>
         <p class="text-eywa-text-muted font-body italic max-w-xl mx-auto">
@@ -47,9 +65,9 @@ import { CinemaCanvas } from '../components/cinema/CinemaCanvas';
       </div>
     </section>
 
-    <!-- Hometree (36–54%) -->
+    <!-- Hometree (44%) -->
     <section class="absolute inset-x-0 top-[200vh] h-[100vh] flex items-center justify-center text-center px-6">
-      <div class="max-w-2xl opacity-0" data-cinema-fade="0.38">
+      <div class="max-w-2xl opacity-0" data-cinema-fade="0.44">
         <p class="text-xs uppercase tracking-[0.3em] text-eywa-bio-primary mb-4">II — Hometree</p>
         <h2 class="font-display text-3xl md:text-4xl text-eywa-text mb-3">L'arbre-mère</h2>
         <p class="text-eywa-text-muted font-body italic max-w-xl mx-auto">
@@ -58,9 +76,9 @@ import { CinemaCanvas } from '../components/cinema/CinemaCanvas';
       </div>
     </section>
 
-    <!-- Hallelujah Mountains (54–72%) -->
+    <!-- Hallelujah Mountains (58%) -->
     <section class="absolute inset-x-0 top-[300vh] h-[100vh] flex items-center justify-center text-center px-6">
-      <div class="max-w-2xl opacity-0" data-cinema-fade="0.56">
+      <div class="max-w-2xl opacity-0" data-cinema-fade="0.58">
         <p class="text-xs uppercase tracking-[0.3em] text-eywa-bio-primary mb-4">III — Hallelujah</p>
         <h2 class="font-display text-3xl md:text-4xl text-eywa-text mb-3">Les montagnes flottantes</h2>
         <p class="text-eywa-text-muted font-body italic max-w-xl mx-auto">
@@ -69,9 +87,9 @@ import { CinemaCanvas } from '../components/cinema/CinemaCanvas';
       </div>
     </section>
 
-    <!-- Metkayina ocean (72–88%) -->
+    <!-- Metkayina ocean (72%) -->
     <section class="absolute inset-x-0 top-[400vh] h-[100vh] flex items-center justify-center text-center px-6">
-      <div class="max-w-2xl opacity-0" data-cinema-fade="0.74">
+      <div class="max-w-2xl opacity-0" data-cinema-fade="0.72">
         <p class="text-xs uppercase tracking-[0.3em] text-eywa-bio-primary mb-4">IV — Metkayina</p>
         <h2 class="font-display text-3xl md:text-4xl text-eywa-text mb-3">L'océan vivant</h2>
         <p class="text-eywa-text-muted font-body italic max-w-xl mx-auto">
@@ -80,9 +98,9 @@ import { CinemaCanvas } from '../components/cinema/CinemaCanvas';
       </div>
     </section>
 
-    <!-- Fire & Ash volcano (88–100%) -->
+    <!-- Fire & Ash volcano (88%) -->
     <section class="absolute inset-x-0 top-[500vh] h-[100vh] flex items-center justify-center text-center px-6">
-      <div class="max-w-2xl opacity-0" data-cinema-fade="0.90">
+      <div class="max-w-2xl opacity-0" data-cinema-fade="0.88">
         <p class="text-xs uppercase tracking-[0.3em] text-eywa-fire-ash mb-4">V — Fire & Ash</p>
         <h2 class="font-display text-3xl md:text-4xl text-eywa-text mb-3">La Tribu des Cendres</h2>
         <p class="text-eywa-text-muted font-body italic max-w-xl mx-auto">
@@ -91,36 +109,10 @@ import { CinemaCanvas } from '../components/cinema/CinemaCanvas';
       </div>
     </section>
 
-    <!-- Final reveal — the sticky logo + CTAs land here -->
-    <section class="absolute inset-x-0 top-[600vh] h-[100vh] flex flex-col items-center justify-center text-center px-6">
-      <div class="opacity-0" data-cinema-fade="1.00">
-        <EywaLogo size={420} />
-        <p class="mt-8 max-w-xl text-eywa-text-muted text-lg italic font-body">
-          « Je te vois. »<br/>
-          Un codex visuel de Pandora — la lune, ses clans, sa faune, sa langue.
-        </p>
-        <div class="mt-12 flex gap-4 justify-center">
-          <a href="/pandora/intro/"
-             class="px-6 py-3 rounded border border-eywa-bio-primary text-eywa-bio-primary hover:shadow-glow-bio transition-shadow">
-            Explorer le codex
-          </a>
-          <a href="/about/"
-             class="px-6 py-3 rounded text-eywa-text-muted hover:text-eywa-text transition-colors">
-            À propos
-          </a>
-        </div>
-      </div>
-    </section>
-
   </div>
-
-  </div><!-- end motion-reduce:hidden wrapper -->
 </BaseLayout>
 
 <script>
-  // Fade-in overlays: each [data-cinema-fade="<at>"] element fades in
-  // when scroll progress passes its `at` value.
-  // Robust attach: works whether the script runs before, during, or after DOM ready.
   function setupCinemaFades() {
     const fades = document.querySelectorAll<HTMLElement>('[data-cinema-fade]');
     if (fades.length === 0) return;
@@ -143,6 +135,5 @@ import { CinemaCanvas } from '../components/cinema/CinemaCanvas';
   } else {
     setupCinemaFades();
   }
-  // Also re-run on Astro view transition page-load (no-op if not used)
   document.addEventListener('astro:page-load', setupCinemaFades);
 </script>
