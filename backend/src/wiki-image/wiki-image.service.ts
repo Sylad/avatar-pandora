@@ -26,9 +26,12 @@ export class WikiImageService {
     const fr = await this.fetchSummaryImage('fr', query);
     if (fr) return fr;
 
-    const top = await this.searchTop('en', query);
-    if (top) {
-      const searched = await this.fetchSummaryImage('en', top);
+    // Iterate through top 5 search results — some pages have no infobox
+    // image (e.g. "Fictional universe of Avatar"), so we walk results
+    // until one yields an image.
+    const candidates = await this.searchCandidates('en', query, 5);
+    for (const title of candidates) {
+      const searched = await this.fetchSummaryImage('en', title);
       if (searched) return searched;
     }
 
@@ -57,24 +60,29 @@ export class WikiImageService {
     return null;
   }
 
-  private async searchTop(
+  private async searchCandidates(
     lang: 'en' | 'fr',
     query: string,
-  ): Promise<string | null> {
+    limit: number,
+  ): Promise<string[]> {
     const url =
       `https://${lang}.wikipedia.org/w/api.php?` +
-      'action=query&format=json&list=search&srlimit=1&srsearch=' +
+      `action=query&format=json&list=search&srlimit=${limit}&srsearch=` +
       encodeURIComponent(query + ' Avatar Pandora').replace(/'/g, '%27');
     try {
       const res = await axios.get(url, {
         headers: { 'User-Agent': WIKI_USER_AGENT },
         timeout: 5000,
       });
-      const top = res.data?.query?.search?.[0]?.title;
-      if (typeof top === 'string') return top;
+      const search = res.data?.query?.search;
+      if (Array.isArray(search)) {
+        return search
+          .map((r: { title?: unknown }) => r?.title)
+          .filter((t: unknown): t is string => typeof t === 'string');
+      }
     } catch {
       // search failed
     }
-    return null;
+    return [];
   }
 }
