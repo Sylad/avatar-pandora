@@ -24,7 +24,7 @@ import { CycleBackdrop } from '../components/cinema/CycleBackdrop';
 
   <main class="relative z-10 min-h-screen flex flex-col items-center justify-center text-center px-6 py-20">
     <EywaLogo size={420} />
-    <p class="mt-8 max-w-xl text-eywa-text-muted text-lg italic font-body landing-tagline">
+    <p class="mt-8 max-w-xl text-eywa-text text-xl italic font-body landing-tagline" data-bio-split>
       « Je te vois. »<br/>
       Un codex visuel de Pandora — la lune, ses clans, sa faune, sa langue.
     </p>
@@ -40,6 +40,45 @@ import { CycleBackdrop } from '../components/cinema/CycleBackdrop';
     </div>
   </main>
 </BaseLayout>
+
+<script is:inline>
+  // Wrap the landing tagline words in <span class="bio-word"> so each
+  // glows cyan when the cursor passes over it — same effect as the
+  // codex prose. Preserves <br> and other inline elements.
+  (() => {
+    if (typeof window === 'undefined') return;
+    const split = () => {
+      const targets = document.querySelectorAll('[data-bio-split]');
+      targets.forEach((p) => {
+        if (p.dataset.bioSplitDone === '1') return;
+        Array.from(p.childNodes).forEach((node) => {
+          if (node.nodeType !== Node.TEXT_NODE) return;
+          const text = node.textContent ?? '';
+          if (!text.trim()) return;
+          const frag = document.createDocumentFragment();
+          text.split(/(\s+)/).forEach((tok) => {
+            if (/^\s+$/.test(tok) || tok === '') {
+              frag.appendChild(document.createTextNode(tok));
+            } else {
+              const span = document.createElement('span');
+              span.className = 'bio-word';
+              span.textContent = tok;
+              frag.appendChild(span);
+            }
+          });
+          p.replaceChild(frag, node);
+        });
+        p.dataset.bioSplitDone = '1';
+      });
+    };
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', split);
+    } else {
+      split();
+    }
+    document.addEventListener('astro:page-load', split);
+  })();
+</script>
 
 <style>
   /*
@@ -58,9 +97,15 @@ import { CycleBackdrop } from '../components/cinema/CycleBackdrop';
       rgba(10, 10, 31, 0.55) 100%);
   }
 
-  /* Tagline + logo get a soft halo for readability above busy images. */
+  /* Tagline + logo get a stronger halo for readability above the
+     vivid Pandora images cycling underneath. Two layers : a tight
+     dark drop-shadow for crisp legibility, then a soft cyan glow that
+     ties it back to the bioluminescent palette. */
   .landing-tagline {
-    text-shadow: 0 2px 8px rgba(10, 10, 31, 0.85);
+    text-shadow:
+      0 2px 8px rgba(10, 10, 31, 0.95),
+      0 0 18px rgba(10, 10, 31, 0.85),
+      0 0 30px rgba(95, 255, 230, 0.15);
   }
 
   /* Bio-ambient gradient — same recipe as CodexLayout but slightly

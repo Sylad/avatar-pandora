@@ -35,3 +35,26 @@
     letter-spacing: 0.05em;
   }
 }
+
+/*
+  Bioluminescent word-hover effect — used by the article body inside
+  the codex AND by the landing tagline. Each text node is split into
+  per-word .bio-word spans by an inline script, and CSS handles the
+  cyan glow on hover.
+*/
+.bio-word {
+  transition: color 250ms ease, text-shadow 250ms ease;
+}
+.bio-word:hover {
+  color: var(--color-eywa-bio-primary);
+  text-shadow:
+    0 0 8px rgba(95, 255, 230, 0.7),
+    0 0 18px rgba(95, 255, 230, 0.45),
+    0 1px 2px rgba(10, 10, 31, 0.85);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bio-word {
+    transition: none;
+  }
+}

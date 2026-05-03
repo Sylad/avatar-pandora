@@ -190,25 +190,6 @@ const { title, current } = Astro.props;
       0 0 12px rgba(10, 10, 31, 0.55);
   }
 
-  /*
-    Bioluminescent word hover — every word in the article body glows
-    cyan when the cursor passes over it. Wrapping is done by the inline
-    script above (.bio-word is its class).
-  */
-  :global(.bio-word) {
-    transition: color 250ms ease, text-shadow 250ms ease;
-  }
-  :global(.bio-word:hover) {
-    color: var(--color-eywa-bio-primary);
-    text-shadow:
-      0 0 8px rgba(95, 255, 230, 0.7),
-      0 0 18px rgba(95, 255, 230, 0.45),
-      0 1px 2px rgba(10, 10, 31, 0.85);
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    :global(.bio-word) {
-      transition: none;
-    }
-  }
+  /* Bio-word hover styles live in src/styles/global.css now — they're
+     reused by the landing tagline in addition to the codex prose. */
 </style>
