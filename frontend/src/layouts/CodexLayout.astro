@@ -1,6 +1,7 @@
 ---
 import BaseLayout from './BaseLayout.astro';
 import Sidebar from '../components/Sidebar.astro';
+import { CodexAmbient } from '../components/cinema/CodexAmbient';
 
 interface Props {
   title: string;
@@ -9,10 +10,57 @@ interface Props {
 const { title, current } = Astro.props;
 ---
 <BaseLayout title={title}>
-  <div class="flex">
+  <!--
+    Layered ambient: WebGL particles (cyan/forest-green pollen at low
+    density) + CSS radial gradients underneath. The CSS layer is the
+    fallback if WebGL is disabled or motion is reduced. Together they
+    give every codex page the bioluminescent Pandora-night feel.
+  -->
+  <CodexAmbient client:only="react" />
+  <div class="bio-ambient" aria-hidden="true"></div>
+
+  <div class="flex relative">
     <Sidebar current={current} />
     <main class="flex-1 px-10 py-12 max-w-4xl">
       <slot />
     </main>
   </div>
 </BaseLayout>
+
+<style>
+  .bio-ambient {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(ellipse 60% 40% at 15% 15%, rgba(95, 255, 230, 0.12), transparent 70%),
+      radial-gradient(ellipse 50% 35% at 85% 35%, rgba(255, 93, 196, 0.10), transparent 70%),
+      radial-gradient(ellipse 70% 50% at 50% 90%, rgba(127, 255, 143, 0.08), transparent 70%),
+      radial-gradient(ellipse 40% 30% at 80% 80%, rgba(255, 140, 42, 0.06), transparent 70%);
+    animation: bio-drift 28s ease-in-out infinite alternate;
+  }
+
+  /* Subtle blob drift so the wash feels alive, not static. */
+  @keyframes bio-drift {
+    0% {
+      background-position: 0% 0%, 100% 0%, 0% 100%, 100% 100%;
+    }
+    100% {
+      background-position: 5% 8%, 95% 6%, 4% 92%, 96% 94%;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .bio-ambient {
+      animation: none;
+    }
+  }
+
+  /* Ensure the sidebar + main content render above the ambient layer. */
+  :global(aside),
+  :global(main) {
+    position: relative;
+    z-index: 1;
+  }
+</style>
