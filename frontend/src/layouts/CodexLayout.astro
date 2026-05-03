@@ -50,6 +50,47 @@ const { title, current } = Astro.props;
       }
     }, { passive: true });
   })();
+
+  // Wrap every word of the article body into a <span class="bio-word">
+  // so each word can light up cyan when the cursor hovers it.
+  // Targets paragraphs only — leaves headings, links, italics intact.
+  (() => {
+    if (typeof window === 'undefined') return;
+    const split = () => {
+      const ps = document.querySelectorAll('article p, article li');
+      ps.forEach((p) => {
+        if (p.dataset.bioSplit === '1') return;
+        // Only walk direct text-node children — preserves <em>, <a>, <strong>.
+        const children = Array.from(p.childNodes);
+        children.forEach((node) => {
+          if (node.nodeType !== Node.TEXT_NODE) return;
+          const text = node.textContent ?? '';
+          if (!text.trim()) return;
+          const frag = document.createDocumentFragment();
+          // Split on whitespace but keep the whitespace itself so the layout doesn't change.
+          const tokens = text.split(/(\s+)/);
+          tokens.forEach((tok) => {
+            if (/^\s+$/.test(tok) || tok === '') {
+              frag.appendChild(document.createTextNode(tok));
+            } else {
+              const span = document.createElement('span');
+              span.className = 'bio-word';
+              span.textContent = tok;
+              frag.appendChild(span);
+            }
+          });
+          p.replaceChild(frag, node);
+        });
+        p.dataset.bioSplit = '1';
+      });
+    };
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', split);
+    } else {
+      split();
+    }
+    document.addEventListener('astro:page-load', split);
+  })();
 </script>
 
 <style>
@@ -111,5 +152,43 @@ const { title, current } = Astro.props;
   :global(main) {
     position: relative;
     z-index: 2;
+  }
+
+  /*
+    Article body text gets a soft dark text-shadow so it stays legible
+    against the drifting WebGL pollen behind. Subtle — not embossed,
+    just enough to lift the words above the busy background.
+  */
+  :global(article p),
+  :global(article li),
+  :global(article h1),
+  :global(article h2),
+  :global(article h3),
+  :global(article h4) {
+    text-shadow:
+      0 1px 2px rgba(10, 10, 31, 0.85),
+      0 0 12px rgba(10, 10, 31, 0.55);
+  }
+
+  /*
+    Bioluminescent word hover — every word in the article body glows
+    cyan when the cursor passes over it. Wrapping is done by the inline
+    script above (.bio-word is its class).
+  */
+  :global(.bio-word) {
+    transition: color 250ms ease, text-shadow 250ms ease;
+  }
+  :global(.bio-word:hover) {
+    color: var(--color-eywa-bio-primary);
+    text-shadow:
+      0 0 8px rgba(95, 255, 230, 0.7),
+      0 0 18px rgba(95, 255, 230, 0.45),
+      0 1px 2px rgba(10, 10, 31, 0.85);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :global(.bio-word) {
+      transition: none;
+    }
   }
 </style>
