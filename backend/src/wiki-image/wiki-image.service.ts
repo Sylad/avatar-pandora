@@ -26,16 +26,35 @@ export class WikiImageService {
     const fr = await this.fetchSummaryImage('fr', query);
     if (fr) return fr;
 
-    // Iterate through top 5 search results — some pages have no infobox
-    // image (e.g. "Fictional universe of Avatar"), so we walk results
-    // until one yields an image.
-    const candidates = await this.searchCandidates('en', query, 5);
+    // Iterate through top 8 search results — some pages have no infobox
+    // image (e.g. "Fictional universe of Avatar"), and the franchise
+    // hub pages (Avatar (2009 film), Pandora (Avatar), Avatar: The Way
+    // of Water…) all share the same poster, which would create
+    // duplicate covers across unrelated codex entries (5 different
+    // creatures returning the same Avatar 1 poster). Skip those.
+    const candidates = await this.searchCandidates('en', query, 8);
     for (const title of candidates) {
+      if (this.isGenericFranchisePage(title)) continue;
       const searched = await this.fetchSummaryImage('en', title);
       if (searched) return searched;
     }
 
     return null;
+  }
+
+  private isGenericFranchisePage(title: string): boolean {
+    const t = title.toLowerCase();
+    return (
+      t === 'avatar (2009 film)' ||
+      t === 'avatar: the way of water' ||
+      t === 'avatar: fire and ash' ||
+      t === 'pandora (avatar)' ||
+      t === 'avatar (franchise)' ||
+      t === 'fictional universe of avatar' ||
+      t === 'list of avatar characters' ||
+      t === 'avatar 4' ||
+      t === 'avatar 5'
+    );
   }
 
   private async fetchSummaryImage(

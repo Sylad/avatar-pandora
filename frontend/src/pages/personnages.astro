@@ -17,7 +17,7 @@ entries.sort((a, b) => (a.data.order ?? 999) - (b.data.order ?? 999));
     </p>
   </header>
 
-  <section class="grid grid-cols-1 md:grid-cols-2 gap-5">
+  <section class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-5">
     {entries.map((entry) => (
       <EntryCard
         href={`/personnages/${entry.id}/`}

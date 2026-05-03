@@ -2,7 +2,7 @@
 title: "Tonowari & Ronal — le couple-pilier des Metkayina"
 summary: "Olo'eyktan et Tsahìk de l'archipel des Trois Frères. Ils accueillent les Sully en exil."
 order: 8
-cover: "Tonowari Avatar"
+cover: "Cliff Curtis"
 ---
 
 Il y a deux façons d'accueillir des étrangers : la générosité de façade, qui cède pour ne pas paraître hostile, et la décision calculée, qui pèse le risque et l'accepte en connaissance de cause. Tonowari et Ronal appartiennent à la seconde catégorie. Leur accueil des Sully n'est pas de la bonté naïve — c'est un choix de dirigeants qui ont évalué ce que la famille en exil représentait, mesuré ce que ce choix coûterait au clan, et décidé d'assumer. Ce type de décision est plus rare que la générosité, et plus exigeant.

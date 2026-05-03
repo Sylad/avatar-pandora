@@ -2,7 +2,7 @@
 title: "Jake Sully"
 summary: "Marine paraplégique devenu Toruk Makto, Olo'eyktan Omatikaya, père de famille Na'vi. Interprété par Sam Worthington."
 order: 1
-cover: "Jake Sully"
+cover: "Sam Worthington"
 ---
 
 Il y a des hommes que la guerre casse, et des hommes que la guerre vide — qui reviennent debout mais creux, vivants sans raison précise de l'être. Jake Sully appartenait à cette deuxième catégorie quand il atterrit sur Pandora : Marine blessé, paraplégique depuis un conflit dont personne n'avait retenu son nom, frère d'un scientifique mort avant de pouvoir utiliser son propre avatar. Un corps de seconde main, une mission qu'il n'avait pas demandée, et rien à perdre. C'est de cette vacuité que naquit, contre toute attente, le *Toruk Makto*.
