@@ -2,7 +2,7 @@
 title: "Skimwing — la manta des récifs"
 summary: "Énorme prédateur volant sur l'eau. Mont de combat des Metkayina, plus rapide que tout ce qui nage."
 order: 8
-cover: "Skimwing Avatar"
+cover: "Skimwing"
 ---
 
 Le *skimwing* est l'animal qui devrait être impossible. Sa morphologie contredit intuitivement l'aérodynamisme — un corps massif, des ailes membraneuses qui semblent trop larges pour la précision et trop rigides pour la finesse — et pourtant il vole, ou plutôt il fait quelque chose de plus difficile encore : il glisse à la surface de l'eau avec la rapidité d'un projectile et la brutalité d'une lame. Ni oiseau ni poisson, le *skimwing* a inventé sa propre catégorie, quelque part entre le rasant et le plongeon.

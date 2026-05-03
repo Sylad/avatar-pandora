@@ -2,7 +2,7 @@
 title: "Woodsprites (Atokirina')"
 summary: "Graines de l'Arbre des Âmes. Méduses lumineuses qui flottent, jugent, et parfois bénissent un étranger digne."
 order: 3
-cover: "Woodsprite Avatar"
+cover: "Woodsprite"
 ---
 
 Il y a des créatures qu'on hésite à appeler créatures, parce qu'elles semblent appartenir à une autre catégorie — à mi-chemin entre l'objet naturel et le signe. Les *atokirina'* en font partie. Les humains les ont baptisés woodsprites, et si ce nom évoque le folklore terrestre, c'est peut-être par réflexe d'analogie : devant quelque chose d'inexplicable, on cherche le mot le plus proche dans sa propre tradition.

@@ -2,7 +2,7 @@
 title: "Aonung"
 summary: "Fils aîné de Tonowari, rival initial des Sully chez les Metkayina, futur allié et probable chef. Interprété par Filip Geljo."
 order: 15
-cover: "Filip Geljo"
+cover: "Aonung"
 ---
 
 Aonung est le fils de Tonowari — chef des Metkayina, homme de profonde dignité et d'autorité naturelle — et il a grandi dans cette ombre avec la façon particulière qu'ont les fils de chefs de compenser une origine inégalable : en étant les plus durs, les plus forts, les moins enclins à la clémence envers ceux qui ne sont pas encore à leur niveau. Ce n'était pas de la méchanceté. C'était la construction identitaire d'un garçon qui n'avait pas encore trouvé d'autre définition de lui-même que « fils de Tonowari qui sera un jour Tonowari ».

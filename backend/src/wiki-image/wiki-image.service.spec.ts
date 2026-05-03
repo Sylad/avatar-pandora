@@ -5,108 +5,114 @@ import { WikiImageService } from './wiki-image.service';
 vi.mock('axios');
 const axiosMock = axios as unknown as { get: ReturnType<typeof vi.fn> };
 
-const ok = (originalimage: string) => ({
+const fandomPageOk = (originalSource: string) => ({
   status: 200,
-  data: { originalimage: { source: originalimage } },
+  data: {
+    query: {
+      pages: {
+        '42': { original: { source: originalSource } },
+      },
+    },
+  },
 });
-const notFound = { status: 404, data: { type: 'https://mediawiki.org/wiki/HyperSwitch/errors/not_found' } };
-const noImage = { status: 200, data: {} };
-const searchTop = (title: string) => ({
+const fandomPageMissing = {
   status: 200,
-  data: { query: { search: [{ title }] } },
+  data: { query: { pages: { '-1': { missing: true } } } },
+};
+const fandomSearch = (titles: string[]) => ({
+  status: 200,
+  data: {
+    query: { search: titles.map((t) => ({ title: t })) },
+  },
 });
-const searchEmpty = { status: 200, data: { query: { search: [] } } };
+const fandomSearchEmpty = { status: 200, data: { query: { search: [] } } };
+const wikipediaSummaryOk = (source: string) => ({
+  status: 200,
+  data: { originalimage: { source } },
+});
+const wikipedia404 = { status: 404, data: {} };
 
 describe('WikiImageService', () => {
   beforeEach(() => {
     axiosMock.get = vi.fn();
   });
 
-  it('resolves the original image URL for a known title (EN summary direct hit)', async () => {
+  it('resolves an Avatar Fandom direct hit (most common case)', async () => {
     axiosMock.get.mockResolvedValueOnce(
-      ok('https://upload.wikimedia.org/foo.jpg'),
+      fandomPageOk('https://static.wikia.nocookie.net/jamescameronsavatar/images/banshee.jpg'),
     );
     const svc = new WikiImageService();
-    const url = await svc.resolveImageUrl('Avatar (2009 film)');
-    expect(url).toBe('https://upload.wikimedia.org/foo.jpg');
+    const url = await svc.resolveImageUrl('Mountain Banshee');
+    expect(url).toBe('https://static.wikia.nocookie.net/jamescameronsavatar/images/banshee.jpg');
     expect(axiosMock.get).toHaveBeenCalledTimes(1);
     expect(axiosMock.get).toHaveBeenCalledWith(
-      expect.stringContaining('en.wikipedia.org/api/rest_v1/page/summary'),
+      expect.stringContaining('james-camerons-avatar.fandom.com'),
       expect.any(Object),
     );
   });
 
-  it('falls back to FR when EN has no image', async () => {
-    axiosMock.get.mockResolvedValueOnce(noImage);
+  it('falls back to Fandom search when direct page is missing', async () => {
+    axiosMock.get.mockResolvedValueOnce(fandomPageMissing);              // direct miss
+    axiosMock.get.mockResolvedValueOnce(fandomSearch(['Toruk Makto'])); // search
     axiosMock.get.mockResolvedValueOnce(
-      ok('https://upload.wikimedia.org/fr-only.jpg'),
-    );
+      fandomPageOk('https://static.wikia.nocookie.net/jamescameronsavatar/images/toruk.jpg'),
+    );                                                                   // image of search result
     const svc = new WikiImageService();
-    const url = await svc.resolveImageUrl('Truc Bien Français');
-    expect(url).toBe('https://upload.wikimedia.org/fr-only.jpg');
-    expect(axiosMock.get).toHaveBeenCalledTimes(2);
-    expect(axiosMock.get).toHaveBeenNthCalledWith(
-      2,
-      expect.stringContaining('fr.wikipedia.org'),
-      expect.any(Object),
-    );
+    const url = await svc.resolveImageUrl('Toruk');
+    expect(url).toBe('https://static.wikia.nocookie.net/jamescameronsavatar/images/toruk.jpg');
+    expect(axiosMock.get).toHaveBeenCalledTimes(3);
   });
 
-  it('falls back to search when both direct lookups have no image', async () => {
-    axiosMock.get.mockResolvedValueOnce(noImage);          // EN summary
-    axiosMock.get.mockResolvedValueOnce(noImage);          // FR summary
-    // Search returns a result whose title contains "Hometree" (the
-    // first word of the query) — passes the relevance filter.
-    axiosMock.get.mockResolvedValueOnce(searchTop('Hometree (Avatar)'));
+  it('skips search results whose title does not contain the first query word', async () => {
+    axiosMock.get.mockResolvedValueOnce(fandomPageMissing);                            // direct miss
     axiosMock.get.mockResolvedValueOnce(
-      ok('https://upload.wikimedia.org/searched.jpg'),
-    );
-    const svc = new WikiImageService();
-    const url = await svc.resolveImageUrl('Hometree');
-    expect(url).toBe('https://upload.wikimedia.org/searched.jpg');
-    expect(axiosMock.get).toHaveBeenCalledTimes(4);
-  });
-
-  it('skips franchise hub pages and unrelated results in search', async () => {
-    axiosMock.get.mockResolvedValueOnce(noImage);          // EN summary
-    axiosMock.get.mockResolvedValueOnce(noImage);          // FR summary
-    // Mix: blacklisted hub, unrelated page (no "Banshee" in title),
-    // and a relevant result with the first word of the query.
-    axiosMock.get.mockResolvedValueOnce({
-      status: 200,
-      data: {
-        query: {
-          search: [
-            { title: 'Avatar (2009 film)' },              // blacklisted
-            { title: 'Pandora – The World of Avatar' },   // no "Banshee" → reject
-            { title: 'Banshee (Avatar creature)' },       // accept
-          ],
-        },
-      },
-    });
+      fandomSearch(['Random Page', 'Banshee creature', 'Other Result']),
+    );                                                                                  // search returns 3
     axiosMock.get.mockResolvedValueOnce(
-      ok('https://upload.wikimedia.org/banshee.jpg'),
-    );
+      fandomPageOk('https://static.wikia.nocookie.net/jamescameronsavatar/images/banshee.jpg'),
+    );                                                                                  // image of "Banshee creature"
     const svc = new WikiImageService();
     const url = await svc.resolveImageUrl('Banshee Avatar');
-    expect(url).toBe('https://upload.wikimedia.org/banshee.jpg');
+    expect(url).toBe('https://static.wikia.nocookie.net/jamescameronsavatar/images/banshee.jpg');
   });
 
-  it('returns null when EN 404, FR 404, and search empty', async () => {
-    axiosMock.get.mockResolvedValueOnce(notFound);    // EN summary 404
-    axiosMock.get.mockResolvedValueOnce(notFound);    // FR summary 404
-    axiosMock.get.mockResolvedValueOnce(searchEmpty); // EN search empty
+  it('falls back to Wikipedia EN for actor names that have no Fandom page', async () => {
+    axiosMock.get.mockResolvedValueOnce(fandomPageMissing);  // Fandom direct miss
+    axiosMock.get.mockResolvedValueOnce(fandomSearchEmpty);  // Fandom search empty
+    axiosMock.get.mockResolvedValueOnce(
+      wikipediaSummaryOk('https://upload.wikimedia.org/wikipedia/commons/sigourney.jpg'),
+    );                                                        // EN Wikipedia summary
     const svc = new WikiImageService();
-    const url = await svc.resolveImageUrl('AbsolutelyNotARealPage12345');
+    const url = await svc.resolveImageUrl('Sigourney Weaver');
+    expect(url).toBe('https://upload.wikimedia.org/wikipedia/commons/sigourney.jpg');
+    expect(axiosMock.get).toHaveBeenCalledTimes(3);
+  });
+
+  it('falls back to Wikipedia FR when EN also has nothing', async () => {
+    axiosMock.get.mockResolvedValueOnce(fandomPageMissing);
+    axiosMock.get.mockResolvedValueOnce(fandomSearchEmpty);
+    axiosMock.get.mockResolvedValueOnce(wikipedia404);          // EN 404
+    axiosMock.get.mockResolvedValueOnce(
+      wikipediaSummaryOk('https://upload.wikimedia.org/wikipedia/commons/fr-image.jpg'),
+    );                                                           // FR summary
+    const svc = new WikiImageService();
+    const url = await svc.resolveImageUrl('Quelque Chose Très Français');
+    expect(url).toBe('https://upload.wikimedia.org/wikipedia/commons/fr-image.jpg');
+  });
+
+  it('returns null when every source has nothing', async () => {
+    axiosMock.get.mockResolvedValue(fandomPageMissing);  // sticky for all calls
+    const svc = new WikiImageService();
+    const url = await svc.resolveImageUrl('AbsolutelyNotARealEntity');
     expect(url).toBeNull();
   });
 
   it('encodes the query (apostrophe → %27)', async () => {
-    axiosMock.get.mockResolvedValue(noImage); // sticky
+    axiosMock.get.mockResolvedValue(fandomPageMissing);  // sticky
     const svc = new WikiImageService();
-    await svc.resolveImageUrl("Avatar : la voie de l'eau");
+    await svc.resolveImageUrl("Mo'at");
     expect(axiosMock.get).toHaveBeenCalledWith(
-      expect.stringContaining('Avatar%20%3A%20la%20voie%20de%20l%27eau'),
+      expect.stringContaining('Mo%27at'),
       expect.any(Object),
     );
   });

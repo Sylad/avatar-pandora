@@ -2,7 +2,7 @@
 title: "Mo'at — la Tsahìk d'Omatikaya"
 summary: "Mère de Neytiri, gardienne spirituelle du clan, voix d'Eywa avant celle de toute autre."
 order: 6
-cover: "CCH Pounder"
+cover: "Mo'at"
 ---
 
 Il y a dans chaque clan Na'vi une figure que l'on ne remarque pas tout de suite, parce qu'elle ne cherche pas à être remarquée. L'olo'eyktan commande, le guerrier frappe, le chasseur nourrit — mais c'est la tsahìk qui écoute. Mo'at est cette figure : silencieuse dans le fracas, absolue dans le discernement, autorité non pas parce qu'elle impose mais parce qu'Eywa parle à travers elle et que le clan le sait depuis toujours.

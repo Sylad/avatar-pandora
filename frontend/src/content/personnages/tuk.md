@@ -2,7 +2,7 @@
 title: "Tuk"
 summary: "La cadette des Sully, candide et courageuse. L'innocence qui rappelle à sa famille pourquoi elle se bat. Interprétée par Trinity Jo-Li Bliss."
 order: 44
-cover: "Trinity Jo-Li Bliss"
+cover: "Tuktirey"
 ---
 
 Il y a dans chaque famille en guerre un enfant qui représente la raison pour laquelle les adultes continuent. Pas parce qu'on lui a assigné ce rôle — il serait injuste de le réduire à une fonction — mais parce que sa seule présence rappelle à ceux qui portent les armes ce qu'ils défendent vraiment : pas une idéologie, pas un territoire marqué sur une carte, mais quelque chose de vivant, de petit, de vulnérable dans le bon sens du terme. Pour la famille Sully, cet enfant s'appelle Tuk.

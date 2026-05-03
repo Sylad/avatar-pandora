@@ -2,7 +2,7 @@
 title: "Thanator (Palulukan) — le grand prédateur des forêts"
 summary: "Six pattes blindées, mâchoires capables de broyer la magnétite, peau noire luisante. Considéré indomptable."
 order: 3
-cover: "Thanator Avatar"
+cover: "Thanator"
 ---
 
 Les Na'vi l'appellent *palulukan* — littéralement « la mort douce qui court dans l'obscurité » — et ce nom seul suffit à saisir la nature du problème. Il n'y a rien de doux dans l'animal. Le qualificatif appartient à la tradition Na'vi de nommer ce qui dépasse la compréhension ordinaire avec une précision poétique plutôt qu'une description technique. Le thanator dépasse la compréhension ordinaire.

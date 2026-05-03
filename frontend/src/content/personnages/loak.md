@@ -2,7 +2,7 @@
 title: "Lo'ak"
 summary: "Deuxième fils des Sully, rebelle par nature, frère-âme du tulkun paria Payakan. Interprété par Britain Dalton."
 order: 42
-cover: "Britain Dalton"
+cover: "Lo'ak"
 ---
 
 Lo'ak Sully a grandi dans l'ombre de Neteyam sans jamais le formuler ainsi, parce que formuler les choses, c'était les rendre réelles, et Lo'ak préférait agir plutôt que nommer. L'ombre n'était pas hostile — il aimait profondément son aîné — mais elle était présente, structurante, et parfois étouffante dans la manière qu'ont les frères aînés parfaits d'être des mètre-étalons ambulants contre lesquels on se mesure sans le vouloir. Lo'ak ne voulait pas être Neteyam. Il ne savait pas encore tout à fait ce qu'il voulait être, et c'est précisément là que commençait son histoire.

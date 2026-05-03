@@ -2,7 +2,7 @@
 title: "Neteyam"
 summary: "Fils aîné de Jake et Neytiri. Pacificateur, protecteur de sa fratrie, fauché dans les eaux de l'archipel Metkayina. Interprété par Jamie Flatters."
 order: 41
-cover: "Jamie Flatters"
+cover: "Neteyam"
 ---
 
 Il y a des aînés qui portent leur rang comme un titre, et des aînés qui le portent comme une responsabilité qu'ils n'ont jamais vue inscrite nulle part mais qu'ils ont acceptée sans discussion. Neteyam Sully était de ces derniers. Dans une fratrie marquée par la rébellion de Lo'ak, le mystère de Kiri et la jeunesse de Tuk, Neteyam fonctionnait comme le ciment invisible — celui qui absorbait les tensions, couvrait les écarts des autres, et restait debout quand le reste cherchait encore son équilibre.

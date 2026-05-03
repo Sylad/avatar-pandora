@@ -2,7 +2,7 @@
 title: "Tulkun — les cétacés sentients"
 summary: "80 mètres de long, intelligence supérieure aux Na'vi, philosophie de non-violence, frères-âmes des Metkayina."
 order: 5
-cover: "Tulkun Avatar"
+cover: "Tulkun"
 ---
 
 Il existe une tentation, quand on parle des tulkuns, de les décrire à travers ce que les humains ont failli leur faire — et ce serait une erreur de cadrage. Les tulkuns ne sont pas définis par la chasse à la baleine pratiquée par la RDA, pas plus que les séquoias ne sont définis par les bucherons qui les ont abattus. Les tulkuns sont définis par ce qu'ils sont : une civilisation qui a choisi l'océan comme demeure et la non-violence comme doctrine, et qui a développé en quelques millions d'années une culture plus ancienne que tout ce que l'humanité peut revendiquer.

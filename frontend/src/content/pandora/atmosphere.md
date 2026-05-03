@@ -2,7 +2,7 @@
 title: "Atmosphère & gravité"
 summary: "Air toxique pour les humains, gravité 0,8 g, magnétite à profusion — Pandora ne pardonne pas la respiration distraite."
 order: 4
-cover: "Avatar Pandora atmosphere"
+cover: "Atmosphere of Pandora"
 ---
 
 La première chose que tout nouveau personnel de la RDA apprend à Pandora, c'est simple : ne jamais retirer son masque. La deuxième : remettre son masque avant d'avoir envie d'y penser. Entre ces deux règles tient toute la philosophie de survie humaine sur cette lune.

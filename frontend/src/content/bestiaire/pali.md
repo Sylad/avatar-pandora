@@ -2,7 +2,7 @@
 title: "Pa'li — le direhorse"
 summary: "Monture terrestre à six pattes, deux paires d'antennes nerveuses tressables. La cavalerie des forêts."
 order: 6
-cover: "Direhorse Avatar"
+cover: "Direhorse"
 ---
 
 Le *pa'li* est la preuve que l'évolution, sur Pandora, a résolu le problème du déplacement en terrain dense par la multiplication plutôt que par la spécialisation. Six pattes, là où quatre suffisent sur Terre, parce que la forêt pandorienne n'est pas un terrain plat — c'est un réseau de racines, de dénivelés, de sols qui cèdent et de branches qui servent de pont. Un animal de six-cents kilos qui galopait à travers cette forêt sur quatre appuis finissait par tomber. Le *pa'li*, avec ses six appuis coordonnés, ne tombe pas.

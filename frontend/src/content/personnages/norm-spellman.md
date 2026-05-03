@@ -2,7 +2,7 @@
 title: "Norm Spellman"
 summary: "Scientifique du programme Avatar, ami de Jake, linguiste passionné de culture Na'vi. Interprété par Joel David Moore."
 order: 11
-cover: "Joel David Moore"
+cover: "Norm Spellman"
 ---
 
 Norm Spellman était exactement ce que le programme Avatar avait imaginé recruter : scientifique formé, enthousiaste à l'idée de Pandora, préparé depuis des années à piloter son avatar dans un esprit d'échange culturel et de collecte de données. Il parlait Na'vi avec un accent qu'il travaillait depuis sa salle de formation sur Terre. Il connaissait les protocoles d'approche des clans, les noms des espèces végétales et animales, les structures grammaticales du *Na'viyä Lì'fyari*. Il était, sur le papier, exactement l'homme de la situation.

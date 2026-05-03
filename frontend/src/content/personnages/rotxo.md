@@ -2,7 +2,7 @@
 title: "Rotxo"
 summary: "Ami d'Aonung, troisième pilier du cercle adolescent Metkayina, médiateur discret entre les clans. Interprété par Duane Evans Jr."
 order: 16
-cover: "Duane Evans Jr"
+cover: "Rotxo"
 ---
 
 Dans tout groupe d'adolescents, il y a celui qui mène, celui qui provoque, et celui qui rend le groupe fonctionnel sans que personne remarque vraiment comment. Rotxo est ce troisième type. Ami d'Aonung dans le cercle Metkayina qui accueillit — avec des degrés variables d'enthousiasme — les enfants Sully dans leur exil, Rotxo n'était ni le chef ni le challenger. Il était l'espace intermédiaire, la présence qui permettait aux tensions de ne pas exploser systématiquement parce que quelqu'un dans le groupe avait toujours un angle plus calme à proposer.

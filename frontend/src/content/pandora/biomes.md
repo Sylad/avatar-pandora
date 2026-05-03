@@ -2,7 +2,7 @@
 title: "Biomes de Pandora"
 summary: "Forêt tropicale, montagnes flottantes, océans abyssaux, plaines volcaniques — la lune assemble plusieurs mondes en un."
 order: 2
-cover: "Pandora biome"
+cover: "Forest"
 ---
 
 Pandora ne se laisse pas réduire à un seul paysage. Là où la Terre découpe ses biomes en latitudes, la lune d'Alpha Centauri A les empile, les entrelace, les superpose jusqu'à donner l'impression que plusieurs planètes ont fusionné en un seul monde.

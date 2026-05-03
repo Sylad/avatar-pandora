@@ -2,7 +2,7 @@
 title: "Eytukan"
 summary: "Olo'eyktan des Omatikaya, époux de Mo'at, père de Neytiri. Fauché par les missiles RDA dans la destruction du Hometree. Interprété par Wes Studi."
 order: 10
-cover: "Wes Studi"
+cover: "Eytukan"
 ---
 
 Il y a des personnages dont la mort définit mieux le rôle que la vie ne l'avait établi. Eytukan, *olo'eyktan* des Omatikaya, chef du clan des forêts dans le premier Avatar, en est l'exemple le plus douloureux. Sa présence dans le film est construite sur la dignité — celle d'un chef qui a dirigé son peuple en temps de paix relative, qui a appris les protocoles de la méfiance sans en avoir jamais eu besoin jusqu'à l'arrivée des humains, et qui découvre en quelques semaines que les règles du monde qu'il connaissait ne s'appliquent plus.

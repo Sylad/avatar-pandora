@@ -2,7 +2,7 @@
 title: "Varang"
 summary: "Cheffe des Ash People, antagoniste Na'vi central d'Avatar : Fire and Ash. Une vision du monde ancrée dans le feu et la cendre, pas dans les arbres. Interprétée par Oona Chaplin."
 order: 19
-cover: "Oona Chaplin"
+cover: "Varang"
 ---
 
 Pandora n'est pas que forêt et océan. Il existe sur la lune de Polyphemus des zones volcaniques, des étendues calcinées où la lave a reconfiguré le paysage en quelque chose que les Omatikaya ou les Metkayina ne reconnaîtraient pas comme vivable. C'est là que les Ash People ont trouvé leur place — non pas en dépit du feu et de la cendre mais *à travers* eux, en construisant une cosmologie qui intègre la destruction comme principe actif et légitime d'Eywa plutôt que comme accident à éviter. Varang en est la voix la plus aiguisée.

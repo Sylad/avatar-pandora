@@ -3,69 +3,101 @@ import axios from 'axios';
 import { WIKI_USER_AGENT } from './wiki-image.constants';
 
 /**
- * Resolves Wikipedia image URLs for codex covers.
+ * Resolves cover images for codex entries.
  *
- * Uses Wikipedia's REST `/page/summary/` endpoint (NOT the action API's
- * `prop=pageimages`, which returns nothing for many film/franchise pages
- * because the Wikipedia "page image" property isn't set even when the
- * infobox has a poster). The REST summary returns `originalimage.source`
- * for any page that has an infobox image — much higher hit rate for
- * Avatar lore.
+ * Strategy (in order) :
+ *   1. **Avatar Fandom direct** — james-camerons-avatar.fandom.com has
+ *      dedicated pages for nearly every creature, character, location,
+ *      clan, and concept in the franchise, each with a real infobox
+ *      image. This is by far the best source for Avatar lore.
+ *   2. **Avatar Fandom search** — top hit for the query, then fetch its
+ *      image (covers cases where the page name differs from the query,
+ *      e.g. "Banshee" → "Mountain Banshee").
+ *   3. **Wikipedia EN REST summary** — for actor portraits (Sam
+ *      Worthington, Sigourney Weaver, etc.) and films (posters).
+ *   4. **Wikipedia FR REST summary** — for FR-only articles.
  *
- * Strategy:
- *   1. EN summary direct (best Avatar coverage)
- *   2. FR summary direct (some FR-only articles)
- *   3. Action API search on EN, then summary of the top result
+ * Wikipedia search fallback is intentionally NOT used : it returned
+ * wildly unrelated images (Game Boys, gramophones, theme-park trees)
+ * because Wikipedia search ranks by content match, not topical fit.
+ * Fandom search is much more focused.
  */
 @Injectable()
 export class WikiImageService {
   async resolveImageUrl(query: string): Promise<string | null> {
-    const en = await this.fetchSummaryImage('en', query);
+    const fandomDirect = await this.fetchFandomImage(query);
+    if (fandomDirect) return fandomDirect;
+
+    const fandomSearched = await this.fandomSearchAndFetch(query);
+    if (fandomSearched) return fandomSearched;
+
+    const en = await this.fetchWikipediaSummary('en', query);
     if (en) return en;
 
-    const fr = await this.fetchSummaryImage('fr', query);
+    const fr = await this.fetchWikipediaSummary('fr', query);
     if (fr) return fr;
-
-    // Iterate through top 10 search results with three filters that
-    // together prevent the "wildly unrelated cover" failure mode :
-    //   1. Skip franchise hub pages (their posters used as default
-    //      thumbnails would create dup covers across many entries).
-    //   2. Require the result title to contain the FIRST word of the
-    //      original query. Without this, "Banshee Avatar" returned
-    //      Pandora theme-park pages, and "Tulkun Avatar" returned
-    //      Neytiri's portrait. The first word is the distinctive token
-    //      (e.g. Banshee, Tulkun, Bailey, Hometree) — if it's not in
-    //      the result title, the result is unrelated.
-    //   3. Skip results that have no infobox image (handled by
-    //      fetchSummaryImage returning null).
-    const firstWord = query.trim().split(/\s+/)[0]?.toLowerCase() ?? '';
-    const candidates = await this.searchCandidates('en', query, 10);
-    for (const title of candidates) {
-      if (this.isGenericFranchisePage(title)) continue;
-      if (firstWord && !title.toLowerCase().includes(firstWord)) continue;
-      const searched = await this.fetchSummaryImage('en', title);
-      if (searched) return searched;
-    }
 
     return null;
   }
 
-  private isGenericFranchisePage(title: string): boolean {
-    const t = title.toLowerCase();
-    return (
-      t === 'avatar (2009 film)' ||
-      t === 'avatar: the way of water' ||
-      t === 'avatar: fire and ash' ||
-      t === 'pandora (avatar)' ||
-      t === 'avatar (franchise)' ||
-      t === 'fictional universe of avatar' ||
-      t === 'list of avatar characters' ||
-      t === 'avatar 4' ||
-      t === 'avatar 5'
-    );
+  /** Fetch the original infobox image for an Avatar Fandom page directly. */
+  private async fetchFandomImage(title: string): Promise<string | null> {
+    const url =
+      'https://james-camerons-avatar.fandom.com/api.php?' +
+      'action=query&format=json&prop=pageimages&piprop=original&redirects=1&titles=' +
+      encodeURIComponent(title).replace(/'/g, '%27');
+    try {
+      const res = await axios.get(url, {
+        headers: { 'User-Agent': WIKI_USER_AGENT },
+        timeout: 5000,
+        validateStatus: (s) => s < 500,
+      });
+      if (res.status >= 400) return null;
+      const pages = res.data?.query?.pages ?? {};
+      for (const k of Object.keys(pages)) {
+        const original = pages[k]?.original?.source;
+        if (typeof original === 'string') return original;
+      }
+    } catch {
+      // network/timeout — fall through
+    }
+    return null;
   }
 
-  private async fetchSummaryImage(
+  /** Search Avatar Fandom, then fetch the image of the top result. */
+  private async fandomSearchAndFetch(
+    query: string,
+  ): Promise<string | null> {
+    const url =
+      'https://james-camerons-avatar.fandom.com/api.php?' +
+      'action=query&format=json&list=search&srlimit=3&srsearch=' +
+      encodeURIComponent(query).replace(/'/g, '%27');
+    try {
+      const res = await axios.get(url, {
+        headers: { 'User-Agent': WIKI_USER_AGENT },
+        timeout: 5000,
+        validateStatus: (s) => s < 500,
+      });
+      if (res.status >= 400) return null;
+      const search = res.data?.query?.search;
+      if (!Array.isArray(search)) return null;
+      // First word relevance filter — guards against absurd matches.
+      const firstWord = query.trim().split(/\s+/)[0]?.toLowerCase() ?? '';
+      for (const result of search) {
+        const title = result?.title;
+        if (typeof title !== 'string') continue;
+        if (firstWord && !title.toLowerCase().includes(firstWord)) continue;
+        const img = await this.fetchFandomImage(title);
+        if (img) return img;
+      }
+    } catch {
+      // search failed
+    }
+    return null;
+  }
+
+  /** Wikipedia REST summary endpoint — best for actors and films. */
+  private async fetchWikipediaSummary(
     lang: 'en' | 'fr',
     query: string,
   ): Promise<string | null> {
@@ -76,7 +108,7 @@ export class WikiImageService {
       const res = await axios.get(url, {
         headers: { 'User-Agent': WIKI_USER_AGENT },
         timeout: 5000,
-        validateStatus: (s) => s < 500, // 404 is a normal "not found", not an error
+        validateStatus: (s) => s < 500,
       });
       if (res.status >= 400) return null;
       const original = res.data?.originalimage?.source;
@@ -85,31 +117,5 @@ export class WikiImageService {
       // network/timeout — fall through
     }
     return null;
-  }
-
-  private async searchCandidates(
-    lang: 'en' | 'fr',
-    query: string,
-    limit: number,
-  ): Promise<string[]> {
-    const url =
-      `https://${lang}.wikipedia.org/w/api.php?` +
-      `action=query&format=json&list=search&srlimit=${limit}&srsearch=` +
-      encodeURIComponent(query + ' Avatar Pandora').replace(/'/g, '%27');
-    try {
-      const res = await axios.get(url, {
-        headers: { 'User-Agent': WIKI_USER_AGENT },
-        timeout: 5000,
-      });
-      const search = res.data?.query?.search;
-      if (Array.isArray(search)) {
-        return search
-          .map((r: { title?: unknown }) => r?.title)
-          .filter((t: unknown): t is string => typeof t === 'string');
-      }
-    } catch {
-      // search failed
-    }
-    return [];
   }
 }

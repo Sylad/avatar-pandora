@@ -2,7 +2,7 @@
 title: "Parker Selfridge"
 summary: "Administrateur de Hell's Gate et représentant de la RDA sur Pandora. Le visage corporate de la conquête. Interprété par Giovanni Ribisi."
 order: 13
-cover: "Giovanni Ribisi"
+cover: "Parker Selfridge"
 ---
 
 Parker Selfridge n'était pas un monstre. C'est précisément ce qui rendait sa position inconfortable à observer. Un monstre, on peut l'identifier, le nommer, le rejeter comme exception pathologique au fonctionnement normal des institutions. Selfridge n'était pas une exception — il était le fonctionnement normal. Un administrateur capable, efficace dans la gestion d'une opération industrielle complexe à quatre années-lumière de Terre, animé par des objectifs de rendement qui avaient été fixés bien avant son arrivée sur Pandora et qui ne lui avaient jamais semblé exiger une réflexion morale particulière.
