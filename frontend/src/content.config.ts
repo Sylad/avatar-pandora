@@ -24,4 +24,5 @@ export const collections = {
   personnages: makeCollection('personnages'),
   // langue is a standalone page (src/pages/langue.astro) — no entries collection
   films: makeCollection('films'),
+  engins: makeCollection('engins'),
 };

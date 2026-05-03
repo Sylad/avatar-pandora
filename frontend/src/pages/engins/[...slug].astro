@@ -1,0 +1,43 @@
+---
+import { getCollection, render } from 'astro:content';
+import CodexLayout from '../../layouts/CodexLayout.astro';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('engins');
+  return entries.map((entry) => ({
+    params: { slug: entry.id },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+
+let coverSrc: string | undefined;
+if (entry.data.cover) {
+  coverSrc = entry.data.cover.startsWith('http')
+    ? entry.data.cover
+    : `/api/wiki-image?q=${encodeURIComponent(entry.data.cover)}`;
+}
+---
+<CodexLayout title={`${entry.data.title} — Eywa`} current="engins">
+  <article class="prose prose-invert max-w-4xl mx-auto">
+    {coverSrc && (
+      <div class="aspect-[16/7] rounded overflow-hidden mb-10 border border-eywa-text-muted/20">
+        <img src={coverSrc} alt={entry.data.title}
+             class="w-full h-full object-cover"
+             onerror="this.parentElement.style.display='none'" />
+      </div>
+    )}
+    <h1 class="font-display text-4xl text-eywa-bio-primary mb-3">{entry.data.title}</h1>
+    <p class="text-eywa-text-muted text-lg italic mb-10">{entry.data.summary}</p>
+    <div class="text-eywa-text leading-relaxed font-body text-lg">
+      <Content />
+    </div>
+    <nav class="mt-16 pt-8 border-t border-eywa-text-muted/20">
+      <a href="/engins/" class="text-eywa-text-muted hover:text-eywa-bio-primary transition">
+        ← retour
+      </a>
+    </nav>
+  </article>
+</CodexLayout>
