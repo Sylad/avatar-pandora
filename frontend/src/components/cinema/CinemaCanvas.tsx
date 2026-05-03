@@ -6,6 +6,16 @@ import { ParticleField } from './ParticleField';
 import { SceneState, sampleScene } from './scene-timeline';
 import { useReducedMotion } from './useReducedMotion';
 
+interface Props {
+  /** 'scroll' = drive the timeline by window.scrollY / total (legacy).
+   *  'time' = drive by a rAF clock that loops every cycleMs. The
+   *  homepage uses 'time' so the atmosphere transforms on its own
+   *  without forcing the visitor to scroll. */
+  mode?: 'scroll' | 'time';
+  /** Full-loop duration in ms. Only used when mode='time'. */
+  cycleMs?: number;
+}
+
 // Inner scene drives uniforms + camera every frame from a shared progress ref.
 function SceneDriver({ progressRef }: { progressRef: MutableRefObject<number> }) {
   const { camera, scene } = useThree();
@@ -16,7 +26,6 @@ function SceneDriver({ progressRef }: { progressRef: MutableRefObject<number> })
     cameraZ: 8,
   });
 
-  // Find the ShaderMaterial under <points> traversal-style.
   const matRef = useRef<THREE.ShaderMaterial | null>(null);
   useEffect(() => {
     scene.traverse((obj) => {
@@ -26,7 +35,6 @@ function SceneDriver({ progressRef }: { progressRef: MutableRefObject<number> })
     });
   }, [scene]);
 
-  // Drive each frame from the shared progress.
   useMemo(() => {
     const tick = () => {
       const s = sampleScene(progressRef.current, stateRef.current);
@@ -45,15 +53,33 @@ function SceneDriver({ progressRef }: { progressRef: MutableRefObject<number> })
   return null;
 }
 
-export function CinemaCanvas() {
+export function CinemaCanvas({
+  mode = 'scroll',
+  cycleMs = 75000,
+}: Props = {}) {
   const reduced = useReducedMotion();
   const progressRef = useRef(0);
 
-  // Direct scroll listener — drives progressRef from window.scrollY / total scrollable height.
-  // Replaces the GSAP ScrollTrigger sentinel pattern (which was watching an empty div in the
-  // wrong scope and never produced motion). This matches the same math as the overlay fades.
+  // Drive progressRef either from scroll position or from a time clock.
   useEffect(() => {
     if (reduced || typeof window === 'undefined') return;
+
+    if (mode === 'time') {
+      // Time mode : loop the timeline indefinitely. Pandora atmospheres
+      // shift on their own — forêt → Hometree → montagnes → océan →
+      // volcan → reveal → loop. No scroll required.
+      const start = performance.now();
+      let raf = 0;
+      const tick = () => {
+        const elapsed = (performance.now() - start) % cycleMs;
+        progressRef.current = elapsed / cycleMs;
+        raf = requestAnimationFrame(tick);
+      };
+      tick();
+      return () => cancelAnimationFrame(raf);
+    }
+
+    // Scroll mode : original behavior.
     const handler = () => {
       const total = document.body.scrollHeight - window.innerHeight;
       progressRef.current =
@@ -66,11 +92,11 @@ export function CinemaCanvas() {
       window.removeEventListener('scroll', handler);
       window.removeEventListener('resize', handler);
     };
-  }, [reduced]);
+  }, [reduced, mode, cycleMs]);
 
   if (reduced) {
-    // No canvas rendered when motion is reduced — overlay text in the parent
-    // landing still shows because its fade script is opacity-based, not animated.
+    // No canvas rendered when motion is reduced — the static landing
+    // (logo + CTAs) is already perfectly readable on its own.
     return null;
   }
 
