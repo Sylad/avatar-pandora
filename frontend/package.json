@@ -27,6 +27,7 @@
     "three": "^0.170.0"
   },
   "devDependencies": {
+    "@cloudflare/workers-types": "^4.20260503.1",
     "@types/three": "^0.170.0"
   }
 }
