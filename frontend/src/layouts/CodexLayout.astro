@@ -12,12 +12,13 @@ const { title, current } = Astro.props;
 <BaseLayout title={title}>
   <!--
     Layered ambient: WebGL particles (cyan/forest-green pollen at low
-    density) + CSS radial gradients underneath. The CSS layer is the
-    fallback if WebGL is disabled or motion is reduced. Together they
-    give every codex page the bioluminescent Pandora-night feel.
+    density) + CSS radial gradients + cursor-follow bioluminescent halo.
+    Mimics the "Pandora floor lights up under footstep" sensation across
+    the entire codex.
   -->
   <CodexAmbient client:only="react" />
   <div class="bio-ambient" aria-hidden="true"></div>
+  <div class="cursor-glow" aria-hidden="true"></div>
 
   <div class="flex relative">
     <Sidebar current={current} />
@@ -26,6 +27,30 @@ const { title, current } = Astro.props;
     </main>
   </div>
 </BaseLayout>
+
+<script is:inline>
+  // Cursor-follow bioluminescence — like the moss waking up under Jake's foot.
+  // Throttled via rAF; CSS does the rendering.
+  (() => {
+    if (typeof window === 'undefined') return;
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+    if (mq.matches) return;
+    let pendingX = 0, pendingY = 0, ticking = false;
+    const update = () => {
+      document.documentElement.style.setProperty('--mx', pendingX + 'px');
+      document.documentElement.style.setProperty('--my', pendingY + 'px');
+      ticking = false;
+    };
+    window.addEventListener('mousemove', (e) => {
+      pendingX = e.clientX;
+      pendingY = e.clientY;
+      if (!ticking) {
+        requestAnimationFrame(update);
+        ticking = true;
+      }
+    }, { passive: true });
+  })();
+</script>
 
 <style>
   .bio-ambient {
@@ -57,10 +82,34 @@ const { title, current } = Astro.props;
     }
   }
 
+  /*
+    Cursor-follow halo. A 360px-radius cyan glow centered on (--mx, --my).
+    Pointer-events none so it doesn't capture clicks. Fades in/out via
+    smooth opacity transition when the mouse stops/starts moving.
+  */
+  .cursor-glow {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background: radial-gradient(360px circle at var(--mx, 50%) var(--my, 50%),
+      rgba(95, 255, 230, 0.10),
+      rgba(127, 255, 143, 0.04) 40%,
+      transparent 70%);
+    mix-blend-mode: screen;
+    transition: background 80ms linear;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cursor-glow {
+      display: none;
+    }
+  }
+
   /* Ensure the sidebar + main content render above the ambient layer. */
   :global(aside),
   :global(main) {
     position: relative;
-    z-index: 1;
+    z-index: 2;
   }
 </style>

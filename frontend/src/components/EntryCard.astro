@@ -7,33 +7,155 @@ interface Props {
 }
 const { href, title, summary, cover } = Astro.props;
 
-// Resolve cover: if it's a full URL, use as-is; otherwise it's a wiki query → use the proxy.
 let imgSrc: string | undefined;
 if (cover) {
   imgSrc = cover.startsWith('http') ? cover : `/api/wiki-image?q=${encodeURIComponent(cover)}`;
 }
 ---
-<a href={href}
-   class="group block rounded overflow-hidden border border-eywa-text-muted/20 bg-eywa-text/[0.02] hover:border-eywa-bio-primary/40 hover:shadow-glow-bio transition-all">
+<a href={href} class="entry-card group">
   {imgSrc ? (
-    <div class="aspect-[16/10] bg-eywa-bg overflow-hidden">
+    <div class="entry-card__media">
       <img src={imgSrc}
            alt={title}
            loading="lazy"
-           class="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500"
+           class="entry-card__img"
            onerror="this.style.display='none'" />
     </div>
   ) : (
-    <div class="aspect-[16/10] bg-gradient-to-br from-eywa-bg to-eywa-bio-primary/10 flex items-center justify-center">
+    <div class="entry-card__media entry-card__media--placeholder">
       <span class="font-display text-eywa-bio-primary/50 tracking-widest text-sm">EYWA</span>
     </div>
   )}
-  <div class="p-5">
-    <h3 class="font-display text-lg text-eywa-text group-hover:text-eywa-bio-primary tracking-wide mb-2 transition-colors">
-      {title}
-    </h3>
-    <p class="text-sm text-eywa-text-muted font-body leading-relaxed line-clamp-3">
-      {summary}
-    </p>
+  <div class="entry-card__body">
+    <h3 class="entry-card__title">{title}</h3>
+    <p class="entry-card__summary">{summary}</p>
   </div>
 </a>
+
+<style>
+  /*
+    "Pandora floor" hover effect : the card has a faint always-on cyan
+    glow (it's bioluminescent at rest). On hover, a radial light blooms
+    outward as if a footstep activated the moss — the image brightens,
+    the title cyans, the border ignites.
+  */
+  .entry-card {
+    position: relative;
+    display: block;
+    border-radius: 6px;
+    overflow: hidden;
+    background: rgba(232, 230, 221, 0.02);
+    border: 1px solid rgba(95, 255, 230, 0.15);
+    box-shadow:
+      0 0 0 1px rgba(95, 255, 230, 0.04) inset,
+      0 0 18px -8px rgba(95, 255, 230, 0.20);
+    transition:
+      border-color 400ms ease,
+      box-shadow 400ms ease,
+      transform 400ms ease;
+  }
+
+  /* Pseudo-element holding the radial-bloom that lights up on hover. */
+  .entry-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 6px;
+    pointer-events: none;
+    background: radial-gradient(ellipse 80% 60% at 50% 50%,
+      rgba(95, 255, 230, 0.18),
+      rgba(127, 255, 143, 0.08) 40%,
+      transparent 70%);
+    opacity: 0;
+    transition: opacity 500ms ease;
+    z-index: 1;
+  }
+
+  .entry-card:hover {
+    border-color: rgba(95, 255, 230, 0.55);
+    box-shadow:
+      0 0 0 1px rgba(95, 255, 230, 0.10) inset,
+      0 0 32px -4px rgba(95, 255, 230, 0.40),
+      0 0 60px -12px rgba(127, 255, 143, 0.25);
+    transform: translateY(-2px);
+  }
+
+  .entry-card:hover::before {
+    opacity: 1;
+  }
+
+  /* Media area */
+  .entry-card__media {
+    position: relative;
+    aspect-ratio: 16 / 10;
+    background: var(--color-eywa-bg);
+    overflow: hidden;
+  }
+
+  .entry-card__media--placeholder {
+    background: linear-gradient(135deg,
+      var(--color-eywa-bg),
+      rgba(95, 255, 230, 0.10));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .entry-card__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.78;
+    transition: opacity 600ms ease, transform 700ms ease, filter 600ms ease;
+  }
+
+  .entry-card:hover .entry-card__img {
+    opacity: 1;
+    transform: scale(1.06);
+    filter: saturate(1.15) brightness(1.08);
+  }
+
+  /* Body */
+  .entry-card__body {
+    position: relative;
+    z-index: 2;
+    padding: 1.25rem;
+  }
+
+  .entry-card__title {
+    font-family: var(--font-display);
+    font-size: 1.125rem;
+    color: var(--color-eywa-text);
+    letter-spacing: 0.04em;
+    margin-bottom: 0.5rem;
+    transition: color 400ms ease, text-shadow 400ms ease;
+  }
+
+  .entry-card:hover .entry-card__title {
+    color: var(--color-eywa-bio-primary);
+    text-shadow: 0 0 14px rgba(95, 255, 230, 0.45);
+  }
+
+  .entry-card__summary {
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    color: var(--color-eywa-text-muted);
+    line-height: 1.6;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .entry-card,
+    .entry-card__img,
+    .entry-card__title,
+    .entry-card::before {
+      transition: none;
+    }
+    .entry-card:hover {
+      transform: none;
+    }
+  }
+</style>

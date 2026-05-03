@@ -14,9 +14,11 @@ const sections = [
   { slug: 'films', label: 'Les films', href: '/films/' },
 ];
 ---
-<aside class="w-80 shrink-0 sticky top-0 h-screen overflow-y-auto border-r border-eywa-text-muted/20 px-6 py-10 flex flex-col">
-  <a href="/" class="block mb-10">
-    <span class="font-display tracking-widest text-2xl text-eywa-bio-primary">EYWA</span>
+<aside class="eywa-sidebar w-80 shrink-0 sticky top-0 h-screen overflow-y-auto px-6 py-10 flex flex-col">
+  <a href="/" class="block mb-10 group">
+    <span class="font-display tracking-widest text-2xl text-eywa-bio-primary group-hover:[text-shadow:0_0_18px_rgba(95,255,230,0.6)] transition-[text-shadow]">
+      EYWA
+    </span>
     <span class="block text-xs uppercase text-eywa-text-muted mt-1">Codex de Pandora</span>
   </a>
 
@@ -25,10 +27,10 @@ const sections = [
       <a
         href={s.href}
         class:list={[
-          'block px-3 py-2 rounded text-sm font-display tracking-wide transition-colors',
+          'eywa-nav-link block px-3 py-2 rounded text-sm font-display tracking-wide transition-all duration-300',
           current === s.slug
-            ? 'bg-eywa-bio-primary/10 text-eywa-bio-primary'
-            : 'text-eywa-text-muted hover:text-eywa-text hover:bg-eywa-text/5',
+            ? 'is-active bg-eywa-bio-primary/10 text-eywa-bio-primary shadow-[0_0_20px_-2px_rgba(95,255,230,0.30)]'
+            : 'text-eywa-text-muted hover:text-eywa-bio-primary hover:bg-eywa-bio-primary/5 hover:shadow-[0_0_18px_-4px_rgba(95,255,230,0.40)]',
         ]}
       >
         {s.label}
@@ -37,6 +39,37 @@ const sections = [
   </nav>
 
   <div class="mt-auto pt-10 text-xs text-eywa-text-muted/60">
-    <a href="/about" class="hover:text-eywa-text-muted transition">À propos</a>
+    <a href="/about/" class="hover:text-eywa-bio-primary transition-colors">À propos</a>
   </div>
 </aside>
+
+<style>
+  /* Bioluminescent right edge: faint always, brighter via the inner shadow.
+     Replaces the plain border-r so the sidebar feels alive. */
+  .eywa-sidebar {
+    border-right: 1px solid rgba(95, 255, 230, 0.18);
+    box-shadow:
+      inset -1px 0 0 rgba(95, 255, 230, 0.10),
+      1px 0 30px -8px rgba(95, 255, 230, 0.18);
+  }
+
+  /* Active nav item slowly breathes — Pandora's pulse. */
+  .eywa-nav-link.is-active {
+    animation: eywa-breath 4s ease-in-out infinite;
+  }
+
+  @keyframes eywa-breath {
+    0%, 100% {
+      box-shadow: 0 0 18px -2px rgba(95, 255, 230, 0.25);
+    }
+    50% {
+      box-shadow: 0 0 28px 0px rgba(95, 255, 230, 0.55);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .eywa-nav-link.is-active {
+      animation: none;
+    }
+  }
+</style>
