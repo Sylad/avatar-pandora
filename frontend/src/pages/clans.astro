@@ -20,7 +20,7 @@ entries.sort((a, b) => (a.data.order ?? 999) - (b.data.order ?? 999));
   <section class="grid grid-cols-1 md:grid-cols-2 gap-5">
     {entries.map((entry) => (
       <EntryCard
-        href={`/clans/${entry.id}`}
+        href={`/clans/${entry.id}/`}
         title={entry.data.title}
         summary={entry.data.summary}
         cover={entry.data.cover}
