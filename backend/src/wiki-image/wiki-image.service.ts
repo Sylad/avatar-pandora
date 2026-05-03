@@ -26,15 +26,23 @@ export class WikiImageService {
     const fr = await this.fetchSummaryImage('fr', query);
     if (fr) return fr;
 
-    // Iterate through top 8 search results — some pages have no infobox
-    // image (e.g. "Fictional universe of Avatar"), and the franchise
-    // hub pages (Avatar (2009 film), Pandora (Avatar), Avatar: The Way
-    // of Water…) all share the same poster, which would create
-    // duplicate covers across unrelated codex entries (5 different
-    // creatures returning the same Avatar 1 poster). Skip those.
-    const candidates = await this.searchCandidates('en', query, 8);
+    // Iterate through top 10 search results with three filters that
+    // together prevent the "wildly unrelated cover" failure mode :
+    //   1. Skip franchise hub pages (their posters used as default
+    //      thumbnails would create dup covers across many entries).
+    //   2. Require the result title to contain the FIRST word of the
+    //      original query. Without this, "Banshee Avatar" returned
+    //      Pandora theme-park pages, and "Tulkun Avatar" returned
+    //      Neytiri's portrait. The first word is the distinctive token
+    //      (e.g. Banshee, Tulkun, Bailey, Hometree) — if it's not in
+    //      the result title, the result is unrelated.
+    //   3. Skip results that have no infobox image (handled by
+    //      fetchSummaryImage returning null).
+    const firstWord = query.trim().split(/\s+/)[0]?.toLowerCase() ?? '';
+    const candidates = await this.searchCandidates('en', query, 10);
     for (const title of candidates) {
       if (this.isGenericFranchisePage(title)) continue;
+      if (firstWord && !title.toLowerCase().includes(firstWord)) continue;
       const searched = await this.fetchSummaryImage('en', title);
       if (searched) return searched;
     }

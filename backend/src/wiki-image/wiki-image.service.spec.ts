@@ -55,38 +55,41 @@ describe('WikiImageService', () => {
   it('falls back to search when both direct lookups have no image', async () => {
     axiosMock.get.mockResolvedValueOnce(noImage);          // EN summary
     axiosMock.get.mockResolvedValueOnce(noImage);          // FR summary
-    axiosMock.get.mockResolvedValueOnce(searchTop('Tree of Souls')); // EN search (NOT a blacklisted franchise hub)
+    // Search returns a result whose title contains "Hometree" (the
+    // first word of the query) — passes the relevance filter.
+    axiosMock.get.mockResolvedValueOnce(searchTop('Hometree (Avatar)'));
     axiosMock.get.mockResolvedValueOnce(
       ok('https://upload.wikimedia.org/searched.jpg'),
-    );                                                     // EN summary of top result
+    );
     const svc = new WikiImageService();
     const url = await svc.resolveImageUrl('Hometree');
     expect(url).toBe('https://upload.wikimedia.org/searched.jpg');
     expect(axiosMock.get).toHaveBeenCalledTimes(4);
   });
 
-  it('skips franchise hub pages in search results to avoid duplicate posters', async () => {
+  it('skips franchise hub pages and unrelated results in search', async () => {
     axiosMock.get.mockResolvedValueOnce(noImage);          // EN summary
     axiosMock.get.mockResolvedValueOnce(noImage);          // FR summary
-    // Search returns a franchise page first then a specific one.
+    // Mix: blacklisted hub, unrelated page (no "Banshee" in title),
+    // and a relevant result with the first word of the query.
     axiosMock.get.mockResolvedValueOnce({
       status: 200,
       data: {
         query: {
           search: [
-            { title: 'Avatar (2009 film)' },          // blacklisted
-            { title: 'Pandora (Avatar)' },            // blacklisted
-            { title: 'Specific Creature Page' },      // accept this
+            { title: 'Avatar (2009 film)' },              // blacklisted
+            { title: 'Pandora – The World of Avatar' },   // no "Banshee" → reject
+            { title: 'Banshee (Avatar creature)' },       // accept
           ],
         },
       },
     });
     axiosMock.get.mockResolvedValueOnce(
-      ok('https://upload.wikimedia.org/specific.jpg'),
+      ok('https://upload.wikimedia.org/banshee.jpg'),
     );
     const svc = new WikiImageService();
-    const url = await svc.resolveImageUrl('Some Bestiary Item');
-    expect(url).toBe('https://upload.wikimedia.org/specific.jpg');
+    const url = await svc.resolveImageUrl('Banshee Avatar');
+    expect(url).toBe('https://upload.wikimedia.org/banshee.jpg');
   });
 
   it('returns null when EN 404, FR 404, and search empty', async () => {
