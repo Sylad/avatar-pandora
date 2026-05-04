@@ -6,14 +6,25 @@ Un codex visuel de l'univers Avatar (Pandora, clans Na'vi, faune, flore, langue,
 
 🌐 **Live** : [https://avatar-pandora-12q.pages.dev](https://avatar-pandora-12q.pages.dev) — accessible partout dans le monde via Cloudflare Pages.
 
+![Landing — EYWA logo et Hometree en fond, particules bioluminescentes](docs/screenshots/01-landing-banshee.png)
+
 Le site est aussi un labo perso : 4ᵉ projet où j'explore des stacks que je ne croise pas dans mon métier de dev Java côté serveur. Ici, c'est WebGL (R3F + Three.js), animations GSAP, et le paradigme islands d'Astro.
 
 ## Aperçu
 
-- **Page d'accueil** — landing avec logo Eywa (le `V` du `W` éclatant, masqué dans `EYWA`, recompose le prénom **Eva**) + accès direct au codex. Si on scrolle, descente cinématique à travers Pandora : forêt d'Eywa, Hometree, montagnes flottantes Hallelujah, océan Metkayina, volcan Fire & Ash. Particules bioluminescentes WebGL en fond, qui changent de palette par scène.
-- **Codex** — sidebar 320 px sticky avec 7 sections : Pandora (lune, biomes, sites sacrés), Clans Na'vi (Omatikaya, Metkayina, Ash People, Tipani…), Bestiaire (ikran, toruk, thanator, tulkun, ikran, pa'li, ilu, skimwing…), Flore (Hometree, Arbre des Âmes, woodsprites, plantes hélicoptères…), Personnages (24 figures de la saga, enfants Sully en détail, Quaritch, Mo'at, Tonowari, Ronal, Eytukan, Trudy Chacon, Spider, Varang…), Langue Na'vi (alphabet, grammaire, lexique de Paul Frommer), Films (Avatar 2009, La Voie de l'Eau 2022, Fire and Ash 2025).
+- **Page d'accueil** — landing à viewport unique : logo Eywa (le `V` caché du `W` recompose le prénom **Eva** de la dédicataire) + définition d'Eywa cliquable + tagline + 2 CTAs. En fond, six images de Pandora se cross-fadent en boucle de 75 s (Pandora globe → Banshee → Hometree → Hallelujah → Metkayina → Fire & Ash), pendant qu'un champ de particules WebGL synchronisé sur le même clock change de palette par scène. Pas de scroll forcé : le visiteur s'assoit, l'atmosphère bouge autour de lui.
+- **Codex** — sidebar 320 px sticky avec 8 sections : Pandora (lune, Eywa, biomes, sites sacrés), Clans Na'vi (Omatikaya, Metkayina, Ash People, Tipani…), Bestiaire (ikran, toruk, thanator, tulkun, pa'li, ilu, skimwing…), Flore (Hometree, Arbre des Âmes, woodsprites, plantes hélicoptères…), Personnages (24 figures de la saga, enfants Sully en détail, Quaritch, Mo'at, Tonowari, Ronal, Eytukan, Trudy Chacon, Spider, Varang…), Langue Na'vi (alphabet, grammaire, lexique de Paul Frommer), Films (Avatar 2009, La Voie de l'Eau 2022, Fire and Ash 2025), Engins (vaisseaux, AMP suit, Sea Dragon…).
 - **Effets bioluminescents** — halo cyan qui suit le curseur, cards qui s'allument au survol comme la mousse Pandora sous les pas de Jake, mots qui scintillent en cyan quand on les survole, sidebar qui respire (item actif pulse en 4 s).
 - **À propos** — la dédicace à Eva, l'explication du logo, la stack technique, les sources.
+
+## Galerie
+
+| | |
+|---|---|
+| ![Eywa codex entry](docs/screenshots/02-codex-eywa.png) | ![Clans Na'vi index](docs/screenshots/03-codex-clans.png) |
+| Entrée codex `/pandora/eywa/` — la déesse-réseau, le *tsaheylu*, le clin d'œil EVA / EYWA. | Index Clans Na'vi — hero 21:9 avec Jake & Neytiri + grille de cards image-first. |
+| ![Bestiaire](docs/screenshots/05-bestiaire.png) | ![Page À propos](docs/screenshots/04-about.png) |
+| Bestiaire — banshee de montagne en hero, cards Ikran / Toruk / Thanator. | Page À propos — la dédicace, la stack, et l'aveu "vibe coded with Claude Code". |
 
 ## Stack technique
 
