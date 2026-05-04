@@ -5,6 +5,7 @@ import * as THREE from 'three';
 import { ParticleField } from './ParticleField';
 import { SceneState, sampleScene } from './scene-timeline';
 import { useReducedMotion } from './useReducedMotion';
+import { CYCLE_MS } from './config';
 
 interface Props {
   /** 'scroll' = drive the timeline by window.scrollY / total (legacy).
@@ -55,7 +56,7 @@ function SceneDriver({ progressRef }: { progressRef: MutableRefObject<number> })
 
 export function CinemaCanvas({
   mode = 'scroll',
-  cycleMs = 75000,
+  cycleMs = CYCLE_MS,
 }: Props = {}) {
   const reduced = useReducedMotion();
   const progressRef = useRef(0);

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import axios from 'axios';
 import { WIKI_USER_AGENT } from './wiki-image.constants';
 
@@ -24,6 +24,8 @@ import { WIKI_USER_AGENT } from './wiki-image.constants';
  */
 @Injectable()
 export class WikiImageService {
+  private readonly logger = new Logger(WikiImageService.name);
+
   async resolveImageUrl(query: string): Promise<string | null> {
     const fandomDirect = await this.fetchFandomImage(query);
     if (fandomDirect) return fandomDirect;
@@ -58,8 +60,8 @@ export class WikiImageService {
         const original = pages[k]?.original?.source;
         if (typeof original === 'string') return original;
       }
-    } catch {
-      // network/timeout — fall through
+    } catch (err: unknown) {
+      this.logger.debug(`Fandom direct lookup failed for "${title}": ${(err as Error)?.message ?? err}`);
     }
     return null;
   }
@@ -90,8 +92,8 @@ export class WikiImageService {
         const img = await this.fetchFandomImage(title);
         if (img) return img;
       }
-    } catch {
-      // search failed
+    } catch (err: unknown) {
+      this.logger.debug(`Fandom search failed for "${query}": ${(err as Error)?.message ?? err}`);
     }
     return null;
   }
@@ -113,8 +115,8 @@ export class WikiImageService {
       if (res.status >= 400) return null;
       const original = res.data?.originalimage?.source;
       if (typeof original === 'string') return original;
-    } catch {
-      // network/timeout — fall through
+    } catch (err: unknown) {
+      this.logger.debug(`Wikipedia ${lang} lookup failed for "${query}": ${(err as Error)?.message ?? err}`);
     }
     return null;
   }

@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { useReducedMotion } from './useReducedMotion';
+import { CYCLE_MS, BACKDROP_PEAK_WIDTH, BACKDROP_MAX_OPACITY } from './config';
 
 /**
  * Time-cycled image backdrop for the homepage. Cross-fades through 6
@@ -20,9 +21,6 @@ const SCENES = [
   { at: 0.88, query: 'Ash People' },           // Fire & Ash volcano
 ];
 
-const CYCLE_MS = 75000; // 75s full loop, ~12s per scene
-const PEAK_WIDTH = 0.22; // half-width of the bell curve for each scene
-const MAX_OPACITY = 0.45; // image is atmosphere, not foreground
 
 export function CycleBackdrop() {
   const reduced = useReducedMotion();
@@ -43,8 +41,8 @@ export function CycleBackdrop() {
         // is just as close to progress 0.95 as it is to 0.05.
         const raw = Math.abs(p - scene.at);
         const dist = Math.min(raw, 1 - raw);
-        const t = dist / PEAK_WIDTH;
-        const opacity = Math.max(0, (1 - t * t)) * MAX_OPACITY;
+        const t = dist / BACKDROP_PEAK_WIDTH;
+        const opacity = Math.max(0, (1 - t * t)) * BACKDROP_MAX_OPACITY;
         const el = imgs[i];
         if (el) el.style.opacity = opacity.toFixed(3);
       });
