@@ -3,17 +3,20 @@ import type { Response } from 'express';
 import axios from 'axios';
 import { WikiImageService } from './wiki-image.service';
 import { WIKI_USER_AGENT } from './wiki-image.constants';
+import { ZodValidationPipe } from '../common/zod-validation.pipe';
+import { WikiImageQuerySchema } from './wiki-image.schema';
+import type { WikiImageQuery } from './wiki-image.schema';
 
 @Controller('wiki-image')
 export class WikiImageController {
   constructor(private readonly service: WikiImageService) {}
 
   @Get()
-  async fetch(@Query('q') q: string, @Res() res: Response) {
-    if (!q || typeof q !== 'string') {
-      throw new HttpException('q query required', 400);
-    }
-    const url = await this.service.resolveImageUrl(q);
+  async fetch(
+    @Query(new ZodValidationPipe(WikiImageQuerySchema)) query: WikiImageQuery,
+    @Res() res: Response,
+  ) {
+    const url = await this.service.resolveImageUrl(query.q);
     if (!url) throw new HttpException('not found', 404);
     const stream = await axios.get(url, {
       responseType: 'stream',
