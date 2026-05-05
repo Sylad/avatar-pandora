@@ -6,6 +6,8 @@
     "node": ">=22.12.0"
   },
   "scripts": {
+    "predev": "node -e \"const f=require('node:fs');const p='../scripts/sync-shared.cjs';if(f.existsSync(p))require('node:child_process').execSync('node '+p,{stdio:'inherit'});\"",
+    "prebuild": "node -e \"const f=require('node:fs');const p='../scripts/sync-shared.cjs';if(f.existsSync(p))require('node:child_process').execSync('node '+p,{stdio:'inherit'});else console.log('[prebuild] sync-shared.cjs not found (Docker build) — using committed copy');\"",
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",

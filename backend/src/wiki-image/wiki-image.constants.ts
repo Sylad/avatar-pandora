@@ -1,6 +1,9 @@
 /**
- * User-Agent string sent to Wikipedia for both API queries and binary fetches.
- * Wikipedia's User-Agent policy (https://meta.wikimedia.org/wiki/User-Agent_policy)
- * requires a contact identifier so they can reach us if our traffic causes issues.
+ * Re-export of the User-Agent constant from the shared strategy module.
+ *
+ * Kept as a module-level re-export so existing imports
+ * (e.g. `wiki-image.controller.ts`) don't need to know where the
+ * canonical definition lives. Source of truth :
+ * `shared/wiki-image-strategy.ts`.
  */
-export const WIKI_USER_AGENT = 'eywa-codex/1.0 (sylvain.ladoire@gmail.com)';
+export { WIKI_USER_AGENT } from '../_shared/wiki-image-strategy';
