@@ -1,0 +1,542 @@
+---
+import { getCollection } from 'astro:content';
+import CodexLayout from '../layouts/CodexLayout.astro';
+import SectionHero from '../components/SectionHero.astro';
+
+const channels = await getCollection('videosChannels');
+channels.sort((a, b) => (a.data.order ?? 99) - (b.data.order ?? 99));
+
+const videos = await getCollection('videosList');
+videos.sort((a, b) => (a.data.order ?? 99) - (b.data.order ?? 99));
+
+const channelById = new Map(channels.map((c) => [c.id, c]));
+
+const priorityChannels = channels.filter((c) => c.data.isPriority);
+
+// Build-time helper : default thumbnail from videoId.
+// hqdefault is the most reliable (always 480x360); maxresdefault doesn't
+// exist for every video. We fall back via onerror in the <img>.
+const thumbFor = (videoId: string, override?: string) => {
+  if (override) return override;
+  return `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+};
+const maxresFor = (videoId: string) =>
+  `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
+
+const typeLabel: Record<string, string> = {
+  lore: 'Lore',
+  analysis: 'Analyse',
+  vfx: 'VFX',
+  official: 'Officiel',
+  'fan-animation': 'Fan',
+  language: 'Langue',
+  other: 'Autre',
+};
+---
+<CodexLayout title="Vidéos — Eywa" current="videos">
+  <SectionHero
+    roman="IX"
+    label="Vidéos"
+    title="Les voix qui ont fait grandir Pandora hors écran"
+    tagline="Lore, VFX, analyses cinéma, langue na'vi — une sélection de chaînes YouTube qui prolongent les films."
+    cover="Avatar (film)"
+  />
+
+  <!-- Section 1 : Chaînes recommandées (priority) -->
+  <section class="mb-16">
+    <h2 class="vid-section-title">Chaînes recommandées</h2>
+    <p class="vid-section-intro">
+      Quelques voix qui valent qu'on s'y arrête — officielles, encyclopédiques, ou techniquement
+      les meilleures du genre.
+    </p>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      {priorityChannels.map((c) => (
+        <a
+          href={c.data.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="channel-card group"
+        >
+          <span class="channel-card__avatar">{c.data.avatar}</span>
+          <span class="channel-card__body">
+            <span class="channel-card__name">{c.data.name}</span>
+            <span class="channel-card__lang">{c.data.lang}</span>
+            <span class="channel-card__desc">{c.data.description}</span>
+          </span>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <!-- Section 2 : Vidéos en vedette -->
+  <section>
+    <h2 class="vid-section-title">Vidéos en vedette</h2>
+    <p class="vid-section-intro">
+      Sélection — du teaser officiel au cours de linguistique en passant par
+      le breakdown VFX. Le clic ouvre YouTube dans un nouvel onglet.
+    </p>
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+      {videos.map((v) => {
+        const channel = channelById.get(v.data.channelSlug);
+        const watchUrl = `https://www.youtube.com/watch?v=${v.data.videoId}`;
+        const thumb = thumbFor(v.data.videoId, v.data.thumbnail);
+        const maxres = maxresFor(v.data.videoId);
+        return (
+          <a
+            href={watchUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="video-card group"
+          >
+            <div class="video-card__media">
+              <img
+                src={thumb}
+                data-maxres={maxres}
+                alt={v.data.title}
+                loading="lazy"
+                class="video-card__img"
+                onerror="this.style.display='none'"
+              />
+              <span class="video-card__play" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="currentColor" width="40" height="40">
+                  <path d="M8 5v14l11-7z" />
+                </svg>
+              </span>
+              <span class="video-card__type">{typeLabel[v.data.type] ?? v.data.type}</span>
+            </div>
+            <div class="video-card__body">
+              <h3 class="video-card__title">{v.data.title}</h3>
+              <div class="video-card__meta">
+                <span class="video-card__channel">{channel?.data.name ?? v.data.channelSlug}</span>
+                <span class="video-card__sep">·</span>
+                <span class="video-card__lang">{v.data.lang}</span>
+              </div>
+              <p class="video-card__desc">{v.data.description}</p>
+            </div>
+          </a>
+        );
+      })}
+    </div>
+  </section>
+
+  <!-- Section 3 : Toutes les chaînes (rappel complet) -->
+  <section class="mt-16">
+    <h2 class="vid-section-title">Toutes les chaînes</h2>
+    <p class="vid-section-intro">
+      La liste complète des sources mobilisées pour cette page — aller plus loin que la sélection.
+    </p>
+    <ul class="channel-list">
+      {channels.map((c) => (
+        <li>
+          <a href={c.data.url} target="_blank" rel="noopener noreferrer" class="channel-link">
+            <span class="channel-link__avatar">{c.data.avatar}</span>
+            <span class="channel-link__name">{c.data.name}</span>
+            <span class="channel-link__lang">{c.data.lang}</span>
+            <span class="channel-link__desc">{c.data.description}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </section>
+</CodexLayout>
+
+<script is:inline>
+  // Try to upgrade hqdefault to maxresdefault. Many YouTube videos have a
+  // maxres thumbnail; some don't. We probe via Image() — if it loads, swap.
+  // 100% client-side (build stays static).
+  (() => {
+    if (typeof window === 'undefined') return;
+    const upgrade = () => {
+      document.querySelectorAll('img.video-card__img').forEach((el) => {
+        const img = el;
+        const maxres = img.getAttribute('data-maxres');
+        if (!maxres || img.dataset.upgraded === '1') return;
+        img.dataset.upgraded = '1';
+        const probe = new Image();
+        probe.onload = () => {
+          // YouTube returns a 120x90 placeholder when maxres is missing.
+          if (probe.naturalWidth > 200 && probe.naturalHeight > 200) {
+            img.src = maxres;
+          }
+        };
+        probe.src = maxres;
+      });
+    };
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', upgrade);
+    } else {
+      upgrade();
+    }
+    document.addEventListener('astro:page-load', upgrade);
+  })();
+</script>
+
+<style>
+  /* ---------- Section headings ---------- */
+
+  .vid-section-title {
+    font-family: var(--font-display);
+    font-size: 1.75rem;
+    color: var(--color-eywa-text);
+    margin-bottom: 0.5rem;
+    letter-spacing: 0.04em;
+    text-shadow: 0 0 18px rgba(95, 255, 230, 0.20);
+  }
+
+  .vid-section-intro {
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    color: var(--color-eywa-text-muted);
+    margin-bottom: 1.75rem;
+    max-width: 50rem;
+    line-height: 1.6;
+  }
+
+  /* ---------- Channel cards (priority) ---------- */
+
+  .channel-card {
+    position: relative;
+    display: flex;
+    gap: 1rem;
+    padding: 1rem 1.1rem;
+    border-radius: 6px;
+    background: rgba(232, 230, 221, 0.02);
+    border: 1px solid rgba(95, 255, 230, 0.15);
+    box-shadow:
+      0 0 0 1px rgba(95, 255, 230, 0.04) inset,
+      0 0 18px -8px rgba(95, 255, 230, 0.20);
+    transition: border-color 350ms ease, box-shadow 350ms ease, transform 350ms ease;
+    text-decoration: none;
+  }
+
+  .channel-card:hover {
+    border-color: rgba(95, 255, 230, 0.55);
+    box-shadow:
+      0 0 0 1px rgba(95, 255, 230, 0.10) inset,
+      0 0 28px -4px rgba(95, 255, 230, 0.40);
+    transform: translateY(-2px);
+  }
+
+  .channel-card__avatar {
+    flex-shrink: 0;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background:
+      radial-gradient(ellipse at 30% 30%, rgba(95, 255, 230, 0.22), transparent 60%),
+      linear-gradient(135deg, rgba(95, 255, 230, 0.08), rgba(127, 255, 143, 0.08));
+    border: 1px solid rgba(95, 255, 230, 0.30);
+    color: var(--color-eywa-bio-primary);
+    font-family: var(--font-display);
+    font-size: 0.95rem;
+    letter-spacing: 0.05em;
+    text-shadow: 0 0 12px rgba(95, 255, 230, 0.6);
+  }
+
+  .channel-card__body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    min-width: 0;
+    flex: 1;
+  }
+
+  .channel-card__name {
+    font-family: var(--font-display);
+    font-size: 0.95rem;
+    color: var(--color-eywa-text);
+    letter-spacing: 0.03em;
+  }
+
+  .channel-card__lang {
+    align-self: flex-start;
+    font-family: var(--font-display);
+    font-size: 0.65rem;
+    letter-spacing: 0.18em;
+    color: var(--color-eywa-bio-primary);
+    border: 1px solid rgba(95, 255, 230, 0.30);
+    padding: 0.05rem 0.4rem;
+    border-radius: 999px;
+    margin-bottom: 0.2rem;
+  }
+
+  .channel-card__desc {
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    color: var(--color-eywa-text-muted);
+    line-height: 1.5;
+  }
+
+  .channel-card:hover .channel-card__name {
+    color: var(--color-eywa-bio-primary);
+    text-shadow: 0 0 14px rgba(95, 255, 230, 0.45);
+  }
+
+  /* ---------- Video cards ---------- */
+
+  .video-card {
+    position: relative;
+    display: block;
+    border-radius: 6px;
+    overflow: hidden;
+    background: rgba(232, 230, 221, 0.02);
+    border: 1px solid rgba(95, 255, 230, 0.15);
+    box-shadow:
+      0 0 0 1px rgba(95, 255, 230, 0.04) inset,
+      0 0 18px -8px rgba(95, 255, 230, 0.20);
+    transition: border-color 400ms ease, box-shadow 400ms ease, transform 400ms ease;
+  }
+
+  .video-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 6px;
+    pointer-events: none;
+    background: radial-gradient(ellipse 80% 60% at 50% 50%,
+      rgba(95, 255, 230, 0.18),
+      rgba(127, 255, 143, 0.08) 40%,
+      transparent 70%);
+    opacity: 0;
+    transition: opacity 500ms ease;
+    z-index: 1;
+  }
+
+  .video-card:hover {
+    border-color: rgba(95, 255, 230, 0.55);
+    box-shadow:
+      0 0 0 1px rgba(95, 255, 230, 0.10) inset,
+      0 0 32px -4px rgba(95, 255, 230, 0.40),
+      0 0 60px -12px rgba(127, 255, 143, 0.25);
+    transform: translateY(-2px);
+  }
+
+  .video-card:hover::before {
+    opacity: 1;
+  }
+
+  .video-card__media {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    background:
+      radial-gradient(ellipse at 30% 30%, rgba(95, 255, 230, 0.18), transparent 60%),
+      radial-gradient(ellipse at 70% 70%, rgba(127, 255, 143, 0.12), transparent 60%),
+      linear-gradient(135deg, var(--color-eywa-bg), rgba(74, 74, 143, 0.20));
+    overflow: hidden;
+  }
+
+  .video-card__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.82;
+    transition: opacity 500ms ease, transform 700ms ease, filter 600ms ease;
+  }
+
+  .video-card:hover .video-card__img {
+    opacity: 1;
+    transform: scale(1.04);
+    filter: saturate(1.15) brightness(1.06);
+  }
+
+  /* Play button overlay — center, glows on hover. */
+  .video-card__play {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    color: rgba(255, 255, 255, 0.92);
+    pointer-events: none;
+    filter: drop-shadow(0 0 18px rgba(10, 10, 31, 0.85));
+    transition: transform 350ms ease, color 350ms ease, filter 350ms ease;
+  }
+
+  .video-card:hover .video-card__play {
+    color: var(--color-eywa-bio-primary);
+    filter: drop-shadow(0 0 18px rgba(95, 255, 230, 0.65));
+    transform: scale(1.12);
+  }
+
+  .video-card__type {
+    position: absolute;
+    top: 0.6rem;
+    left: 0.6rem;
+    z-index: 2;
+    font-family: var(--font-display);
+    font-size: 0.65rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-eywa-bio-primary);
+    background: rgba(10, 10, 31, 0.65);
+    border: 1px solid rgba(95, 255, 230, 0.30);
+    padding: 0.2rem 0.55rem;
+    border-radius: 999px;
+    backdrop-filter: blur(6px);
+  }
+
+  .video-card__body {
+    position: relative;
+    z-index: 2;
+    padding: 1rem 1.1rem 1.15rem;
+  }
+
+  .video-card__title {
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    color: var(--color-eywa-text);
+    letter-spacing: 0.03em;
+    margin-bottom: 0.35rem;
+    transition: color 350ms ease, text-shadow 350ms ease;
+    line-height: 1.3;
+  }
+
+  .video-card:hover .video-card__title {
+    color: var(--color-eywa-bio-primary);
+    text-shadow: 0 0 14px rgba(95, 255, 230, 0.45);
+  }
+
+  .video-card__meta {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-body);
+    font-size: 0.78rem;
+    color: var(--color-eywa-text-muted);
+    margin-bottom: 0.55rem;
+  }
+
+  .video-card__lang {
+    font-family: var(--font-display);
+    font-size: 0.65rem;
+    letter-spacing: 0.18em;
+    color: var(--color-eywa-bio-primary);
+    border: 1px solid rgba(95, 255, 230, 0.20);
+    padding: 0.05rem 0.4rem;
+    border-radius: 999px;
+  }
+
+  .video-card__sep {
+    color: var(--color-eywa-text-muted);
+    opacity: 0.5;
+  }
+
+  .video-card__channel {
+    color: var(--color-eywa-text);
+    opacity: 0.75;
+  }
+
+  .video-card__desc {
+    font-family: var(--font-body);
+    font-size: 0.82rem;
+    color: var(--color-eywa-text-muted);
+    line-height: 1.55;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* ---------- Channel list (full) ---------- */
+
+  .channel-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .channel-link {
+    display: grid;
+    grid-template-columns: 2.25rem auto auto 1fr;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 0.7rem 0.9rem;
+    border-radius: 4px;
+    border: 1px solid rgba(95, 255, 230, 0.10);
+    background: rgba(232, 230, 221, 0.015);
+    text-decoration: none;
+    transition: border-color 300ms ease, background 300ms ease;
+  }
+
+  .channel-link:hover {
+    border-color: rgba(95, 255, 230, 0.35);
+    background: rgba(95, 255, 230, 0.04);
+  }
+
+  .channel-link__avatar {
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(95, 255, 230, 0.08);
+    border: 1px solid rgba(95, 255, 230, 0.25);
+    color: var(--color-eywa-bio-primary);
+    font-family: var(--font-display);
+    font-size: 0.7rem;
+    letter-spacing: 0.05em;
+  }
+
+  .channel-link__name {
+    font-family: var(--font-display);
+    font-size: 0.9rem;
+    color: var(--color-eywa-text);
+  }
+
+  .channel-link:hover .channel-link__name {
+    color: var(--color-eywa-bio-primary);
+  }
+
+  .channel-link__lang {
+    font-family: var(--font-display);
+    font-size: 0.6rem;
+    letter-spacing: 0.18em;
+    color: var(--color-eywa-bio-primary);
+    border: 1px solid rgba(95, 255, 230, 0.25);
+    padding: 0.05rem 0.4rem;
+    border-radius: 999px;
+  }
+
+  .channel-link__desc {
+    font-family: var(--font-body);
+    font-size: 0.8rem;
+    color: var(--color-eywa-text-muted);
+    line-height: 1.4;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  @media (max-width: 700px) {
+    .channel-link {
+      grid-template-columns: 2.25rem 1fr auto;
+    }
+    .channel-link__desc {
+      grid-column: 1 / -1;
+      white-space: normal;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .video-card,
+    .video-card__img,
+    .video-card__title,
+    .video-card::before,
+    .channel-card {
+      transition: none;
+    }
+    .video-card:hover,
+    .channel-card:hover {
+      transform: none;
+    }
+  }
+</style>
+
