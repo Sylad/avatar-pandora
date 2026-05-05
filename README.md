@@ -82,6 +82,18 @@ Le backend NestJS a des tests vitest (proxy wiki-image strategy + relevance filt
 cd backend && npm test
 ```
 
+→ 15 tests mockés (axios stubbé) — toujours verts, aucune dépendance réseau, sûrs pour CI.
+
+### Smoke tests live (RUN_LIVE_TESTS=1)
+
+4 tests supplémentaires hittent les **vraies APIs** Avatar Fandom + Wikipedia EN/FR pour détecter une rupture upstream (Fandom change le shape de la réponse, Wikipedia bloque le User-Agent, CDN qui réécrit le JSON…). Ces tests sont **skipped par défaut** — ils ne tournent qu'avec :
+
+```bash
+cd backend && RUN_LIVE_TESTS=1 npm test
+```
+
+À lancer **avant chaque release** pour valider que les sources externes répondent toujours. Idéalement, à câbler en CI sur un cron hebdomadaire (pas encore wiré). Pourquoi cette ceinture+bretelles : les 15 tests mockés vérifient la transformation, **pas l'URL réelle ni le contrat upstream** — un jour Fandom rate-limite notre User-Agent, le mock continue de répondre OK, et la nièce voit 70 cards en gradient cyan vide.
+
 Le frontend (Astro components, R3F islands) est testé visuellement — la nature statique du build garantit que `npm run build` valide la cohérence (Content Collections, types, intégrations).
 
 ## Build & déploiement
