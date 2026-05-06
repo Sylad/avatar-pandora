@@ -51,12 +51,25 @@ const imgSrc = cover.startsWith('http')
     height: 100%;
     object-fit: cover;
     filter: saturate(1.05);
+    /*
+      "Living hero" — two decoupled cycles on different durations so the
+      combined motion feels organic, not periodic.
+       - Ken Burns : slow pan + zoom (20s, alternate)
+       - Breath : bioluminescent brightness/saturation breathing (7s, alternate)
+      Slight will-change hint for smoother compositing on low-end GPUs.
+    */
+    transform-origin: 55% 45%;
+    will-change: transform, filter;
+    animation:
+      hero-kenburns 20s ease-in-out infinite alternate,
+      hero-breath 7s ease-in-out infinite alternate;
   }
 
   /*
     Multi-stop veil : bottom-left dark for the title overlay readability,
     overall slight cyan tint for the bioluminescent feel, top-right
-    lighter so the image still breathes.
+    lighter so the image still breathes. Also pulses very slightly to give
+    the impression of light shifting through Pandora's canopy.
   */
   .section-hero__veil {
     position: absolute;
@@ -70,6 +83,42 @@ const imgSrc = cover.startsWith('http')
         rgba(10, 10, 31, 0.85) 0%,
         rgba(10, 10, 31, 0.20) 50%,
         transparent 100%);
+    animation: hero-veil-pulse 11s ease-in-out infinite alternate;
+  }
+
+  @keyframes hero-kenburns {
+    from {
+      transform: scale(1) translate3d(0, 0, 0);
+    }
+    to {
+      transform: scale(1.06) translate3d(-1.2%, -1.5%, 0);
+    }
+  }
+
+  @keyframes hero-breath {
+    from {
+      filter: saturate(1.05) brightness(1);
+    }
+    to {
+      filter: saturate(1.18) brightness(1.08);
+    }
+  }
+
+  @keyframes hero-veil-pulse {
+    from { opacity: 1; }
+    to   { opacity: 0.95; }
+  }
+
+  /* Accessibility — respect prefers-reduced-motion strictly. */
+  @media (prefers-reduced-motion: reduce) {
+    .section-hero__img,
+    .section-hero__veil {
+      animation: none;
+    }
+    .section-hero__img {
+      transform: none;
+      filter: saturate(1.05);
+    }
   }
 
   .section-hero__content {
