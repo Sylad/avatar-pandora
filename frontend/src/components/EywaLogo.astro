@@ -27,6 +27,14 @@ const wrapperClass = glowing ? 'eywa-logo eywa-logo--breathing' : 'eywa-logo';
   class={wrapperClass}
   style={`display:inline-block; line-height:0;`}
 >
+  <!--
+    Inner span carries the second animation (slow pulse glow) so it
+    doesn't fight with the outer wrapper's breath transform. Outer
+    wrapper handles drop-shadow breathing + a subtle ±2px parallax
+    translateY ; inner span overlays a slower tri-color glow that
+    cycles cyan → magenta-tinged → cyan.
+  -->
+  <span class="eywa-logo__inner">
 <svg
   xmlns="http://www.w3.org/2000/svg"
   viewBox="0 0 280 80"
@@ -57,48 +65,126 @@ const wrapperClass = glowing ? 'eywa-logo eywa-logo--breathing' : 'eywa-logo';
   <!-- A (lit) -->
   <text x="193" y="60" font-size="64" font-weight="700" fill={lit}>A</text>
 </svg>
+  </span>
 </span>
 
 <style>
   /*
-    Breathing-glow logo : Pandora bioluminescence is alive, never static.
-    We animate ONLY a drop-shadow filter on a wrapper span, never a
-    transform on the SVG itself — so the V/W clin d'œil (the lit V of
-    "EVA" hidden inside the muted W) stays pixel-perfect readable.
+    Bioluminescent logo : Pandora at night is sometimes pitch-dark, but
+    when something glows, it GLOWS. The animation runs two layers in
+    parallel so the rhythm feels organic — never on a metronome :
 
-    Cycle : 4.2s ease-in-out, infinite. Two breaths chained — a soft
-    cyan exhale (8px → 18px), then a fainter magenta accent at the peak.
-    Contained, low-frequency : the eye reads it as "alive" without
-    pulling focus from the typography.
+      1. .eywa-logo (outer wrapper) — fast "breath" cycle, 4.2s.
+         Drop-shadow scales 12px → 28px cyan, with a bigger spill at
+         the peak (40px cyan + 32px magenta tint). A subtle ±2px
+         translateY rides the same cycle so the logo "floats" rather
+         than just glowing in place.
+
+      2. .eywa-logo__inner (inner span) — slow "pulse glow" cycle,
+         5.8s out of phase. A second drop-shadow layer that cycles
+         cyan → cyan+magenta → cyan, so at certain moments the logo
+         leans warm-pink (Pandora's spore-burst tint), then settles
+         back to deep cyan.
+
+    Crucially, NO transform on the SVG itself — the V/W clin d'œil
+    (the lit V of "EVA" hidden inside the muted W) stays pixel-perfect
+    readable. translateY rides on the wrapper, not on the lettering.
   */
   .eywa-logo {
     display: inline-block;
     line-height: 0;
-    filter: drop-shadow(0 0 8px rgba(95, 255, 230, 0.6));
+    filter: drop-shadow(0 0 12px rgba(95, 255, 230, 0.65));
+    will-change: filter, transform;
   }
 
   .eywa-logo--breathing {
     animation: eywa-logo-breath 4.2s ease-in-out infinite;
   }
 
+  .eywa-logo__inner {
+    display: inline-block;
+    line-height: 0;
+    will-change: filter;
+  }
+
+  .eywa-logo--breathing .eywa-logo__inner {
+    animation: eywa-logo-pulse-glow 5.8s ease-in-out infinite;
+    /* Slight phase offset so peak-of-breath and peak-of-pulse don't
+       land on the same frame — keeps the rhythm feeling alive. */
+    animation-delay: -1.4s;
+  }
+
+  /*
+    Outer breath : drop-shadow swells from 12 → 28px cyan, then peaks
+    with an extra 40px halo + a magenta accent. Translate ±2px on Y
+    gives the "floating" sensation Pandora flora has when nothing
+    touches it. Far stronger than the v1 (was 6 → 14px).
+  */
   @keyframes eywa-logo-breath {
     0%, 100% {
       filter:
-        drop-shadow(0 0 6px rgba(95, 255, 230, 0.45))
-        drop-shadow(0 0 12px rgba(95, 255, 230, 0.18));
+        drop-shadow(0 0 12px rgba(95, 255, 230, 0.55))
+        drop-shadow(0 0 22px rgba(95, 255, 230, 0.22));
+      transform: translateY(0);
     }
     50% {
       filter:
-        drop-shadow(0 0 14px rgba(95, 255, 230, 0.72))
-        drop-shadow(0 0 26px rgba(95, 255, 230, 0.32))
-        drop-shadow(0 0 32px rgba(255, 93, 196, 0.14));
+        drop-shadow(0 0 24px rgba(95, 255, 230, 0.85))
+        drop-shadow(0 0 40px rgba(95, 255, 230, 0.42))
+        drop-shadow(0 0 52px rgba(255, 93, 196, 0.22));
+      transform: translateY(-2px);
     }
   }
 
+  /*
+    Slow pulse glow : a second halo layer that cycles tri-color.
+    At 0%/100% : cool deep cyan (resting bioluminescence).
+    At 33% : cyan brightens.
+    At 66% : the halo leans magenta — like a spore burst caught in
+    the night air.
+    Out of phase with the breath, so the two layers add up
+    irregularly — the logo feels alive, not metronome-driven.
+  */
+  @keyframes eywa-logo-pulse-glow {
+    0%, 100% {
+      filter:
+        drop-shadow(0 0 16px rgba(95, 255, 230, 0.32))
+        drop-shadow(0 0 30px rgba(127, 255, 143, 0.16));
+    }
+    33% {
+      filter:
+        drop-shadow(0 0 22px rgba(95, 255, 230, 0.55))
+        drop-shadow(0 0 36px rgba(95, 255, 230, 0.25));
+    }
+    66% {
+      filter:
+        drop-shadow(0 0 26px rgba(255, 93, 196, 0.42))
+        drop-shadow(0 0 42px rgba(255, 93, 196, 0.20))
+        drop-shadow(0 0 32px rgba(95, 255, 230, 0.18));
+    }
+  }
+
+  /*
+    Hover spark : when you actually mouse over the logo, the halo
+    flashes brighter for ~600ms — a "spore-burst" trigger. Keeps
+    distinct from the ambient cycle so the logo feels reactive, not
+    just decorative.
+  */
+  .eywa-logo--breathing:hover {
+    animation-duration: 2.4s;
+  }
+  .eywa-logo--breathing:hover .eywa-logo__inner {
+    animation-duration: 3.4s;
+  }
+
   @media (prefers-reduced-motion: reduce) {
-    .eywa-logo--breathing {
+    .eywa-logo--breathing,
+    .eywa-logo--breathing .eywa-logo__inner {
       animation: none;
-      filter: drop-shadow(0 0 8px rgba(95, 255, 230, 0.6));
+    }
+    .eywa-logo--breathing {
+      filter: drop-shadow(0 0 10px rgba(95, 255, 230, 0.6));
+      transform: none;
     }
   }
 </style>
