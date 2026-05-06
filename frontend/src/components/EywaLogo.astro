@@ -8,7 +8,10 @@ const { size = 120, glowing = true } = Astro.props;
 // Reference the @theme tokens defined in global.css so palette changes propagate automatically.
 const lit = 'var(--color-eywa-bio-primary)';
 const muted = 'var(--color-eywa-text-ghost)';
-const filter = glowing ? 'drop-shadow(0 0 8px rgba(95, 255, 230, 0.6))' : 'none';
+// Glow is now driven by a CSS animation on the wrapper class — `glowing`
+// just toggles whether the animation is active. Leaves a static fallback
+// drop-shadow when glowing is false to preserve the previous look.
+const wrapperClass = glowing ? 'eywa-logo eywa-logo--breathing' : 'eywa-logo';
 
 // SVG canvas: viewBox 280×80
 // Letters laid out at x positions roughly:
@@ -20,6 +23,10 @@ const filter = glowing ? 'drop-shadow(0 0 8px rgba(95, 255, 230, 0.6))' : 'none'
 //   Left V  (lit)   = the V that joins E and A to spell EVA
 //   Right V (muted) = the ghost half
 ---
+<span
+  class={wrapperClass}
+  style={`display:inline-block; line-height:0;`}
+>
 <svg
   xmlns="http://www.w3.org/2000/svg"
   viewBox="0 0 280 80"
@@ -27,7 +34,7 @@ const filter = glowing ? 'drop-shadow(0 0 8px rgba(95, 255, 230, 0.6))' : 'none'
   height={Math.round(size * 80 / 280)}
   aria-label="Eywa"
   role="img"
-  style={`filter: ${filter}; font-family: var(--font-display);`}
+  style={`font-family: var(--font-display);`}
 >
   <!-- E (lit) -->
   <text x="0" y="60" font-size="64" font-weight="700" fill={lit}>E</text>
@@ -50,3 +57,48 @@ const filter = glowing ? 'drop-shadow(0 0 8px rgba(95, 255, 230, 0.6))' : 'none'
   <!-- A (lit) -->
   <text x="193" y="60" font-size="64" font-weight="700" fill={lit}>A</text>
 </svg>
+</span>
+
+<style>
+  /*
+    Breathing-glow logo : Pandora bioluminescence is alive, never static.
+    We animate ONLY a drop-shadow filter on a wrapper span, never a
+    transform on the SVG itself — so the V/W clin d'œil (the lit V of
+    "EVA" hidden inside the muted W) stays pixel-perfect readable.
+
+    Cycle : 4.2s ease-in-out, infinite. Two breaths chained — a soft
+    cyan exhale (8px → 18px), then a fainter magenta accent at the peak.
+    Contained, low-frequency : the eye reads it as "alive" without
+    pulling focus from the typography.
+  */
+  .eywa-logo {
+    display: inline-block;
+    line-height: 0;
+    filter: drop-shadow(0 0 8px rgba(95, 255, 230, 0.6));
+  }
+
+  .eywa-logo--breathing {
+    animation: eywa-logo-breath 4.2s ease-in-out infinite;
+  }
+
+  @keyframes eywa-logo-breath {
+    0%, 100% {
+      filter:
+        drop-shadow(0 0 6px rgba(95, 255, 230, 0.45))
+        drop-shadow(0 0 12px rgba(95, 255, 230, 0.18));
+    }
+    50% {
+      filter:
+        drop-shadow(0 0 14px rgba(95, 255, 230, 0.72))
+        drop-shadow(0 0 26px rgba(95, 255, 230, 0.32))
+        drop-shadow(0 0 32px rgba(255, 93, 196, 0.14));
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .eywa-logo--breathing {
+      animation: none;
+      filter: drop-shadow(0 0 8px rgba(95, 255, 230, 0.6));
+    }
+  }
+</style>

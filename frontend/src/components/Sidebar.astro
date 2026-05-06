@@ -40,8 +40,16 @@ const sections = [
     ))}
   </nav>
 
-  <div class="mt-auto pt-10 text-xs text-eywa-text-muted/60">
-    <a href="/about/" class="hover:text-eywa-bio-primary transition-colors">À propos</a>
+  <div class="eywa-about mt-auto pt-6">
+    <div class="eywa-about__divider" aria-hidden="true"></div>
+    <a href="/about/" class="eywa-about__link">
+      <svg class="eywa-about__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="9.5" />
+        <path d="M12 11v5" />
+        <circle cx="12" cy="7.75" r="0.9" fill="currentColor" stroke="none" />
+      </svg>
+      <span>À propos</span>
+    </a>
   </div>
 </aside>
 
@@ -73,5 +81,57 @@ const sections = [
     .eywa-nav-link.is-active {
       animation: none;
     }
+  }
+
+  /*
+    "À propos" footer link — explicitly distinct from the 9 codex sections
+    above. A faint cyan divider above it severs it from the nav list, an
+    info icon signals its meta nature, and the typography is bumped to the
+    same .text-sm as the nav links (was .text-xs at 60% opacity, basically
+    invisible on a wide sidebar). On hover the icon glows like every other
+    bioluminescent affordance on the site.
+  */
+  .eywa-about__divider {
+    height: 1px;
+    margin: 0 0.25rem 0.85rem;
+    background: linear-gradient(
+      to right,
+      transparent,
+      rgba(95, 255, 230, 0.30),
+      transparent
+    );
+  }
+
+  .eywa-about__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.45rem 0.75rem;
+    font-family: var(--font-display);
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    color: var(--color-eywa-text-muted);
+    border-radius: 4px;
+    transition: color 300ms ease, background-color 300ms ease, box-shadow 300ms ease;
+  }
+
+  .eywa-about__icon {
+    width: 1rem;
+    height: 1rem;
+    flex-shrink: 0;
+    color: var(--color-eywa-bio-primary);
+    opacity: 0.75;
+    transition: opacity 300ms ease, filter 300ms ease;
+  }
+
+  .eywa-about__link:hover {
+    color: var(--color-eywa-bio-primary);
+    background-color: rgba(95, 255, 230, 0.06);
+    box-shadow: 0 0 18px -6px rgba(95, 255, 230, 0.50);
+  }
+
+  .eywa-about__link:hover .eywa-about__icon {
+    opacity: 1;
+    filter: drop-shadow(0 0 6px rgba(95, 255, 230, 0.65));
   }
 </style>

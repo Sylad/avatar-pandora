@@ -139,7 +139,13 @@ if (cover) {
 
   .entry-card__summary {
     font-family: var(--font-body);
-    font-size: 0.875rem;
+    /*
+      Pinned to 14px (was 0.875rem = ~15.3px after the body bump) — cards
+      are dense, 3-line clamp must hold across 24-entry grids (Bestiaire,
+      Personnages). The contrast lift on --color-eywa-text-muted does the
+      heavy lifting for readability here.
+    */
+    font-size: 0.8rem;
     color: var(--color-eywa-text-muted);
     line-height: 1.6;
     display: -webkit-box;

@@ -9,7 +9,14 @@
   --color-eywa-sacred-green: #7fff8f;   /* sacred green — Eywa divine network of Pandora */
   --color-eywa-fire-ash: #ff8c2a;
   --color-eywa-text: #e8e6dd;
-  --color-eywa-text-muted: #9994a3;
+  /*
+    Bumped from #9994a3 (contrast ~5.8 on #0a0a1f) to #b6b1bf (contrast ~8.6).
+    Cible : copy paragraphique du codex, descriptions sous heroes, captions —
+    tout ce qui est lu en continu doit rester confortable même quand
+    l'atmosphère bioluminescente baisse les noirs derrière. Eva (18 ans, fan
+    visuelle) doit pouvoir parcourir 24 entrées sans se plisser les yeux.
+  */
+  --color-eywa-text-muted: #b6b1bf;
   --color-eywa-text-ghost: rgba(232, 230, 221, 0.35); /* eywa-text @ 35% — for ghost/inactive letters in the logo and similar contexts */
 
   /* Typographies */
@@ -26,6 +33,15 @@
     background: var(--color-eywa-bg);
     color: var(--color-eywa-text);
     font-family: var(--font-body);
+    /*
+      Body taille bumpée de 16px (default) à 17.5px (~+9%). Cormorant
+      Garamond a une x-height basse — à 16px les paragraphes du codex
+      paraissent étriqués sur grand écran. À 17.5px la copy respire
+      sans toucher aux titres (déjà dimensionnés en rem) ni aux cards
+      dense (qui sont pinnées en rem fractionnels).
+    */
+    font-size: 17.5px;
+    line-height: 1.65;
   }
   body {
     min-height: 100vh;

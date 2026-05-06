@@ -44,6 +44,11 @@ export function ParticleField({
       uDensity: { value: initialDensity },
       uColorA: { value: new THREE.Color(initialColorA) },
       uColorB: { value: new THREE.Color(initialColorB) },
+      // Mouse interaction. uMouseStrength stays at 0 until the parent
+      // CinemaCanvas pumps the pointer in. Codex ambient never wires it
+      // up, so the field stays purely atmospheric there.
+      uMouse: { value: new THREE.Vector2(0, 0) },
+      uMouseStrength: { value: 0 },
     }),
     [],
   );
@@ -79,4 +84,6 @@ export type ParticleUniforms = {
   uColorA: { value: THREE.Color };
   uColorB: { value: THREE.Color };
   uDensity: { value: number };
+  uMouse: { value: THREE.Vector2 };
+  uMouseStrength: { value: number };
 };
