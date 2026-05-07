@@ -163,6 +163,31 @@ const SOURCES = [
       </div>
     </section>
 
+    <section class="rounded-md border border-eywa-text-muted/20 bg-eywa-text/[0.02] p-6">
+      <h3 class="font-display text-lg font-semibold text-eywa-bio-primary mb-1">Mes autres sites</h3>
+      <p class="text-sm text-eywa-text-muted mb-5 font-body">
+        Quatre autres apps perso vibe-codées avec Claude Code, toutes en open-source.
+      </p>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+        {[
+          { tag: '🦖', name: 'Evatosorus', desc: 'Codex Mésozoïque (cadeau pour Eva)', url: 'https://evatosorus.pages.dev' },
+          { tag: '⚔️', name: 'Warhammer 40K Codex', desc: 'Fan codex narratif W40K', url: 'https://github.com/Sylad/warhammer40k' },
+          { tag: '⚽', name: 'OL Companion', desc: 'Suivi Olympique Lyonnais', url: 'https://github.com/Sylad/ol-companion' },
+          { tag: '💸', name: 'Finance Tracker', desc: 'Suivi finances perso (PDF Claude)', url: 'https://github.com/Sylad/finance-tracker' },
+        ].map((s) => (
+          <a href={s.url} target="_blank" rel="noopener"
+            class="rounded-md border border-eywa-text-muted/20 p-3 flex items-center gap-3 hover:border-eywa-bio-primary/60 transition-colors group">
+            <span class="text-2xl select-none">{s.tag}</span>
+            <span class="flex-1 min-w-0">
+              <span class="block font-display font-semibold text-eywa-text group-hover:text-eywa-bio-primary transition-colors">{s.name}</span>
+              <span class="block text-xs text-eywa-text-muted font-body">{s.desc}</span>
+            </span>
+            <span class="text-eywa-text-muted/50 group-hover:text-eywa-bio-primary shrink-0">↗</span>
+          </a>
+        ))}
+      </div>
+    </section>
+
     <section class="rounded-md border border-eywa-text-muted/20 bg-eywa-text/[0.02] p-6 text-center">
       <p class="text-eywa-text-muted text-sm leading-relaxed max-w-2xl mx-auto font-body">
         Si tu veux faire pareil : prends un sujet qui t'enflamme, ouvre Claude Code, décris en
