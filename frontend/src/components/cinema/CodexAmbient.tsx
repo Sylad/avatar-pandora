@@ -1,5 +1,5 @@
 import { Canvas, useThree } from '@react-three/fiber';
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import type { MutableRefObject } from 'react';
 import * as THREE from 'three';
 import { ParticleField } from './ParticleField';
@@ -37,7 +37,9 @@ function CodexMouseDriver({
     });
   }, [scene]);
 
-  useMemo(() => {
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    let raf = 0;
     const tick = () => {
       const m = mouseRef.current;
       m.current.x += (m.target.x - m.current.x) * 0.12;
@@ -49,9 +51,10 @@ function CodexMouseDriver({
         (u.uMouse.value as THREE.Vector2).set(m.current.x, m.current.y);
         u.uMouseStrength.value = m.current.strength;
       }
-      requestAnimationFrame(tick);
+      raf = requestAnimationFrame(tick);
     };
-    if (typeof window !== 'undefined') tick();
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
   }, [mouseRef]);
 
   return null;

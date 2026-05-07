@@ -1,5 +1,5 @@
 import { Canvas, useThree } from '@react-three/fiber';
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import type { MutableRefObject } from 'react';
 import * as THREE from 'three';
 import { ParticleField } from './ParticleField';
@@ -51,7 +51,9 @@ function SceneDriver({
     });
   }, [scene]);
 
-  useMemo(() => {
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    let raf = 0;
     const tick = () => {
       const s = sampleScene(progressRef.current, stateRef.current);
       // Damp the mouse attractor toward its target. ~12% per frame is
@@ -71,9 +73,10 @@ function SceneDriver({
         u.uMouseStrength.value = m.current.strength;
       }
       camera.position.z = s.cameraZ;
-      requestAnimationFrame(tick);
+      raf = requestAnimationFrame(tick);
     };
-    if (typeof window !== 'undefined') tick();
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
   }, [camera, progressRef, mouseRef]);
 
   return null;
@@ -162,8 +165,8 @@ export function CinemaCanvas({
     <div className="fixed inset-0 z-0 pointer-events-none">
       <Canvas
         camera={{ position: [0, 0, 8], fov: 60 }}
-        dpr={[1, 2]}
-        gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
+        dpr={[1, 1.5]}
+        gl={{ antialias: true, alpha: true, powerPreference: 'low-power' }}
       >
         <ParticleField count={typeof window !== 'undefined' && window.innerWidth < 768 ? 1000 : 2000} />
         <SceneDriver progressRef={progressRef} mouseRef={mouseRef} />
