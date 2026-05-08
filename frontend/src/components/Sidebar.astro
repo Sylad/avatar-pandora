@@ -18,7 +18,16 @@ const sections = [
   { slug: 'videos', label: 'Vidéos', href: '/videos/' },
 ];
 ---
-<aside class="eywa-sidebar w-80 shrink-0 sticky top-0 h-screen overflow-y-auto px-6 py-10 flex flex-col">
+<!--
+  Mobile (<lg) : drawer slide-in depuis la gauche, contrôlé par data-drawer-open
+  sur <html>. Bouton burger et overlay vivent dans CodexLayout.
+  Desktop (>=lg) : sidebar 320px sticky comme avant.
+-->
+<aside
+  id="eywa-sidebar"
+  class="eywa-sidebar fixed lg:sticky inset-y-0 left-0 z-50 w-80 shrink-0 lg:top-0 h-screen overflow-y-auto px-6 py-10 flex flex-col -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-out"
+  aria-label="Navigation du codex"
+>
   <a href="/" class="block mb-10 group">
     <EywaLogo size={200} />
     <span class="block text-xs uppercase text-eywa-text-muted mt-2">Codex de Pandora</span>
@@ -61,6 +70,21 @@ const sections = [
     box-shadow:
       inset -1px 0 0 rgba(95, 255, 230, 0.10),
       1px 0 30px -8px rgba(95, 255, 230, 0.18);
+    /* Sur mobile (drawer fixed), opaque pour ne pas voir le main à travers. */
+    background: rgba(8, 12, 22, 0.96);
+    backdrop-filter: blur(8px);
+  }
+
+  /* Drawer ouvert sur mobile : translation à 0. Sur lg+, déjà à 0. */
+  :global(html[data-drawer-open="true"]) .eywa-sidebar {
+    transform: translateX(0);
+  }
+
+  @media (min-width: 1024px) {
+    .eywa-sidebar {
+      background: transparent;
+      backdrop-filter: none;
+    }
   }
 
   /* Active nav item slowly breathes — Pandora's pulse. */

@@ -24,9 +24,31 @@ const { title, current } = Astro.props;
   <div class="bio-ambient" aria-hidden="true"></div>
   <div class="cursor-glow" aria-hidden="true"></div>
 
+  <!--
+    Burger mobile : visible <lg, fixe top-right, glow cyan bioluminescent.
+    Toggle data-drawer-open sur <html> que la Sidebar et l'overlay observent.
+  -->
+  <button
+    id="eywa-burger"
+    type="button"
+    class="eywa-burger lg:hidden"
+    aria-label="Ouvrir la navigation"
+    aria-controls="eywa-sidebar"
+    aria-expanded="false"
+  >
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+      <path class="eywa-burger__line eywa-burger__line--top" d="M3 6h18" />
+      <path class="eywa-burger__line eywa-burger__line--mid" d="M3 12h18" />
+      <path class="eywa-burger__line eywa-burger__line--bot" d="M3 18h18" />
+    </svg>
+  </button>
+
+  <!-- Overlay sombre cliquable derrière le drawer mobile -->
+  <div id="eywa-drawer-overlay" class="eywa-drawer-overlay lg:hidden" aria-hidden="true"></div>
+
   <div class="flex relative">
     <Sidebar current={current} />
-    <main class="flex-1 px-10 py-12 max-w-7xl">
+    <main class="flex-1 px-4 sm:px-6 lg:px-10 py-12 max-w-7xl">
       <slot />
     </main>
   </div>
@@ -53,6 +75,75 @@ const { title, current } = Astro.props;
         ticking = true;
       }
     }, { passive: true });
+  })();
+
+  // Mobile drawer : burger toggles data-drawer-open on <html>. Sidebar
+  // (CSS translateX) and overlay (CSS opacity/pointer-events) react.
+  // Close on : Escape, overlay tap, internal nav link tap, viewport >= lg.
+  (() => {
+    if (typeof window === 'undefined') return;
+    const html = document.documentElement;
+    const burger = document.getElementById('eywa-burger');
+    const overlay = document.getElementById('eywa-drawer-overlay');
+    const sidebar = document.getElementById('eywa-sidebar');
+    if (!burger || !overlay || !sidebar) return;
+
+    let savedScrollY = 0;
+    const lockScroll = () => {
+      savedScrollY = window.scrollY;
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${savedScrollY}px`;
+      document.body.style.left = '0';
+      document.body.style.right = '0';
+      document.body.style.width = '100%';
+    };
+    const unlockScroll = () => {
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.left = '';
+      document.body.style.right = '';
+      document.body.style.width = '';
+      window.scrollTo(0, savedScrollY);
+    };
+
+    const setOpen = (open) => {
+      if (open) {
+        html.setAttribute('data-drawer-open', 'true');
+        burger.setAttribute('aria-expanded', 'true');
+        burger.setAttribute('aria-label', 'Fermer la navigation');
+        lockScroll();
+      } else {
+        html.removeAttribute('data-drawer-open');
+        burger.setAttribute('aria-expanded', 'false');
+        burger.setAttribute('aria-label', 'Ouvrir la navigation');
+        unlockScroll();
+      }
+    };
+
+    burger.addEventListener('click', () => {
+      setOpen(html.getAttribute('data-drawer-open') !== 'true');
+    });
+    overlay.addEventListener('click', () => setOpen(false));
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && html.getAttribute('data-drawer-open') === 'true') {
+        setOpen(false);
+      }
+    });
+    // Tap sur n'importe quel lien interne du drawer = fermer
+    sidebar.addEventListener('click', (e) => {
+      const target = e.target instanceof Element ? e.target.closest('a') : null;
+      if (target && sidebar.contains(target)) {
+        setOpen(false);
+      }
+    });
+    // Si l'utilisateur passe en >= lg avec drawer ouvert → fermer + clean lock
+    const mql = window.matchMedia('(min-width: 1024px)');
+    const onChange = () => {
+      if (mql.matches && html.getAttribute('data-drawer-open') === 'true') {
+        setOpen(false);
+      }
+    };
+    mql.addEventListener?.('change', onChange);
   })();
 
   // Wrap every word of the article body into a <span class="bio-word">
@@ -168,10 +259,19 @@ const { title, current } = Astro.props;
   }
 
   /* Ensure the sidebar + main content render above the ambient layer. */
-  :global(aside),
   :global(main) {
     position: relative;
     z-index: 2;
+  }
+  /* Sidebar : sur lg+ position:relative au-dessus de l'ambient.
+     Sur <lg elle est fixed (drawer) et doit passer au-dessus de l'overlay. */
+  :global(aside.eywa-sidebar) {
+    z-index: 50;
+  }
+  @media (min-width: 1024px) {
+    :global(aside.eywa-sidebar) {
+      z-index: 2;
+    }
   }
 
   /*
@@ -192,4 +292,74 @@ const { title, current } = Astro.props;
 
   /* Bio-word hover styles live in src/styles/global.css now — they're
      reused by the landing tagline in addition to the codex prose. */
+
+  /*
+    Burger button — fixed top-right, glow cyan bioluminescent qui matche
+    l'identité Eywa. Visible <lg seulement (Tailwind lg:hidden côté DOM).
+    Z-index plus haut que la sidebar pour rester accessible quand drawer
+    fermé, et au-dessus de l'overlay quand ouvert.
+  */
+  .eywa-burger {
+    position: fixed;
+    top: 0.85rem;
+    right: 0.85rem;
+    z-index: 60;
+    width: 2.75rem;
+    height: 2.75rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border-radius: 8px;
+    border: 1px solid rgba(95, 255, 230, 0.35);
+    background: rgba(8, 12, 22, 0.78);
+    color: var(--color-eywa-bio-primary, #5fffe6);
+    cursor: pointer;
+    backdrop-filter: blur(6px);
+    box-shadow:
+      0 0 18px -6px rgba(95, 255, 230, 0.55),
+      inset 0 0 0 1px rgba(95, 255, 230, 0.12);
+    transition: box-shadow 200ms ease, transform 150ms ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .eywa-burger:active {
+    transform: scale(0.96);
+  }
+  .eywa-burger svg {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+  .eywa-burger__line {
+    transition: transform 250ms ease, opacity 200ms ease;
+    transform-origin: center;
+  }
+  /* Burger → croix quand drawer ouvert */
+  :global(html[data-drawer-open="true"]) .eywa-burger__line--top {
+    transform: translateY(6px) rotate(45deg);
+  }
+  :global(html[data-drawer-open="true"]) .eywa-burger__line--mid {
+    opacity: 0;
+  }
+  :global(html[data-drawer-open="true"]) .eywa-burger__line--bot {
+    transform: translateY(-6px) rotate(-45deg);
+  }
+
+  /*
+    Overlay — sombre, derrière le drawer mais devant le contenu. Animation
+    opacity quand data-drawer-open passe à true.
+  */
+  .eywa-drawer-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 40;
+    background: rgba(2, 6, 14, 0.65);
+    backdrop-filter: blur(2px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 250ms ease;
+  }
+  :global(html[data-drawer-open="true"]) .eywa-drawer-overlay {
+    opacity: 1;
+    pointer-events: auto;
+  }
 </style>
