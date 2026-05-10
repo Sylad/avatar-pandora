@@ -1,0 +1,192 @@
+---
+/*
+  Lightbox plein écran — vanilla, ~80 lignes JS, zero dep.
+
+  Usage : tout `<img>` à l'intérieur d'un wrapper `[data-lightbox]` (ou portant
+  directement l'attribut `data-lightbox`) déclenche l'overlay au clic.
+  L'overlay se ferme via Esc, clic en dehors de l'image, ou bouton ✕.
+
+  À inclure une fois dans BaseLayout.astro pour couvrir toutes les pages.
+*/
+---
+
+<dialog id="eywa-lightbox" class="eywa-lightbox" aria-label="Image en plein écran">
+  <button type="button" class="eywa-lightbox__close" aria-label="Fermer">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+      <path d="M6 6l12 12M18 6L6 18" />
+    </svg>
+  </button>
+  <figure class="eywa-lightbox__figure">
+    <img class="eywa-lightbox__img" alt="" />
+    <figcaption class="eywa-lightbox__caption"></figcaption>
+  </figure>
+</dialog>
+
+<script is:inline>
+  (() => {
+    if (typeof window === 'undefined') return;
+    const dialog = document.getElementById('eywa-lightbox');
+    if (!dialog) return;
+    const img = dialog.querySelector('.eywa-lightbox__img');
+    const cap = dialog.querySelector('.eywa-lightbox__caption');
+    const closeBtn = dialog.querySelector('.eywa-lightbox__close');
+    if (!img || !cap || !closeBtn) return;
+
+    // Heuristique : on capture les <img> dans tout wrapper data-lightbox,
+    // OU les <img data-lightbox>, OU les <a data-lightbox> (qui pointent vers
+    // une image full-res). On exclut <img> dans la sidebar/burger/logo.
+    const matchTarget = (el) => {
+      if (!(el instanceof Element)) return null;
+      // Ignore burger/logo SVG icons
+      if (el.closest('#eywa-burger, .eywa-burger')) return null;
+      if (el.closest('aside.eywa-sidebar, #eywa-sidebar')) return null;
+      // Direct match
+      if (el.tagName === 'IMG' && el.closest('[data-lightbox]')) return el;
+      if (el.tagName === 'IMG' && el.hasAttribute('data-lightbox')) return el;
+      return null;
+    };
+
+    const open = (src, alt) => {
+      img.setAttribute('src', src);
+      img.setAttribute('alt', alt || '');
+      cap.textContent = alt || '';
+      cap.style.display = alt ? '' : 'none';
+      // Use native <dialog> when possible, fallback to manual class
+      if (typeof dialog.showModal === 'function' && !dialog.open) {
+        try { dialog.showModal(); } catch (_) { dialog.setAttribute('open', ''); }
+      } else {
+        dialog.setAttribute('open', '');
+      }
+      document.documentElement.classList.add('eywa-lightbox-open');
+    };
+    const close = () => {
+      if (typeof dialog.close === 'function' && dialog.open) {
+        try { dialog.close(); } catch (_) { dialog.removeAttribute('open'); }
+      } else {
+        dialog.removeAttribute('open');
+      }
+      img.removeAttribute('src');
+      document.documentElement.classList.remove('eywa-lightbox-open');
+    };
+
+    document.addEventListener('click', (e) => {
+      const target = matchTarget(e.target);
+      if (!target) return;
+      const src = target.currentSrc || target.src;
+      if (!src) return;
+      e.preventDefault();
+      open(src, target.alt || '');
+    });
+    closeBtn.addEventListener('click', (e) => { e.stopPropagation(); close(); });
+    dialog.addEventListener('click', (e) => {
+      // Backdrop click (target === dialog itself, not figure) closes.
+      if (e.target === dialog) close();
+    });
+    dialog.addEventListener('cancel', (e) => { e.preventDefault(); close(); });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && dialog.hasAttribute('open')) close();
+    });
+  })();
+</script>
+
+<style is:global>
+  /* Lock scroll on body when lightbox is open. */
+  html.eywa-lightbox-open,
+  html.eywa-lightbox-open body {
+    overflow: hidden;
+  }
+
+  .eywa-lightbox {
+    /* Reset native <dialog> defaults. */
+    border: 0;
+    padding: 0;
+    margin: 0;
+    background: transparent;
+    color: inherit;
+    max-width: 100vw;
+    max-height: 100vh;
+    width: 100vw;
+    height: 100vh;
+  }
+  .eywa-lightbox::backdrop {
+    background: rgba(2, 6, 14, 0.92);
+    backdrop-filter: blur(4px);
+  }
+  /* When <dialog> isn't supported and we use the [open] attribute fallback. */
+  .eywa-lightbox:not([open]) {
+    display: none;
+  }
+  .eywa-lightbox[open] {
+    display: flex;
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+    background: rgba(2, 6, 14, 0.92);
+  }
+  .eywa-lightbox__figure {
+    margin: 0;
+    max-width: min(96vw, 1600px);
+    max-height: 92vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.6rem;
+    /* Faint cyan border to keep the Eywa identity. */
+    box-shadow: 0 0 60px -12px rgba(95, 255, 230, 0.45);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .eywa-lightbox__img {
+    display: block;
+    max-width: 100%;
+    max-height: calc(92vh - 2.5rem);
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    background: #0a0a1f;
+  }
+  .eywa-lightbox__caption {
+    font-family: var(--font-body, sans-serif);
+    font-size: 0.85rem;
+    color: rgba(232, 230, 221, 0.78);
+    text-align: center;
+    padding: 0.5rem 1rem;
+    margin: 0;
+    background: rgba(8, 12, 22, 0.85);
+    width: 100%;
+  }
+  .eywa-lightbox__close {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    z-index: 210;
+    width: 2.75rem;
+    height: 2.75rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border-radius: 999px;
+    border: 1px solid rgba(95, 255, 230, 0.45);
+    background: rgba(8, 12, 22, 0.85);
+    color: #5fffe6;
+    cursor: pointer;
+    backdrop-filter: blur(6px);
+    box-shadow: 0 0 18px -6px rgba(95, 255, 230, 0.55);
+    transition: transform 150ms ease, box-shadow 200ms ease;
+  }
+  .eywa-lightbox__close:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 28px -4px rgba(95, 255, 230, 0.75);
+  }
+  .eywa-lightbox__close:active { transform: scale(0.95); }
+  .eywa-lightbox__close svg { width: 1.5rem; height: 1.5rem; }
+
+  /* Make <img> inside [data-lightbox] feel clickable. */
+  [data-lightbox] img,
+  img[data-lightbox] {
+    cursor: zoom-in;
+  }
+</style>
