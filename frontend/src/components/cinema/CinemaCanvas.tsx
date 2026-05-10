@@ -1,7 +1,7 @@
 import { Canvas, useThree } from '@react-three/fiber';
 import { useEffect, useRef } from 'react';
 import type { MutableRefObject } from 'react';
-import * as THREE from 'three';
+import { Color, Points, ShaderMaterial, Vector2 } from 'three';
 import { ParticleField } from './ParticleField';
 import { SceneState, sampleScene } from './scene-timeline';
 import { useReducedMotion } from './useReducedMotion';
@@ -36,16 +36,16 @@ function SceneDriver({
 }) {
   const { camera, scene } = useThree();
   const stateRef = useRef<SceneState>({
-    colorA: new THREE.Color('#000000'),
-    colorB: new THREE.Color('#000000'),
+    colorA: new Color('#000000'),
+    colorB: new Color('#000000'),
     density: 0,
     cameraZ: 8,
   });
 
-  const matRef = useRef<THREE.ShaderMaterial | null>(null);
+  const matRef = useRef<ShaderMaterial | null>(null);
   useEffect(() => {
     scene.traverse((obj) => {
-      if (obj instanceof THREE.Points && obj.material instanceof THREE.ShaderMaterial) {
+      if (obj instanceof Points && obj.material instanceof ShaderMaterial) {
         matRef.current = obj.material;
       }
     });
@@ -66,10 +66,10 @@ function SceneDriver({
 
       if (matRef.current) {
         const u = matRef.current.uniforms;
-        (u.uColorA.value as THREE.Color).copy(s.colorA);
-        (u.uColorB.value as THREE.Color).copy(s.colorB);
+        (u.uColorA.value as Color).copy(s.colorA);
+        (u.uColorB.value as Color).copy(s.colorB);
         u.uDensity.value = s.density;
-        (u.uMouse.value as THREE.Vector2).set(m.current.x, m.current.y);
+        (u.uMouse.value as Vector2).set(m.current.x, m.current.y);
         u.uMouseStrength.value = m.current.strength;
       }
       camera.position.z = s.cameraZ;

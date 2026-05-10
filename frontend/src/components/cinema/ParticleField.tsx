@@ -1,6 +1,6 @@
 import { useFrame } from '@react-three/fiber';
 import { useMemo, useRef } from 'react';
-import * as THREE from 'three';
+import { AdditiveBlending, Color, Points, ShaderMaterial, Vector2 } from 'three';
 import { particlesVertex, particlesFragment } from './particles.shader';
 
 interface Props {
@@ -22,8 +22,8 @@ export function ParticleField({
   initialDensity = 1.0,
   size = 7.0,
 }: Props) {
-  const ref = useRef<THREE.Points>(null!);
-  const matRef = useRef<THREE.ShaderMaterial>(null!);
+  const ref = useRef<Points>(null!);
+  const matRef = useRef<ShaderMaterial>(null!);
 
   const { positions, seeds } = useMemo(() => {
     const positions = new Float32Array(count * 3);
@@ -42,12 +42,12 @@ export function ParticleField({
       uTime: { value: 0 },
       uSize: { value: size },
       uDensity: { value: initialDensity },
-      uColorA: { value: new THREE.Color(initialColorA) },
-      uColorB: { value: new THREE.Color(initialColorB) },
+      uColorA: { value: new Color(initialColorA) },
+      uColorB: { value: new Color(initialColorB) },
       // Mouse interaction. uMouseStrength stays at 0 until the parent
       // CinemaCanvas pumps the pointer in. Codex ambient never wires it
       // up, so the field stays purely atmospheric there.
-      uMouse: { value: new THREE.Vector2(0, 0) },
+      uMouse: { value: new Vector2(0, 0) },
       uMouseStrength: { value: 0 },
     }),
     [],
@@ -73,7 +73,7 @@ export function ParticleField({
         uniforms={uniforms}
         transparent
         depthWrite={false}
-        blending={THREE.AdditiveBlending}
+        blending={AdditiveBlending}
       />
     </points>
   );
@@ -81,9 +81,9 @@ export function ParticleField({
 
 // Ref-passing helper so the parent canvas wrapper can mutate uniforms from scroll
 export type ParticleUniforms = {
-  uColorA: { value: THREE.Color };
-  uColorB: { value: THREE.Color };
+  uColorA: { value: Color };
+  uColorB: { value: Color };
   uDensity: { value: number };
-  uMouse: { value: THREE.Vector2 };
+  uMouse: { value: Vector2 };
   uMouseStrength: { value: number };
 };

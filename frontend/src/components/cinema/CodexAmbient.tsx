@@ -1,7 +1,7 @@
 import { Canvas, useThree } from '@react-three/fiber';
 import { useEffect, useRef } from 'react';
 import type { MutableRefObject } from 'react';
-import * as THREE from 'three';
+import { Points, ShaderMaterial, Vector2 } from 'three';
 import { ParticleField } from './ParticleField';
 import { useReducedMotion } from './useReducedMotion';
 
@@ -24,13 +24,13 @@ function CodexMouseDriver({
   mouseRef: MutableRefObject<MouseAttractor>;
 }) {
   const { scene } = useThree();
-  const matRef = useRef<THREE.ShaderMaterial | null>(null);
+  const matRef = useRef<ShaderMaterial | null>(null);
 
   useEffect(() => {
     scene.traverse((obj) => {
       if (
-        obj instanceof THREE.Points &&
-        obj.material instanceof THREE.ShaderMaterial
+        obj instanceof Points &&
+        obj.material instanceof ShaderMaterial
       ) {
         matRef.current = obj.material;
       }
@@ -48,7 +48,7 @@ function CodexMouseDriver({
 
       if (matRef.current) {
         const u = matRef.current.uniforms;
-        (u.uMouse.value as THREE.Vector2).set(m.current.x, m.current.y);
+        (u.uMouse.value as Vector2).set(m.current.x, m.current.y);
         u.uMouseStrength.value = m.current.strength;
       }
       raf = requestAnimationFrame(tick);

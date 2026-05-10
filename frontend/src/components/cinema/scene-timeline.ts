@@ -1,4 +1,4 @@
-import * as THREE from 'three';
+import { Color } from 'three';
 
 export interface SceneZone {
   /** label for debugging only */
@@ -26,12 +26,12 @@ export const SCENE_ZONES: SceneZone[] = [
   { label: 'fade-out',     at: 1.00, colorA: '#5fffe6', colorB: '#ff5dc4', density: 0.3,  cameraZ: -3 },
 ];
 
-const tmpA = new THREE.Color();
-const tmpB = new THREE.Color();
+const tmpA = new Color();
+const tmpB = new Color();
 
 export interface SceneState {
-  colorA: THREE.Color;
-  colorB: THREE.Color;
+  colorA: Color;
+  colorB: Color;
   density: number;
   cameraZ: number;
 }
