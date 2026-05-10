@@ -84,6 +84,76 @@ if (cover) {
     opacity: 1;
   }
 
+  /*
+    Tap → bloom : on tactile devices (no hover), JS intercepts the click,
+    adds .is-blooming for 1.5s with a stronger glow + scale, then runs
+    the navigation. Mirrors the "Pandora floor lights up under footstep"
+    metaphor for fingertip taps.
+  */
+  .entry-card.is-blooming {
+    border-color: rgba(95, 255, 230, 0.75);
+    box-shadow:
+      0 0 0 1px rgba(95, 255, 230, 0.20) inset,
+      0 0 48px -2px rgba(95, 255, 230, 0.65),
+      0 0 90px -10px rgba(127, 255, 143, 0.45);
+    animation: entry-card-bloom 1500ms ease-out;
+  }
+  .entry-card.is-blooming::before {
+    opacity: 1;
+    background: radial-gradient(ellipse 90% 70% at 50% 50%,
+      rgba(95, 255, 230, 0.42),
+      rgba(127, 255, 143, 0.20) 40%,
+      transparent 75%);
+  }
+  .entry-card.is-blooming .entry-card__img {
+    opacity: 1;
+    transform: scale(1.08);
+    filter: saturate(1.20) brightness(1.12);
+  }
+  .entry-card.is-blooming .entry-card__title {
+    color: var(--color-eywa-bio-primary);
+    text-shadow: 0 0 18px rgba(95, 255, 230, 0.65);
+  }
+
+  @keyframes entry-card-bloom {
+    0% {
+      transform: translateY(0) scale(1);
+    }
+    25% {
+      transform: translateY(-3px) scale(1.015);
+    }
+    100% {
+      transform: translateY(-2px) scale(1.01);
+    }
+  }
+
+  /*
+    Devices without hover (touch) never see the .entry-card:hover styles
+    triggered as a "stuck hover" after tap. We restore the rest state
+    explicitly. The .is-blooming animation takes over on tap.
+  */
+  @media (hover: none) {
+    .entry-card:hover {
+      border-color: rgba(95, 255, 230, 0.15);
+      box-shadow:
+        0 0 0 1px rgba(95, 255, 230, 0.04) inset,
+        0 0 18px -8px rgba(95, 255, 230, 0.20);
+      transform: none;
+    }
+    .entry-card:hover::before {
+      opacity: 0;
+    }
+    .entry-card:hover .entry-card__img {
+      opacity: 0.78;
+      transform: none;
+      filter: none;
+    }
+    .entry-card:hover .entry-card__title {
+      color: var(--color-eywa-text);
+      text-shadow: none;
+    }
+  }
+
   /* Media area — taller 4:3 for more dominant Pandora imagery */
   .entry-card__media {
     position: relative;
@@ -164,5 +234,55 @@ if (cover) {
     .entry-card:hover {
       transform: none;
     }
+    .entry-card.is-blooming {
+      animation: none;
+    }
   }
 </style>
+
+<script is:inline data-entry-card-tap>
+  /*
+    Tap-friendly bloom on .entry-card. On devices without hover
+    (mobile/tablet — `(hover: none)`), we intercept the click, paint
+    .is-blooming for 1.5s, then run the navigation. Honors:
+      - prefers-reduced-motion → skip the bloom, navigate immediately
+      - middle/cmd/ctrl/shift click → don't intercept (let new tab work)
+      - already-blooming card → don't re-trigger
+  */
+  (() => {
+    if (typeof window === 'undefined') return;
+    if (window.__eywaEntryCardTapInit) return;
+    window.__eywaEntryCardTapInit = true;
+
+    const wantsBloom = () => window.matchMedia('(hover: none)').matches;
+    const reducedMotion = () =>
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    document.addEventListener(
+      'click',
+      (e) => {
+        const card =
+          e.target instanceof Element ? e.target.closest('a.entry-card') : null;
+        if (!card) return;
+        if (!wantsBloom()) return;
+        if (reducedMotion()) return;
+        // Modifier keys → let the browser handle (new tab / new window)
+        const me = e;
+        if (me.metaKey || me.ctrlKey || me.shiftKey || me.altKey) return;
+        if (me.button !== undefined && me.button !== 0) return;
+        if (card.classList.contains('is-blooming')) return;
+
+        const href = card.getAttribute('href');
+        if (!href) return;
+
+        e.preventDefault();
+        card.classList.add('is-blooming');
+        window.setTimeout(() => {
+          window.location.assign(href);
+        }, 1500);
+      },
+      // Capture phase so we run before any inner element steals the click.
+      true
+    );
+  })();
+</script>

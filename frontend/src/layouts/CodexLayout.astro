@@ -258,6 +258,18 @@ const { title, current } = Astro.props;
     }
   }
 
+  /*
+    Devices without hover (mobile/tablet) never see the cursor — kill
+    the static cyan halo at (50%,50%) it would otherwise leave behind.
+    The bio-word random pulse below replaces it as the "Pandora is
+    alive" signal on tactile.
+  */
+  @media (hover: none) {
+    .cursor-glow {
+      display: none;
+    }
+  }
+
   /* Ensure the sidebar + main content render above the ambient layer. */
   :global(main) {
     position: relative;

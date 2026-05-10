@@ -69,8 +69,44 @@
     0 1px 2px rgba(10, 10, 31, 0.85);
 }
 
+/*
+  Tap-friendly bioluminescence — devices without hover (mobile/tablet)
+  never see the cursor halo, the .bio-word:hover tint, or the entry-card
+  hover bloom. We compensate with an IntersectionObserver-driven random
+  pulse on .bio-word and a tap → .is-blooming → navigate flow on cards.
+
+  .is-pulsing is added by JS to 2-3 visible bio-words at a time on a
+  ~3-5s cycle. The animation fades the cyan glow in/out so a few words
+  on screen always feel like they're breathing.
+*/
+.bio-word.is-pulsing {
+  animation: bio-word-pulse 3.4s ease-in-out;
+  animation-fill-mode: both;
+}
+
+@keyframes bio-word-pulse {
+  0% {
+    color: inherit;
+    text-shadow: inherit;
+  }
+  35%, 65% {
+    color: var(--color-eywa-bio-primary);
+    text-shadow:
+      0 0 8px rgba(95, 255, 230, 0.7),
+      0 0 18px rgba(95, 255, 230, 0.45),
+      0 1px 2px rgba(10, 10, 31, 0.85);
+  }
+  100% {
+    color: inherit;
+    text-shadow: inherit;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .bio-word {
     transition: none;
+  }
+  .bio-word.is-pulsing {
+    animation: none;
   }
 }

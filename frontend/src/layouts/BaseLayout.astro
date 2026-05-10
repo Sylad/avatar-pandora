@@ -23,5 +23,110 @@ const { title = 'Eywa', description = 'Codex de Pandora' } = Astro.props;
     <slot />
     <Lightbox />
     <AmbientAudio />
+    <script is:inline>
+      // Tap-friendly bioluminescence — global. On `(hover: none)` (touch),
+      // pick 2-3 visible .bio-word at a time and pulse them on a ~4s cycle.
+      // Works on landing tagline AND codex prose. IntersectionObserver tracks
+      // visibility so we only pulse on-screen words. MutationObserver picks
+      // up .bio-word spans created lazily by the per-page splitter scripts.
+      (() => {
+        if (typeof window === 'undefined') return;
+        if (window.__eywaBioPulseInit) return;
+        window.__eywaBioPulseInit = true;
+
+        const hoverless = window.matchMedia('(hover: none)');
+        const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+        if (reduced.matches) return;
+
+        const PULSE_MS = 3400; // matches @keyframes bio-word-pulse duration
+        const CYCLE_MS = 4200; // gap between cycles
+
+        const visible = new Set();
+        let intervalId = null;
+        let observer = null;
+        let mo = null;
+
+        const pickAndPulse = () => {
+          if (!visible.size) return;
+          const arr = Array.from(visible).filter(
+            (el) => el.isConnected && !el.classList.contains('is-pulsing')
+          );
+          if (!arr.length) return;
+          const count = 2 + Math.floor(Math.random() * 2); // 2 or 3
+          const picks = [];
+          for (let i = 0; i < count && arr.length; i++) {
+            const idx = Math.floor(Math.random() * arr.length);
+            picks.push(arr.splice(idx, 1)[0]);
+          }
+          picks.forEach((el) => {
+            const delay = Math.floor(Math.random() * 600);
+            window.setTimeout(() => {
+              if (!el.isConnected) return;
+              el.classList.add('is-pulsing');
+              window.setTimeout(
+                () => el.classList.remove('is-pulsing'),
+                PULSE_MS
+              );
+            }, delay);
+          });
+        };
+
+        const observeAll = () => {
+          if (!observer) return;
+          document.querySelectorAll('.bio-word').forEach((el) => {
+            observer.observe(el);
+          });
+        };
+
+        const start = () => {
+          if (intervalId !== null) return;
+          observer = new IntersectionObserver(
+            (entries) => {
+              for (const entry of entries) {
+                if (entry.isIntersecting) visible.add(entry.target);
+                else visible.delete(entry.target);
+              }
+            },
+            { rootMargin: '0px', threshold: 0.5 }
+          );
+          observeAll();
+          mo = new MutationObserver(() => observeAll());
+          mo.observe(document.body, { childList: true, subtree: true });
+
+          intervalId = window.setInterval(pickAndPulse, CYCLE_MS);
+          window.setTimeout(pickAndPulse, 800);
+        };
+
+        const stop = () => {
+          if (intervalId !== null) {
+            window.clearInterval(intervalId);
+            intervalId = null;
+          }
+          if (observer) {
+            observer.disconnect();
+            observer = null;
+          }
+          if (mo) {
+            mo.disconnect();
+            mo = null;
+          }
+          visible.clear();
+          document
+            .querySelectorAll('.bio-word.is-pulsing')
+            .forEach((el) => el.classList.remove('is-pulsing'));
+        };
+
+        const sync = () => {
+          if (hoverless.matches) start();
+          else stop();
+        };
+        sync();
+        hoverless.addEventListener?.('change', sync);
+        document.addEventListener('astro:page-load', () => {
+          stop();
+          sync();
+        });
+      })();
+    </script>
   </body>
 </html>
