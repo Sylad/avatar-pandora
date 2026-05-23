@@ -8,7 +8,7 @@
 |---|---|
 | **Sylvain** (humain) | Direction artistique, choix du sujet (cadeau pour ma nièce Eva), curation des sources Pandora, validation visuelle, écriture de la dédicace |
 | **[Claude Code](https://claude.com/claude-code)** (Anthropic) | Implémentation Astro + R3F + GSAP, rédaction des fiches du codex en français, shaders WebGL, composants bioluminescents |
-| **[ChatGPT](https://chat.openai.com)** (OpenAI) | Mockups UX initiaux, propositions de palette bioluminescente, pré-visualisation du logo Eywa |
+| **Codex** (OpenAI) | Relecture technique, corrections ciblées, review design, itérations d'interface et vérification build |
 
 ## Le projet en deux phrases
 
@@ -27,7 +27,7 @@ Le clin d'œil discret : le `V` caché du `W` du logo **Eywa** recompose le pré
 | Backend NestJS (proxy wiki-image) | Claude Code | Stratégie 4 niveaux : Avatar Fandom direct → Fandom search → Wikipedia EN → Wikipedia FR. Tests vitest 8/8 |
 | Cloudflare Pages Function | Claude Code | Port du proxy NestJS en Worker serverless (TypeScript natif Cloudflare) pour le déploiement public |
 | Contenu codex (~70 entrées MD) | Humain + Claude Code | Humain choisit les sujets et curate les sources ; Claude rédige les fiches en français à partir de Pandorapedia + Avatar Fandom + Frommer |
-| Mockups UX premières versions | ChatGPT | Hero landing, palette bioluminescente, ambiance Pandora |
+| Relecture design et corrections ciblées | Humain + Codex | Vérification navigateur, build Astro, correction d'hydratation WebGL, pistes d'amélioration de l'ambiance |
 | Validation visuelle | Humain | « la sidebar respire trop fort », « les particules sont trop rares dans la scène volcan », « le hero du Bestiaire écrase le contenu » |
 
 ## Claude à runtime — où l'API Anthropic est appelée
@@ -85,19 +85,19 @@ Trois objectifs imbriqués :
 
 1. **Faire un beau cadeau à Eva** — usage premier, le seul qui compte pour moi vraiment
 2. **Apprendre Astro + R3F + GSAP** — ce sont 3 technos que je n'avais jamais touchées avant ce projet ; le site est mon terrain d'exploration WebGL
-3. **Démontrer ce que la collab humain + Claude Code permet de bâtir en quelques semaines** — usage public secondaire, raison pour laquelle ce repo est public
+3. **Démontrer ce que la collab humain + assistants de code permet de bâtir en quelques semaines** — usage public secondaire, raison pour laquelle ce repo est public
 
-Cacher la part de Claude irait contre le 3e objectif. Je préfère afficher clairement où l'IA a contribué pour que les visiteurs puissent évaluer eux-mêmes : « est-ce que je peux apprendre une nouvelle stack et bâtir un truc visuellement riche en collaborant avec Claude Code, et combien de temps ça me prendrait ? »
+Cacher la part des outils irait contre le 3e objectif. Je préfère afficher clairement où l'IA a contribué pour que les visiteurs puissent évaluer eux-mêmes : « est-ce que je peux apprendre une nouvelle stack et bâtir un truc visuellement riche en collaborant avec des assistants de code, et combien de temps ça me prendrait ? »
 
 Réponse : oui, et probablement moins que tu ne crois. Le résultat dépendra de :
 - **La précision avec laquelle tu décris ce que tu veux** (« landing à viewport unique » suffit ; « beau site fluide » ne suffit pas)
 - **Ta capacité à reconnaître ce qui ne va pas** (Eva a des yeux affûtés, c'est mon premier test visuel)
 - **Le sujet que tu choisis** (un sujet qui t'enflamme te donne l'énergie d'itérer 10 fois sur le même hero)
 
-Claude écrit le code, choisit la formulation lyrique des fiches, propose des palettes ; toi, tu décides ce qui mérite d'exister sur Pandora.
+Claude écrit le code, choisit la formulation lyrique des fiches, propose des palettes ; Codex relit, corrige et aide à structurer les prochaines itérations ; toi, tu décides ce qui mérite d'exister sur Pandora.
 
 ## Et si tu veux faire pareil
 
-Prends un sujet qui t'enflamme, ouvre [Claude Code](https://claude.com/claude-code), décris en langage naturel ce que tu rêves de voir exister, puis itère. Tu seras surpris de ce qu'on peut bâtir en quelques sessions.
+Prends un sujet qui t'enflamme, ouvre un assistant de code, décris en langage naturel ce que tu rêves de voir exister, puis itère. Tu seras surpris de ce qu'on peut bâtir en quelques sessions.
 
 *« Je te vois, Eva. » — Pandora est ton terrain de jeu désormais.*

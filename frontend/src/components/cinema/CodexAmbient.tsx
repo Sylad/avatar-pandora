@@ -73,7 +73,19 @@ function CodexMouseDriver({
  * Mounted via client:only="react" in CodexLayout — must not SSR (R3F
  * needs the DOM).
  */
-export function CodexAmbient() {
+interface Props {
+  colorA?: string;
+  colorB?: string;
+  density?: number;
+  size?: number;
+}
+
+export function CodexAmbient({
+  colorA = '#5fffe6',
+  colorB = '#7fff8f',
+  density = 0.36,
+  size = 5.4,
+}: Props = {}) {
   const reduced = useReducedMotion();
   const mouseRef = useRef<MouseAttractor>({
     target: { x: 0, y: 0, strength: 0 },
@@ -120,12 +132,12 @@ export function CodexAmbient() {
         }}
       >
         <ParticleField
-          count={isMobile ? 700 : 1400}
+          count={isMobile ? 520 : 1050}
           spread={32}
-          initialColorA="#5fffe6"
-          initialColorB="#7fff8f"
-          initialDensity={0.45}
-          size={6.0}
+          initialColorA={colorA}
+          initialColorB={colorB}
+          initialDensity={density}
+          size={size}
         />
         <CodexMouseDriver mouseRef={mouseRef} />
       </Canvas>

@@ -3,7 +3,8 @@ import { useEffect, useRef } from 'react';
 import type { MutableRefObject } from 'react';
 import { Color, Points, ShaderMaterial, Vector2 } from 'three';
 import { ParticleField } from './ParticleField';
-import { SceneState, sampleScene } from './scene-timeline';
+import { sampleScene } from './scene-timeline';
+import type { SceneState } from './scene-timeline';
 import { useReducedMotion } from './useReducedMotion';
 import { CYCLE_MS } from './config';
 

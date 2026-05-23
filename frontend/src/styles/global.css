@@ -61,6 +61,10 @@
 .bio-word {
   transition: color 250ms ease, text-shadow 250ms ease;
 }
+.bio-term {
+  color: color-mix(in srgb, var(--color-eywa-text) 88%, var(--color-eywa-bio-primary) 12%);
+  text-shadow: 0 0 10px rgba(95, 255, 230, 0.12);
+}
 .bio-word:hover {
   color: var(--color-eywa-bio-primary);
   text-shadow:

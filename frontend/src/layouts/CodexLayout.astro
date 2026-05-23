@@ -8,6 +8,19 @@ interface Props {
   current?: string;
 }
 const { title, current } = Astro.props;
+
+const AMBIENTS: Record<string, { colorA: string; colorB: string; density: number; size: number }> = {
+  pandora: { colorA: '#5fffe6', colorB: '#7fff8f', density: 0.34, size: 5.2 },
+  clans: { colorA: '#5fffe6', colorB: '#ffd07f', density: 0.30, size: 5.0 },
+  bestiaire: { colorA: '#5fffe6', colorB: '#ff5dc4', density: 0.38, size: 5.6 },
+  flore: { colorA: '#7fff8f', colorB: '#5fffe6', density: 0.42, size: 5.7 },
+  personnages: { colorA: '#7fdcff', colorB: '#ff5dc4', density: 0.28, size: 5.0 },
+  langue: { colorA: '#5fffe6', colorB: '#9a7fff', density: 0.26, size: 4.8 },
+  films: { colorA: '#7fdcff', colorB: '#ff8c2a', density: 0.25, size: 4.8 },
+  engins: { colorA: '#7fdcff', colorB: '#ff4040', density: 0.22, size: 4.6 },
+  videos: { colorA: '#5fffe6', colorB: '#9a7fff', density: 0.26, size: 4.8 },
+};
+const ambient = AMBIENTS[current ?? ''] ?? AMBIENTS.pandora;
 ---
 <BaseLayout title={title}>
   <!--
@@ -20,7 +33,13 @@ const { title, current } = Astro.props;
        the codex pages the sensation of reading inside the bioluminescent
        jungle rather than on a flat dark page. -->
   <div class="forest-backdrop" aria-hidden="true"></div>
-  <CodexAmbient client:only="react" />
+  <CodexAmbient
+    client:only="react"
+    colorA={ambient.colorA}
+    colorB={ambient.colorB}
+    density={ambient.density}
+    size={ambient.size}
+  />
   <div class="bio-ambient" aria-hidden="true"></div>
   <div class="cursor-glow" aria-hidden="true"></div>
 
@@ -46,7 +65,7 @@ const { title, current } = Astro.props;
   <!-- Overlay sombre cliquable derrière le drawer mobile -->
   <div id="eywa-drawer-overlay" class="eywa-drawer-overlay lg:hidden" aria-hidden="true"></div>
 
-  <div class="flex relative">
+  <div class="flex relative" data-codex-section={current ?? 'pandora'}>
     <Sidebar current={current} />
     <main class="flex-1 px-4 sm:px-6 lg:px-10 py-12 max-w-7xl">
       <slot />
@@ -146,36 +165,56 @@ const { title, current } = Astro.props;
     mql.addEventListener?.('change', onChange);
   })();
 
-  // Wrap every word of the article body into a <span class="bio-word">
-  // so each word can light up cyan when the cursor hovers it.
-  // Targets paragraphs only — leaves headings, links, italics intact.
+  // Pandora feels more alive when the glow reacts to lore, not to every
+  // word. Highlight only key universe terms inside article prose.
   (() => {
     if (typeof window === 'undefined') return;
+    const TERMS = [
+      'Eywa', 'tsaheylu', 'Na’vi', "Na'vi", 'Pandora', 'Omatikaya',
+      'Metkayina', 'Ash People', 'Arbre des Âmes', 'Hometree',
+      'Ikran', 'Toruk', 'Toruk Makto', 'Thanator', 'Tulkun', 'Pa’li',
+      "Pa'li", 'Ilu', 'Skimwing', 'Woodsprites', 'Atokirina',
+      'RDA', 'Unobtanium', 'Hallelujah', 'Sa’nok', "Sa'nok",
+    ].sort((a, b) => b.length - a.length);
+    const escapeRegExp = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const termRe = new RegExp(`(${TERMS.map(escapeRegExp).join('|')})`, 'gi');
+
+    const wrapTextNode = (node) => {
+      const text = node.textContent ?? '';
+      if (!termRe.test(text)) return;
+      termRe.lastIndex = 0;
+      const frag = document.createDocumentFragment();
+      let last = 0;
+      text.replace(termRe, (match, _term, index) => {
+        if (index > last) frag.appendChild(document.createTextNode(text.slice(last, index)));
+        const span = document.createElement('span');
+        span.className = 'bio-word bio-term';
+        span.textContent = match;
+        frag.appendChild(span);
+        last = index + match.length;
+        return match;
+      });
+      if (last < text.length) frag.appendChild(document.createTextNode(text.slice(last)));
+      node.parentNode?.replaceChild(frag, node);
+    };
+
     const split = () => {
       const ps = document.querySelectorAll('article p, article li');
       ps.forEach((p) => {
         if (p.dataset.bioSplit === '1') return;
-        // Only walk direct text-node children — preserves <em>, <a>, <strong>.
-        const children = Array.from(p.childNodes);
-        children.forEach((node) => {
-          if (node.nodeType !== Node.TEXT_NODE) return;
-          const text = node.textContent ?? '';
-          if (!text.trim()) return;
-          const frag = document.createDocumentFragment();
-          // Split on whitespace but keep the whitespace itself so the layout doesn't change.
-          const tokens = text.split(/(\s+)/);
-          tokens.forEach((tok) => {
-            if (/^\s+$/.test(tok) || tok === '') {
-              frag.appendChild(document.createTextNode(tok));
-            } else {
-              const span = document.createElement('span');
-              span.className = 'bio-word';
-              span.textContent = tok;
-              frag.appendChild(span);
+        const walker = document.createTreeWalker(p, NodeFilter.SHOW_TEXT, {
+          acceptNode(node) {
+            if (!node.textContent?.trim()) return NodeFilter.FILTER_REJECT;
+            const parent = node.parentElement;
+            if (!parent || parent.closest('a, code, pre, .bio-word')) {
+              return NodeFilter.FILTER_REJECT;
             }
-          });
-          p.replaceChild(frag, node);
+            return NodeFilter.FILTER_ACCEPT;
+          },
         });
+        const nodes = [];
+        while (walker.nextNode()) nodes.push(walker.currentNode);
+        nodes.forEach(wrapTextNode);
         p.dataset.bioSplit = '1';
       });
     };

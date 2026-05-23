@@ -57,6 +57,7 @@ export const particlesVertex = /* glsl */ `
 `;
 
 export const particlesFragment = /* glsl */ `
+  uniform float uTime;
   uniform vec3 uColorA;
   uniform vec3 uColorB;
   varying float vSeed;
@@ -68,7 +69,12 @@ export const particlesFragment = /* glsl */ `
     vec2 c = gl_PointCoord - 0.5;
     float r = length(c);
     if (r > 0.5) discard;
-    float alpha = smoothstep(0.5, 0.15, r);
+    float angle = atan(c.y, c.x);
+    float organicEdge = 0.5 + sin(angle * 3.0 + vSeed * 18.0) * 0.035;
+    float core = smoothstep(organicEdge, 0.13, r);
+    float halo = smoothstep(0.5, 0.28, r) * 0.35;
+    float twinkle = 0.72 + 0.28 * sin(uTime * (0.45 + vSeed * 0.8) + vSeed * 16.0);
+    float alpha = (core + halo) * twinkle;
     // Per-particle hue blend between A and B based on seed
     vec3 color = mix(uColorA, uColorB, vSeed);
     // Bioluminescent boost near the cursor — like Pandora's moss lighting
