@@ -201,3 +201,68 @@ test('320 px, captures pas encore chargées : la place est réservée aux bonnes
   }
   await context.close();
 });
+
+// Revue UX L14 : au téléphone, une capture de bureau (1440×900) n'était agrandie que
+// ×1,18 (374×234 à 390 px). Sous 640 px, une capture plus large que 1,5 écran s'affiche à
+// la hauteur disponible dans un cadre qui défile horizontalement, avec « glisse pour
+// parcourir » et « Fermer » fixe ; les captures de téléphone et le bureau ne changent pas.
+test('visionneuse au téléphone : capture de bureau à la hauteur disponible, défilement horizontal', { timeout: 90_000 }, async (t) => {
+  const env = await setupBrowser(t);
+  if (!env) return;
+  const open = async (page, file) => {
+    const link = page.locator(`.news-capture:has(img[src$="${file}"])`).first();
+    await link.scrollIntoViewIfNeeded();
+    await link.locator('img').click();
+    await page.waitForFunction(() => {
+      const i = document.querySelector('#eywa-lightbox .eywa-lightbox__img');
+      return document.getElementById('eywa-lightbox').hasAttribute('open') && i.complete && i.naturalWidth > 0;
+    });
+    await page.waitForTimeout(150);
+    return page.evaluate(() => {
+      const d = document.getElementById('eywa-lightbox');
+      const img = d.querySelector('.eywa-lightbox__img').getBoundingClientRect();
+      const sc = d.querySelector('.eywa-lightbox__scroller');
+      const close = d.querySelector('.eywa-lightbox__close').getBoundingClientRect();
+      const hint = d.querySelector('.eywa-lightbox__hint');
+      return {
+        pan: d.classList.contains('is-pan'), w: img.width, h: img.height,
+        scrollable: sc.scrollWidth > sc.clientWidth + 1, scrollerTab: sc.getAttribute('tabindex'),
+        closeIn: close.left >= 0 && close.right <= innerWidth && close.top >= 0,
+        hint: hint && getComputedStyle(hint).display !== 'none' ? hint.textContent.trim() : '',
+        vw: innerWidth, vh: innerHeight,
+      };
+    });
+  };
+  for (const width of [320, 390]) {
+    const context = await env.browser.newContext({ viewport: { width, height: 844 } });
+    const page = await context.newPage();
+    await page.goto(`${env.base}/nouveautes/`, { waitUntil: 'load' });
+    const desk = await open(page, 'L2-accueil-bureau.png');
+    assert.ok(desk.pan, `${width}px : capture de bureau sans mode défilement`);
+    assert.ok(desk.h >= 0.6 * desk.vh, `${width}px : hauteur ${desk.h}px, attendu ≥ 60 % de ${desk.vh}`);
+    assert.ok(Math.abs(desk.w / desk.h - 1440 / 900) < 0.05, `${width}px : proportions ${desk.w}×${desk.h}`);
+    assert.ok(desk.w >= 2.5 * width, `${width}px : agrandie à ${desk.w}px seulement`);
+    assert.ok(desk.scrollable && desk.scrollerTab === '0', `${width}px : cadre non défilable au clavier`);
+    assert.ok(desk.closeIn, `${width}px : « Fermer » hors écran`);
+    assert.match(desk.hint, /glisse pour parcourir/i);
+    // Le cadre défile réellement (doigt ou flèches au clavier).
+    await page.focus('#eywa-lightbox .eywa-lightbox__scroller');
+    await page.keyboard.press('ArrowRight');
+    await page.keyboard.press('ArrowRight');
+    await page.waitForTimeout(300);
+    assert.ok(await page.evaluate(() => document.querySelector('#eywa-lightbox .eywa-lightbox__scroller').scrollLeft > 0), `${width}px : flèche → sans effet`);
+    await page.keyboard.press('Escape');
+    await page.waitForFunction(() => !document.getElementById('eywa-lightbox').hasAttribute('open'));
+    const phone = await open(page, 'L2-accueil-telephone.png');
+    assert.ok(!phone.pan && !phone.hint, `${width}px : capture de téléphone passée en mode défilement`);
+    assert.ok(phone.w <= width + 0.5 && !phone.scrollable, `${width}px : capture de téléphone plus large que l'écran`);
+    await page.keyboard.press('Escape');
+    await context.close();
+  }
+  const context = await env.browser.newContext({ viewport: { width: 1440, height: 900 } });
+  const page = await context.newPage();
+  await page.goto(`${env.base}/nouveautes/`, { waitUntil: 'load' });
+  const desk = await open(page, 'L2-accueil-bureau.png');
+  assert.ok(!desk.pan && !desk.scrollable && desk.w <= 1440, '1440px : bureau modifié');
+  await context.close();
+});
