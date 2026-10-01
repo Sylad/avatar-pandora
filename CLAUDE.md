@@ -10,7 +10,7 @@ Codex Avatar/Pandora **cadeau pour Eva** (nièce de Sylvain, 18 ans, fan absolue
 | Contenu | Markdown/MDX via Astro Content Collections |
 | Backend | Aucun — le backend NestJS (qui ne servait plus que `/api/health` après le retrait du proxy images Fandom) est supprimé depuis le 01-10-2026 |
 | Cible publique | Cloudflare Pages (`https://avatar-pandora-12q.pages.dev`) — 100 % statique, plus de Function |
-| Frontend NAS | port 4203 (env de validation locale, conservée) — conteneur nginx seul, plus de proxy `/api/` |
+| Hébergement | Cloudflare Pages uniquement. Jusqu'au 01-10-2026, une copie tournait sur le NAS (Docker/nginx) ; elle est supprimée (le NAS ne sert plus que de médias et sauvegardes) |
 
 ## Public + ton
 
@@ -58,12 +58,11 @@ Sidebar 320px sticky pattern warhammer (lore court, liens rapides, ressources ex
 
 ## Workflow dev
 
-NAS = env de validation locale (rsync sources puis `docker compose up --build --force-recreate` sur le NAS). Cloudflare Pages = cible publique auto-deploy ~2 min après `git push`.
+Dev local : `cd frontend && source ~/.nvm/nvm.sh && nvm use 22 && npm run dev`. Cloudflare Pages construit et publie lui-même à chaque `git push origin main` (~2 min) ; la livraison se fait par `cadence deliver` (config dans `cadence.yaml`), qui vérifie que la page d'accueil porte le sha poussé.
 
-```bash
-# NAS local
-ssh nas "cd /volume2/docker/developpeur/avatar-pandora && /usr/local/bin/docker compose up -d --build --force-recreate eywa-frontend"
-```
+## Tests
+
+Pas de suite de tests : `cd frontend && npm run build` (79 pages) valide la cohérence (Content Collections + schéma Zod, types, intégrations Astro). Le rendu (composants Astro, îlots R3F) se vérifie visuellement en local.
 
 ## Pas de deadline
 

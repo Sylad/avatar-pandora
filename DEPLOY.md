@@ -1,9 +1,6 @@
 # Déploiement public — Cloudflare Pages
 
-Ce site est conçu pour deux cibles de déploiement :
-
-1. **NAS Synology** (interne, `http://nas:4203`) — frontend statique servi par nginx en Docker. Voir `README.md`.
-2. **Cloudflare Pages** (public, monde entier) — frontend statique. **C'est cette page qui couvre la 2ᵉ.**
+Le site est servi **uniquement** par Cloudflare Pages (frontend statique, monde entier). Jusqu'au 01-10-2026, une copie tournait aussi sur un NAS Synology (Docker + nginx) ; elle est supprimée, le NAS ne sert plus que de médias et sauvegardes.
 
 ---
 
@@ -62,41 +59,15 @@ Le site Astro est **100 % statique** après build (SSG). Toutes les pages (landi
 - **Aucun runtime serveur** côté Pages (les Functions sont serverless V8 isolates, démarrent en 5 ms).
 - **CDN mondial gratuit** — les utilisateurs en France ↔ NY ↔ Tokyo ont la même latence ~30 ms.
 - **HTTPS automatique** sans config Caddy / Let's Encrypt.
-- **Zéro maintenance** — pas de container à redémarrer, pas de NAS qui tombe.
+- **Zéro maintenance** — pas de container ni de machine à entretenir.
 
 Le seul code "dynamique" était le proxy d'images `/api/wiki-image` (backend NestJS + Cloudflare Function) ; il a été retiré le 01-10-2026 (Fandom répond par un défi anti-robot), et le backend NestJS, qui ne servait plus que `/api/health`, a été supprimé dans la foulée.
 
-## Coexistence avec le NAS
+## Livraison
 
-Garder les deux déploiements n'a aucun coût :
+`cadence deliver` (config dans `cadence.yaml`) : Cloudflare Pages construit et publie lui-même à chaque push sur `main` (pas de CI GitHub) ; la livraison est prouvée quand la page d'accueil porte le sha court du commit poussé (`<meta name="version">`).
 
-| Cible | URL | Public ? | Quand l'utiliser |
-|---|---|---|---|
-| NAS Synology | `http://nas:4203` | LAN seulement | Dev local, démo à la maison |
-| Cloudflare Pages | `https://avatar-pandora-12q.pages.dev` | Internet | Lien à envoyer à Eva, à montrer en société |
-
-Le frontend est statique sur les deux cibles ; il n'y a plus de backend (NAS compris).
-
-### Retirer l'ancienne image `eywa-backend` du NAS (à faire une fois)
-
-Depuis le 01-10-2026, `docker-compose.yml` ne déclare plus que `eywa-frontend`, et `frontend/nginx.conf` n'a plus de `location /api/`. Constat du 01-10-2026 : **aucun conteneur `avatar-pandora` ne tourne sur le NAS** (la copie NAS est éteinte) ; il ne reste que deux images de mai, dont `avatar-pandora-eywa-backend:latest` (181 Mo).
-
-⚠ En ssh non interactif, `docker` n'est pas dans le PATH du NAS : utiliser `/usr/local/bin/docker`.
-
-```bash
-# Ménage : supprimer l'image du backend
-ssh nas "/usr/local/bin/docker image rm avatar-pandora-eywa-backend:latest"
-
-# Seulement si l'on veut RALLUMER la copie NAS (facultatif) : synchroniser les sources
-# (--delete retire backend/, api/, frontend/functions/ obsolètes ; aucune donnée sur le NAS)
-rsync --rsync-path=/usr/bin/rsync -avz --delete \
-  --exclude node_modules --exclude dist --exclude .astro --exclude .git \
-  ./ \
-  nas:/volume2/docker/developpeur/avatar-pandora/
-ssh nas "cd /volume2/docker/developpeur/avatar-pandora && /usr/local/bin/docker compose up -d --build --force-recreate --remove-orphans"
-curl -s -o /dev/null -w '%{http_code}\n' http://nas:4203/            # attendu 200
-curl -s -o /dev/null -w '%{http_code}\n' http://nas:4203/api/health  # attendu 404
-```
+Dev local : `cd frontend && npm run dev`.
 
 ## Coûts
 

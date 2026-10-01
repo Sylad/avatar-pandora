@@ -44,7 +44,7 @@ Le site est aussi un labo perso : 4ᵉ projet où j'explore des stacks que je ne
 | Animation | **GSAP** (animations + ScrollTrigger réservé Plan 2 si besoin) |
 | Contenu | **Astro Content Collections** (markdown + Zod schema) |
 | Backend | **Aucun** — site 100 % statique ; l'ancien proxy d'images Fandom (NestJS + Cloudflare Function) et le backend NestJS ont été retirés le 01-10-2026 |
-| Infra dev | Docker multi-stage (`node:22-alpine` → `nginx:alpine`), docker-compose Synology NAS (frontend seul) |
+| Dev local | `npm run dev` dans `frontend/` (Node 22) |
 | Infra public | **Cloudflare Pages** — build auto sur push, CDN mondial, HTTPS auto, free tier généreux |
 
 ## Sources canoniques pour le contenu
@@ -62,8 +62,8 @@ Pré-requis : Node 22 (ou 22+), npm.
 cd frontend
 nvm use 22
 npm install
-npm run dev -- --host 0.0.0.0 --port 4299
-# → http://localhost:4299
+npm run dev
+# → http://localhost:4321
 ```
 
 ## Tests
@@ -76,22 +76,11 @@ cd frontend && npm run build   # 79 pages
 
 ## Build & déploiement
 
-### Cloudflare Pages (production)
+### Cloudflare Pages (seule cible)
 
 Auto-déploiement à chaque push sur `main` via l'intégration GitHub. Voir **[DEPLOY.md](./DEPLOY.md)** pour la procédure complète (build settings, custom domain).
 
-### NAS Synology (dev local + démo réseau)
-
-```bash
-rsync --rsync-path=/usr/bin/rsync -avz --delete \
-  --exclude node_modules --exclude dist --exclude .astro --exclude .git \
-  ./ \
-  nas:/volume2/docker/developpeur/avatar-pandora/
-
-ssh nas "/usr/local/bin/docker compose -f /volume2/docker/developpeur/avatar-pandora/docker-compose.yml up -d --build"
-```
-
-→ http://nas:4203
+Livraison : `cadence deliver` (voir `cadence.yaml`). Jusqu'au 01-10-2026, une copie tournait aussi sur un NAS Synology (Docker + nginx) ; elle a été retirée.
 
 ## Architecture du repo
 
@@ -100,7 +89,6 @@ avatar-pandora/
 ├── README.md                 ← ce fichier
 ├── DEPLOY.md                 ← guide Cloudflare Pages
 ├── LICENSE                   ← MIT (voir disclaimer Avatar IP plus bas)
-├── docker-compose.yml        ← infra NAS (frontend nginx seul)
 ├── frontend/
 │   ├── public/
 │   ├── src/
@@ -109,8 +97,6 @@ avatar-pandora/
 │   │   ├── layouts/          ← BaseLayout, CodexLayout
 │   │   ├── pages/            ← landing + codex + entries dynamiques
 │   │   └── styles/global.css
-│   ├── Dockerfile
-│   └── nginx.conf
 └── docs/superpowers/
     ├── specs/                ← spec design initial
     └── plans/                ← plans d'implémentation V1, V2, V3
