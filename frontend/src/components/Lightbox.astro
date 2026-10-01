@@ -23,18 +23,26 @@
 </dialog>
 
 <script is:inline>
+  // Navigation par ClientRouter : ce script identique sur toutes les pages ne s'exécute
+  // qu'au premier chargement, alors que le <dialog> est remplacé à chaque page. Les
+  // écouteurs sont donc posés UNE fois sur document et retrouvent la visionneuse de la
+  // page courante à chaque événement (L14 : elle ne s'ouvrait plus après une navigation).
   (() => {
-    if (typeof window === 'undefined') return;
-    const dialog = document.getElementById('eywa-lightbox');
-    if (!dialog) return;
-    const img = dialog.querySelector('.eywa-lightbox__img');
-    const cap = dialog.querySelector('.eywa-lightbox__caption');
-    const closeBtn = dialog.querySelector('.eywa-lightbox__close');
-    if (!img || !cap || !closeBtn) return;
+    if (typeof window === 'undefined' || window.__eywaLightboxInit) return;
+    window.__eywaLightboxInit = true;
+
+    const parts = () => {
+      const dialog = document.getElementById('eywa-lightbox');
+      if (!dialog) return null;
+      const img = dialog.querySelector('.eywa-lightbox__img');
+      const cap = dialog.querySelector('.eywa-lightbox__caption');
+      if (!img || !cap) return null;
+      return { dialog, img, cap };
+    };
 
     // Heuristique : on capture les <img> dans tout wrapper data-lightbox,
-    // OU les <img data-lightbox>, OU les <a data-lightbox> (qui pointent vers
-    // une image full-res). On exclut <img> dans la sidebar/burger/logo.
+    // OU les <img data-lightbox>, OU le lien qui enveloppe une image dans un
+    // wrapper data-lightbox. On exclut <img> dans la sidebar/burger/logo.
     const matchTarget = (el) => {
       if (!(el instanceof Element)) return null;
       // Ignore burger/logo SVG icons
@@ -43,12 +51,22 @@
       // Direct match
       if (el.tagName === 'IMG' && el.closest('[data-lightbox]')) return el;
       if (el.tagName === 'IMG' && el.hasAttribute('data-lightbox')) return el;
+      // Lien qui enveloppe l'image (captures des Nouveautés) : Entrée au clavier
+      // déclenche un clic dont la cible est le lien, pas l'image (L14).
+      const link = el.closest('a');
+      if (link && link.closest('[data-lightbox]')) {
+        const inner = link.querySelector('img');
+        if (inner) return inner;
+      }
       return null;
     };
 
     // Closed lightbox : the <img> has no src and stays `hidden` (no empty
     // image left in the accessibility tree of every page).
     const open = (src, alt) => {
+      const p = parts();
+      if (!p) return false;
+      const { dialog, img, cap } = p;
       img.setAttribute('src', src);
       img.hidden = false;
       img.setAttribute('alt', alt || '');
@@ -61,34 +79,46 @@
         dialog.setAttribute('open', '');
       }
       document.documentElement.classList.add('eywa-lightbox-open');
+      return true;
     };
     const close = () => {
-      if (typeof dialog.close === 'function' && dialog.open) {
-        try { dialog.close(); } catch (_) { dialog.removeAttribute('open'); }
-      } else {
-        dialog.removeAttribute('open');
+      const p = parts();
+      if (p) {
+        const { dialog, img } = p;
+        if (typeof dialog.close === 'function' && dialog.open) {
+          try { dialog.close(); } catch (_) { dialog.removeAttribute('open'); }
+        } else {
+          dialog.removeAttribute('open');
+        }
+        img.removeAttribute('src');
+        img.hidden = true;
       }
-      img.removeAttribute('src');
-      img.hidden = true;
       document.documentElement.classList.remove('eywa-lightbox-open');
     };
+    const isOpen = () => !!parts()?.dialog.hasAttribute('open');
 
     document.addEventListener('click', (e) => {
-      const target = matchTarget(e.target);
+      const el = e.target instanceof Element ? e.target : null;
+      if (!el) return;
+      if (el.closest('.eywa-lightbox__close')) { e.stopPropagation(); close(); return; }
+      // Backdrop click (target === dialog itself, not figure) closes.
+      if (el.id === 'eywa-lightbox') { close(); return; }
+      const target = matchTarget(el);
       if (!target) return;
       const src = target.currentSrc || target.src;
       if (!src) return;
-      e.preventDefault();
-      open(src, target.alt || '');
+      if (open(src, target.alt || '')) e.preventDefault();
     });
-    closeBtn.addEventListener('click', (e) => { e.stopPropagation(); close(); });
-    dialog.addEventListener('click', (e) => {
-      // Backdrop click (target === dialog itself, not figure) closes.
-      if (e.target === dialog) close();
-    });
-    dialog.addEventListener('cancel', (e) => { e.preventDefault(); close(); });
+    // « cancel » ne remonte pas : écouté en phase de capture.
+    document.addEventListener('cancel', (e) => {
+      if (e.target instanceof Element && e.target.id === 'eywa-lightbox') { e.preventDefault(); close(); }
+    }, true);
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && dialog.hasAttribute('open')) close();
+      if (e.key === 'Escape' && isOpen()) close();
+    });
+    // Page quittée visionneuse ouverte (retour arrière) : pas de défilement bloqué.
+    document.addEventListener('astro:after-swap', () => {
+      document.documentElement.classList.remove('eywa-lightbox-open');
     });
   })();
 </script>

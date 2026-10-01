@@ -34,3 +34,26 @@ test('320 et 390 px : le menu ouvre le tiroir dans l’écran, tous ses liens vi
     await context.close();
   }
 });
+
+// ClientRouter : les pages s'enchaînent sans rechargement ; le menu doit encore s'ouvrir
+// après une navigation par le tiroir, et après être arrivé depuis l'accueil (sans tiroir).
+test('390 px, navigation sans rechargement : le menu s’ouvre encore après chaque page', { timeout: 120_000 }, async (t) => {
+  const env = await setupBrowser(t);
+  if (!env) return;
+  const context = await env.browser.newContext({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce' });
+  const page = await context.newPage();
+  const opened = () => page.waitForFunction(() => Math.abs(document.getElementById('eywa-sidebar').getBoundingClientRect().left) < 1, null, { timeout: 5000 });
+  await page.goto(`${env.base}/`, { waitUntil: 'load' });
+  await page.evaluate(() => { window.__sansRechargement = true; });
+  await Promise.all([page.waitForURL((u) => u.pathname === '/pandora/intro/'), page.click('a[href="/pandora/intro/"]')]);
+  for (const next of ['/bestiaire/', '/nouveautes/', '/langue/']) {
+    await page.click('#eywa-burger');
+    await opened();
+    await Promise.all([page.waitForURL((u) => u.pathname === next), page.locator(`#eywa-sidebar a[href="${next}"]`).click()]);
+    await page.waitForFunction(() => document.documentElement.getAttribute('data-drawer-open') === null);
+  }
+  await page.click('#eywa-burger');
+  await opened();
+  assert.ok(await page.evaluate(() => window.__sansRechargement), 'la page a été rechargée : ClientRouter non exercé');
+  await context.close();
+});

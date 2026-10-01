@@ -98,13 +98,15 @@ const ambient = AMBIENTS[current ?? ''] ?? AMBIENTS.pandora;
   // Mobile drawer : burger toggles data-drawer-open on <html>. Sidebar
   // (CSS translateX) and overlay (CSS opacity/pointer-events) react.
   // Close on : Escape, overlay tap, internal nav link tap, viewport >= lg.
+  // ClientRouter : ce script ne s'exécute qu'une fois alors que burger, voile et
+  // tiroir sont remplacés à chaque page → écouteurs posés une seule fois sur
+  // document, éléments retrouvés à chaque événement (L14 : le menu ne s'ouvrait
+  // plus après une première navigation).
   (() => {
-    if (typeof window === 'undefined') return;
+    if (typeof window === 'undefined' || window.__eywaDrawerInit) return;
+    window.__eywaDrawerInit = true;
     const html = document.documentElement;
-    const burger = document.getElementById('eywa-burger');
-    const overlay = document.getElementById('eywa-drawer-overlay');
-    const sidebar = document.getElementById('eywa-sidebar');
-    if (!burger || !overlay || !sidebar) return;
+    const isOpen = () => html.getAttribute('data-drawer-open') === 'true';
 
     let savedScrollY = 0;
     const lockScroll = () => {
@@ -125,43 +127,36 @@ const ambient = AMBIENTS[current ?? ''] ?? AMBIENTS.pandora;
     };
 
     const setOpen = (open) => {
+      const burger = document.getElementById('eywa-burger');
       if (open) {
         html.setAttribute('data-drawer-open', 'true');
-        burger.setAttribute('aria-expanded', 'true');
-        burger.setAttribute('aria-label', 'Fermer la navigation');
+        burger?.setAttribute('aria-expanded', 'true');
+        burger?.setAttribute('aria-label', 'Fermer la navigation');
         lockScroll();
       } else {
         html.removeAttribute('data-drawer-open');
-        burger.setAttribute('aria-expanded', 'false');
-        burger.setAttribute('aria-label', 'Ouvrir la navigation');
+        burger?.setAttribute('aria-expanded', 'false');
+        burger?.setAttribute('aria-label', 'Ouvrir la navigation');
         unlockScroll();
       }
     };
 
-    burger.addEventListener('click', () => {
-      setOpen(html.getAttribute('data-drawer-open') !== 'true');
+    document.addEventListener('click', (e) => {
+      const el = e.target instanceof Element ? e.target : null;
+      if (!el) return;
+      if (el.closest('#eywa-burger')) { setOpen(!isOpen()); return; }
+      if (el.closest('#eywa-drawer-overlay')) { setOpen(false); return; }
+      // Tap sur n'importe quel lien interne du drawer = fermer
+      if (isOpen() && el.closest('#eywa-sidebar a')) setOpen(false);
     });
-    overlay.addEventListener('click', () => setOpen(false));
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && html.getAttribute('data-drawer-open') === 'true') {
-        setOpen(false);
-      }
-    });
-    // Tap sur n'importe quel lien interne du drawer = fermer
-    sidebar.addEventListener('click', (e) => {
-      const target = e.target instanceof Element ? e.target.closest('a') : null;
-      if (target && sidebar.contains(target)) {
-        setOpen(false);
-      }
+      if (e.key === 'Escape' && isOpen()) setOpen(false);
     });
     // Si l'utilisateur passe en >= lg avec drawer ouvert → fermer + clean lock
     const mql = window.matchMedia('(min-width: 1024px)');
-    const onChange = () => {
-      if (mql.matches && html.getAttribute('data-drawer-open') === 'true') {
-        setOpen(false);
-      }
-    };
-    mql.addEventListener?.('change', onChange);
+    mql.addEventListener?.('change', () => {
+      if (mql.matches && isOpen()) setOpen(false);
+    });
   })();
 
   // Pandora feels more alive when the glow reacts to lore, not to every
