@@ -21,7 +21,7 @@ lots:
     created: 2026-09-28
     started: 2026-10-01
     tasks:
-      - { id: t1, title: "Voile de l'accueil sous le texte (main::before z-index -1) — WCAG 1.4.3/1.4.11 : À propos 2,1–2,9:1, définition 1,8–3,7:1 mesurés", status: todo }
+      - { id: t1, title: "Voile de l'accueil sous le texte (main::before z-index -1) — WCAG 1.4.3/1.4.11 : À propos 2,1–2,9:1, définition 1,8–3,7:1 mesurés", status: done }
       - { id: t2, title: "Logo accueil en width:min(420px,100%) + espacements réduits <400px — WCAG 1.4.10 : débordement 15 px à 390, 50 px à 320, CTA sous la ligne de flottaison à 320×640", status: todo }
       - { id: t3, title: "Héberger Orbitron + Cormorant Garamond (italique inclus) sur le site — la CSP bloque Google Fonts, document.fonts.size=0 en prod (toutes les pages)", status: todo }
       - { id: t4, title: "Masquer le bouton ambiance sonore tant que /audio/eywa-ambient.mp3 n'existe pas — Nielsen n°1 : le fichier renvoie du HTML, MEDIA_ERR 4 (toutes les pages)", status: todo }

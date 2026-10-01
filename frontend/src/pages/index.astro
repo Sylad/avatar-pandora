@@ -38,7 +38,7 @@ import { CycleBackdrop } from '../components/cinema/CycleBackdrop';
         Explorer le codex
       </a>
       <a href="/about/"
-         class="px-6 py-3 rounded text-eywa-text-muted hover:text-eywa-text transition-colors backdrop-blur-sm bg-eywa-bg/30">
+         class="px-6 py-3 rounded text-eywa-text-muted hover:text-eywa-text transition-colors backdrop-blur-sm bg-eywa-bg/50">
         À propos
       </a>
     </div>
@@ -89,12 +89,16 @@ import { CycleBackdrop } from '../components/cinema/CycleBackdrop';
     The cycling images are vivid — the foreground content needs a hint
     of dark veil under it for legibility. A bottom-up gradient does the
     job without darkening the whole viewport.
+    z-index -1 : `main` (relative z-10) is its own stacking context, so
+    the veil sits above the backdrop and particles but UNDER the text.
+    It used to be at 5, i.e. on top of the text, which dimmed the words
+    instead of the images (WCAG 1.4.3).
   */
   main::before {
     content: '';
     position: fixed;
     inset: 0;
-    z-index: 5;
+    z-index: -1;
     pointer-events: none;
     background: linear-gradient(to bottom,
       rgba(10, 10, 31, 0.30) 0%,
