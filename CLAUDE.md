@@ -97,3 +97,6 @@ hautes ; guillemets « » tenus par une espace fine insécable U+202F). Après t
 d'une entrée, lancer `cd frontend && npm run news` (= `cadence news build` vers
 `frontend/public/nouveautes-data/`) et **commiter le résultat** : Cloudflare Pages construit sans
 cadence, la page lit ce JSON au build. `npm run test:scripts` échoue si le JSON versionné n'est plus à jour.
+Lien permanent `/nouveautes/#<slug>` par entrée ; pastille « non vues » sur le lien du menu et séparateur
+« Déjà vu lors de ta visite du … » (localStorage `eywa.news.seen-v1`, logique pure `src/lib/news-seen.ts`,
+script dans `Sidebar.astro` rejoué à chaque `astro:page-load`).
