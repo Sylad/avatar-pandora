@@ -43,14 +43,14 @@ Le site est aussi un labo perso : 4ᵉ projet où j'explore des stacks que je ne
 | WebGL | **@react-three/fiber** + **@react-three/drei** + **three** — ParticleField shader GLSL custom |
 | Animation | **GSAP** (animations + ScrollTrigger réservé Plan 2 si besoin) |
 | Contenu | **Astro Content Collections** (markdown + Zod schema) |
-| Backend | **NestJS 11** minimal (port 3003) avec proxy `/api/wiki-image` (Avatar Fandom + Wikipedia) — utilisé pour le déploiement NAS |
+| Backend | **NestJS 11** minimal (port 3003, `/api/health`) — déploiement NAS ; l'ancien proxy d'images Fandom est retiré (01-10-2026) |
 | Backend public | **Cloudflare Pages Functions** — port du proxy en Worker serverless TypeScript natif |
 | Infra dev | Docker multi-stage (`node:22-alpine` → `nginx:alpine`), docker-compose Synology NAS |
 | Infra public | **Cloudflare Pages** — build auto sur push, CDN mondial, HTTPS auto, free tier généreux |
 
 ## Sources canoniques pour le contenu
 
-- **[Avatar Fandom](https://james-camerons-avatar.fandom.com/)** — wiki communautaire avec page dédiée pour chaque créature, lieu, personnage, objet de Pandora. C'est la source d'images du site (proxy `/api/wiki-image`).
+- **[Avatar Fandom](https://james-camerons-avatar.fandom.com/)** — wiki communautaire avec page dédiée pour chaque créature, lieu, personnage, objet de Pandora. Source de texte ; ce n'est plus une source d'images (le proxy a été retiré le 01-10-2026, Fandom répondant par un défi anti-robot).
 - **[Pandorapedia](https://www.pandorapedia.com/)** — encyclopédie officielle Disney/20th Century pour le lore canonique.
 - **[Naviteri.org](https://naviteri.org/)** — blog du Dr Paul Frommer, créateur de la langue Na'vi.
 - **Synthèse Claude Code** — chaque entrée du codex est une réécriture personnelle en français, pas un copier-coller.
@@ -76,7 +76,7 @@ npm run start:dev
 
 ## Tests
 
-Le backend NestJS a des tests vitest (proxy wiki-image strategy + relevance filter) :
+Le backend NestJS a des tests vitest (validation de l'environnement, santé) :
 
 ```bash
 cd backend && npm test
@@ -124,7 +124,6 @@ avatar-pandora/
 ├── LICENSE                   ← MIT (voir disclaimer Avatar IP plus bas)
 ├── docker-compose.yml        ← infra NAS
 ├── frontend/
-│   ├── functions/api/        ← Cloudflare Pages Functions
 │   ├── public/
 │   ├── src/
 │   │   ├── components/       ← EywaLogo, Sidebar, EntryCard, cinema/
@@ -137,7 +136,6 @@ avatar-pandora/
 ├── backend/
 │   ├── src/
 │   │   ├── health/
-│   │   ├── wiki-image/       ← Fandom + Wikipedia proxy
 │   │   ├── app.module.ts
 │   │   └── main.ts
 │   ├── Dockerfile
@@ -152,13 +150,13 @@ avatar-pandora/
 - **Code & contenu** — Sylvain Ladoire ([@Sylad](https://github.com/Sylad)), avec [Claude Code](https://claude.com/claude-code) comme pair-programmeur principal, puis Codex pour la relecture, les corrections ciblées et les itérations
 - **Univers Avatar** — James Cameron, 20th Century Studios, et toute l'équipe créative derrière Pandora
 - **Langue Na'vi** — Dr Paul Frommer
-- **Images** — chargées dynamiquement depuis [Avatar Fandom](https://james-camerons-avatar.fandom.com/) (CC BY-SA) et [Wikipedia](https://wikipedia.org/) ; aucune image n'est hébergée par ce repo
+- **Images** — aucune image tierce : les fiches affichent un visuel par défaut aux couleurs d'Eywa, en attendant des illustrations propres hébergées sur le site
 
 ## Disclaimer Avatar IP
 
 > *Avatar*®, *Pandora*, *Na'vi* et l'ensemble de l'univers fictionnel auquel ce site fait référence sont la propriété de **James Cameron** et de **20th Century Studios** (Disney). Ce site est un projet personnel non-commercial à vocation de découverte et de partage entre fans, sans aucune affiliation avec les ayants-droits officiels.
 >
-> Aucune image n'est hébergée par ce dépôt. Toutes les images affichées sont chargées dynamiquement depuis [Avatar Fandom](https://james-camerons-avatar.fandom.com/) et [Wikipedia](https://wikipedia.org/), via un proxy serveur qui se contente de relayer le flux. Le contenu textuel (descriptions des créatures, clans, personnages, lieux) est une synthèse personnelle en français, écrite à partir de connaissances publiques sur la franchise — pas une copie du contenu Pandorapedia ou autres wikis.
+> Aucune image tierce n'est affichée ni hébergée : ni capture des films, ni image de wiki. Le contenu textuel (descriptions des créatures, clans, personnages, lieux) est une synthèse personnelle en français, écrite à partir de connaissances publiques sur la franchise — pas une copie du contenu Pandorapedia ou autres wikis.
 >
 > Pour toute demande relative à la propriété intellectuelle Avatar, contacter directement 20th Century Studios.
 

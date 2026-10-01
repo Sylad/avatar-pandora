@@ -3,7 +3,7 @@
 Ce site est conçu pour deux cibles de déploiement :
 
 1. **NAS Synology** (interne, `http://nas:4203`) — frontend + backend NestJS Docker. Voir `README.md`.
-2. **Cloudflare Pages** (public, monde entier) — frontend statique + Cloudflare Function pour `/api/wiki-image`. **C'est cette page qui couvre la 2ᵉ.**
+2. **Cloudflare Pages** (public, monde entier) — frontend statique. **C'est cette page qui couvre la 2ᵉ.**
 
 ---
 
@@ -41,16 +41,9 @@ URL du projet Pages : `https://avatar-pandora-12q.pages.dev` (`avatar-pandora.pa
 
 Chaque `git push origin main` déclenche un rebuild automatique en ~2 min.
 
-### 4. Vérifier que les fonctions tournent
+### 4. Pas de fonction serveur
 
-Le fichier `frontend/functions/api/wiki-image.ts` est automatiquement détecté et déployé comme Cloudflare Function. Tester :
-
-```bash
-curl -sI https://avatar-pandora-12q.pages.dev/api/wiki-image?q=Mountain%20Banshee
-# attendu : HTTP/2 200 + content-type: image/...
-```
-
-Si 404 : vérifier que le dossier `frontend/functions/` est bien commité.
+Depuis le 01-10-2026, le site n'a plus de proxy d'images : Avatar Fandom répond par un défi anti-robot, que Sylvain a choisi de ne pas contourner. Les fiches sans image hébergée affichent un visuel par défaut (`CoverFallback`), les illustrations hébergées sur le site viendront ensuite. Le site est 100 % statique : rien à vérifier côté Functions.
 
 ### 5. Custom domain (optionnel — ~10€/an)
 
@@ -71,7 +64,7 @@ Le site Astro est **100 % statique** après build (SSG). Toutes les pages (landi
 - **HTTPS automatique** sans config Caddy / Let's Encrypt.
 - **Zéro maintenance** — pas de container à redémarrer, pas de NAS qui tombe.
 
-Le seul code "dynamique" était `/api/wiki-image` côté backend NestJS. Il est porté en `frontend/functions/api/wiki-image.ts` — même algorithme (Fandom direct → Fandom search → Wikipedia EN/FR), réécrit en `fetch` natif (pas d'axios). 75 lignes au total.
+Le seul code "dynamique" était le proxy d'images `/api/wiki-image` (backend NestJS + Cloudflare Function) ; il a été retiré le 01-10-2026 (Fandom répond par un défi anti-robot).
 
 ## Coexistence avec le NAS
 
@@ -82,18 +75,13 @@ Garder les deux déploiements n'a aucun coût :
 | NAS Synology | `http://nas:4203` | LAN seulement | Dev local, démo à la maison |
 | Cloudflare Pages | `https://avatar-pandora-12q.pages.dev` | Internet | Lien à envoyer à Eva, à montrer en société |
 
-Le frontend appelle `/api/wiki-image` sur la même origine, donc les 2 déploiements marchent indépendamment :
-
-- Sur NAS : le call hit nginx → backend NestJS Docker.
-- Sur Cloudflare Pages : le call hit la Cloudflare Function.
-
-Pas de configuration à changer dans le frontend selon la cible.
+Le frontend est statique sur les deux cibles ; le backend NestJS du NAS ne sert plus que `/api/health`.
 
 ## Coûts
 
 | Composant | Coût |
 |---|---|
-| Cloudflare Pages (hosting + CDN + 100k req/jour Functions) | **0 €/mois** |
+| Cloudflare Pages (hosting + CDN) | **0 €/mois** |
 | Build Cloudflare (500 builds/mois inclus) | **0 €/mois** |
 | Domaine custom (optionnel) | ~10 €/an si Cloudflare Registrar |
 | **Total** | **0 € sans domaine, ~10 €/an avec** |
@@ -102,8 +90,7 @@ Cloudflare Pages a un free tier généreux qui suffit pour un site personnel à 
 
 ## Limites à connaître
 
-- **Functions free tier** : 100 000 invocations/jour. Le proxy `/api/wiki-image` est appelé une fois par image affichée, mais le `Cache-Control: 30 days` que la Function envoie fait que les images sont mises en cache côté client + edge Cloudflare. En pratique : 50-100 invocations par jour pour un trafic familial.
-- **Cloudflare cache 30 jours** : si tu changes le `cover:` d'une entry et redéploies, l'ancienne image peut rester en cache jusqu'à 30 jours côté CDN. Solution : passer un query string différent, ou purge manuelle dans le dashboard Cloudflare.
+- **Cache** : les pages HTML ont un cache court (5 min) ; polices et images statiques un cache d'un mois (voir `frontend/public/_headers`).
 
 ## Si jamais tu veux passer le repo en public
 

@@ -8,8 +8,8 @@ Codex Avatar/Pandora **cadeau pour Eva** (nièce de Sylvain, 18 ans, fan absolue
 |---|---|
 | Stack | Astro 5/6 + îlots React 19 + @react-three/fiber + GSAP + Tailwind |
 | Contenu | Markdown/MDX via Astro Content Collections |
-| Backend | NestJS minimal (port 3003, pattern warhammer) — proxy images wiki **uniquement pour le NAS local** |
-| Cible publique | Cloudflare Pages (`https://avatar-pandora-12q.pages.dev`) — backend porté en Cloudflare Function `frontend/functions/api/wiki-image.ts` |
+| Backend | NestJS minimal (port 3003, pattern warhammer) — NAS local, ne sert plus que `/api/health` (proxy images Fandom retiré le 01-10-2026) |
+| Cible publique | Cloudflare Pages (`https://avatar-pandora-12q.pages.dev`) — 100 % statique, plus de Function |
 | Frontend NAS | port 4203 (env de validation locale, conservée) |
 
 ## Public + ton
@@ -40,13 +40,13 @@ Pattern technique réutilisable : `CinemaCanvas` mode `'time'` + `CycleBackdrop`
 ## Sources de contenu
 
 1. **Pandorapedia** (officiel Disney/Cameron) — référence canon.
-2. **Avatar Wiki Fandom** (https://avatar.fandom.com) — exhaustif, scrapable via notre `/api/wiki-image` proxy (Fandom→Wiki fallback).
+2. **Avatar Wiki Fandom** (https://avatar.fandom.com) — exhaustif, source de TEXTE. Plus aucune image n'en vient : le proxy `/api/wiki-image` est retiré (01-10-2026, défi anti-robot que Sylvain refuse de contourner ; pas de captures des films non plus). Fiche sans image hébergée → visuel par défaut `CoverFallback` (`src/lib/cover.ts`).
 3. **Paul Frommer** — linguiste Na'vi, source pour la page Langue Na'vi.
 4. **Synthèse Claude en français** pour les ~70 entrées lyriques du codex.
 
 ## Fair-use / publication publique
 
-- ✅ Proxy wiki + concept art **linké** (pas re-hosté).
+- ✅ Aucune image tierce affichée (proxy wiki retiré le 01-10-2026) ; illustrations propres hébergées sur le site à venir.
 - ❌ Pas de re-host de stills films (Disney/Cameron).
 - ✅ Repo public-ready (LICENSE MIT/CC). Auto-deploy Cloudflare Pages sur `git push origin main`.
 

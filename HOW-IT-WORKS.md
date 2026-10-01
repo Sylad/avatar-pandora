@@ -24,7 +24,7 @@ Le clin d'œil discret : le `V` caché du `W` du logo **Eywa** recompose le pré
 | Code Astro (frontend statique + îlots React) | Claude Code | Pages dynamiques par collection, layouts, sidebar 320 px sticky, light/dark theming via tokens `@theme` Tailwind 4 |
 | Code R3F (WebGL particle field) | Claude Code | Shader GLSL custom pour les particules bioluminescentes, sync sur le clock cinema, palette qui change par scène |
 | Code GSAP (animation) | Claude Code | Cinema canvas mode='time' (boucle 75 s sans scroll), CycleBackdrop image cross-fade, scintillement bioluminescent au survol |
-| Backend NestJS (proxy wiki-image) | Claude Code | Stratégie 4 niveaux : Avatar Fandom direct → Fandom search → Wikipedia EN → Wikipedia FR. Tests vitest 8/8 |
+| Backend NestJS (proxy wiki-image, retiré le 01-10-2026) | Claude Code | Stratégie 4 niveaux : Avatar Fandom direct → Fandom search → Wikipedia EN → Wikipedia FR. Tests vitest 8/8 |
 | Cloudflare Pages Function | Claude Code | Port du proxy NestJS en Worker serverless (TypeScript natif Cloudflare) pour le déploiement public |
 | Contenu codex (~70 entrées MD) | Humain + Claude Code | Humain choisit les sujets et curate les sources ; Claude rédige les fiches en français à partir de Pandorapedia + Avatar Fandom + Frommer |
 | Relecture design et corrections ciblées | Humain + Codex | Vérification navigateur, build Astro, correction d'hydratation WebGL, pistes d'amélioration de l'ambiance |
@@ -35,7 +35,7 @@ Le clin d'œil discret : le `V` caché du `W` du logo **Eywa** recompose le pré
 **Nulle part.** Ce site n'appelle pas l'API Claude pendant son fonctionnement.
 
 - Le frontend est **statique** (Astro génère du HTML pré-rendu, les îlots R3F/GSAP s'hydratent côté client). Une fois déployé sur Cloudflare Pages, le contenu est servi depuis le CDN, sans backend AI.
-- Le seul endpoint serveur est `/api/wiki-image?q=...` qui proxie les images depuis Avatar Fandom et Wikipedia. **Aucun appel Claude.**
+- Il n'y a plus d'endpoint serveur public : le proxy d'images `/api/wiki-image` (Fandom + Wikipedia) a été retiré le 01-10-2026. **Aucun appel Claude.**
 - Les ~70 fiches du codex sont des fichiers Markdown **figés** dans `frontend/src/content/` ; Claude les a écrits **à build-time**, pas en live.
 
 **Coût d'usage runtime : 0 €.** Tu peux faire tourner ce site sans clé Anthropic, sans clé OpenAI, sans aucune dépendance LLM. Cloudflare Pages free tier le sert gratuitement à n'importe qui dans le monde.
@@ -77,7 +77,7 @@ Tout le lore vient de sources fiables, jamais inventé :
 - **[Naviteri.org](https://naviteri.org/)** — blog du Dr Paul Frommer, créateur de la langue Na'vi
 - **Les films eux-mêmes** : Avatar (2009), La Voie de l'Eau (2022), Fire and Ash (2025)
 
-Aucune image n'est rehosted par ce repo — le proxy `/api/wiki-image` les sert depuis Fandom/Wikipedia, juste pour ajouter le bon User-Agent et le cache CDN.
+Aucune image tierce n'est affichée : l'ancien proxy `/api/wiki-image` est retiré (Fandom répond par un défi anti-robot, non contourné) ; les fiches montrent un visuel par défaut.
 
 ## Pourquoi cette transparence
 
