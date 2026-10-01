@@ -45,6 +45,8 @@ function circularDistance(p: number, at: number): number {
   return Math.min(raw, 1 - raw);
 }
 
+const HAS_SCENE = SCENES.some((s) => s.src);
+
 export function CycleBackdrop() {
   const reduced = useReducedMotion();
   const paused = useAtmospherePaused();
@@ -52,7 +54,8 @@ export function CycleBackdrop() {
   const [wanted, setWanted] = useState<ReadonlySet<number>>(() => new Set());
 
   useEffect(() => {
-    if (reduced) return;
+    // No site-hosted scene yet (illustrations to come) : no loop to run.
+    if (reduced || !HAS_SCENE) return;
 
     // Shared atmosphere clock (same as the particles) : when paused, one
     // tick paints the frozen state and the loop stops.
