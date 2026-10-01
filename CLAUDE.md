@@ -8,9 +8,9 @@ Codex Avatar/Pandora **cadeau pour Eva** (nièce de Sylvain, 18 ans, fan absolue
 |---|---|
 | Stack | Astro 5/6 + îlots React 19 + @react-three/fiber + GSAP + Tailwind |
 | Contenu | Markdown/MDX via Astro Content Collections |
-| Backend | NestJS minimal (port 3003, pattern warhammer) — NAS local, ne sert plus que `/api/health` (proxy images Fandom retiré le 01-10-2026) |
+| Backend | Aucun — le backend NestJS (qui ne servait plus que `/api/health` après le retrait du proxy images Fandom) est supprimé depuis le 01-10-2026 |
 | Cible publique | Cloudflare Pages (`https://avatar-pandora-12q.pages.dev`) — 100 % statique, plus de Function |
-| Frontend NAS | port 4203 (env de validation locale, conservée) |
+| Frontend NAS | port 4203 (env de validation locale, conservée) — conteneur nginx seul, plus de proxy `/api/` |
 
 ## Public + ton
 

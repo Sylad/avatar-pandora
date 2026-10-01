@@ -2,7 +2,7 @@
 
 Ce site est conçu pour deux cibles de déploiement :
 
-1. **NAS Synology** (interne, `http://nas:4203`) — frontend + backend NestJS Docker. Voir `README.md`.
+1. **NAS Synology** (interne, `http://nas:4203`) — frontend statique servi par nginx en Docker. Voir `README.md`.
 2. **Cloudflare Pages** (public, monde entier) — frontend statique. **C'est cette page qui couvre la 2ᵉ.**
 
 ---
@@ -64,7 +64,7 @@ Le site Astro est **100 % statique** après build (SSG). Toutes les pages (landi
 - **HTTPS automatique** sans config Caddy / Let's Encrypt.
 - **Zéro maintenance** — pas de container à redémarrer, pas de NAS qui tombe.
 
-Le seul code "dynamique" était le proxy d'images `/api/wiki-image` (backend NestJS + Cloudflare Function) ; il a été retiré le 01-10-2026 (Fandom répond par un défi anti-robot).
+Le seul code "dynamique" était le proxy d'images `/api/wiki-image` (backend NestJS + Cloudflare Function) ; il a été retiré le 01-10-2026 (Fandom répond par un défi anti-robot), et le backend NestJS, qui ne servait plus que `/api/health`, a été supprimé dans la foulée.
 
 ## Coexistence avec le NAS
 
@@ -75,7 +75,37 @@ Garder les deux déploiements n'a aucun coût :
 | NAS Synology | `http://nas:4203` | LAN seulement | Dev local, démo à la maison |
 | Cloudflare Pages | `https://avatar-pandora-12q.pages.dev` | Internet | Lien à envoyer à Eva, à montrer en société |
 
-Le frontend est statique sur les deux cibles ; le backend NestJS du NAS ne sert plus que `/api/health`.
+Le frontend est statique sur les deux cibles ; il n'y a plus de backend (NAS compris).
+
+### Retirer l'ancien conteneur `eywa-backend` du NAS (à faire une fois)
+
+Depuis le 01-10-2026, `docker-compose.yml` ne déclare plus que `eywa-frontend`, et `frontend/nginx.conf` n'a plus de `location /api/`. Sur le NAS, l'ancien conteneur `avatar-pandora-eywa-backend-1` tourne encore tant qu'on ne l'a pas retiré. Depuis Big-Blue, à la racine du dépôt :
+
+```bash
+# 1. Synchroniser les sources : --delete supprime aussi backend/ côté NAS
+rsync --rsync-path=/usr/bin/rsync -avz --delete \
+  --exclude node_modules --exclude dist --exclude .astro --exclude .git \
+  ./ \
+  nas:/volume2/docker/developpeur/avatar-pandora/
+
+# 2. Reconstruire le frontend (nginx sans proxy /api/) ET supprimer le conteneur
+#    orphelin eywa-backend, dans la même commande : l'ancien nginx.conf référence
+#    l'hôte eywa-backend et ne redémarrerait plus sans lui.
+ssh nas "cd /volume2/docker/developpeur/avatar-pandora && docker compose up -d --build --force-recreate --remove-orphans"
+
+# 3. Vérifier : seul avatar-pandora-eywa-frontend-1 doit rester
+ssh nas "docker ps -a --filter name=avatar-pandora"
+#    s'il reste un avatar-pandora-eywa-backend-1 :
+ssh nas "docker rm -f avatar-pandora-eywa-backend-1"
+
+# 4. Contrôler le site et l'absence d'API (attendu : 200 puis 404)
+curl -s -o /dev/null -w '%{http_code}\n' http://nas:4203/
+curl -s -o /dev/null -w '%{http_code}\n' http://nas:4203/api/health
+
+# 5. Ménage : supprimer l'image du backend (son nom exact dépend de la version de compose)
+ssh nas "docker image ls | grep -i eywa-backend"
+ssh nas "docker image rm avatar-pandora-eywa-backend"   # ou avatar-pandora_eywa-backend
+```
 
 ## Coûts
 

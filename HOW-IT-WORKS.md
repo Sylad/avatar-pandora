@@ -24,8 +24,8 @@ Le clin d'œil discret : le `V` caché du `W` du logo **Eywa** recompose le pré
 | Code Astro (frontend statique + îlots React) | Claude Code | Pages dynamiques par collection, layouts, sidebar 320 px sticky, light/dark theming via tokens `@theme` Tailwind 4 |
 | Code R3F (WebGL particle field) | Claude Code | Shader GLSL custom pour les particules bioluminescentes, sync sur le clock cinema, palette qui change par scène |
 | Code GSAP (animation) | Claude Code | Cinema canvas mode='time' (boucle 75 s sans scroll), CycleBackdrop image cross-fade, scintillement bioluminescent au survol |
-| Backend NestJS (proxy wiki-image, retiré le 01-10-2026) | Claude Code | Stratégie 4 niveaux : Avatar Fandom direct → Fandom search → Wikipedia EN → Wikipedia FR. Tests vitest 8/8 |
-| Cloudflare Pages Function | Claude Code | Port du proxy NestJS en Worker serverless (TypeScript natif Cloudflare) pour le déploiement public |
+| Backend NestJS (proxy wiki-image ; proxy retiré puis backend supprimé le 01-10-2026) | Claude Code | Stratégie 4 niveaux : Avatar Fandom direct → Fandom search → Wikipedia EN → Wikipedia FR. Tests vitest 8/8 |
+| Cloudflare Pages Function (retirée le 01-10-2026) | Claude Code | Port du proxy NestJS en Worker serverless (TypeScript natif Cloudflare) pour le déploiement public |
 | Contenu codex (~70 entrées MD) | Humain + Claude Code | Humain choisit les sujets et curate les sources ; Claude rédige les fiches en français à partir de Pandorapedia + Avatar Fandom + Frommer |
 | Relecture design et corrections ciblées | Humain + Codex | Vérification navigateur, build Astro, correction d'hydratation WebGL, pistes d'amélioration de l'ambiance |
 | Validation visuelle | Humain | « la sidebar respire trop fort », « les particules sont trop rares dans la scène volcan », « le hero du Bestiaire écrase le contenu » |

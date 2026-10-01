@@ -43,9 +43,8 @@ Le site est aussi un labo perso : 4ᵉ projet où j'explore des stacks que je ne
 | WebGL | **@react-three/fiber** + **@react-three/drei** + **three** — ParticleField shader GLSL custom |
 | Animation | **GSAP** (animations + ScrollTrigger réservé Plan 2 si besoin) |
 | Contenu | **Astro Content Collections** (markdown + Zod schema) |
-| Backend | **NestJS 11** minimal (port 3003, `/api/health`) — déploiement NAS ; l'ancien proxy d'images Fandom est retiré (01-10-2026) |
-| Backend public | **Cloudflare Pages Functions** — port du proxy en Worker serverless TypeScript natif |
-| Infra dev | Docker multi-stage (`node:22-alpine` → `nginx:alpine`), docker-compose Synology NAS |
+| Backend | **Aucun** — site 100 % statique ; l'ancien proxy d'images Fandom (NestJS + Cloudflare Function) et le backend NestJS ont été retirés le 01-10-2026 |
+| Infra dev | Docker multi-stage (`node:22-alpine` → `nginx:alpine`), docker-compose Synology NAS (frontend seul) |
 | Infra public | **Cloudflare Pages** — build auto sur push, CDN mondial, HTTPS auto, free tier généreux |
 
 ## Sources canoniques pour le contenu
@@ -60,47 +59,26 @@ Le site est aussi un labo perso : 4ᵉ projet où j'explore des stacks que je ne
 Pré-requis : Node 22 (ou 22+), npm.
 
 ```bash
-# Frontend
 cd frontend
 nvm use 22
 npm install
 npm run dev -- --host 0.0.0.0 --port 4299
 # → http://localhost:4299
-
-# Backend (optionnel — la Cloudflare Function couvre le même endpoint)
-cd backend
-npm install
-npm run start:dev
-# → http://localhost:3003/api/health
 ```
 
 ## Tests
 
-Le backend NestJS a des tests vitest (validation de l'environnement, santé) :
+Le site n'a plus de backend : c'est le build qui valide la cohérence (Content Collections + schéma Zod, types, intégrations Astro). Le frontend (composants Astro, îlots R3F) est vérifié visuellement.
 
 ```bash
-cd backend && npm test
+cd frontend && npm run build   # 79 pages
 ```
-
-→ 15 tests mockés (axios stubbé) — toujours verts, aucune dépendance réseau, sûrs pour CI.
-
-### Smoke tests live (RUN_LIVE_TESTS=1)
-
-4 tests supplémentaires hittent les **vraies APIs** Avatar Fandom + Wikipedia EN/FR pour détecter une rupture upstream (Fandom change le shape de la réponse, Wikipedia bloque le User-Agent, CDN qui réécrit le JSON…). Ces tests sont **skipped par défaut** — ils ne tournent qu'avec :
-
-```bash
-cd backend && RUN_LIVE_TESTS=1 npm test
-```
-
-À lancer **avant chaque release** pour valider que les sources externes répondent toujours. Idéalement, à câbler en CI sur un cron hebdomadaire (pas encore wiré). Pourquoi cette ceinture+bretelles : les 15 tests mockés vérifient la transformation, **pas l'URL réelle ni le contrat upstream** — un jour Fandom rate-limite notre User-Agent, le mock continue de répondre OK, et la nièce voit 70 cards en gradient cyan vide.
-
-Le frontend (Astro components, R3F islands) est testé visuellement — la nature statique du build garantit que `npm run build` valide la cohérence (Content Collections, types, intégrations).
 
 ## Build & déploiement
 
 ### Cloudflare Pages (production)
 
-Auto-déploiement à chaque push sur `main` via l'intégration GitHub. Voir **[DEPLOY.md](./DEPLOY.md)** pour la procédure complète (build settings, custom domain, Functions).
+Auto-déploiement à chaque push sur `main` via l'intégration GitHub. Voir **[DEPLOY.md](./DEPLOY.md)** pour la procédure complète (build settings, custom domain).
 
 ### NAS Synology (dev local + démo réseau)
 
@@ -122,7 +100,7 @@ avatar-pandora/
 ├── README.md                 ← ce fichier
 ├── DEPLOY.md                 ← guide Cloudflare Pages
 ├── LICENSE                   ← MIT (voir disclaimer Avatar IP plus bas)
-├── docker-compose.yml        ← infra NAS
+├── docker-compose.yml        ← infra NAS (frontend nginx seul)
 ├── frontend/
 │   ├── public/
 │   ├── src/
@@ -133,13 +111,6 @@ avatar-pandora/
 │   │   └── styles/global.css
 │   ├── Dockerfile
 │   └── nginx.conf
-├── backend/
-│   ├── src/
-│   │   ├── health/
-│   │   ├── app.module.ts
-│   │   └── main.ts
-│   ├── Dockerfile
-│   └── package.json
 └── docs/superpowers/
     ├── specs/                ← spec design initial
     └── plans/                ← plans d'implémentation V1, V2, V3
