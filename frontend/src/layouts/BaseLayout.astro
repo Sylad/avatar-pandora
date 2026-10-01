@@ -20,6 +20,8 @@ const { title = 'Eywa', description = 'Codex de Pandora' } = Astro.props;
     <meta name="description" content={description} />
     <meta name="version" content={BUILD_VERSION} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preload" href="/fonts/cormorant-garamond/CormorantGaramond-wght.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/orbitron/Orbitron-wght.woff2" as="font" type="font/woff2" crossorigin />
     <title>{title}</title>
     <ClientRouter />
   </head>

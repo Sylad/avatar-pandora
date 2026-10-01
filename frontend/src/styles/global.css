@@ -1,5 +1,34 @@
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Cormorant+Garamond:wght@300;400;500;600&display=swap');
 @import "tailwindcss";
+
+/*
+  Polices hébergées sur le site (public/fonts/, licence SIL OFL 1.1 à côté
+  de chaque fichier). Google Fonts était bloqué par la CSP (font-src 'self').
+  Fichiers variables tirés de github.com/google/fonts (ofl/orbitron,
+  ofl/cormorantgaramond), convertis en woff2 ; Cormorant Garamond est
+  réduit aux alphabets latins (le site est en français), Orbitron est
+  converti tel quel (nom de police réservé).
+*/
+@font-face {
+  font-family: 'Orbitron';
+  src: url('/fonts/orbitron/Orbitron-wght.woff2') format('woff2');
+  font-weight: 400 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Cormorant Garamond';
+  src: url('/fonts/cormorant-garamond/CormorantGaramond-wght.woff2') format('woff2');
+  font-weight: 300 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Cormorant Garamond';
+  src: url('/fonts/cormorant-garamond/CormorantGaramond-Italic-wght.woff2') format('woff2');
+  font-weight: 300 700;
+  font-style: italic;
+  font-display: swap;
+}
 
 @theme {
   /* Palette bioluminescente Pandora */
