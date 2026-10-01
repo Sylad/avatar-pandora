@@ -32,6 +32,7 @@ lots:
       - { id: t9, title: "Lightbox : img sans src marquée hidden quand elle est fermée — img vide dans le DOM de chaque page", status: todo }
     notes:
       - { date: 2026-10-01, text: "Revue UX 01-10 (cadence:ux-reviewer, prod) : À REPRENDRE — 2 bloquants (contraste : voile au-dessus du texte ; reflow : logo 420 px fixe), 3 majeurs (polices bloquées par la CSP, bouton audio sans fichier, animation sans pause), 4 mineurs ; captures et mesures dans tmp/ux-avatar-l2/" }
+      - { date: 2026-10-01, text: "Sylvain 01-10 : bouton audio masqué tant qu'il n'y a pas de fichier (option a) ; bouton pause de l'ambiance validé (jumeau du bouton audio)" }
   - id: L3
     title: Revue UX — Personnages (liste + fiche)
     status: todo
