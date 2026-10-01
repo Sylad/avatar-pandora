@@ -98,8 +98,13 @@ const pngSize = (rel: string) => {
     .news-header {
       margin-bottom: 2.5rem;
     }
-    /* Sur-titre et chapeau posés sur l'ambiance (dégradés, particules, halo du
-       curseur) : ombre sombre serrée, ≥ 4,5:1 au pire pixel (test header-contrast). */
+    /* Sur-titre, titre et chapeau posés sans carte sur l'ambiance du codex : le pollen
+       bioluminescent (particules cyan/vert vif) passe derrière les lettres. Halo de nuit
+       serré, empilé, qui assombrit le fond sous chaque glyphe sans se voir comme une
+       ombre : ≥ 4,5:1 au pire pixel (scripts/header-contrast.e2e.test.mjs). */
+    .news-header {
+      --news-halo: 0 0 1px #0a0a1f, 0 0 2px #0a0a1f, 0 0 3px #0a0a1f, 0 0 6px rgba(10, 10, 31, 0.85);
+    }
     .news-eyebrow {
       font-family: var(--font-display);
       font-size: 11px;
@@ -108,7 +113,7 @@ const pngSize = (rel: string) => {
       text-transform: uppercase;
       color: var(--color-eywa-text-muted);
       margin: 0 0 0.5rem;
-      text-shadow: 0 0 2px rgba(10, 10, 31, 0.95), 0 1px 3px rgba(10, 10, 31, 0.9);
+      text-shadow: var(--news-halo);
     }
     .news-title {
       font-family: var(--font-display);
@@ -118,14 +123,15 @@ const pngSize = (rel: string) => {
       color: var(--color-eywa-bio-primary);
       margin: 0 0 0.8rem;
       overflow-wrap: anywhere;
+      text-shadow: var(--news-halo);
     }
     .news-lede {
       font-family: var(--font-body);
       font-size: 1.15rem;
       line-height: 1.6;
-      color: var(--color-eywa-text-muted);
+      color: var(--color-eywa-text);
       margin: 0;
-      text-shadow: 0 0 2px rgba(10, 10, 31, 0.95), 0 1px 3px rgba(10, 10, 31, 0.9);
+      text-shadow: var(--news-halo);
     }
     .news-list {
       list-style: none;
