@@ -28,7 +28,7 @@ lots:
       - { id: t5, title: "Bouton pause/reprise de l'ambiance animée (jumeau du bouton audio, mémorisé) — WCAG 2.2.2 : boucle de 75 s + particules sans pause", status: done }
       - { id: t6, title: "Logo de l'accueil dans un <h1> (nom accessible Eywa) — axe page-has-heading-one, WCAG 1.3.1", status: done }
       - { id: t7, title: "Ne charger ParticleField (229 Ko br) qu'hors mouvement réduit + image de fond N+1 à la demande — 1,1 Mo transférés, 849 Ko de JS inutiles en mouvement réduit", status: done }
-      - { id: t8, title: "Rendre « clans, faune, langue » de l'accroche cliquables (style .eywa-link) — Nielsen n°7 : section à 2–3 clics de l'accueil", status: todo }
+      - { id: t8, title: "Rendre « clans, faune, langue » de l'accroche cliquables (style .eywa-link) — Nielsen n°7 : section à 2–3 clics de l'accueil", status: done }
       - { id: t9, title: "Lightbox : img sans src marquée hidden quand elle est fermée — img vide dans le DOM de chaque page", status: todo }
     notes:
       - { date: 2026-10-01, text: "Revue UX 01-10 (cadence:ux-reviewer, prod) : À REPRENDRE — 2 bloquants (contraste : voile au-dessus du texte ; reflow : logo 420 px fixe), 3 majeurs (polices bloquées par la CSP, bouton audio sans fichier, animation sans pause), 4 mineurs ; captures et mesures dans tmp/ux-avatar-l2/" }
