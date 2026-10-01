@@ -2,8 +2,10 @@
 interface Props {
   size?: number;
   glowing?: boolean;
+  /** Shrink with its container below `size` px (width: min(size, 100%)). */
+  fluid?: boolean;
 }
-const { size = 120, glowing = true } = Astro.props;
+const { size = 120, glowing = true, fluid = false } = Astro.props;
 
 // Reference the @theme tokens defined in global.css so palette changes propagate automatically.
 const lit = 'var(--color-eywa-bio-primary)';
@@ -25,7 +27,9 @@ const wrapperClass = glowing ? 'eywa-logo eywa-logo--breathing' : 'eywa-logo';
 ---
 <span
   class={wrapperClass}
-  style={`display:inline-block; line-height:0;`}
+  style={fluid
+    ? `display:block; line-height:0; width:min(${size}px, 100%);`
+    : `display:inline-block; line-height:0;`}
 >
   <!--
     Inner span carries the second animation (slow pulse glow) so it
@@ -34,7 +38,7 @@ const wrapperClass = glowing ? 'eywa-logo eywa-logo--breathing' : 'eywa-logo';
     translateY ; inner span overlays a slower tri-color glow that
     cycles cyan → magenta-tinged → cyan.
   -->
-  <span class="eywa-logo__inner">
+  <span class="eywa-logo__inner" style={fluid ? 'display:block;' : undefined}>
 <svg
   xmlns="http://www.w3.org/2000/svg"
   viewBox="0 0 280 80"
@@ -42,7 +46,9 @@ const wrapperClass = glowing ? 'eywa-logo eywa-logo--breathing' : 'eywa-logo';
   height={Math.round(size * 80 / 280)}
   aria-label="Eywa"
   role="img"
-  style={`font-family: var(--font-display);`}
+  style={fluid
+    ? `font-family: var(--font-display); display:block; width:100%; height:auto;`
+    : `font-family: var(--font-display);`}
 >
   <!-- E (lit) -->
   <text x="0" y="60" font-size="64" font-weight="700" fill={lit}>E</text>

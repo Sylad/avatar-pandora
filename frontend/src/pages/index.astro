@@ -22,17 +22,17 @@ import { CycleBackdrop } from '../components/cinema/CycleBackdrop';
   <CinemaCanvas client:only="react" mode="time" />
   <div class="bio-ambient" aria-hidden="true"></div>
 
-  <main class="relative z-10 min-h-screen flex flex-col items-center justify-center text-center px-6 py-20">
-    <EywaLogo size={420} />
-    <p class="mt-6 max-w-2xl text-eywa-text text-lg italic font-body landing-eywa-def" data-bio-split>
+  <main class="relative z-10 min-h-screen flex flex-col items-center justify-center text-center px-6 py-20 max-[399px]:px-4 max-[399px]:py-8">
+    <EywaLogo size={420} fluid />
+    <p class="mt-6 max-[399px]:mt-4 max-w-2xl text-eywa-text text-lg italic font-body landing-eywa-def" data-bio-split>
       <a href="/pandora/eywa/" class="eywa-link">Eywa</a> — déesse-mère et conscience-réseau de Pandora,
       mémoire vivante de tout ce qui respire.
     </p>
-    <p class="mt-6 max-w-xl text-eywa-text text-xl italic font-body landing-tagline" data-bio-split>
+    <p class="mt-6 max-[399px]:mt-4 max-w-xl text-eywa-text text-xl italic font-body landing-tagline" data-bio-split>
       « Je te vois. »<br/>
       Un codex visuel de Pandora — la lune, ses clans, sa faune, sa langue.
     </p>
-    <div class="mt-12 flex gap-4 justify-center">
+    <div class="mt-12 max-[399px]:mt-6 flex flex-wrap gap-4 max-[399px]:gap-3 justify-center">
       <a href="/pandora/intro/"
          class="px-6 py-3 rounded border border-eywa-bio-primary text-eywa-bio-primary hover:shadow-glow-bio transition-shadow backdrop-blur-sm bg-eywa-bg/30">
         Explorer le codex
