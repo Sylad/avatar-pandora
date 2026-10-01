@@ -1,10 +1,16 @@
 ---
 import EywaLogo from './EywaLogo.astro';
+import news from '../../public/nouveautes-data/nouveautes.json';
 
 interface Props {
   current?: string;
 }
 const { current } = Astro.props;
+
+// Index des Nouveautés (slug + date) pour la pastille « non vues » (L14).
+const newsIndex = JSON.stringify(
+  (news as { entries: { slug: string; date: string }[] }).entries.map(({ slug, date }) => ({ slug, date })),
+);
 
 const sections = [
   { slug: 'pandora', label: 'Pandora', href: '/pandora/' },
@@ -57,12 +63,18 @@ const sections = [
       href="/nouveautes/"
       class:list={['eywa-about__link', { 'is-active': current === 'nouveautes' }]}
       aria-current={current === 'nouveautes' ? 'page' : undefined}
+      data-news-index={newsIndex}
     >
       <svg class="eywa-about__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <path d="M12 3.5l1.9 5.1 5.1 1.9-5.1 1.9-1.9 5.1-1.9-5.1-5.1-1.9 5.1-1.9z" />
         <path d="M18.5 16.5l.7 1.8 1.8.7-1.8.7-.7 1.8-.7-1.8-1.8-.7 1.8-.7z" />
       </svg>
       <span>Nouveautés</span>
+      <!-- Pastille : entrées non vues depuis la dernière visite (rempli par le script). -->
+      <span class="eywa-news-badge" hidden>
+        <span class="eywa-news-badge__n" aria-hidden="true"></span>
+        <span class="sr-only eywa-news-badge__sr"></span>
+      </span>
     </a>
     <a href="/about/" class="eywa-about__link">
       <svg class="eywa-about__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -74,6 +86,65 @@ const sections = [
     </a>
   </div>
 </aside>
+
+<script>
+  /*
+    Pastille « Nouveautés » (L14, comme AetherWX) : nombre d'entrées non vues depuis la
+    dernière visite de /nouveautes/ (localStorage, src/lib/news-seen.ts). Sur la page
+    Nouveautés : séparateur « Déjà vu lors de ta visite du … » avant la première entrée
+    déjà vue, puis tout est marqué vu. Rejoué à chaque page (astro:page-load, ClientRouter).
+  */
+  import { badgeLabel, countUnseen, isUnseen, markAllSeen, readSeen, unseenLabel, type DatedEntry, type NewsSeen } from '../lib/news-seen';
+
+  const storage = () => {
+    try { return window.localStorage; } catch { return null; }
+  };
+
+  const seenSeparator = (entries: DatedEntry[], seen: NewsSeen | null) => {
+    document.querySelectorAll('.news-seen-sep').forEach((n) => n.remove());
+    const unseen = entries.map((e) => isUnseen(e, seen));
+    const lastNew = unseen.lastIndexOf(true);
+    if (lastNew < 0 || lastNew === entries.length - 1) return;
+    const article = document.getElementById(entries[lastNew + 1].slug);
+    const item = article?.closest('li');
+    if (!item?.parentElement) return;
+    const sep = document.createElement('li');
+    sep.className = 'news-seen-sep';
+    const when = seen?.at
+      ? new Date(seen.at).toLocaleString('fr-FR', { dateStyle: 'long', timeStyle: 'short' })
+      : '';
+    const label = document.createElement('span');
+    label.textContent = when ? `Déjà vu lors de ta visite du ${when}` : 'Déjà vu lors de ta visite précédente';
+    sep.append(label);
+    item.parentElement.insertBefore(sep, item);
+  };
+
+  const update = () => {
+    const link = document.querySelector<HTMLAnchorElement>('#eywa-sidebar a[data-news-index]');
+    if (!link) return;
+    let entries: DatedEntry[];
+    try { entries = JSON.parse(link.dataset.newsIndex ?? '[]'); } catch { return; }
+    const st = storage();
+    let seen = readSeen(st);
+    if (location.pathname.replace(/\/?$/, '/') === '/nouveautes/') {
+      seenSeparator(entries, seen);
+      seen = markAllSeen(st, entries) ?? seen;
+    }
+    const n = countUnseen(entries, seen);
+    const badge = link.querySelector<HTMLElement>('.eywa-news-badge');
+    if (badge) {
+      badge.hidden = n === 0;
+      const digits = badge.querySelector('.eywa-news-badge__n');
+      const sr = badge.querySelector('.eywa-news-badge__sr');
+      if (digits) digits.textContent = badgeLabel(n);
+      if (sr) sr.textContent = n ? `(${unseenLabel(n)})` : '';
+    }
+    const dot = document.querySelector<HTMLElement>('#eywa-burger .eywa-burger__dot');
+    if (dot) dot.hidden = n === 0;
+  };
+
+  document.addEventListener('astro:page-load', update);
+</script>
 
 <style>
   /* Bioluminescent right edge: faint always, brighter via the inner shadow.
@@ -176,6 +247,26 @@ const sections = [
   .eywa-about__link.is-active {
     color: var(--color-eywa-bio-primary);
     background-color: rgba(95, 255, 230, 0.10);
+  }
+
+  .eywa-news-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.35rem;
+    height: 1.35rem;
+    padding: 0 0.35rem;
+    margin-left: 0.15rem;
+    border-radius: 999px;
+    background: var(--color-eywa-bio-primary);
+    color: #0a0a1f;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0;
+    box-shadow: 0 0 12px -2px rgba(95, 255, 230, 0.7);
+  }
+  .eywa-news-badge[hidden] {
+    display: none;
   }
 
   .eywa-about__link:hover {

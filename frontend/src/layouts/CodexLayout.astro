@@ -59,6 +59,8 @@ const ambient = AMBIENTS[current ?? ''] ?? AMBIENTS.pandora;
       <path class="eywa-burger__line eywa-burger__line--mid" d="M3 12h18" />
       <path class="eywa-burger__line eywa-burger__line--bot" d="M3 18h18" />
     </svg>
+    <!-- Nouveautés non vues (L14) : le nombre est lu sur le lien du tiroir. -->
+    <span class="eywa-burger__dot" aria-hidden="true" hidden></span>
   </button>
 
   <!-- Overlay sombre cliquable derrière le drawer mobile -->
@@ -411,6 +413,19 @@ const ambient = AMBIENTS[current ?? ''] ?? AMBIENTS.pandora;
   .eywa-burger svg {
     width: 1.5rem;
     height: 1.5rem;
+  }
+  .eywa-burger__dot {
+    position: absolute;
+    top: 0.3rem;
+    right: 0.3rem;
+    width: 0.6rem;
+    height: 0.6rem;
+    border-radius: 999px;
+    background: var(--color-eywa-bio-secondary, #ff5dc4);
+    box-shadow: 0 0 0 2px #0a0a1f, 0 0 10px rgba(255, 93, 196, 0.8);
+  }
+  .eywa-burger__dot[hidden] {
+    display: none;
   }
   .eywa-burger__line {
     transition: transform 250ms ease, opacity 200ms ease;

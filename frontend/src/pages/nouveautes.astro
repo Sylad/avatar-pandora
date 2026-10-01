@@ -271,6 +271,34 @@ const pngSize = (rel: string) => {
       border-radius: 4px;
       cursor: zoom-in;
     }
+    /* « Déjà vu lors de ta visite du … » : inséré par le script de la pastille
+       (Sidebar.astro) avant la première entrée déjà vue, d'où :global. Texte sur une
+       pastille de nuit opaque : contraste garanti quel que soit le pollen derrière. */
+    .news-list :global(.news-seen-sep) {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .news-list :global(.news-seen-sep)::before,
+    .news-list :global(.news-seen-sep)::after {
+      content: '';
+      flex: 1;
+      min-width: 1rem;
+      border-top: 1px solid rgba(95, 255, 230, 0.3);
+    }
+    .news-list :global(.news-seen-sep span) {
+      flex: 0 1 auto;
+      padding: 0.3rem 0.85rem;
+      border-radius: 999px;
+      background: rgba(8, 12, 22, 0.95);
+      border: 1px solid rgba(95, 255, 230, 0.25);
+      font-family: var(--font-body);
+      font-style: italic;
+      font-size: 1rem;
+      line-height: 1.4;
+      text-align: center;
+      color: var(--color-eywa-text);
+    }
     .news-empty {
       color: var(--color-eywa-text-muted);
       font-style: italic;
