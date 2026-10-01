@@ -124,6 +124,36 @@ import { CycleBackdrop } from '../components/cinema/CycleBackdrop';
       0 0 30px rgba(95, 255, 230, 0.15);
   }
 
+  /* Words of the landing sentences : hover and touch pulse light up with a
+     magenta halo but KEEP the text colour. They used to turn the link cyan
+     (#5fffe6) and could be mistaken for the real links (Eywa, clans, faune,
+     langue). */
+  .landing-tagline :global(.bio-word:hover),
+  .landing-eywa-def :global(.bio-word:hover) {
+    color: inherit;
+    text-shadow:
+      0 0 8px rgba(255, 93, 196, 0.75),
+      0 0 18px rgba(255, 93, 196, 0.4),
+      0 2px 8px rgba(10, 10, 31, 0.95);
+  }
+  .landing-tagline :global(.bio-word.is-pulsing),
+  .landing-eywa-def :global(.bio-word.is-pulsing) {
+    animation-name: landing-word-glow;
+  }
+  @keyframes landing-word-glow {
+    0%, 100% {
+      color: inherit;
+      text-shadow: 0 2px 8px rgba(10, 10, 31, 0.95), 0 0 18px rgba(10, 10, 31, 0.85);
+    }
+    35%, 65% {
+      color: inherit;
+      text-shadow:
+        0 0 8px rgba(255, 93, 196, 0.75),
+        0 0 18px rgba(255, 93, 196, 0.4),
+        0 2px 8px rgba(10, 10, 31, 0.95);
+    }
+  }
+
   /* The "Eywa" link in the definition line. Rest state : a soft cyan
      baseline that hints "clickable" without screaming. Hover : the
      word lights up like a bio-word does in the codex prose. */
