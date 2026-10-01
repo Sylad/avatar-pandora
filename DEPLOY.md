@@ -37,7 +37,7 @@ Renseigner :
 
 Cliquer **Save and Deploy**. Cloudflare clone le repo, build, et déploie automatiquement.
 
-URL gratuite générée : `https://avatar-pandora.pages.dev` (ou `https://<projectname>.pages.dev`).
+URL du projet Pages : `https://avatar-pandora-12q.pages.dev` (`avatar-pandora.pages.dev` et `eywa.pages.dev` appartiennent à d'autres sites).
 
 Chaque `git push origin main` déclenche un rebuild automatique en ~2 min.
 
@@ -46,7 +46,7 @@ Chaque `git push origin main` déclenche un rebuild automatique en ~2 min.
 Le fichier `frontend/functions/api/wiki-image.ts` est automatiquement détecté et déployé comme Cloudflare Function. Tester :
 
 ```bash
-curl -sI https://avatar-pandora.pages.dev/api/wiki-image?q=Mountain%20Banshee
+curl -sI https://avatar-pandora-12q.pages.dev/api/wiki-image?q=Mountain%20Banshee
 # attendu : HTTP/2 200 + content-type: image/...
 ```
 
@@ -80,7 +80,7 @@ Garder les deux déploiements n'a aucun coût :
 | Cible | URL | Public ? | Quand l'utiliser |
 |---|---|---|---|
 | NAS Synology | `http://nas:4203` | LAN seulement | Dev local, démo à la maison |
-| Cloudflare Pages | `https://avatar-pandora.pages.dev` | Internet | Lien à envoyer à Eva, à montrer en société |
+| Cloudflare Pages | `https://avatar-pandora-12q.pages.dev` | Internet | Lien à envoyer à Eva, à montrer en société |
 
 Le frontend appelle `/api/wiki-image` sur la même origine, donc les 2 déploiements marchent indépendamment :
 

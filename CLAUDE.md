@@ -9,7 +9,7 @@ Codex Avatar/Pandora **cadeau pour Eva** (nièce de Sylvain, 18 ans, fan absolue
 | Stack | Astro 5/6 + îlots React 19 + @react-three/fiber + GSAP + Tailwind |
 | Contenu | Markdown/MDX via Astro Content Collections |
 | Backend | NestJS minimal (port 3003, pattern warhammer) — proxy images wiki **uniquement pour le NAS local** |
-| Cible publique | Cloudflare Pages (`https://eywa-eywa.pages.dev`) — backend porté en Cloudflare Function `frontend/functions/api/wiki-image.ts` |
+| Cible publique | Cloudflare Pages (`https://avatar-pandora-12q.pages.dev`) — backend porté en Cloudflare Function `frontend/functions/api/wiki-image.ts` |
 | Frontend NAS | port 4203 (env de validation locale, conservée) |
 
 ## Public + ton
