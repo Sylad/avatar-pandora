@@ -30,6 +30,7 @@ lots:
       - { id: t7, title: "Ne charger ParticleField (229 Ko br) qu'hors mouvement réduit + image de fond N+1 à la demande — 1,1 Mo transférés, 849 Ko de JS inutiles en mouvement réduit", status: done }
       - { id: t8, title: "Rendre « clans, faune, langue » de l'accroche cliquables (style .eywa-link) — Nielsen n°7 : section à 2–3 clics de l'accueil", status: done }
       - { id: t9, title: "Lightbox : img sans src marquée hidden quand elle est fermée — img vide dans le DOM de chaque page", status: done }
+      - { id: t10, title: "Chiffres alignés (lining-nums) pour Cormorant sur tout le site — « 900 000 » lu « 9oo ooo » (chiffres elzéviriens), revue de contrôle", status: done }
     notes:
       - { date: 2026-10-01, text: "Revue UX 01-10 (cadence:ux-reviewer, prod) : À REPRENDRE — 2 bloquants (contraste : voile au-dessus du texte ; reflow : logo 420 px fixe), 3 majeurs (polices bloquées par la CSP, bouton audio sans fichier, animation sans pause), 4 mineurs ; captures et mesures dans tmp/ux-avatar-l2/" }
       - { date: 2026-10-01, text: "Sylvain 01-10 : bouton audio masqué tant qu'il n'y a pas de fichier (option a) ; bouton pause de l'ambiance validé (jumeau du bouton audio)" }

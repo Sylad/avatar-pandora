@@ -71,6 +71,12 @@
     */
     font-size: 17.5px;
     line-height: 1.65;
+    /*
+      Cormorant Garamond dessine par défaut des chiffres elzéviriens :
+      « 900 000 » se lisait « 9oo ooo ». Chiffres alignés partout
+      (romain et italique ; la fonction lnum est conservée dans les woff2).
+    */
+    font-variant-numeric: lining-nums;
   }
   body {
     min-height: 100vh;
