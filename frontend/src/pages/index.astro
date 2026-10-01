@@ -24,7 +24,10 @@ import { CycleBackdrop } from '../components/cinema/CycleBackdrop';
   <div class="bio-ambient" aria-hidden="true"></div>
 
   <main class="relative z-10 min-h-screen flex flex-col items-center justify-center text-center px-6 py-20 max-[399px]:px-4 max-[399px]:py-8">
-    <EywaLogo size={420} fluid />
+    <!-- Titre de la page : le logo (svg role=img, aria-label « Eywa ») donne son nom au h1. -->
+    <h1 class="w-full flex justify-center m-0 leading-none">
+      <EywaLogo size={420} fluid />
+    </h1>
     <p class="mt-6 max-[399px]:mt-4 max-w-2xl text-eywa-text text-lg italic font-body landing-eywa-def" data-bio-split>
       <a href="/pandora/eywa/" class="eywa-link">Eywa</a> — déesse-mère et conscience-réseau de Pandora,
       mémoire vivante de tout ce qui respire.
