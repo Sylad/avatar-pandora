@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { useReducedMotion } from './useReducedMotion';
 import { CYCLE_MS, BACKDROP_PEAK_WIDTH, BACKDROP_MAX_OPACITY } from './config';
+import { atmosphereClock, useAtmospherePaused } from './atmosphere-clock';
 
 /**
  * Time-cycled image backdrop for the homepage. Cross-fades through 6
@@ -24,6 +25,7 @@ const SCENES = [
 
 export function CycleBackdrop() {
   const reduced = useReducedMotion();
+  const paused = useAtmospherePaused();
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -31,10 +33,12 @@ export function CycleBackdrop() {
     const imgs = containerRef.current.querySelectorAll<HTMLImageElement>('.cycle-img');
     if (imgs.length === 0) return;
 
-    const start = performance.now();
+    // Shared atmosphere clock (same as the particles) : when paused, one
+    // tick paints the frozen state and the loop stops.
+    const clock = atmosphereClock();
     let raf = 0;
     const tick = () => {
-      const elapsed = (performance.now() - start) % CYCLE_MS;
+      const elapsed = clock.now() % CYCLE_MS;
       const p = elapsed / CYCLE_MS;
       SCENES.forEach((scene, i) => {
         // Wrap-around distance — the cycle is circular so a scene at 0.00
@@ -46,11 +50,11 @@ export function CycleBackdrop() {
         const el = imgs[i];
         if (el) el.style.opacity = opacity.toFixed(3);
       });
-      raf = requestAnimationFrame(tick);
+      if (!paused) raf = requestAnimationFrame(tick);
     };
     tick();
     return () => cancelAnimationFrame(raf);
-  }, [reduced]);
+  }, [reduced, paused]);
 
   if (reduced) return null;
 

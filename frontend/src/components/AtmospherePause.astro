@@ -1,0 +1,112 @@
+---
+/*
+  Pause / reprise de l'ambiance animée de l'accueil (WCAG 2.2.2).
+
+  Jumeau visuel du bouton d'ambiance sonore (AmbientAudio.astro) : rond,
+  2,5 rem, en bas à droite, juste à sa gauche — ou à sa place quand le bouton
+  audio n'est pas rendu (pas de clip au build). Fige l'horloge partagée de
+  l'ambiance (images de fond + particules, cinema/atmosphere-clock.ts) et les
+  animations CSS du logo ; choix mémorisé dans localStorage comme l'audio.
+  Masqué en mouvement réduit : il n'y a alors rien d'animé à arrêter.
+*/
+import { HAS_AMBIENT_AUDIO } from '../lib/ambient-audio';
+---
+
+<button
+  id="eywa-atmo-toggle"
+  type="button"
+  class:list={['eywa-atmo-toggle', { 'eywa-atmo-toggle--beside-audio': HAS_AMBIENT_AUDIO }]}
+  aria-label="Pause de l’ambiance animée"
+  aria-pressed="false"
+  title="Mettre l’ambiance animée en pause"
+>
+  <svg class="icon-pause" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M9 5v14M15 5v14" />
+  </svg>
+  <svg class="icon-play" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M8 5l11 7-11 7V5z" />
+  </svg>
+</button>
+
+<script>
+  import { atmosphereClock, syncPausedClass } from './cinema/atmosphere-clock';
+
+  const bind = () => {
+    const btn = document.getElementById('eywa-atmo-toggle');
+    if (!btn || btn.dataset.bound === '1') return;
+    btn.dataset.bound = '1';
+    const clock = atmosphereClock();
+    const setUI = (paused: boolean) => {
+      btn.setAttribute('aria-pressed', paused ? 'true' : 'false');
+      btn.setAttribute('title', paused ? 'Reprendre l’ambiance animée' : 'Mettre l’ambiance animée en pause');
+      btn.classList.toggle('is-paused', paused);
+    };
+    syncPausedClass(clock.paused());
+    setUI(clock.paused());
+    btn.addEventListener('click', () => {
+      clock.setPaused(!clock.paused());
+      setUI(clock.paused());
+    });
+  };
+  // astro:page-load fires on first load and after every ClientRouter navigation.
+  document.addEventListener('astro:page-load', bind);
+  bind();
+</script>
+
+<style>
+  .eywa-atmo-toggle {
+    position: fixed;
+    bottom: 1rem;
+    right: 1rem;
+    z-index: 70;
+    width: 2.5rem;
+    height: 2.5rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border-radius: 999px;
+    border: 1px solid rgba(95, 255, 230, 0.28);
+    background: rgba(8, 12, 22, 0.65);
+    color: rgba(95, 255, 230, 0.55);
+    cursor: pointer;
+    backdrop-filter: blur(6px);
+    box-shadow:
+      0 0 14px -6px rgba(95, 255, 230, 0.40),
+      inset 0 0 0 1px rgba(95, 255, 230, 0.08);
+    transition: color 200ms ease, border-color 200ms ease, box-shadow 200ms ease, transform 150ms ease;
+    -webkit-tap-highlight-color: transparent;
+    opacity: 0.78;
+  }
+  /* Bouton audio présent : on se range juste à sa gauche (2,5 rem + 0,5 rem d'écart). */
+  .eywa-atmo-toggle--beside-audio { right: 4rem; }
+  .eywa-atmo-toggle:hover,
+  .eywa-atmo-toggle:focus-visible {
+    opacity: 1;
+    color: #5fffe6;
+    border-color: rgba(95, 255, 230, 0.55);
+    box-shadow: 0 0 22px -4px rgba(95, 255, 230, 0.65);
+  }
+  .eywa-atmo-toggle:active { transform: scale(0.95); }
+  .eywa-atmo-toggle.is-paused {
+    color: #5fffe6;
+    opacity: 1;
+    border-color: rgba(95, 255, 230, 0.65);
+    box-shadow: 0 0 26px -4px rgba(95, 255, 230, 0.7);
+  }
+  .eywa-atmo-toggle svg {
+    width: 1.15rem;
+    height: 1.15rem;
+  }
+  .eywa-atmo-toggle .icon-play { display: none; }
+  .eywa-atmo-toggle.is-paused .icon-pause { display: none; }
+  .eywa-atmo-toggle.is-paused .icon-play { display: block; }
+
+  @media (max-width: 480px) {
+    .eywa-atmo-toggle { bottom: 0.85rem; right: 0.85rem; }
+    .eywa-atmo-toggle--beside-audio { right: 3.85rem; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .eywa-atmo-toggle { display: none; }
+  }
+</style>

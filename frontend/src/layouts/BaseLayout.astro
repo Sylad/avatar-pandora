@@ -54,6 +54,8 @@ const { title = 'Eywa', description = 'Codex de Pandora' } = Astro.props;
 
         const pickAndPulse = () => {
           if (!visible.size) return;
+          // Ambiance de l'accueil mise en pause (AtmospherePause) : pas de pulsation.
+          if (document.documentElement.classList.contains('eywa-atmo-paused')) return;
           const arr = Array.from(visible).filter(
             (el) => el.isConnected && !el.classList.contains('is-pulsing')
           );

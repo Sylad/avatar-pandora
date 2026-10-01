@@ -183,6 +183,13 @@ const wrapperClass = glowing ? 'eywa-logo eywa-logo--breathing' : 'eywa-logo';
     animation-duration: 3.4s;
   }
 
+  /* Accueil : le bouton de pause de l'ambiance (AtmospherePause) fige aussi
+     la respiration du logo — WCAG 2.2.2. */
+  :global(html.eywa-atmo-paused) .eywa-logo--breathing,
+  :global(html.eywa-atmo-paused) .eywa-logo--breathing .eywa-logo__inner {
+    animation-play-state: paused;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .eywa-logo--breathing,
     .eywa-logo--breathing .eywa-logo__inner {

@@ -7,6 +7,7 @@ import { sampleScene } from './scene-timeline';
 import type { SceneState } from './scene-timeline';
 import { useReducedMotion } from './useReducedMotion';
 import { CYCLE_MS } from './config';
+import { atmosphereClock, useAtmospherePaused } from './atmosphere-clock';
 
 // Shape of the mouse-attractor ref shared with the SceneDriver.
 // `target.{x,y}` is the latest pointer NDC ; `current.{x,y}` is the
@@ -31,11 +32,14 @@ interface Props {
 function SceneDriver({
   progressRef,
   mouseRef,
+  paused,
 }: {
   progressRef: MutableRefObject<number>;
   mouseRef: MutableRefObject<MouseAttractor>;
+  /** Atmosphere paused : apply the frozen state once, render it, stop. */
+  paused: boolean;
 }) {
-  const { camera, scene } = useThree();
+  const { camera, scene, invalidate } = useThree();
   const stateRef = useRef<SceneState>({
     colorA: new Color('#000000'),
     colorB: new Color('#000000'),
@@ -74,11 +78,12 @@ function SceneDriver({
         u.uMouseStrength.value = m.current.strength;
       }
       camera.position.z = s.cameraZ;
-      raf = requestAnimationFrame(tick);
+      if (paused) invalidate();
+      else raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, [camera, progressRef, mouseRef]);
+  }, [camera, progressRef, mouseRef, paused, invalidate]);
 
   return null;
 }
@@ -88,6 +93,9 @@ export function CinemaCanvas({
   cycleMs = CYCLE_MS,
 }: Props = {}) {
   const reduced = useReducedMotion();
+  // Only the time-driven landing is pausable ; scroll mode follows the user.
+  const atmospherePaused = useAtmospherePaused();
+  const paused = mode === 'time' && atmospherePaused;
   const progressRef = useRef(0);
   const mouseRef = useRef<MouseAttractor>({
     target: { x: 0, y: 0, strength: 0 },
@@ -102,12 +110,14 @@ export function CinemaCanvas({
       // Time mode : loop the timeline indefinitely. Pandora atmospheres
       // shift on their own — forêt → Hometree → montagnes → océan →
       // volcan → reveal → loop. No scroll required.
-      const start = performance.now();
+      // Shared atmosphere clock (same as CycleBackdrop) so the pause
+      // button freezes images and particles together.
+      const clock = atmosphereClock();
       let raf = 0;
       const tick = () => {
-        const elapsed = (performance.now() - start) % cycleMs;
+        const elapsed = clock.now() % cycleMs;
         progressRef.current = elapsed / cycleMs;
-        raf = requestAnimationFrame(tick);
+        if (!paused) raf = requestAnimationFrame(tick);
       };
       tick();
       return () => cancelAnimationFrame(raf);
@@ -126,7 +136,7 @@ export function CinemaCanvas({
       window.removeEventListener('scroll', handler);
       window.removeEventListener('resize', handler);
     };
-  }, [reduced, mode, cycleMs]);
+  }, [reduced, mode, cycleMs, paused]);
 
   // Pointer attractor — lit by `pointermove` on window (the canvas itself
   // is `pointer-events: none` so events never reach it). Stops feeding
@@ -165,12 +175,13 @@ export function CinemaCanvas({
   return (
     <div className="fixed inset-0 z-0 pointer-events-none">
       <Canvas
+        frameloop={paused ? 'demand' : 'always'}
         camera={{ position: [0, 0, 8], fov: 60 }}
         dpr={[1, 1.5]}
         gl={{ antialias: true, alpha: true, powerPreference: 'low-power' }}
       >
         <ParticleField count={typeof window !== 'undefined' && window.innerWidth < 768 ? 1000 : 2000} />
-        <SceneDriver progressRef={progressRef} mouseRef={mouseRef} />
+        <SceneDriver progressRef={progressRef} mouseRef={mouseRef} paused={paused} />
       </Canvas>
     </div>
   );

@@ -53,10 +53,14 @@ export function ParticleField({
     [],
   );
 
-  useFrame((state) => {
+  // uTime advances by the frame delta (clamped) rather than following the
+  // wall clock : when the landing atmosphere is paused the canvas stops
+  // rendering, and on resume the particles carry on from where they froze
+  // instead of jumping ahead by the paused duration.
+  useFrame((_state, delta) => {
     if (matRef.current) {
-      (matRef.current.uniforms.uTime as { value: number }).value =
-        state.clock.elapsedTime;
+      (matRef.current.uniforms.uTime as { value: number }).value +=
+        Math.min(delta, 0.1);
     }
   });
 
