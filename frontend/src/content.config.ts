@@ -5,8 +5,10 @@ const codexEntrySchema = z.object({
   title: z.string(),
   summary: z.string(),
   order: z.number().optional(),
-  // cover is either a wiki search query (resolved via /api/wiki-image?q=...)
-  // OR a full URL (for non-wiki images). Both forms accepted.
+  // cover : image hosted by the site ("/…") or a full https URL. A bare
+  // title (e.g. "Toruk") is the Fandom subject of the former proxy, removed in
+  // L16 : it renders the default visual (src/lib/cover.ts) until L17 hosts
+  // an illustration for it.
   cover: z.string().optional(),
 });
 

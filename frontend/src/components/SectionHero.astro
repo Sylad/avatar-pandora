@@ -11,17 +11,20 @@ interface Props {
   label: string;
   title: string;
   tagline: string;
-  cover: string;
+  cover?: string;
 }
+import CoverFallback from './CoverFallback.astro';
+import { coverImageSrc } from '../lib/cover';
+
 const { roman, label, title, tagline, cover } = Astro.props;
 
-const imgSrc = cover.startsWith('http')
-  ? cover
-  : `/api/wiki-image?q=${encodeURIComponent(cover)}`;
+// Image hébergée par le site, sinon visuel par défaut (proxy Fandom retiré, L16).
+const imgSrc = coverImageSrc(cover);
 ---
 <header class="section-hero">
-  <img src={imgSrc} alt={title} class="section-hero__img"
-       onerror="this.style.display='none'" />
+  {imgSrc
+    ? <img src={imgSrc} alt="" class="section-hero__img" />
+    : <CoverFallback mark={false} />}
   <div class="section-hero__veil"></div>
   <div class="section-hero__content">
     <p class="section-hero__roman">{roman} — {label}</p>

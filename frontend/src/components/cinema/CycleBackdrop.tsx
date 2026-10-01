@@ -13,13 +13,21 @@ import { atmosphereClock, useAtmospherePaused } from './atmosphere-clock';
  * transforms around them.
  */
 
-const SCENES = [
-  { at: 0.00, query: 'Pandora' },              // reveal — globe + floating mountains
-  { at: 0.18, query: 'Banshee' },              // forêt — flying creature in jungle
-  { at: 0.36, query: 'Hometree' },             // Hometree
-  { at: 0.54, query: 'Hallelujah Mountains' }, // mountains
-  { at: 0.72, query: 'Metkayina' },            // ocean clan
-  { at: 0.88, query: 'Ash People' },           // Fire & Ash volcano
+/**
+ * `src` = image hosted by the site (public/…). Until 01-10-2026 these came
+ * from the Fandom proxy /api/wiki-image, removed in L16 (Fandom answers with
+ * an anti-bot challenge, and Sylvain chose not to work around it). Scenes
+ * without `src` are skipped — no request ; the landing then shows its
+ * particles over the plain night background until site-hosted
+ * illustrations land (L17). `subject` keeps what each scene should show.
+ */
+const SCENES: { at: number; subject: string; src: string | null }[] = [
+  { at: 0.00, subject: 'Pandora vue de l’espace', src: null },  // reveal
+  { at: 0.18, subject: 'Banshee en vol (forêt)', src: null },  // forêt
+  { at: 0.36, subject: 'Hometree', src: null },
+  { at: 0.54, subject: 'Montagnes Alléluia', src: null },
+  { at: 0.72, subject: 'Metkayina (océan)', src: null },
+  { at: 0.88, subject: 'Peuple des Cendres (volcan)', src: null },
 ];
 
 
@@ -59,7 +67,7 @@ export function CycleBackdrop() {
       let grew = false;
       SCENES.forEach((scene, i) => {
         const dist = circularDistance(p, scene.at);
-        if (dist < BACKDROP_PEAK_WIDTH + LOAD_AHEAD && !requested.has(i)) {
+        if (scene.src && dist < BACKDROP_PEAK_WIDTH + LOAD_AHEAD && !requested.has(i)) {
           requested.add(i);
           grew = true;
         }
@@ -86,7 +94,7 @@ export function CycleBackdrop() {
             ref={(el) => {
               imgRefs.current[i] = el;
             }}
-            src={`/api/wiki-image?q=${encodeURIComponent(scene.query)}`}
+            src={scene.src ?? undefined}
             alt=""
             aria-hidden="true"
             className="cycle-img"

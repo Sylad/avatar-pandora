@@ -1,6 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content';
 import CodexLayout from '../../layouts/CodexLayout.astro';
+import EntryCover from '../../components/EntryCover.astro';
 
 export async function getStaticPaths() {
   const entries = await getCollection('pandora');
@@ -13,22 +14,10 @@ export async function getStaticPaths() {
 const { entry } = Astro.props;
 const { Content } = await render(entry);
 
-let coverSrc: string | undefined;
-if (entry.data.cover) {
-  coverSrc = entry.data.cover.startsWith('http')
-    ? entry.data.cover
-    : `/api/wiki-image?q=${encodeURIComponent(entry.data.cover)}`;
-}
 ---
 <CodexLayout title={`${entry.data.title} — Eywa`} current="pandora">
   <article class="prose prose-invert max-w-4xl mx-auto">
-    {coverSrc && (
-      <div class="aspect-[21/9] rounded-md overflow-hidden mb-12 border border-eywa-text-muted/20" data-lightbox>
-        <img src={coverSrc} alt={entry.data.title}
-             class="w-full h-full object-cover"
-             onerror="this.parentElement.style.display='none'" />
-      </div>
-    )}
+    <EntryCover cover={entry.data.cover} title={entry.data.title} section="Pandora" />
     <h1 class="font-display text-4xl text-eywa-bio-primary mb-3">{entry.data.title}</h1>
     <p class="text-eywa-text-muted text-lg italic mb-10">{entry.data.summary}</p>
     <div class="text-eywa-text leading-relaxed font-body text-lg">

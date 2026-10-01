@@ -5,25 +5,24 @@ interface Props {
   summary: string;
   cover?: string;
 }
-const { href, title, summary, cover } = Astro.props;
+import CoverFallback from './CoverFallback.astro';
+import { coverImageSrc } from '../lib/cover';
 
-let imgSrc: string | undefined;
-if (cover) {
-  imgSrc = cover.startsWith('http') ? cover : `/api/wiki-image?q=${encodeURIComponent(cover)}`;
-}
+const { href, title, summary, cover } = Astro.props;
+// Image hébergée par le site ou visuel par défaut (proxy Fandom retiré, L16).
+const imgSrc = coverImageSrc(cover);
 ---
 <a href={href} class="entry-card group">
   {imgSrc ? (
     <div class="entry-card__media">
       <img src={imgSrc}
-           alt={title}
+           alt=""
            loading="lazy"
-           class="entry-card__img"
-           onerror="this.style.display='none'" />
+           class="entry-card__img" />
     </div>
   ) : (
-    <div class="entry-card__media entry-card__media--placeholder">
-      <span class="font-display text-eywa-bio-primary/50 tracking-widest text-sm">EYWA</span>
+    <div class="entry-card__media">
+      <CoverFallback size={96} />
     </div>
   )}
   <div class="entry-card__body">
@@ -160,16 +159,6 @@ if (cover) {
     aspect-ratio: 4 / 3;
     background: var(--color-eywa-bg);
     overflow: hidden;
-  }
-
-  .entry-card__media--placeholder {
-    background:
-      radial-gradient(ellipse at 30% 30%, rgba(95, 255, 230, 0.18), transparent 60%),
-      radial-gradient(ellipse at 70% 70%, rgba(127, 255, 143, 0.12), transparent 60%),
-      linear-gradient(135deg, var(--color-eywa-bg), rgba(74, 74, 143, 0.20));
-    display: flex;
-    align-items: center;
-    justify-content: center;
   }
 
   .entry-card__img {

@@ -1,0 +1,57 @@
+---
+/*
+  Visuel par défaut d'une fiche sans image (L16) : lueurs bioluminescentes de
+  la palette Eywa + logo estompé + nom de la section. Décoratif (aria-hidden) :
+  le titre de la fiche est toujours écrit à côté. Remplit son parent
+  (position absolute, inset 0) : le parent fixe le format (4:3, 21:9…).
+  Aucune requête réseau.
+*/
+import EywaLogo from './EywaLogo.astro';
+
+interface Props {
+  /** Nom de la section affiché sous le logo (ex. « Bestiaire »). */
+  label?: string;
+  /** Taille du logo en px. */
+  size?: number;
+  /** false : lueurs seules, sans logo (bandeaux qui portent déjà un titre). */
+  mark?: boolean;
+}
+const { label, size = 120, mark = true } = Astro.props;
+---
+<div class="cover-fallback" aria-hidden="true">
+  {mark && (
+    <div class="cover-fallback__mark">
+      <EywaLogo size={size} glowing={false} />
+      {label && <span class="cover-fallback__label">{label}</span>}
+    </div>
+  )}
+</div>
+
+<style>
+  .cover-fallback {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background:
+      radial-gradient(ellipse 55% 60% at 22% 28%, rgba(95, 255, 230, 0.16), transparent 70%),
+      radial-gradient(ellipse 50% 55% at 80% 78%, rgba(127, 255, 143, 0.10), transparent 70%),
+      radial-gradient(ellipse 40% 45% at 85% 15%, rgba(255, 93, 196, 0.08), transparent 70%),
+      linear-gradient(135deg, var(--color-eywa-bg), rgba(74, 74, 143, 0.22));
+  }
+  .cover-fallback__mark {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.6rem;
+    opacity: 0.55;
+  }
+  .cover-fallback__label {
+    font-family: var(--font-display);
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--color-eywa-bio-primary);
+  }
+</style>
