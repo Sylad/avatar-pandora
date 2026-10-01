@@ -142,9 +142,10 @@ lots:
     finished: 2026-10-01
   - id: L19
     title: Retirer le déploiement NAS d'Eywa (docker-compose, Dockerfile, nginx.conf, doc NAS) — site servi uniquement par Cloudflare Pages ; copie NAS supprimée
-    status: doing
+    status: done
     estimate: 0.25
     created: 2026-10-01
     notes:
       - { date: 2026-10-01, text: "Sylvain 01-10 : plus rien en prod sur le NAS (médias et sauvegardes uniquement), autorisé" }
     started: 2026-10-01
+    finished: 2026-10-01
