@@ -2,7 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import EywaLogo from '../components/EywaLogo.astro';
 import AtmospherePause from '../components/AtmospherePause.astro';
-import { CinemaCanvas } from '../components/cinema/CinemaCanvas';
+import { LandingParticles } from '../components/cinema/LandingParticles';
 import { CycleBackdrop } from '../components/cinema/CycleBackdrop';
 ---
 <BaseLayout title="Eywa — Codex de Pandora" description="Un codex visuel de Pandora — la lune, ses clans, sa faune, sa langue.">
@@ -12,7 +12,8 @@ import { CycleBackdrop } from '../components/cinema/CycleBackdrop';
       1. CycleBackdrop : 6 Pandora location images cross-fading on a
          75-second loop (forêt → Hometree → Hallelujah → Metkayina →
          Fire & Ash → reveal).
-      2. CinemaCanvas (mode='time') : the bioluminescent particle field
+      2. LandingParticles → CinemaCanvas (mode='time'), loaded only
+         outside reduced motion : the bioluminescent particle field
          drives uniforms on the SAME 75s loop, so atmosphere colors
          match the visible image.
       3. Bio-ambient gradient (the 4 radial blobs from CodexLayout
@@ -20,7 +21,7 @@ import { CycleBackdrop } from '../components/cinema/CycleBackdrop';
     The user sits, breathes, and Pandora transforms around them.
   -->
   <CycleBackdrop client:only="react" />
-  <CinemaCanvas client:only="react" mode="time" />
+  <LandingParticles client:only="react" />
   <div class="bio-ambient" aria-hidden="true"></div>
 
   <main class="relative z-10 min-h-screen flex flex-col items-center justify-center text-center px-6 py-20 max-[399px]:px-4 max-[399px]:py-8">

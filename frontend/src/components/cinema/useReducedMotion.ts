@@ -1,7 +1,14 @@
 import { useEffect, useState } from 'react';
 
 export function useReducedMotion(): boolean {
-  const [reduced, setReduced] = useState(false);
+  // Read synchronously on first render (islands are client:only) so that
+  // nothing animated — images, WebGL chunk — is requested before the
+  // preference is known.
+  const [reduced, setReduced] = useState(
+    () =>
+      typeof window !== 'undefined' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+  );
   useEffect(() => {
     if (typeof window === 'undefined') return;
     const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
