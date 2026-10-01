@@ -106,3 +106,20 @@ lots:
       - { date: 2026-10-01, text: "Sylvain 01-10 : validé (signature commune, livraisons des revues UX par cadence deliver)" }
     started: 2026-10-01
     finished: 2026-10-01
+  - id: L16
+    title: "PANNE PROD : /api/wiki-image en 502 — static.wikia.nocookie.net (Fandom) répond 403 « Just a moment… » (défi anti-robot) à la Function ; images du codex absentes. Trouver une source légitime (pas de contournement de l'anti-robot)"
+    status: todo
+    estimate: 0.5
+    created: 2026-10-01
+    notes:
+      - { date: 2026-10-01, text: "constaté 01-10 par l'agent L2 et revérifié (curl 502) ; à trancher avec Sylvain : source d'images" }
+      - { date: 2026-10-01, text: "Sylvain 01-10 : PAS de contournement de l'anti-robot Fandom ni de captures du film (droits Disney). L16 = correctif immédiat : retirer le proxy Fandom, visuel par défaut propre quand une fiche n'a pas d'image." }
+  - id: L17
+    title: "Illustrations propres hébergées sur le site (style Pandora, générées ou dessinées, sans droits tiers) : fiches les plus vues d'abord, visuel par défaut ailleurs"
+    status: todo
+    estimate: 2
+    visible: true
+    after: [ L16 ]
+    created: 2026-10-01
+    notes:
+      - { date: 2026-10-01, text: "Sylvain 01-10 : décidé avec L16 (option b, images à nous)" }
