@@ -16,7 +16,7 @@ lots:
     finished: 2026-09-28
   - id: L2
     title: Revue UX — Accueil
-    status: doing
+    status: done
     estimate: 0.25
     created: 2026-09-28
     started: 2026-10-01
@@ -35,6 +35,8 @@ lots:
     notes:
       - { date: 2026-10-01, text: "Revue UX 01-10 (cadence:ux-reviewer, prod) : À REPRENDRE — 2 bloquants (contraste : voile au-dessus du texte ; reflow : logo 420 px fixe), 3 majeurs (polices bloquées par la CSP, bouton audio sans fichier, animation sans pause), 4 mineurs ; captures et mesures dans tmp/ux-avatar-l2/" }
       - { date: 2026-10-01, text: "Sylvain 01-10 : bouton audio masqué tant qu'il n'y a pas de fichier (option a) ; bouton pause de l'ambiance validé (jumeau du bouton audio)" }
+    ux: { date: 2026-10-01, verdict: "conforme — revue initiale (à reprendre : 2 bloquants, 3 majeurs) puis contrôle (9/9 levés, conforme avec réserves) puis t10 lining-nums et t11 pulsation hors cyan : contraste ≥ 4,5:1 sur les 6 scènes, aucun débordement 320/390, polices chargées sans erreur CSP, pause persistante, h1, 0,44 Mo en mouvement réduit ; visuel de transition sans scènes de fond validé par Sylvain (01-10)" }
+    finished: 2026-10-01
   - id: L3
     title: Revue UX — Personnages (liste + fiche)
     status: todo
@@ -110,13 +112,15 @@ lots:
     finished: 2026-10-01
   - id: L16
     title: "PANNE PROD : /api/wiki-image en 502 — static.wikia.nocookie.net (Fandom) répond 403 « Just a moment… » (défi anti-robot) à la Function ; images du codex absentes. Trouver une source légitime (pas de contournement de l'anti-robot)"
-    status: doing
+    status: done
     estimate: 0.5
     created: 2026-10-01
     notes:
       - { date: 2026-10-01, text: "constaté 01-10 par l'agent L2 et revérifié (curl 502) ; à trancher avec Sylvain : source d'images" }
       - { date: 2026-10-01, text: "Sylvain 01-10 : PAS de contournement de l'anti-robot Fandom ni de captures du film (droits Disney). L16 = correctif immédiat : retirer le proxy Fandom, visuel par défaut propre quand une fiche n'a pas d'image." }
+      - { date: 2026-10-01, text: relecture sans défaut bloquant ; visuel de transition validé par Sylvain 01-10 }
     started: 2026-10-01
+    finished: 2026-10-01
   - id: L17
     title: "Illustrations propres hébergées sur le site (style Pandora, générées ou dessinées, sans droits tiers) : fiches les plus vues d'abord, visuel par défaut ailleurs"
     status: todo
@@ -126,3 +130,10 @@ lots:
     created: 2026-10-01
     notes:
       - { date: 2026-10-01, text: "Sylvain 01-10 : décidé avec L16 (option b, images à nous)" }
+  - id: L18
+    title: "Supprimer le backend NestJS d'Eywa (ne sert plus que /api/health depuis le retrait du proxy Fandom) : dossier backend, conteneur et proxy nginx /api du NAS, docker-compose, docs"
+    status: todo
+    estimate: 0.5
+    created: 2026-10-01
+    notes:
+      - { date: 2026-10-01, text: "Sylvain 01-10 : à faire dès maintenant" }
