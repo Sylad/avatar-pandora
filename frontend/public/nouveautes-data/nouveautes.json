@@ -1,0 +1,19 @@
+{
+  "project": "avatar-pandora",
+  "generated": "2026-10-01 22:11",
+  "entries": [
+    {
+      "slug": "2026-10-01-un-accueil-plus-lisible-et-une-ambiance-que-l-on-peut-mettre",
+      "title": "Un accueil plus lisible, et une ambiance que l'on peut mettre en pause",
+      "date": "2026-10-01",
+      "lots": [
+        "L2"
+      ],
+      "captures": [
+        "captures/L2-accueil-bureau.png",
+        "captures/L2-accueil-telephone.png"
+      ],
+      "html": "<p>La page d'accueil d'Eywa a été revue pour se lire aussi bien qu'elle se regarde.</p>\n<ul><li><strong>Les textes ressortent mieux</strong> : le voile sombre passe désormais sous les mots et non plus dessus, quelle que soit l'image de Pandora qui défile derrière.</li><li><strong>Les vraies polices sont enfin là</strong>, sur tout le site : Orbitron pour les titres, Cormorant Garamond pour les textes. Elles ne se chargeaient pas jusqu'ici.</li><li><strong>Un bouton pause</strong>, en bas à droite, fige l'ambiance (images, lucioles et halo du logo). Un second appui la relance, et le site se souvient de ton choix à la prochaine visite.</li><li>Dans la phrase d'accueil, <strong>« clans », « faune » et « langue »</strong> mènent directement aux pages correspondantes.</li><li><strong>Au téléphone</strong>, le logo s'adapte à la largeur de l'écran et les boutons restent visibles sans faire défiler, même sur un petit écran.</li><li>Le bouton du son est retiré tant que la bande-son de la forêt n'est pas prête : il reviendra avec elle.</li><li>L'accueil s'ouvre plus vite : les images arrivent au fil de la boucle, et rien d'animé ne se télécharge si ton appareil demande de réduire les animations.</li></ul>"
+    }
+  ]
+}
