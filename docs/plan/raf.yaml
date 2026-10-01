@@ -94,12 +94,15 @@ lots:
     created: 2026-09-28
   - id: L14
     title: Page Nouveautés branchée sur cadence news (raf news → page), signature commune des apps
-    status: todo
+    status: done
     estimate: 0.5
     visible: true
     created: 2026-09-28
     notes:
       - { date: 2026-09-28, text: "Sylvain 28-09 : ordre DÉCROISSANT, la nouveauté la plus récente en haut (départage à date égale corrigé dans cadence news)" }
+    started: 2026-10-01
+    ux: { date: 2026-10-01, verdict: "OK (repasse) — 4 constats levés : tiroir inert/piège de Tab, visionneuse ×3,4 au téléphone, en-tête ≥ 4,49:1 au p0,1 %, burger masqué ≥ 1024 ; pastille, séparateur et lien permanent conformes ; 2 finitions → lot dédié" }
+    finished: 2026-10-01
   - id: L15
     title: "Livraison cadence : cadence.yaml (deploy = push → Cloudflare Pages, verify = la page sert la NOUVELLE version, pas seulement 200)"
     status: done
@@ -149,3 +152,16 @@ lots:
       - { date: 2026-10-01, text: "Sylvain 01-10 : plus rien en prod sur le NAS (médias et sauvegardes uniquement), autorisé" }
     started: 2026-10-01
     finished: 2026-10-01
+  - id: L20
+    title: "Page « Plan de travail » : ce qui est prévu, en cours et récemment livré, généré au build depuis docs/plan/raf.yaml (titres et états seulement, jamais les notes) — inspirée de la page « À venir » d'AetherWX"
+    status: todo
+    estimate: 0.5
+    visible: true
+    created: 2026-10-01
+  - id: L21
+    title: "Nouveautés, finitions a11y : séparateur « Déjà vu » hors de la liste (role separator, WCAG 1.3.1) ; nombre de nouveautés non vues dans le nom du burger au téléphone (repasse UX L14)"
+    status: todo
+    estimate: 0.1
+    quickwin: true
+    visible: true
+    created: 2026-10-01
