@@ -77,34 +77,25 @@ Garder les deux déploiements n'a aucun coût :
 
 Le frontend est statique sur les deux cibles ; il n'y a plus de backend (NAS compris).
 
-### Retirer l'ancien conteneur `eywa-backend` du NAS (à faire une fois)
+### Retirer l'ancienne image `eywa-backend` du NAS (à faire une fois)
 
-Depuis le 01-10-2026, `docker-compose.yml` ne déclare plus que `eywa-frontend`, et `frontend/nginx.conf` n'a plus de `location /api/`. Sur le NAS, l'ancien conteneur `avatar-pandora-eywa-backend-1` tourne encore tant qu'on ne l'a pas retiré. Depuis Big-Blue, à la racine du dépôt :
+Depuis le 01-10-2026, `docker-compose.yml` ne déclare plus que `eywa-frontend`, et `frontend/nginx.conf` n'a plus de `location /api/`. Constat du 01-10-2026 : **aucun conteneur `avatar-pandora` ne tourne sur le NAS** (la copie NAS est éteinte) ; il ne reste que deux images de mai, dont `avatar-pandora-eywa-backend:latest` (181 Mo).
+
+⚠ En ssh non interactif, `docker` n'est pas dans le PATH du NAS : utiliser `/usr/local/bin/docker`.
 
 ```bash
-# 1. Synchroniser les sources : --delete supprime aussi backend/ côté NAS
+# Ménage : supprimer l'image du backend
+ssh nas "/usr/local/bin/docker image rm avatar-pandora-eywa-backend:latest"
+
+# Seulement si l'on veut RALLUMER la copie NAS (facultatif) : synchroniser les sources
+# (--delete retire backend/, api/, frontend/functions/ obsolètes ; aucune donnée sur le NAS)
 rsync --rsync-path=/usr/bin/rsync -avz --delete \
   --exclude node_modules --exclude dist --exclude .astro --exclude .git \
   ./ \
   nas:/volume2/docker/developpeur/avatar-pandora/
-
-# 2. Reconstruire le frontend (nginx sans proxy /api/) ET supprimer le conteneur
-#    orphelin eywa-backend, dans la même commande : l'ancien nginx.conf référence
-#    l'hôte eywa-backend et ne redémarrerait plus sans lui.
-ssh nas "cd /volume2/docker/developpeur/avatar-pandora && docker compose up -d --build --force-recreate --remove-orphans"
-
-# 3. Vérifier : seul avatar-pandora-eywa-frontend-1 doit rester
-ssh nas "docker ps -a --filter name=avatar-pandora"
-#    s'il reste un avatar-pandora-eywa-backend-1 :
-ssh nas "docker rm -f avatar-pandora-eywa-backend-1"
-
-# 4. Contrôler le site et l'absence d'API (attendu : 200 puis 404)
-curl -s -o /dev/null -w '%{http_code}\n' http://nas:4203/
-curl -s -o /dev/null -w '%{http_code}\n' http://nas:4203/api/health
-
-# 5. Ménage : supprimer l'image du backend (son nom exact dépend de la version de compose)
-ssh nas "docker image ls | grep -i eywa-backend"
-ssh nas "docker image rm avatar-pandora-eywa-backend"   # ou avatar-pandora_eywa-backend
+ssh nas "cd /volume2/docker/developpeur/avatar-pandora && /usr/local/bin/docker compose up -d --build --force-recreate --remove-orphans"
+curl -s -o /dev/null -w '%{http_code}\n' http://nas:4203/            # attendu 200
+curl -s -o /dev/null -w '%{http_code}\n' http://nas:4203/api/health  # attendu 404
 ```
 
 ## Coûts

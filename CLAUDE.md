@@ -33,7 +33,7 @@ Pattern technique réutilisable : `CinemaCanvas` mode `'time'` + `CycleBackdrop`
 
 ## Pas de ChatGPT — silence complet
 
-**Important** : Eywa n'utilise **PAS** ChatGPT. Logo SVG codé custom, visuels = proxy wiki + concept art linké.
+**Important** : Eywa n'utilise **PAS** ChatGPT. Logo SVG codé custom, visuels = fonds et illustrations hébergés sur le site (le proxy wiki Fandom a été retiré le 01-10-2026).
 
 ❌ Ne pas mentionner ChatGPT dans la page About / README / commits — **même pour le nier**. Confirmé 2026-05-03 + reconfirmé 2026-05-06 : *"je ne l'ai pas utilisé, pas besoin d'en parler"*. Crédits = humain + Claude Code uniquement.
 
@@ -62,7 +62,7 @@ NAS = env de validation locale (rsync sources puis `docker compose up --build --
 
 ```bash
 # NAS local
-ssh nas "cd /volume2/docker/developpeur/avatar-pandora && docker compose up -d --build --force-recreate eywa-frontend"
+ssh nas "cd /volume2/docker/developpeur/avatar-pandora && /usr/local/bin/docker compose up -d --build --force-recreate eywa-frontend"
 ```
 
 ## Pas de deadline

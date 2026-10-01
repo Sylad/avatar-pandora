@@ -88,7 +88,7 @@ rsync --rsync-path=/usr/bin/rsync -avz --delete \
   ./ \
   nas:/volume2/docker/developpeur/avatar-pandora/
 
-ssh nas "docker compose -f /volume2/docker/developpeur/avatar-pandora/docker-compose.yml up -d --build"
+ssh nas "/usr/local/bin/docker compose -f /volume2/docker/developpeur/avatar-pandora/docker-compose.yml up -d --build"
 ```
 
 → http://nas:4203
