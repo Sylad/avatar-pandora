@@ -398,6 +398,13 @@ const ambient = AMBIENTS[current ?? ''] ?? AMBIENTS.pandora;
     transition: box-shadow 200ms ease, transform 150ms ease;
     -webkit-tap-highlight-color: transparent;
   }
+  /* Le display ci-dessus (style scopé, hors couche) écrasait lg:hidden de Tailwind :
+     le bouton s'affichait au bureau et bloquait le défilement (revue UX L14). */
+  @media (min-width: 1024px) {
+    .eywa-burger {
+      display: none;
+    }
+  }
   .eywa-burger:active {
     transform: scale(0.96);
   }

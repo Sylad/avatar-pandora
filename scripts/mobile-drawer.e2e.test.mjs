@@ -128,3 +128,16 @@ test('320/390 px, clavier : tiroir fermé hors de l’ordre de tabulation, ouver
     await context.close();
   }
 });
+
+test('≥ 1024 px : pas de bouton menu, la barre latérale reste dans l’ordre de tabulation', { timeout: 60_000 }, async (t) => {
+  const env = await setupBrowser(t);
+  if (!env) return;
+  for (const width of [1024, 1440]) {
+    const context = await env.browser.newContext({ viewport: { width, height: 900 } });
+    const page = await context.newPage();
+    await page.goto(`${env.base}/nouveautes/`, { waitUntil: 'load' });
+    assert.equal(await page.evaluate(() => getComputedStyle(document.getElementById('eywa-burger')).display), 'none', `${width}px : bouton menu affiché`);
+    assert.equal(await page.evaluate(() => document.getElementById('eywa-sidebar').inert), false, `${width}px : barre latérale inerte`);
+    await context.close();
+  }
+});
