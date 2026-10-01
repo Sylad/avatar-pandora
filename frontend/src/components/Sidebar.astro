@@ -76,8 +76,18 @@ const sections = [
   }
 
   /* Drawer ouvert sur mobile : translation à 0. Sur lg+, déjà à 0. */
+  /* Tailwind 4 décale le tiroir avec la propriété `translate` (-translate-x-full) :
+     c'est elle qu'il faut remettre à zéro, `transform` seul le laissait hors champ (L14). */
   :global(html[data-drawer-open="true"]) .eywa-sidebar {
     transform: translateX(0);
+    translate: 0 0;
+  }
+
+  /* Téléphone : le tiroir (20rem) ne dépasse jamais l'écran, même à 320 px. */
+  @media (max-width: 1023.98px) {
+    .eywa-sidebar {
+      max-width: 88vw;
+    }
   }
 
   @media (min-width: 1024px) {
