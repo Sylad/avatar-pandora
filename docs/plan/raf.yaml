@@ -132,9 +132,11 @@ lots:
       - { date: 2026-10-01, text: "Sylvain 01-10 : décidé avec L16 (option b, images à nous)" }
   - id: L18
     title: "Supprimer le backend NestJS d'Eywa (ne sert plus que /api/health depuis le retrait du proxy Fandom) : dossier backend, conteneur et proxy nginx /api du NAS, docker-compose, docs"
-    status: doing
+    status: done
     estimate: 0.5
     created: 2026-10-01
     notes:
       - { date: 2026-10-01, text: "Sylvain 01-10 : à faire dès maintenant" }
+      - { date: 2026-10-01, text: "relecture : dépôt sans défaut ; procédure NAS corrigée (rien ne tournait, seule l'image backend de mai reste à supprimer)" }
     started: 2026-10-01
+    finished: 2026-10-01
