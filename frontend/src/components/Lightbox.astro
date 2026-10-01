@@ -17,7 +17,7 @@
     </svg>
   </button>
   <figure class="eywa-lightbox__figure">
-    <img class="eywa-lightbox__img" alt="" />
+    <img class="eywa-lightbox__img" alt="" hidden />
     <figcaption class="eywa-lightbox__caption"></figcaption>
   </figure>
 </dialog>
@@ -46,8 +46,11 @@
       return null;
     };
 
+    // Closed lightbox : the <img> has no src and stays `hidden` (no empty
+    // image left in the accessibility tree of every page).
     const open = (src, alt) => {
       img.setAttribute('src', src);
+      img.hidden = false;
       img.setAttribute('alt', alt || '');
       cap.textContent = alt || '';
       cap.style.display = alt ? '' : 'none';
@@ -66,6 +69,7 @@
         dialog.removeAttribute('open');
       }
       img.removeAttribute('src');
+      img.hidden = true;
       document.documentElement.classList.remove('eywa-lightbox-open');
     };
 
