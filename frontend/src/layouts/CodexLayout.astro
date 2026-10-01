@@ -126,7 +126,39 @@ const ambient = AMBIENTS[current ?? ''] ?? AMBIENTS.pandora;
       window.scrollTo(0, savedScrollY);
     };
 
-    const setOpen = (open) => {
+    // Accessibilité clavier (revue UX L14, WCAG 2.4.3 / 2.4.11) — sous 1024 px :
+    // tiroir fermé = inerte (ses liens hors écran ne prennent plus le focus) ;
+    // tiroir ouvert = le reste de la page inerte et Tab bouclé tiroir ↔ bouton menu.
+    const mql = window.matchMedia('(min-width: 1024px)');
+    const syncInert = () => {
+      const sidebar = document.getElementById('eywa-sidebar');
+      const burger = document.getElementById('eywa-burger');
+      const overlay = document.getElementById('eywa-drawer-overlay');
+      if (!sidebar) return;
+      const desktop = mql.matches;
+      const open = isOpen() && !desktop;
+      sidebar.inert = !desktop && !open;
+      const shell = sidebar.parentElement;
+      // Tout ce qui n'est ni le tiroir ni le bouton : le contenu principal et les
+      // autres enfants de <body> (visionneuse, son d'ambiance…).
+      const others = [
+        ...(shell ? [...shell.children].filter((c) => c !== sidebar) : []),
+        ...[...document.body.children].filter((c) => c !== shell && c !== burger && !c.contains(sidebar)),
+      ];
+      for (const el of others) {
+        // Le voile doit rester cliquable : il referme le tiroir.
+        if (el === overlay || el.tagName === 'SCRIPT' || el.tagName === 'STYLE') continue;
+        el.inert = open;
+      }
+    };
+    const focusables = () => {
+      const sidebar = document.getElementById('eywa-sidebar');
+      const burger = document.getElementById('eywa-burger');
+      const inside = sidebar ? [...sidebar.querySelectorAll('a[href], button:not([disabled])')] : [];
+      return burger ? [burger, ...inside] : inside;
+    };
+
+    const setOpen = (open, { returnFocus = false } = {}) => {
       const burger = document.getElementById('eywa-burger');
       if (open) {
         html.setAttribute('data-drawer-open', 'true');
@@ -139,24 +171,39 @@ const ambient = AMBIENTS[current ?? ''] ?? AMBIENTS.pandora;
         burger?.setAttribute('aria-label', 'Ouvrir la navigation');
         unlockScroll();
       }
+      syncInert();
+      if (!open && returnFocus) burger?.focus();
     };
 
     document.addEventListener('click', (e) => {
       const el = e.target instanceof Element ? e.target : null;
       if (!el) return;
       if (el.closest('#eywa-burger')) { setOpen(!isOpen()); return; }
-      if (el.closest('#eywa-drawer-overlay')) { setOpen(false); return; }
+      if (el.closest('#eywa-drawer-overlay')) { setOpen(false, { returnFocus: true }); return; }
       // Tap sur n'importe quel lien interne du drawer = fermer
       if (isOpen() && el.closest('#eywa-sidebar a')) setOpen(false);
     });
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && isOpen()) setOpen(false);
+      if (!isOpen()) return;
+      if (e.key === 'Escape') { setOpen(false, { returnFocus: true }); return; }
+      if (e.key !== 'Tab') return;
+      const list = focusables();
+      if (!list.length) return;
+      const i = list.indexOf(document.activeElement);
+      const next = e.shiftKey
+        ? list[(i <= 0 ? list.length : i) - 1]
+        : list[(i + 1) % list.length];
+      e.preventDefault();
+      next.focus();
     });
     // Si l'utilisateur passe en >= lg avec drawer ouvert → fermer + clean lock
-    const mql = window.matchMedia('(min-width: 1024px)');
     mql.addEventListener?.('change', () => {
       if (mql.matches && isOpen()) setOpen(false);
+      else syncInert();
     });
+    // Nouvelle page (ClientRouter) : tiroir fermé, inertie recalculée sur le nouveau DOM.
+    document.addEventListener('astro:after-swap', syncInert);
+    syncInert();
   })();
 
   // Pandora feels more alive when the glow reacts to lore, not to every
