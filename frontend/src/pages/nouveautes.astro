@@ -53,7 +53,16 @@ const pngSize = (rel: string) => {
         {entries.map((e) => (
           <li>
             <article class="news-entry" id={e.slug} aria-labelledby={`${e.slug}-titre`}>
-              <p class="news-date"><time datetime={e.date}>{formatDate(e.date)}</time></p>
+              <p class="news-date">
+                <time datetime={e.date}>{formatDate(e.date)}</time>
+                {/* Lien permanent /nouveautes/#<slug> (comme AetherWX) : à copier ou partager. */}
+                <a href={`#${e.slug}`} class="news-permalink" aria-label={`Lien permanent vers « ${e.title} »`} title="Lien permanent vers cette nouveauté">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M10 13.5a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1.2 1.2" />
+                    <path d="M14 10.5a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1.2-1.2" />
+                  </svg>
+                </a>
+              </p>
               <h2 id={`${e.slug}-titre`}>{e.title}</h2>
               {/* HTML produit par cadence depuis le Markdown du dépôt (texte échappé à la génération). */}
               <div class="news-body" set:html={e.html} />
@@ -153,6 +162,40 @@ const pngSize = (rel: string) => {
       border-left: 3px solid var(--color-eywa-bio-primary);
       border-radius: 6px;
       box-shadow: 0 0 30px -12px rgba(95, 255, 230, 0.35);
+    }
+    /* Arrivée par /nouveautes/#<slug> : l'entrée s'arrête sous le bouton menu (téléphone)
+       et s'illumine. */
+    .news-entry {
+      scroll-margin-top: 5rem;
+    }
+    @media (min-width: 1024px) {
+      .news-entry { scroll-margin-top: 2rem; }
+    }
+    .news-entry:target {
+      border-color: rgba(95, 255, 230, 0.6);
+      box-shadow: 0 0 0 1px rgba(95, 255, 230, 0.45), 0 0 36px -8px rgba(95, 255, 230, 0.6);
+    }
+    .news-permalink {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 1.75rem;
+      height: 1.75rem;
+      margin: -0.4rem 0 -0.4rem 0.35rem;
+      vertical-align: middle;
+      border-radius: 4px;
+      color: var(--color-eywa-text-muted);
+      transition: color 200ms ease, background-color 200ms ease;
+    }
+    .news-permalink svg { width: 1rem; height: 1rem; }
+    .news-permalink:hover,
+    .news-permalink:focus-visible {
+      color: var(--color-eywa-bio-primary);
+      background-color: rgba(95, 255, 230, 0.1);
+    }
+    .news-permalink:focus-visible {
+      outline: 2px solid var(--color-eywa-bio-primary);
+      outline-offset: 2px;
     }
     .news-date {
       font-family: var(--font-display);
