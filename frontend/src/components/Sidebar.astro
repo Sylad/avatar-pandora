@@ -43,6 +43,7 @@ const sections = [
             ? 'is-active bg-eywa-bio-primary/10 text-eywa-bio-primary shadow-[0_0_20px_-2px_rgba(95,255,230,0.30)]'
             : 'text-eywa-text-muted hover:text-eywa-bio-primary hover:bg-eywa-bio-primary/5 hover:shadow-[0_0_18px_-4px_rgba(95,255,230,0.40)]',
         ]}
+        aria-current={current === s.slug ? 'page' : undefined}
       >
         {s.label}
       </a>
@@ -51,6 +52,18 @@ const sections = [
 
   <div class="eywa-about mt-auto pt-6">
     <div class="eywa-about__divider" aria-hidden="true"></div>
+    <!-- Nouveautés (L14) : lien « méta » comme À propos, juste au-dessus. -->
+    <a
+      href="/nouveautes/"
+      class:list={['eywa-about__link', { 'is-active': current === 'nouveautes' }]}
+      aria-current={current === 'nouveautes' ? 'page' : undefined}
+    >
+      <svg class="eywa-about__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M12 3.5l1.9 5.1 5.1 1.9-5.1 1.9-1.9 5.1-1.9-5.1-5.1-1.9 5.1-1.9z" />
+        <path d="M18.5 16.5l.7 1.8 1.8.7-1.8.7-.7 1.8-.7-1.8-1.8-.7 1.8-.7z" />
+      </svg>
+      <span>Nouveautés</span>
+    </a>
     <a href="/about/" class="eywa-about__link">
       <svg class="eywa-about__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <circle cx="12" cy="12" r="9.5" />
@@ -136,8 +149,10 @@ const sections = [
     );
   }
 
+  /* Un lien par ligne (Nouveautés puis À propos), largeur de son contenu. */
   .eywa-about__link {
-    display: inline-flex;
+    display: flex;
+    width: fit-content;
     align-items: center;
     gap: 0.55rem;
     padding: 0.45rem 0.75rem;
@@ -156,6 +171,11 @@ const sections = [
     color: var(--color-eywa-bio-primary);
     opacity: 0.75;
     transition: opacity 300ms ease, filter 300ms ease;
+  }
+
+  .eywa-about__link.is-active {
+    color: var(--color-eywa-bio-primary);
+    background-color: rgba(95, 255, 230, 0.10);
   }
 
   .eywa-about__link:hover {
