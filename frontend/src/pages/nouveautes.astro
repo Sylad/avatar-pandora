@@ -99,15 +99,17 @@ const pngSize = (rel: string) => {
       margin-bottom: 2.5rem;
     }
     /* Sur-titre, titre et chapeau posés sans carte sur l'ambiance du codex : le pollen
-       bioluminescent (particules cyan/vert vif) passe derrière les lettres. Halo de nuit
-       serré, empilé, qui assombrit le fond sous chaque glyphe sans se voir comme une
-       ombre : ≥ 4,5:1 au pire pixel (scripts/header-contrast.e2e.test.mjs). */
+       bioluminescent (particules cyan/vert vif) passe derrière les lettres. Contour de
+       nuit plein sur 3 px (36 ombres nettes, une par décalage) puis halo doux : l'anneau
+       que l'œil lit autour de chaque lettre reste sombre quoi qu'il passe derrière.
+       ≥ 4,5:1 au pire pixel des glyphes et sur l'anneau de 2 px (revue UX L14,
+       scripts/header-contrast.e2e.test.mjs). Invisible sur le fond de nuit. */
     .news-header {
-      --news-halo: 0 0 1px #0a0a1f, 0 0 2px #0a0a1f, 0 0 3px #0a0a1f, 0 0 6px rgba(10, 10, 31, 0.85);
+      --news-halo: -3px -1px 0 #0a0a1f, -3px 0px 0 #0a0a1f, -3px 1px 0 #0a0a1f, -2px -2px 0 #0a0a1f, -2px -1px 0 #0a0a1f, -2px 0px 0 #0a0a1f, -2px 1px 0 #0a0a1f, -2px 2px 0 #0a0a1f, -1px -3px 0 #0a0a1f, -1px -2px 0 #0a0a1f, -1px -1px 0 #0a0a1f, -1px 0px 0 #0a0a1f, -1px 1px 0 #0a0a1f, -1px 2px 0 #0a0a1f, -1px 3px 0 #0a0a1f, 0px -3px 0 #0a0a1f, 0px -2px 0 #0a0a1f, 0px -1px 0 #0a0a1f, 0px 1px 0 #0a0a1f, 0px 2px 0 #0a0a1f, 0px 3px 0 #0a0a1f, 1px -3px 0 #0a0a1f, 1px -2px 0 #0a0a1f, 1px -1px 0 #0a0a1f, 1px 0px 0 #0a0a1f, 1px 1px 0 #0a0a1f, 1px 2px 0 #0a0a1f, 1px 3px 0 #0a0a1f, 2px -2px 0 #0a0a1f, 2px -1px 0 #0a0a1f, 2px 0px 0 #0a0a1f, 2px 1px 0 #0a0a1f, 2px 2px 0 #0a0a1f, 3px -1px 0 #0a0a1f, 3px 0px 0 #0a0a1f, 3px 1px 0 #0a0a1f, 0 0 6px rgba(10, 10, 31, 0.85);
     }
     .news-eyebrow {
       font-family: var(--font-display);
-      font-size: 11px;
+      font-size: 12.5px;
       font-weight: 600;
       letter-spacing: 0.22em;
       text-transform: uppercase;

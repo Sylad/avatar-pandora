@@ -97,3 +97,66 @@ export async function worstPixelContrast(page, selector) {
     return { worst, glyphs };
   }, { bg: bg.toString('base64'), fg: fg.toString('base64'), color });
 }
+
+// Contraste de l'ANNEAU autour des glyphes (méthode du relecteur UX L14) : pixels à 2 px
+// au plus des lettres, hors lettres, comparés à la couleur du texte, sur plusieurs images
+// de l'animation de fond. Le masque des glyphes est pris texte magenta, sans ombre ni
+// particules. Renvoie { share, p1, min, ring } (part des pixels < 4,5:1, 1er percentile).
+export async function ringContrast(page, selector, { frames = 8, gap = 350 } = {}) {
+  const el = page.locator(selector).first();
+  const box = await el.boundingBox();
+  const vw = page.viewportSize().width;
+  const clip = { x: Math.max(0, Math.floor(box.x - 4)), y: Math.max(0, Math.floor(box.y - 4)), width: Math.ceil(Math.min(box.width + 8, vw - Math.max(0, box.x - 4))), height: Math.ceil(box.height + 8) };
+  const color = await el.evaluate((n) => getComputedStyle(n).color);
+  const tag = await page.addStyleTag({ content: `canvas{visibility:hidden!important} ${selector}{color:#ff00ff!important;text-shadow:none!important}` });
+  const maskShot = await page.screenshot({ clip });
+  await tag.evaluate((n) => n.remove());
+  const shots = [];
+  for (let f = 0; f < frames; f++) {
+    await page.waitForTimeout(gap);
+    shots.push((await page.screenshot({ clip })).toString('base64'));
+  }
+  return page.evaluate(async ({ mask, shots, color }) => {
+    const load = async (b64) => {
+      const img = new Image(); img.src = `data:image/png;base64,${b64}`; await img.decode();
+      const c = document.createElement('canvas'); c.width = img.width; c.height = img.height;
+      const x = c.getContext('2d'); x.drawImage(img, 0, 0);
+      return { w: img.width, h: img.height, d: x.getImageData(0, 0, img.width, img.height).data };
+    };
+    const lin = (v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; };
+    const L = (r, g, b) => 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
+    const [r, g, b] = color.match(/[\d.]+/g).map(Number);
+    const Lt = L(r, g, b);
+    const m = await load(mask);
+    const glyph = new Uint8Array(m.w * m.h);
+    for (let i = 0; i < m.w * m.h; i++) {
+      const R = m.d[i * 4], G = m.d[i * 4 + 1], B = m.d[i * 4 + 2];
+      if (R - G > 25 && B - G > 25) glyph[i] = 1;
+    }
+    const ring = [];
+    for (let y = 0; y < m.h; y++) for (let x = 0; x < m.w; x++) {
+      if (glyph[y * m.w + x]) continue;
+      let near = false;
+      for (let dy = -2; dy <= 2 && !near; dy++) for (let dx = -2; dx <= 2; dx++) {
+        const yy = y + dy, xx = x + dx;
+        if (yy >= 0 && yy < m.h && xx >= 0 && xx < m.w && glyph[yy * m.w + xx]) { near = true; break; }
+      }
+      if (near) ring.push(y * m.w + x);
+    }
+    const ratios = [];
+    for (const s of shots) {
+      const d = (await load(s)).d;
+      for (const i of ring) {
+        const B = L(d[i * 4], d[i * 4 + 1], d[i * 4 + 2]);
+        ratios.push((Math.max(Lt, B) + 0.05) / (Math.min(Lt, B) + 0.05));
+      }
+    }
+    ratios.sort((a, c) => a - c);
+    return {
+      ring: ring.length,
+      min: ratios[0],
+      p1: ratios[Math.floor(ratios.length * 0.01)],
+      share: ratios.filter((x) => x < 4.5).length / ratios.length,
+    };
+  }, { mask: maskShot.toString('base64'), shots, color });
+}

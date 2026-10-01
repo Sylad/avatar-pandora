@@ -6,7 +6,7 @@
 // Lit frontend/dist ; skip sans playwright-core/Chromium.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { setupBrowser, worstPixelContrast } from './lib/e2e-dist.mjs';
+import { ringContrast, setupBrowser, worstPixelContrast } from './lib/e2e-dist.mjs';
 
 const SELECTORS = ['.news-eyebrow', '.news-title', '.news-lede'];
 
@@ -36,6 +36,35 @@ test('en-tête de /nouveautes/ ≥ 4,5:1 au pire pixel du fond (1440/390 px)', {
         assert.ok(glyphs > 20, `${where} : glyphes non détectés`);
         if (worst < 4.5) failures.push(`${where} : ${worst.toFixed(2)}:1`);
       }
+    }
+    await context.close();
+  }
+  for (const line of report) t.diagnostic(line);
+  assert.deepEqual(failures, []);
+});
+
+// Revue UX L14 : l'anneau de 2 px autour des lettres (là où l'œil lit le contour) passait
+// sous 4,5:1 quand le pollen défilait (sur-titre : 5 % des pixels à 320 px, 1er
+// percentile 2,75:1). Mesuré comme le relecteur, à 1440/390/320 px, 8 images par élément.
+test('en-tête de /nouveautes/ : anneau de 2 px autour des lettres : 1er percentile ≥ 4,5:1, ≤ 0,5 % des pixels sous le seuil', { timeout: 240_000 }, async (t) => {
+  const env = await setupBrowser(t);
+  if (!env) return;
+  const report = [];
+  const failures = [];
+  for (const [width, height] of [[1440, 900], [390, 844], [320, 700]]) {
+    const context = await env.browser.newContext({ viewport: { width, height } });
+    const page = await context.newPage();
+    await page.goto(`${env.base}/nouveautes/`, { waitUntil: 'load' });
+    await page.evaluate(() => document.fonts.ready);
+    await page.waitForTimeout(1500);
+    for (const sel of SELECTORS) {
+      const { ring, min, p1, share } = await ringContrast(page, sel);
+      const where = `${sel} @${width}px`;
+      report.push(`${where} : anneau ${ring} px, min ${min.toFixed(2)}, p1 % ${p1.toFixed(2)}, sous 4,5 : ${(share * 100).toFixed(2)} %`);
+      assert.ok(ring > 50, `${where} : anneau non détecté`);
+      // Le pollen est aléatoire : quelques pixels isolés d'un passage de particule sont
+      // tolérés (avant correctif : 4,7 % et 1er percentile 2,7:1 sur le sur-titre à 320 px).
+      if (share > 0.005 || p1 < 4.5) failures.push(`${where} : ${(share * 100).toFixed(2)} % sous 4,5:1 (p1 % ${p1.toFixed(2)})`);
     }
     await context.close();
   }
