@@ -62,7 +62,16 @@ Dev local : `cd frontend && source ~/.nvm/nvm.sh && nvm use 22 && npm run dev`. 
 
 ## Tests
 
-Pas de suite de tests : `cd frontend && npm run build` (79 pages) valide la cohérence (Content Collections + schéma Zod, types, intégrations Astro). Le rendu (composants Astro, îlots R3F) se vérifie visuellement en local.
+`cd frontend && npm run build` (80 pages) valide la cohérence (Content Collections + schéma Zod, types, intégrations Astro).
+Puis `npm run test:scripts` (`node --test ../scripts/*.test.mjs`, Node ≥ 22.12) : données des Nouveautés,
+et tests navigateur sur le site **construit** (`frontend/dist`, lancer le build avant) — page Nouveautés,
+tiroir du téléphone (y compris après une navigation ClientRouter), contraste au pire pixel. Chromium via
+`playwright-core` (devDependency) ; les tests navigateur passent en « skip » s'il manque.
+`EYWA_E2E_SHOTS=<dossier>` enregistre des captures de /nouveautes/ à 1440, 390 et 320 px.
+
+⚠ ClientRouter : un script `is:inline` identique sur toutes les pages ne s'exécute qu'au premier
+chargement, alors que le DOM est remplacé à chaque navigation. Poser les écouteurs une seule fois
+sur `document` et retrouver les éléments à chaque événement (cf. tiroir de CodexLayout, Lightbox).
 
 ## Pas de deadline
 
@@ -81,3 +90,10 @@ page ou modification d'écran est un lot `--visible`, revu par l'agent `cadence:
 1440 et 390 px, écarts fondés sur une règle nommée ou une mesure) avant `raf done`. Le verdict
 s'enregistre avec `raf ux <lot> "…"`, sinon `raf done` refuse. Les lots « Revue UX — … » planifient
 la revue de chaque écran existant ; les écarts trouvés deviennent des sous-tâches du lot.
+
+**Nouveautés** (page `/nouveautes/`, L14, signature commune des apps) : les entrées vivent dans
+`docs/nouveautes/*.md` (captures dans `docs/nouveautes/captures/`, jamais plus de 6× plus larges que
+hautes ; guillemets « » tenus par une espace fine insécable U+202F). Après tout ajout ou modification
+d'une entrée, lancer `cd frontend && npm run news` (= `cadence news build` vers
+`frontend/public/nouveautes-data/`) et **commiter le résultat** : Cloudflare Pages construit sans
+cadence, la page lit ce JSON au build. `npm run test:scripts` échoue si le JSON versionné n'est plus à jour.
