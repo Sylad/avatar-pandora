@@ -10,16 +10,23 @@
     interaction utilisateur pour relancer.
   - Préload "none" pour ne pas plomber le LCP.
 
+  Rendu seulement si public/audio/eywa-ambient.mp3 existe au build
+  (src/lib/ambient-audio.ts) : sans fichier, ni <audio> ni bouton. Déposer
+  le clip suffit à faire réapparaître le bouton au build suivant.
+
   TODO sourcer un freesound CC0 :
    - https://freesound.org/people/.../jungle-night-loop.ogg
    - critères : ambiance nuit forêt tropicale, loopable, < 1.5 MB, CC0.
-   - Sylvain choisira le clip final et remplacera /audio/eywa-ambient.mp3.
+   - Sylvain choisira le clip final et le déposera en public/audio/eywa-ambient.mp3.
 */
+import { AMBIENT_AUDIO_SRC, HAS_AMBIENT_AUDIO } from '../lib/ambient-audio';
 ---
+{HAS_AMBIENT_AUDIO && (
+<Fragment>
 
 <audio
   id="eywa-ambient"
-  src="/audio/eywa-ambient.mp3"
+  src={AMBIENT_AUDIO_SRC}
   loop
   preload="none"
   muted
@@ -98,6 +105,8 @@
     }
   })();
 </script>
+</Fragment>
+)}
 
 <style>
   .eywa-ambient-toggle {

@@ -5,9 +5,10 @@ Placeholder pour le clip ambiance lu par `<AmbientAudio />` (forêt nocturne de 
 ## TODO sourcer un freesound CC0
 
 Le composant attend `eywa-ambient.mp3` à la racine de ce dossier. Tant que le
-fichier n'est pas en place, le bouton speaker apparaît mais le clic déclenche
-un échec silencieux côté `<audio>` (404 sur le `src` → `play()` rejette → on
-retombe sur l'état muet, aucune erreur visible).
+fichier n'est pas en place, le bouton speaker n'est **pas affiché** : la présence
+du fichier est vérifiée au build (`src/lib/ambient-audio.ts`). Déposer le clip
+puis reconstruire suffit à faire apparaître le bouton. Ne jamais déposer de faux
+fichier pour « faire marcher » le bouton.
 
 ### Critères
 
