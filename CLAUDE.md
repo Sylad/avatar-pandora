@@ -99,10 +99,17 @@ hautes ; guillemets « » tenus par une espace fine insécable U+202F). Après t
 d'une entrée, lancer `cd frontend && npm run news` (= `cadence news build` vers
 `frontend/public/nouveautes-data/`) et **commiter le résultat** : Cloudflare Pages construit sans
 cadence, la page lit ce JSON au build. `npm run test:scripts` échoue si le JSON versionné n'est plus à jour.
-Lien permanent `/nouveautes/#<slug>` par entrée ; pastille « non vues » sur TOUS les liens Nouveautés
-(un seul composant `components/NewsBadge.astro` : menu, tiroir, accueil) et séparateur « Déjà vu lors de
-ta visite du … » (localStorage `eywa.news.seen-v1`, logique pure `src/lib/news-seen.ts`, un seul script
-dans `BaseLayout.astro` qui lit l'index léger `#eywa-news-index`, rejoué à chaque `astro:page-load`).
+Lien permanent `/nouveautes/#<slug>` par entrée : bouton visible « Copier le lien » dans la ligne de date
+(le titre est du texte ; copier ne fait ni défiler ni changer l'adresse, retour dans le libellé à largeur
+réservée ; `src/lib/news-anchor.ts` + script de `nouveautes.astro`) ; arrivée sur l'ancre = entrée signalée
+et focalisée, sous le bouton menu. Pastille « non vues » sur TOUS les liens Nouveautés (un seul composant
+`components/NewsBadge.astro` : menu, tiroir, accueil), nombre dans le nom du bouton menu au téléphone,
+bandeau « N nouveautés depuis ta dernière visite », marque « Nouveau » et séparateur « Déjà vu lors de ta
+visite du … » — HORS des listes (`role="separator"` nommé entre deux `<ol>`, WCAG 1.3.1), seulement si toutes
+les nouvelles sont au-dessus. Un seul script dans `BaseLayout.astro` (index léger `#eywa-news-index`,
+rejoué à chaque `astro:page-load`), logique pure `src/lib/news-seen.ts` : localStorage `eywa.news.seen-v1`
+= tous les slugs vus (`all: true`) ; mémoire de base posée dès la première page vue ; l'ancien format de
+L14 (sans `all`, déjà chez des visiteurs) reste lu — ne jamais changer la clé ni casser ce format.
 
 **Navigation** (consigne de Sylvain) : Nouveautés ET Plan de travail sont proposés partout où le site a une
 navigation — barre latérale / tiroir du codex (Plan de travail juste après Nouveautés) et accueil (seconde

@@ -40,7 +40,11 @@ const pngSize = (rel: string) => {
       eyebrow="Nouveautés · Eywa"
       title="Ce qui a changé"
       lede="Le journal des évolutions du codex, la plus récente en premier."
-    />
+    >
+      {/* L21 : rempli au chargement selon ta dernière visite (script de BaseLayout). */}
+      <p class="news-since" role="status"></p>
+      <p id="news-copy-status" class="sr-only" role="status"></p>
+    </MetaHeader>
 
     {entries.length === 0 ? (
       <p class="news-empty">Aucune nouveauté publiée pour l'instant.</p>
@@ -48,16 +52,26 @@ const pngSize = (rel: string) => {
       <ol class="news-list">
         {entries.map((e) => (
           <li>
-            <article class="news-entry" id={e.slug} aria-labelledby={`${e.slug}-titre`}>
+            <article class="news-entry" id={e.slug} tabindex="-1" aria-labelledby={`${e.slug}-titre`}>
+              {/* L21 (repris d'evatosorus après sa revue UX) : lien permanent par un bouton
+                  « Copier le lien » visible sans survol, après la date et la marque « Nouveau » ;
+                  le titre reste du texte. Copier ne fait ni défiler ni changer l'adresse. */}
               <p class="news-date">
-                <time datetime={e.date}><FrDate day={e.date} /></time>
-                {/* Lien permanent /nouveautes/#<slug> (comme AetherWX) : à copier ou partager. */}
-                <a href={`#${e.slug}`} class="news-permalink" aria-label={`Lien permanent vers « ${e.title} »`} title="Lien permanent vers cette nouveauté">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <time datetime={e.date}><FrDate day={e.date} /></time><span class="news-new-slot"></span>
+                <button type="button" class="news-copy" data-slug={e.slug} data-state="idle">
+                  <svg class="news-copy-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                     <path d="M10 13.5a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1.2 1.2" />
                     <path d="M14 10.5a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1.2-1.2" />
                   </svg>
-                </a>
+                  {/* Les trois libellés partagent la même case : la largeur du plus long est
+                      réservée, le retour ne décale rien. */}
+                  <span class="news-copy-labels" aria-hidden="true">
+                    <span class="news-copy-label" data-for="idle">Copier le lien</span>
+                    <span class="news-copy-label is-hidden" data-for="ok">Lien copié</span>
+                    <span class="news-copy-label is-hidden" data-for="ko">Lien dans l’adresse</span>
+                  </span>
+                  <span class="sr-only">Copier le lien : {e.title}</span>
+                </button>
               </p>
               <h2 id={`${e.slug}-titre`}>{e.title}</h2>
               {/* HTML produit par cadence depuis le Markdown du dépôt (texte échappé à la génération). */}
@@ -127,33 +141,93 @@ const pngSize = (rel: string) => {
     @media (min-width: 1024px) {
       .news-entry { scroll-margin-top: 2rem; }
     }
-    .news-entry:target {
+    .news-entry:focus {
+      outline: none;
+    }
+    .news-entry.is-target {
       border-color: rgba(95, 255, 230, 0.6);
       box-shadow: 0 0 0 1px rgba(95, 255, 230, 0.45), 0 0 36px -8px rgba(95, 255, 230, 0.6);
     }
-    .news-permalink {
+    /* L21 — « Copier le lien » : visible sans survol, cible ≥ 24 px au bureau et ≥ 44 px au
+       toucher ; le retour remplace le libellé dans une case de largeur fixe (le plus long). */
+    .news-copy {
       display: inline-flex;
       align-items: center;
-      justify-content: center;
-      width: 1.75rem;
-      height: 1.75rem;
-      margin: -0.4rem 0 -0.4rem 0.35rem;
-      vertical-align: middle;
+      gap: 0.4rem;
+      min-height: 1.75rem;
+      min-width: 1.5rem;
+      padding: 0 0.6rem;
+      border: 1px solid rgba(95, 255, 230, 0.35);
       border-radius: 4px;
-      color: var(--color-eywa-text-muted);
-      transition: color 200ms ease, background-color 200ms ease;
+      background: transparent;
+      color: var(--color-eywa-text);
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      letter-spacing: 0.01em;
+      text-transform: none;
+      cursor: pointer;
+      transition: border-color 200ms ease, background-color 200ms ease;
     }
-    .news-permalink svg { width: 1rem; height: 1rem; }
-    .news-permalink:hover,
-    .news-permalink:focus-visible {
-      color: var(--color-eywa-bio-primary);
-      background-color: rgba(95, 255, 230, 0.1);
+    .news-copy:hover {
+      border-color: var(--color-eywa-bio-primary);
+      background-color: rgba(95, 255, 230, 0.08);
     }
-    .news-permalink:focus-visible {
+    .news-copy:focus-visible {
       outline: 2px solid var(--color-eywa-bio-primary);
       outline-offset: 2px;
     }
+    @media (pointer: coarse) {
+      .news-copy { min-height: 2.75rem; min-width: 2.75rem; }
+    }
+    .news-copy-icon {
+      flex: none;
+      color: var(--color-eywa-bio-primary);
+    }
+    .news-copy-labels {
+      display: inline-grid;
+      text-align: start;
+    }
+    .news-copy-label {
+      grid-area: 1 / 1;
+      white-space: nowrap;
+    }
+    .news-copy-label.is-hidden {
+      visibility: hidden;
+    }
+    /* L21 — « N nouveautés depuis ta dernière visite » : bandeau sur la nuit des cartes,
+       masqué quand il est vide. */
+    .news-since {
+      margin: 1.25rem 0 0;
+      padding: 0.6rem 1rem;
+      background: rgba(8, 12, 22, 0.92);
+      border-left: 3px solid var(--color-eywa-bio-secondary);
+      border-radius: 4px;
+      font-family: var(--font-body);
+      font-size: 1.05rem;
+      color: var(--color-eywa-text);
+    }
+    .news-since:empty {
+      display: none;
+    }
+    /* Marque « Nouveau » : un mot écrit, pas seulement une couleur (rose : la couleur du
+       point du bouton menu). */
+    .news :global(.news-new) {
+      display: inline-block;
+      padding: 0.15rem 0.55rem;
+      border-radius: 999px;
+      background: var(--color-eywa-bio-secondary);
+      color: #0a0a1f;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+    }
+    .news-new-slot:empty {
+      display: none;
+    }
     .news-date {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.5rem 0.75rem;
       font-family: var(--font-display);
       font-size: 0.72rem;
       letter-spacing: 0.2em;
@@ -227,22 +301,23 @@ const pngSize = (rel: string) => {
       border-radius: 4px;
       cursor: zoom-in;
     }
-    /* « Déjà vu lors de ta visite du … » : inséré par le script de la pastille
-       (Sidebar.astro) avant la première entrée déjà vue, d'où :global. Texte sur une
-       pastille de nuit opaque : contraste garanti quel que soit le pollen derrière. */
-    .news-list :global(.news-seen-sep) {
+    /* L21 — « Déjà vu lors de ta visite du … » : séparateur HORS des listes (role
+       separator nommé, posé entre la liste des nouvelles et celle des déjà vues par le
+       script de BaseLayout), d'où :global. Texte sur une pastille de nuit opaque. */
+    .news :global(.news-seen-sep) {
       display: flex;
       align-items: center;
       gap: 0.75rem;
+      margin: 1.75rem 0;
     }
-    .news-list :global(.news-seen-sep)::before,
-    .news-list :global(.news-seen-sep)::after {
+    .news :global(.news-seen-sep)::before,
+    .news :global(.news-seen-sep)::after {
       content: '';
       flex: 1;
       min-width: 1rem;
       border-top: 1px solid rgba(95, 255, 230, 0.3);
     }
-    .news-list :global(.news-seen-sep span) {
+    .news :global(.news-seen-sep span) {
       flex: 0 1 auto;
       padding: 0.3rem 0.85rem;
       border-radius: 999px;
@@ -260,4 +335,62 @@ const pngSize = (rel: string) => {
       font-style: italic;
     }
   </style>
+
+  <script>
+    /*
+      L21 — « Copier le lien » et arrivée sur /nouveautes/#<slug> (repris d'evatosorus).
+      ClientRouter : ce module ne s'exécute qu'une fois ; écouteurs posés sur document,
+      éléments retrouvés à chaque événement, arrivée rejouée à chaque astro:page-load.
+      Copier : presse-papiers seulement, sans défilement ni changement d'adresse ; retour
+      dans le libellé (largeur réservée) et annonce pour lecteur d'écran. Copie refusée :
+      le lien est posé dans l'adresse SANS défiler (replaceState).
+    */
+    import { entryForFragment, permalink } from '../lib/news-anchor';
+
+    const timers = new WeakMap<HTMLElement, ReturnType<typeof setTimeout>>();
+    const setState = (btn: HTMLElement, state: 'idle' | 'ok' | 'ko') => {
+      btn.dataset.state = state;
+      btn.querySelectorAll<HTMLElement>('.news-copy-label').forEach((l) => {
+        l.classList.toggle('is-hidden', l.dataset.for !== state);
+      });
+    };
+    document.addEventListener('click', async (e) => {
+      const btn = (e.target as Element | null)?.closest?.<HTMLElement>('button.news-copy');
+      if (!btn) return;
+      const slug = btn.dataset.slug!;
+      let ok = true;
+      try {
+        await navigator.clipboard.writeText(permalink(location.origin, slug));
+      } catch {
+        ok = false;
+        history.replaceState(history.state, '', `#${encodeURIComponent(slug)}`);
+      }
+      setState(btn, ok ? 'ok' : 'ko');
+      const status = document.getElementById('news-copy-status');
+      if (status) {
+        status.textContent = ok ? 'Lien copié dans le presse-papiers' : 'Copie impossible : le lien est dans la barre d’adresse';
+      }
+      clearTimeout(timers.get(btn));
+      timers.set(btn, setTimeout(() => {
+        setState(btn, 'idle');
+        const s = document.getElementById('news-copy-status');
+        if (s) s.textContent = '';
+      }, 4000));
+    });
+
+    // Arrivée sur une ancre (ou changement d'ancre) : l'entrée est signalée et reçoit le
+    // focus ; elle s'arrête sous le bouton menu (scroll-margin-top).
+    const revealTarget = () => {
+      const articles = [...document.querySelectorAll<HTMLElement>('article.news-entry')];
+      if (!articles.length) return;
+      const slug = entryForFragment(location.hash, articles.map((a) => ({ slug: a.id })));
+      for (const a of articles) a.classList.toggle('is-target', a.id === slug);
+      if (!slug) return;
+      const el = document.getElementById(slug)!;
+      el.focus({ preventScroll: true });
+      el.scrollIntoView({ block: 'start' });
+    };
+    document.addEventListener('astro:page-load', revealTarget);
+    window.addEventListener('hashchange', revealTarget);
+  </script>
 </CodexLayout>

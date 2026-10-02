@@ -273,34 +273,5 @@ test('visionneuse au téléphone : capture de bureau à la hauteur disponible, d
   await context.close();
 });
 
-// Demande de Sylvain (comme AetherWX) : lien permanent par entrée, /nouveautes/#<slug>.
-test('lien permanent par entrée (#<slug>) dans la page construite', () => {
-  const page = html();
-  for (const e of DATA.entries) {
-    const start = page.indexOf(`id="${e.slug}"`);
-    const block = page.slice(start, page.indexOf('</article>', start));
-    assert.match(block, new RegExp(`<a [^>]*href="#${e.slug}"[^>]*class="news-permalink"`), `${e.slug} : lien permanent absent`);
-  }
-});
-
-test('/nouveautes/#<slug> au chargement : la page défile jusqu’à l’entrée, ciblée ; le lien permanent pose l’ancre', { timeout: 60_000 }, async (t) => {
-  const env = await setupBrowser(t);
-  if (!env) return;
-  const last = DATA.entries.at(-1).slug;
-  for (const width of [390, 1440]) {
-    const context = await env.browser.newContext({ viewport: { width, height: width > 1000 ? 900 : 844 }, reducedMotion: 'reduce' });
-    const page = await context.newPage();
-    await page.goto(`${env.base}/nouveautes/#${last}`, { waitUntil: 'load' });
-    await page.waitForTimeout(300);
-    const pos = await page.evaluate((id) => ({
-      top: document.getElementById(id).getBoundingClientRect().top, y: scrollY,
-      target: document.getElementById(id).matches(':target'),
-    }), last);
-    assert.ok(pos.y > 0 && pos.top >= 0 && pos.top < 200, `${width}px : entrée à ${pos.top}px (scrollY ${pos.y})`);
-    assert.ok(pos.target, `${width}px : entrée non ciblée`);
-    // Clic sur le lien permanent d'une entrée : l'adresse porte son ancre.
-    await page.locator(`[id="${DATA.entries[0].slug}"] .news-permalink`).click();
-    assert.equal(new URL(page.url()).hash, `#${DATA.entries[0].slug}`);
-    await context.close();
-  }
-});
+// Lien permanent (/nouveautes/#<slug>) : bouton « Copier le lien », arrivée sur l'ancre —
+// voir scripts/nouveautes-l21.e2e.test.mjs (L21).

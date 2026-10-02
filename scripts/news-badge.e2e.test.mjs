@@ -57,7 +57,8 @@ test('pastille : rien au premier passage, nombre d’entrées non vues ensuite, 
   const sep = await page.evaluate((slug) => {
     const s = document.querySelector('.news-seen-sep');
     const next = s.nextElementSibling?.querySelector('article')?.id;
-    const before = [...document.querySelectorAll('.news-list > li')].indexOf(s);
+    // L21 : séparateur entre deux listes (hors liste) — les nouvelles au-dessus.
+    const before = s.previousElementSibling?.querySelectorAll('article').length ?? -1;
     return { text: s.textContent.replace(/\s+/g, ' ').trim(), next, before, count: document.querySelectorAll('.news-seen-sep').length, hiddenFromAT: s.getAttribute('aria-hidden') };
   }, older.slug);
   assert.equal(sep.count, 1);
@@ -67,7 +68,9 @@ test('pastille : rien au premier passage, nombre d’entrées non vues ensuite, 
   assert.notEqual(sep.hiddenFromAT, 'true', 'séparateur caché aux lecteurs d’écran');
   assert.equal((await badge(page)).shown, false, 'pastille après la visite');
   const stored = JSON.parse(await page.evaluate((k) => localStorage.getItem(k), KEY));
-  assert.deepEqual(stored.slugs.sort(), DATA.entries.filter((e) => e.date === newest.date).map((e) => e.slug).sort());
+  // L21 : tous les slugs vus sont mémorisés (all: true), pas seulement ceux de la date la plus récente.
+  assert.deepEqual(stored.slugs.sort(), DATA.entries.map((e) => e.slug).sort());
+  assert.equal(stored.all, true);
   assert.equal(stored.date, newest.date);
 
   // Visite suivante : tout est vu, plus de séparateur ni de pastille.

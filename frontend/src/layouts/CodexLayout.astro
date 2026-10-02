@@ -59,7 +59,7 @@ const ambient = AMBIENTS[current ?? ''] ?? AMBIENTS.pandora;
       <path class="eywa-burger__line eywa-burger__line--mid" d="M3 12h18" />
       <path class="eywa-burger__line eywa-burger__line--bot" d="M3 18h18" />
     </svg>
-    <!-- Nouveautés non vues (L14) : le nombre est lu sur le lien du tiroir. -->
+    <!-- Nouveautés non vues (L14) : point rose ; le nombre est dans le nom du bouton (L21). -->
     <span class="eywa-burger__dot" aria-hidden="true" hidden></span>
   </button>
 
@@ -170,7 +170,10 @@ const ambient = AMBIENTS[current ?? ''] ?? AMBIENTS.pandora;
       } else {
         html.removeAttribute('data-drawer-open');
         burger?.setAttribute('aria-expanded', 'false');
-        burger?.setAttribute('aria-label', 'Ouvrir la navigation');
+        // L21 : au repos, le nom annonce les nouveautés non vues (posé par le script de la
+        // pastille, BaseLayout).
+        const unseen = burger?.dataset.newsUnseen;
+        burger?.setAttribute('aria-label', unseen ? `Ouvrir la navigation (${unseen})` : 'Ouvrir la navigation');
         unlockScroll();
       }
       syncInert();

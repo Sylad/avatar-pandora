@@ -38,58 +38,100 @@ const newsIndex = JSON.stringify(
     <script type="application/json" id="eywa-news-index" is:inline set:html={newsIndex}></script>
     <script>
       /*
-        Pastille « Nouveautés » (L14, comme AetherWX) : nombre d'entrées non vues depuis la
-        dernière visite de /nouveautes/ (localStorage, src/lib/news-seen.ts), posée sur
-        TOUS les liens Nouveautés (.news-badge : barre latérale, tiroir, accueil) et en point
-        sur le bouton menu. Sur la page Nouveautés : séparateur « Déjà vu lors de ta visite
-        du … » avant la première entrée déjà vue, puis tout est marqué vu. Rejoué à chaque
-        page (astro:page-load, ClientRouter) : un seul script pour tout le site.
+        Pastille « Nouveautés » (L14, comme AetherWX ; L21 aligné sur evatosorus) — UN seul
+        script pour tout le site, rejoué à chaque page (astro:page-load, ClientRouter) :
+        • première page vue, quelle qu'elle soit : mémoire de base (rien n'est « nouveau »
+          ce jour-là ; ce qui est publié ensuite l'est, même sans ouvrir /nouveautes/) ;
+        • pastille sur TOUS les liens Nouveautés (.news-badge : menu, tiroir, accueil), point
+          sur le bouton menu et nombre dans son nom accessible au repos ;
+        • sur /nouveautes/ : bandeau « N nouveautés depuis ta dernière visite », marque
+          « Nouveau », séparateur « Déjà vu lors de ta visite du … » HORS des listes (les
+          entrées sont réparties en deux listes de part et d'autre d'un role="separator"),
+          seulement si toutes les nouvelles sont au-dessus ; puis tout est marqué vu.
       */
-      import { formatLongDate, formatTime } from '../lib/format-date.mjs';
-      import { badgeLabel, countUnseen, isUnseen, markAllSeen, readSeen, unseenLabel, type DatedEntry, type NewsSeen } from '../lib/news-seen';
+      import {
+        badgeLabel, countUnseen, ensureBaseline, isUnseen, markAllSeen, readSeen,
+        seenSeparatorIndex, seenSeparatorLabel, sinceLabel, unseenLabel,
+        type DatedEntry, type NewsSeen,
+      } from '../lib/news-seen';
 
       const storage = () => {
         try { return window.localStorage; } catch { return null; }
       };
 
-      const seenSeparator = (entries: DatedEntry[], seen: NewsSeen | null) => {
+      // Page Nouveautés : marques, bandeau et séparateur selon la visite précédente `seen`.
+      const showVisit = (seen: NewsSeen | null) => {
+        const lists = [...document.querySelectorAll<HTMLOListElement>('ol.news-list')];
+        if (!lists.length) return;
+        // Rejoué sur la même page : une seule liste d'abord, sans séparateur.
+        const list = lists[0];
+        for (const extra of lists.slice(1)) { list.append(...extra.children); extra.remove(); }
         document.querySelectorAll('.news-seen-sep').forEach((n) => n.remove());
-        const unseen = entries.map((e) => isUnseen(e, seen));
-        const lastNew = unseen.lastIndexOf(true);
-        if (lastNew < 0 || lastNew === entries.length - 1) return;
-        const article = document.getElementById(entries[lastNew + 1].slug);
-        const item = article?.closest('li');
-        if (!item?.parentElement) return;
-        const sep = document.createElement('li');
+
+        const items = [...list.children] as HTMLLIElement[];
+        const articles = items.map((li) => li.querySelector<HTMLElement>('article.news-entry')!);
+        const fresh = articles.map((a) => isUnseen({ slug: a.id, date: a.querySelector('time')!.dateTime }, seen));
+        articles.forEach((a, i) => {
+          const slot = a.querySelector('.news-new-slot');
+          if (!slot) return;
+          slot.replaceChildren();
+          if (fresh[i]) {
+            const mark = document.createElement('span');
+            mark.className = 'news-new';
+            mark.textContent = 'Nouveau';
+            slot.append(mark);
+          }
+        });
+        const since = document.querySelector('.news-since');
+        if (since) since.textContent = sinceLabel(fresh.filter(Boolean).length);
+
+        const at = seen ? seenSeparatorIndex(fresh) : -1;
+        if (at <= 0) return;
+        const seenList = document.createElement('ol');
+        // Mêmes classe et attribut de portée des styles Astro (data-astro-cid-…).
+        for (const attr of [...list.attributes]) if (attr.name !== 'id') seenList.setAttribute(attr.name, attr.value);
+        seenList.append(...items.slice(at));
+        const sep = document.createElement('div');
         sep.className = 'news-seen-sep';
-        const at = seen?.at ? new Date(seen.at) : null;
-        const label = document.createElement('span');
-        label.textContent = at
-          ? `Déjà vu lors de ta visite du ${formatLongDate(at)} à ${formatTime(at)}`
-          : 'Déjà vu lors de ta visite précédente';
-        sep.append(label);
-        item.parentElement.insertBefore(sep, item);
+        sep.setAttribute('role', 'separator');
+        const label = seenSeparatorLabel(seen!.at);
+        sep.setAttribute('aria-label', label);
+        const text = document.createElement('span');
+        text.textContent = label;
+        sep.append(text);
+        list.after(sep, seenList);
       };
 
       const update = () => {
         let entries: DatedEntry[];
         try { entries = JSON.parse(document.getElementById('eywa-news-index')?.textContent ?? '[]'); } catch { return; }
         const st = storage();
+        ensureBaseline(st, entries);
         let seen = readSeen(st);
         if (location.pathname.replace(/\/?$/, '/') === '/nouveautes/') {
-          seenSeparator(entries, seen);
+          showVisit(seen);
           seen = markAllSeen(st, entries) ?? seen;
         }
         const n = countUnseen(entries, seen);
+        const spoken = unseenLabel(n);
         document.querySelectorAll<HTMLElement>('.news-badge').forEach((badge) => {
           badge.hidden = n === 0;
           const digits = badge.querySelector('.news-badge__n');
           const sr = badge.querySelector('.news-badge__sr');
           if (digits) digits.textContent = badgeLabel(n);
-          if (sr) sr.textContent = n ? `(${unseenLabel(n)})` : '';
+          if (sr) sr.textContent = spoken ? `(${spoken})` : '';
         });
-        const dot = document.querySelector<HTMLElement>('#eywa-burger .eywa-burger__dot');
+        const burger = document.getElementById('eywa-burger');
+        const dot = burger?.querySelector<HTMLElement>('.eywa-burger__dot');
         if (dot) dot.hidden = n === 0;
+        if (burger) {
+          // L21 : le nombre est dans le nom du bouton (le point rose n'est qu'une forme) ;
+          // le tiroir (CodexLayout) relit data-news-unseen à chaque fermeture.
+          burger.dataset.newsUnseen = spoken;
+          if (burger.getAttribute('aria-expanded') !== 'true') {
+            burger.setAttribute('aria-label', spoken ? `Ouvrir la navigation (${spoken})` : 'Ouvrir la navigation');
+          }
+        }
       };
 
       document.addEventListener('astro:page-load', update);
