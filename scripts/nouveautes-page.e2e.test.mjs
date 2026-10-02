@@ -51,7 +51,7 @@ test('date affichée en français, « 1er » le premier du mois (« 1er octobre 
   for (const t of times) {
     assert.equal(t.replace(/<[^>]+>/g, ''), '1er octobre 2026');
     // Ordinal en exposant, hors des capitales de la ligne de date (« 1ᵉʳ », pas « 1ER »).
-    assert.match(t, /^1<sup class="fr-ordinal[^"]*"[^>]*>er<\/sup> octobre 2026$/);
+    assert.match(t, /^<span class="fr-ordinal-n[^"]*"[^>]*>1<\/span><sup class="fr-ordinal[^"]*"[^>]*>er<\/sup> octobre 2026$/);
   }
 });
 

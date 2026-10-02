@@ -14,14 +14,20 @@ interface Props {
 const text = formatDay(Astro.props.day);
 const first = text.startsWith('1er ');
 ---
-{first ? <Fragment>1<sup class="fr-ordinal">er</sup>{text.slice(3)}</Fragment> : text}
+{first ? <Fragment><span class="fr-ordinal-n">1</span><sup class="fr-ordinal">er</sup>{text.slice(3)}</Fragment> : text}
 
 <style>
+  /* Le « 1 » sans l'espacement de la ligne : l'exposant reste collé au chiffre. */
+  .fr-ordinal-n {
+    letter-spacing: 0;
+  }
   .fr-ordinal {
     font-size: 0.8em;
     line-height: 0;
-    vertical-align: 0.4em;
+    /* Revue UX L20 : à 0,4 em et avec l'espacement de la ligne, l'exposant flottait
+       au-dessus des capitales et se détachait du « 1 ». */
+    vertical-align: 0.3em;
     text-transform: none;
-    letter-spacing: 0.02em;
+    letter-spacing: 0;
   }
 </style>

@@ -150,7 +150,7 @@ test('le détecteur de fuites trouve un texte privé planté, en clair, échapp�
 test('dates de livraison en français, « 1er » le premier du mois (ordinal en exposant, jamais « 1ER »)', () => {
   const page = decode(html().replace(/<(?!\/?li\b)[^>]+>/g, ''));
   assert.doesNotMatch(html(), />1ER</, 'ordinal en capitales');
-  if (shown('done').some((l) => String(l.finished).endsWith('-01'))) assert.match(html(), /1<sup class="fr-ordinal[^"]*"[^>]*>er<\/sup> /);
+  if (shown('done').some((l) => String(l.finished).endsWith('-01'))) assert.match(html(), />1<\/span><sup class="fr-ordinal[^"]*"[^>]*>er<\/sup> /);
   assert.ok(!/Livré le 1 /.test(page), '« Livré le 1 octobre » au lieu de « 1er »');
   if (shown('done').some((l) => String(l.finished).endsWith('-01'))) assert.match(page, /Livré le 1er /);
 });
@@ -320,6 +320,31 @@ test('320 px : le sur-titre des pages méta ne laisse jamais « · » en fin de 
     });
     for (const l of lines) assert.doesNotMatch(l, /·$/, `${path} : ligne « ${l} »`);
     assert.match(lines.at(-1), /·\s*Eywa$/, `${path} : « · Eywa » séparé`);
+  }
+  await context.close();
+});
+
+test('ordinal « 1ᵉʳ » dans les lignes en capitales espacées : sans espacement de lettres, sans dépasser le haut des capitales', { timeout: 60_000 }, async (t) => {
+  const env = await setupBrowser(t);
+  if (!env) return;
+  const context = await env.browser.newContext({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce' });
+  const page = await context.newPage();
+  for (const [path, line] of [['/nouveautes/', '.news-date time'], ['/plan-de-travail/', '.plan-lot-meta']]) {
+    await page.goto(`${env.base}${path}`, { waitUntil: 'load' });
+    await page.evaluate(() => document.fonts.ready);
+    const sup = page.locator(`${line} .fr-ordinal`).first();
+    if (!(await sup.count())) continue;
+    const m = await sup.evaluate((s) => {
+      const digit = document.createRange();
+      const text = s.previousElementSibling.firstChild; // « 1 »
+      digit.setStart(text, text.textContent.length - 1); digit.setEnd(text, text.textContent.length);
+      const d = digit.getBoundingClientRect(); const b = s.getBoundingClientRect();
+      return { ls: getComputedStyle(s).letterSpacing, supMid: (b.top + b.bottom) / 2, digitTop: d.top, digitH: d.height, gap: b.left - d.right };
+    });
+    assert.ok(m.ls === '0px' || m.ls === 'normal', `${path} : letter-spacing ${m.ls}`);
+    // Le milieu de l'exposant reste dans la moitié haute du « 1 » (pas au-dessus de la ligne).
+    assert.ok(m.supMid >= m.digitTop && m.supMid <= m.digitTop + m.digitH / 2, `${path} : milieu de l’exposant à ${(m.supMid - m.digitTop).toFixed(1)} px du haut du « 1 » (haut ${m.digitH.toFixed(1)} px)`);
+    assert.ok(m.gap < 1, `${path} : exposant détaché du chiffre de ${m.gap.toFixed(1)} px`);
   }
   await context.close();
 });
