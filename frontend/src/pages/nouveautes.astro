@@ -392,5 +392,15 @@ const pngSize = (rel: string) => {
     };
     document.addEventListener('astro:page-load', revealTarget);
     window.addEventListener('hashchange', revealTarget);
+    // Revue UX L21 : ClientRouter traite lui-même un lien vers une ancre de la même page
+    // (pushState, sans « hashchange ») et le retour arrière (popstate) — on relit l'ancre
+    // une fois l'adresse mise à jour.
+    const later = () => { setTimeout(revealTarget, 0); setTimeout(revealTarget, 150); };
+    window.addEventListener('popstate', later);
+    document.addEventListener('click', (e) => {
+      const a = (e.target as Element | null)?.closest?.<HTMLAnchorElement>('a[href*="#"]');
+      if (!a || a.origin !== location.origin || a.pathname !== location.pathname) return;
+      later();
+    });
   </script>
 </CodexLayout>

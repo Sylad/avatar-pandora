@@ -300,3 +300,32 @@ test('au toucher (390 px) : « Copier le lien » visible sans survol, cible ≥ 
   assert.ok(overflow <= 0, `débordement horizontal de ${overflow}px`);
   await context.close();
 });
+
+// Revue UX L21 : un lien DANS la page vers une autre entrée — le routeur (ClientRouter)
+// change l'ancre sans « hashchange » : le focus suivait, pas la mise en valeur.
+test('lien interne vers une autre entrée : la mise en valeur et le focus suivent ; retour arrière aussi', { timeout: 60_000 }, async (t) => {
+  if (DATA.entries.length < 2) { t.skip('il faut au moins deux nouveautés'); return; }
+  const env = await setupBrowser(t);
+  if (!env) return;
+  const [first, second] = DATA.entries.map((e) => e.slug);
+  for (const width of [1440, 390]) {
+    const context = await env.browser.newContext({ viewport: { width, height: width > 1000 ? 900 : 844 }, reducedMotion: 'reduce' });
+    const page = await context.newPage();
+    await page.goto(`${env.base}/nouveautes/#${first}`, { waitUntil: 'load' });
+    await page.waitForFunction((s) => document.querySelector('article.is-target')?.id === s, first);
+    // Lien injecté dans le texte de la première entrée, vers la seconde.
+    await page.evaluate(([from, to]) => {
+      const a = document.createElement('a');
+      a.href = `#${to}`; a.id = 'lien-injecte'; a.textContent = 'voir l’autre nouveauté';
+      document.getElementById(from).querySelector('.news-body').append(a);
+    }, [first, second]);
+    await page.click('#lien-injecte');
+    await page.waitForFunction((s) => document.querySelector('article.is-target')?.id === s, second, { timeout: 3000 });
+    assert.deepEqual(await page.locator('article.is-target').evaluateAll((as) => as.map((a) => a.id)), [second]);
+    await page.waitForFunction((s) => document.activeElement?.id === s, second);
+    // Retour arrière : la première entrée redevient la cible.
+    await page.goBack();
+    await page.waitForFunction((s) => document.querySelector('article.is-target')?.id === s, first, { timeout: 3000 });
+    await context.close();
+  }
+});
