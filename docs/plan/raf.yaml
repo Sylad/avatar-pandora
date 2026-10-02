@@ -126,6 +126,7 @@ lots:
     finished: 2026-10-01
   - id: L17
     title: "Illustrations propres hébergées sur le site (style Pandora, générées ou dessinées, sans droits tiers) : fiches les plus vues d'abord, visuel par défaut ailleurs"
+    public: "Des illustrations de Pandora dessinées pour Eywa"
     status: todo
     estimate: 2
     visible: true
