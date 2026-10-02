@@ -46,7 +46,13 @@ test('une entrée par nouveauté, dans l’ordre du JSON (la plus récente en ha
 });
 
 test('date affichée en français, « 1er » le premier du mois (« 1er octobre 2026 »)', () => {
-  assert.match(html(), /<time datetime="2026-10-01"[^>]*>1er octobre 2026<\/time>/);
+  const times = [...html().matchAll(/<time datetime="2026-10-01"[^>]*>([\s\S]*?)<\/time>/g)].map((m) => m[1]);
+  assert.ok(times.length > 0);
+  for (const t of times) {
+    assert.equal(t.replace(/<[^>]+>/g, ''), '1er octobre 2026');
+    // Ordinal en exposant, hors des capitales de la ligne de date (« 1ᵉʳ », pas « 1ER »).
+    assert.match(t, /^1<sup class="fr-ordinal[^"]*"[^>]*>er<\/sup> octobre 2026$/);
+  }
 });
 
 test('pas de page cadence brute servie sous /nouveautes-data/', () => {

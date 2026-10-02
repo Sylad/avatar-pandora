@@ -11,7 +11,7 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import CodexLayout from '../layouts/CodexLayout.astro';
 import MetaHeader from '../components/MetaHeader.astro';
-import { formatDay } from '../lib/format-date.mjs';
+import FrDate from '../components/FrDate.astro';
 import news from '../../public/nouveautes-data/nouveautes.json';
 
 interface NewsEntry {
@@ -26,8 +26,6 @@ interface NewsEntry {
 const BASE = '/nouveautes-data';
 const entries = (news as { entries: NewsEntry[] }).entries;
 
-// Formateur partagé avec le Plan de travail : « 1er octobre 2026 » (L20).
-const formatDate = formatDay;
 
 // Dimensions lues dans l'en-tête PNG (IHDR) : réservent la place des captures,
 // pas de saut de mise en page au chargement.
@@ -52,7 +50,7 @@ const pngSize = (rel: string) => {
           <li>
             <article class="news-entry" id={e.slug} aria-labelledby={`${e.slug}-titre`}>
               <p class="news-date">
-                <time datetime={e.date}>{formatDate(e.date)}</time>
+                <time datetime={e.date}><FrDate day={e.date} /></time>
                 {/* Lien permanent /nouveautes/#<slug> (comme AetherWX) : à copier ou partager. */}
                 <a href={`#${e.slug}`} class="news-permalink" aria-label={`Lien permanent vers « ${e.title} »`} title="Lien permanent vers cette nouveauté">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">

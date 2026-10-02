@@ -122,4 +122,5 @@ blanche : id (en `data-id` seulement), titre public, état, date de livraison, �
 `scripts/plan-page.e2e.test.mjs` le vérifie sur tout `dist/`. Un `public:` non conforme (> 80 caractères,
 « / », fichier, identifiant de lot, nom de technique, sujet de sécurité) fait échouer le build : écrire
 `public:` en français pour le lecteur. Dates par le formateur unique `src/lib/format-date.mjs`
-(« 1er octobre 2026 »). En-tête commun aux deux pages méta : `components/MetaHeader.astro`.
+(« 1er octobre 2026 »), rendues dans les pages par `components/FrDate.astro` (ordinal en exposant, qui
+garde sa casse dans les lignes en capitales). En-tête commun aux deux pages méta : `components/MetaHeader.astro`.

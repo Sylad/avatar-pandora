@@ -129,8 +129,10 @@ test('le détecteur de fuites trouve un texte privé planté, en clair, échapp�
   }
 });
 
-test('dates de livraison en français, « 1er » le premier du mois', () => {
-  const page = decode(html());
+test('dates de livraison en français, « 1er » le premier du mois (ordinal en exposant, jamais « 1ER »)', () => {
+  const page = decode(html().replace(/<(?!\/?li\b)[^>]+>/g, ''));
+  assert.doesNotMatch(html(), />1ER</, 'ordinal en capitales');
+  if (shown('done').some((l) => String(l.finished).endsWith('-01'))) assert.match(html(), /1<sup class="fr-ordinal[^"]*"[^>]*>er<\/sup> /);
   assert.ok(!/Livré le 1 /.test(page), '« Livré le 1 octobre » au lieu de « 1er »');
   if (shown('done').some((l) => String(l.finished).endsWith('-01'))) assert.match(page, /Livré le 1er /);
 });
@@ -138,6 +140,7 @@ test('dates de livraison en français, « 1er » le premier du mois', () => {
 test('section vide : texte honnête (« Prévu » vide → « Les prochains travaux seront annoncés ici. ») ; jamais « 0 » dans le bandeau', () => {
   const page = decode(html());
   assert.doesNotMatch(page, /<span>0\u00a0/, 'décompte nul affiché');
+  assert.doesNotMatch(page, /\(0\)/, '« (0) » affiché dans un titre de section');
   if (shown('todo').length === 0) assert.ok(page.includes('Les prochains travaux seront annoncés ici.'));
   else assert.ok(!page.includes('Les prochains travaux seront annoncés ici.'));
 });

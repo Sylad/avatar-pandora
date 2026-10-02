@@ -14,7 +14,7 @@
 import { join } from 'node:path';
 import CodexLayout from '../layouts/CodexLayout.astro';
 import MetaHeader from '../components/MetaHeader.astro';
-import { formatDay } from '../lib/format-date.mjs';
+import FrDate from '../components/FrDate.astro';
 import { loadPublicPlan, planSummary, stepsLabel, RECENT_DONE, type PublicLot } from '../lib/plan-public';
 import news from '../../public/nouveautes-data/nouveautes.json';
 
@@ -25,9 +25,7 @@ const plan = loadPublicPlan(join(process.cwd(), '..', 'docs', 'plan', 'raf.yaml'
 const summary = planSummary(plan.counts);
 
 const stateLabel = (l: PublicLot) =>
-  l.status === 'doing' ? 'En cours'
-    : l.status === 'todo' ? 'Prévu'
-      : l.finished ? `Livré le ${formatDay(l.finished)}` : 'Livré';
+  l.status === 'doing' ? 'En cours' : l.status === 'todo' ? 'Prévu' : 'Livré';
 
 const sections: { id: string; title: string; intro: string; lots: PublicLot[]; empty: string; news?: boolean }[] = [
   { id: 'en-cours', title: 'En cours', intro: 'Ce qui pousse en ce moment dans le codex.', lots: plan.doing, empty: 'Rien en cours pour l’instant.' },
@@ -65,7 +63,7 @@ const sections: { id: string; title: string; intro: string; lots: PublicLot[]; e
 
     {sections.map((s) => (
       <section class="plan-section" aria-labelledby={`plan-${s.id}`}>
-        <h2 id={`plan-${s.id}`}>{s.title} <span class="plan-count">({s.lots.length})</span></h2>
+        <h2 id={`plan-${s.id}`}>{s.title}{s.lots.length > 0 && <Fragment> <span class="plan-count">({s.lots.length})</span></Fragment>}</h2>
         <p class="plan-intro">
           {s.intro}
           {s.news && <Fragment> Ce qui change à l’écran est raconté dans les <a href="/nouveautes/">Nouveautés</a>.</Fragment>}
@@ -78,7 +76,7 @@ const sections: { id: string; title: string; intro: string; lots: PublicLot[]; e
               <li class="plan-lot" data-status={l.status} data-id={l.id} id={`lot-${l.id}`} data-also={l.also?.join(' ')}>
                 <p class="plan-lot-title">{l.title}</p>
                 <p class="plan-lot-meta">
-                  <span class="plan-state">{stateLabel(l)}</span>
+                  <span class="plan-state">{stateLabel(l)}{l.finished && <Fragment> le <FrDate day={l.finished} /></Fragment>}</span>
                   {l.tasks && <span class="plan-tasks">{stepsLabel(l.tasks)}</span>}
                 </p>
               </li>

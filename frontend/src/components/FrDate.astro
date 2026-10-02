@@ -1,0 +1,27 @@
+---
+/*
+  Date française d'un jour « YYYY-MM-DD » par le formateur unique (lib/format-date.mjs),
+  avec l'ordinal du premier du mois en exposant : « 1ᵉʳ octobre 2026 ». Le texte reste
+  « 1er octobre 2026 » pour les lecteurs d'écran et la copie ; l'exposant garde sa casse
+  dans les lignes en capitales (date des Nouveautés, état du Plan de travail), qui
+  écrivaient sinon « 1ER OCTOBRE » (L20).
+*/
+import { formatDay } from '../lib/format-date.mjs';
+
+interface Props {
+  day: string;
+}
+const text = formatDay(Astro.props.day);
+const first = text.startsWith('1er ');
+---
+{first ? <Fragment>1<sup class="fr-ordinal">er</sup>{text.slice(3)}</Fragment> : text}
+
+<style>
+  .fr-ordinal {
+    font-size: 0.8em;
+    line-height: 0;
+    vertical-align: 0.4em;
+    text-transform: none;
+    letter-spacing: 0.02em;
+  }
+</style>
