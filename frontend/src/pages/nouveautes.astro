@@ -10,6 +10,7 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import CodexLayout from '../layouts/CodexLayout.astro';
+import MetaHeader from '../components/MetaHeader.astro';
 import { formatDay } from '../lib/format-date.mjs';
 import news from '../../public/nouveautes-data/nouveautes.json';
 
@@ -37,13 +38,11 @@ const pngSize = (rel: string) => {
 ---
 <CodexLayout title="Nouveautés — Eywa" current="nouveautes">
   <div class="news">
-    <header class="news-header">
-      <p class="news-eyebrow">Nouveautés · Eywa</p>
-      <h1 class="news-title">Ce qui a changé</h1>
-      <p class="news-lede">
-        Le journal des évolutions du codex, la plus récente en premier.
-      </p>
-    </header>
+    <MetaHeader
+      eyebrow="Nouveautés · Eywa"
+      title="Ce qui a changé"
+      lede="Le journal des évolutions du codex, la plus récente en premier."
+    />
 
     {entries.length === 0 ? (
       <p class="news-empty">Aucune nouveauté publiée pour l'instant.</p>
@@ -102,46 +101,6 @@ const pngSize = (rel: string) => {
   <style>
     .news {
       max-width: 46rem;
-    }
-    .news-header {
-      margin-bottom: 2.5rem;
-    }
-    /* Sur-titre, titre et chapeau posés sans carte sur l'ambiance du codex : le pollen
-       bioluminescent (particules cyan/vert vif) passe derrière les lettres. Contour de
-       nuit plein sur 3 px (36 ombres nettes, une par décalage) puis halo doux : l'anneau
-       que l'œil lit autour de chaque lettre reste sombre quoi qu'il passe derrière.
-       ≥ 4,5:1 au pire pixel des glyphes et sur l'anneau de 2 px (revue UX L14,
-       scripts/header-contrast.e2e.test.mjs). Invisible sur le fond de nuit. */
-    .news-header {
-      --news-halo: -3px -1px 0 #0a0a1f, -3px 0px 0 #0a0a1f, -3px 1px 0 #0a0a1f, -2px -2px 0 #0a0a1f, -2px -1px 0 #0a0a1f, -2px 0px 0 #0a0a1f, -2px 1px 0 #0a0a1f, -2px 2px 0 #0a0a1f, -1px -3px 0 #0a0a1f, -1px -2px 0 #0a0a1f, -1px -1px 0 #0a0a1f, -1px 0px 0 #0a0a1f, -1px 1px 0 #0a0a1f, -1px 2px 0 #0a0a1f, -1px 3px 0 #0a0a1f, 0px -3px 0 #0a0a1f, 0px -2px 0 #0a0a1f, 0px -1px 0 #0a0a1f, 0px 1px 0 #0a0a1f, 0px 2px 0 #0a0a1f, 0px 3px 0 #0a0a1f, 1px -3px 0 #0a0a1f, 1px -2px 0 #0a0a1f, 1px -1px 0 #0a0a1f, 1px 0px 0 #0a0a1f, 1px 1px 0 #0a0a1f, 1px 2px 0 #0a0a1f, 1px 3px 0 #0a0a1f, 2px -2px 0 #0a0a1f, 2px -1px 0 #0a0a1f, 2px 0px 0 #0a0a1f, 2px 1px 0 #0a0a1f, 2px 2px 0 #0a0a1f, 3px -1px 0 #0a0a1f, 3px 0px 0 #0a0a1f, 3px 1px 0 #0a0a1f, 0 0 6px rgba(10, 10, 31, 0.85);
-    }
-    .news-eyebrow {
-      font-family: var(--font-display);
-      font-size: 12.5px;
-      font-weight: 600;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: var(--color-eywa-text-muted);
-      margin: 0 0 0.5rem;
-      text-shadow: var(--news-halo);
-    }
-    .news-title {
-      font-family: var(--font-display);
-      font-size: clamp(1.7rem, 6vw, 2.25rem);
-      font-weight: 700;
-      line-height: 1.2;
-      color: var(--color-eywa-bio-primary);
-      margin: 0 0 0.8rem;
-      overflow-wrap: anywhere;
-      text-shadow: var(--news-halo);
-    }
-    .news-lede {
-      font-family: var(--font-body);
-      font-size: 1.15rem;
-      line-height: 1.6;
-      color: var(--color-eywa-text);
-      margin: 0;
-      text-shadow: var(--news-halo);
     }
     .news-list {
       list-style: none;

@@ -1,0 +1,277 @@
+// L20 — page « Plan de travail » (/plan-de-travail/) : en cours, prévu, récemment livré,
+// générée AU BUILD depuis docs/plan/raf.yaml. Titres et états seulement : AUCUN texte de
+// note (ni verdict UX, ni raison d'abandon, ni titre de sous-tâche) ne doit sortir dans
+// le site construit — vérifié sur TOUS les fichiers de frontend/dist (formes échappées
+// HTML et JSON comprises). Repris d'evatosorus après sa relecture et sa revue UX.
+//
+// Lit le site CONSTRUIT : lancer `npx astro build` avant. Tests navigateur en « skip »
+// sans playwright-core ni Chromium.
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { createRequire } from 'node:module';
+import { existsSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { extname, join } from 'node:path';
+import { DIST, setupBrowser } from './lib/e2e-dist.mjs';
+
+const require = createRequire(new URL('../frontend/package.json', import.meta.url));
+const { parse } = require('yaml');
+const RAF = parse(readFileSync(new URL('../docs/plan/raf.yaml', import.meta.url), 'utf8'));
+const PAGE = join(DIST, 'plan-de-travail', 'index.html');
+const html = () => readFileSync(PAGE, 'utf8');
+
+const decode = (s) => s
+  .replace(/&#(\d+);/g, (_, n) => String.fromCodePoint(+n))
+  .replace(/&#x([0-9a-f]+);/gi, (_, n) => String.fromCodePoint(parseInt(n, 16)))
+  .replaceAll('&quot;', '"').replaceAll('&lt;', '<').replaceAll('&gt;', '>').replaceAll('&nbsp;', ' ')
+  .replaceAll('&amp;', '&');
+
+// Tous les fichiers texte d'un dossier construit.
+function distFiles(root) {
+  const files = [];
+  const walk = (dir) => {
+    for (const e of readdirSync(dir, { withFileTypes: true })) {
+      const p = join(dir, e.name);
+      if (e.isDirectory()) walk(p);
+      else if (['.html', '.js', '.mjs', '.json', '.css', '.txt', '.xml', '.svg', '.map', '.webmanifest'].includes(extname(e.name))) files.push(p);
+    }
+  };
+  walk(root);
+  return files;
+}
+
+// Cherche chaque texte privé dans chaque fichier : texte brut, entités HTML décodées
+// (&#39; &amp; &laquo; …) et échappements JSON/JS (\u00e9) ramenés au caractère.
+const NAMED = { quot: '"', lt: '<', gt: '>', nbsp: '\u00a0', laquo: '«', raquo: '»', rsquo: '’', lsquo: '‘', hellip: '…', mdash: '—', ndash: '–', eacute: 'é', egrave: 'è', agrave: 'à', ccedil: 'ç', apos: "'" };
+const fullDecode = (s) => decode(s)
+  .replace(/&([a-z]+);/gi, (m, n) => NAMED[n.toLowerCase()] ?? m)
+  .replace(/\\u([0-9a-f]{4})/gi, (_, h) => String.fromCharCode(parseInt(h, 16)));
+const squash = (s) => s.replace(/[\s\u00a0\u202f]+/g, ' ');
+function findLeaks(files, needles, root) {
+  const leaks = [];
+  for (const f of files) {
+    const raw = readFileSync(f, 'utf8');
+    const forms = [raw, decode(raw), fullDecode(raw), fullDecode(fullDecode(raw))].map(squash);
+    for (const [k, s] of needles) if (forms.some((t) => t.includes(squash(s)))) leaks.push(`${k} → ${f.slice(root.length - (root.endsWith('/') ? 1 : 0))}`);
+  }
+  return leaks;
+}
+
+const lots = RAF.lots;
+const NEWS = JSON.parse(readFileSync(new URL('../frontend/public/nouveautes-data/nouveautes.json', import.meta.url), 'utf8')).entries;
+// Titre public attendu (modèle finance-tracker) : public:, sinon titre de la Nouveauté la plus
+// récente du lot (sauf lots de processus « Revue … »), sinon lot masqué.
+const publicTitle = (l) => l.public ?? (/^revue\b/i.test(l.title) ? undefined : NEWS.find((e) => e.lots.includes(l.id))?.title);
+const published = lots.filter((l) => l.visible === true && ['doing', 'todo', 'done'].includes(l.status) && publicTitle(l));
+const shown = (status) => published.filter((l) => l.status === status);
+
+test('dist/plan-de-travail/index.html est construit, titré « Plan de travail »', () => {
+  assert.ok(existsSync(PAGE), 'page absente : lancer `npx astro build`');
+  assert.match(html(), /<title>Plan de travail — Eywa<\/title>/);
+  assert.match(html(), /<h1[^>]*>[^<]+<\/h1>/);
+});
+
+test('trois sections titrées ; tous les lots en cours et prévus, dans l’ordre du plan, avec leur état écrit', () => {
+  const page = decode(html());
+  for (const h of ['En cours', 'Prévu', 'Récemment livré']) assert.match(page, new RegExp(`<h2[^>]*>${h}`), `section « ${h} » absente`);
+  for (const status of ['doing', 'todo']) {
+    const ids = [...page.matchAll(new RegExp(`<li[^>]*class="plan-lot" data-status="${status}"[^>]*data-id="([^"]+)"`, 'g'))].map((m) => m[1]);
+    // Ordre du plan, un lot par titre public (le premier).
+    const firsts = shown(status).filter((l, i, all) => all.findIndex((x) => publicTitle(x) === publicTitle(l)) === i);
+    assert.deepEqual(ids, firsts.map((l) => l.id), status);
+    for (const l of shown(status)) assert.ok(page.includes(publicTitle(l)), `${l.id} : titre public absent`);
+  }
+  const done = [...page.matchAll(/<li[^>]*class="plan-lot" data-status="done"[^>]*data-id="([^"]+)"/g)].map((m) => m[1]);
+  assert.ok(done.length > 0 && done.length <= 8, `${done.length} lots livrés affichés`);
+  assert.ok(done.every((id) => shown('done').some((l) => l.id === id)));
+  const ids = [...page.matchAll(/data-id="([^"]+)"/g)].map((m) => m[1]);
+  assert.deepEqual(ids.filter((id) => !published.some((l) => l.id === id)), [], 'lot masqué (non visible, sans titre public ou abandonné) publié');
+});
+
+test('AUCUN texte privé du plan dans le site construit : titres bruts, notes, verdicts UX, raisons, sous-tâches, lots abandonnés', () => {
+  // Public par construction : les titres publics affichés (public: ou titre de Nouveauté).
+  const allowed = new Set(published.map(publicTitle));
+  const secrets = [];
+  for (const l of lots) {
+    secrets.push([`${l.id} titre brut${l.status === 'dropped' ? ' (abandonné)' : ''}`, l.title]);
+    for (const n of l.notes ?? []) secrets.push([`${l.id} note`, n.text]);
+    if (l.ux?.verdict) secrets.push([`${l.id} ux`, l.ux.verdict]);
+    if (l.reason) secrets.push([`${l.id} raison`, l.reason]);
+    for (const t of l.tasks ?? []) secrets.push([`${l.id}/${t.id} titre`, t.title]);
+  }
+  assert.ok(secrets.filter(([k]) => k.endsWith('note')).length > 0, 'aucune note dans raf.yaml : le test ne prouverait rien');
+  // Texte entier (60 premiers caractères pour les longs). Plancher de 12 caractères : en
+  // dessous, un texte n'est qu'un mot ou deux qui peuvent légitimement figurer ailleurs
+  // (aucun texte du plan actuel n'est aussi court : le plancher ne cache rien aujourd'hui).
+  const needles = secrets
+    .filter(([, s]) => !allowed.has(String(s).trim()))
+    .map(([k, s]) => [k, String(s).trim().slice(0, 60)]);
+  const short = needles.filter(([, s]) => s.length < 12);
+  assert.deepEqual(short, [], 'texte privé trop court pour être cherché sans faux positif : relever le plancher en conscience');
+  const files = distFiles(DIST);
+  assert.ok(files.length > 100, `dist presque vide (${files.length} fichiers)`);
+  assert.deepEqual(findLeaks(files, needles, DIST), []);
+});
+
+test('le détecteur de fuites trouve un texte privé planté, en clair, échappé HTML ou JSON', () => {
+  const dir = mkdtempSync(join(tmpdir(), 'avatar-fuite-'));
+  try {
+    const secret = 'Note privée « l’abandon » & co — 01-10';
+    writeFileSync(join(dir, 'clair.html'), `<p>${secret}</p>`);
+    writeFileSync(join(dir, 'html.html'), `<p>${secret.replaceAll('&', '&amp;').replaceAll('’', '&#8217;').replaceAll('«', '&laquo;')}</p>`);
+    writeFileSync(join(dir, 'hexa.html'), `<p data-x="${secret.replaceAll('&', '&#x26;').replaceAll('é', '&#xe9;')}"></p>`);
+    writeFileSync(join(dir, 'json.js'), `const a = ${JSON.stringify(secret).replace(/[^\x20-\x7e]/g, (c) => `\\u${c.charCodeAt(0).toString(16).padStart(4, '0')}`)};`);
+    writeFileSync(join(dir, 'propre.html'), '<p>rien à voir</p>');
+    const leaks = findLeaks(distFiles(dir), [['planté', secret]], dir);
+    assert.deepEqual(leaks.map((l) => l.split(' → ')[1]).sort(), ['/clair.html', '/hexa.html', '/html.html', '/json.js']);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('dates de livraison en français, « 1er » le premier du mois', () => {
+  const page = decode(html());
+  assert.ok(!/Livré le 1 /.test(page), '« Livré le 1 octobre » au lieu de « 1er »');
+  if (shown('done').some((l) => String(l.finished).endsWith('-01'))) assert.match(page, /Livré le 1er /);
+});
+
+test('section vide : texte honnête (« Prévu » vide → « Les prochains travaux seront annoncés ici. ») ; jamais « 0 » dans le bandeau', () => {
+  const page = decode(html());
+  assert.doesNotMatch(page, /<span>0\u00a0/, 'décompte nul affiché');
+  if (shown('todo').length === 0) assert.ok(page.includes('Les prochains travaux seront annoncés ici.'));
+  else assert.ok(!page.includes('Les prochains travaux seront annoncés ici.'));
+});
+
+test('aucun identifiant de lot (« L14 »…) dans le texte visible ; il reste en data-id et id', () => {
+  const page = html();
+  const main = page.slice(page.indexOf('<main'), page.indexOf('</main>'));
+  const text = decode(main.replace(/<script[\s\S]*?<\/script>/g, '').replace(/<[^>]+>/g, ' '));
+  assert.doesNotMatch(text, /\bL\d+\b/, 'identifiant de lot visible');
+  // Chaque lot publié a sa ligne (id lot-<id>), ou est fondu dans celle d'un lot au même titre (data-also).
+  for (const l of published) {
+    const own = new RegExp(`<li[^>]*data-id="${l.id}" id="lot-${l.id}"`).test(page);
+    const merged = new RegExp(`<li[^>]*data-also="[^"]*\\b${l.id}\\b`).test(page);
+    assert.ok(own || merged, `${l.id} : ni ligne ni fusion`);
+  }
+});
+
+test('un titre public n’apparaît qu’une fois par section (lots fondus, date la plus récente)', () => {
+  const page = decode(html());
+  for (const status of ['doing', 'todo', 'done']) {
+    const titles = [...page.matchAll(new RegExp(`<li[^>]*class="plan-lot" data-status="${status}"[\\s\\S]*?<p class="plan-lot-title"[^>]*>([^<]*)<`, 'g'))].map((m) => m[1]);
+    assert.equal(new Set(titles).size, titles.length, `${status} : titre en double (${titles.join(' | ')})`);
+  }
+});
+
+// Liens de la barre latérale (bureau) / du tiroir (téléphone) d'une page construite.
+const sidebarLinks = (page) => {
+  const aside = page.slice(page.indexOf('<aside id="eywa-sidebar"'), page.indexOf('</aside>'));
+  return [...aside.matchAll(/<a [^>]*href="([^"]+)"[^>]*>/g)].map((m) => ({ href: m[1], tag: m[0] }));
+};
+
+test('le menu de toutes les pages du codex propose « Plan de travail » juste après « Nouveautés », actif sur la page', () => {
+  for (const p of ['pandora', 'pandora/eywa', 'bestiaire', 'langue', 'videos', 'nouveautes', 'plan-de-travail']) {
+    const links = sidebarLinks(readFileSync(join(DIST, p, 'index.html'), 'utf8'));
+    const i = links.findIndex((l) => l.href === '/nouveautes/');
+    assert.ok(i >= 0, `${p} : lien Nouveautés absent`);
+    assert.equal(links[i + 1]?.href, '/plan-de-travail/', `${p} : « Plan de travail » n’est pas juste après « Nouveautés »`);
+    if (p !== 'plan-de-travail') assert.doesNotMatch(links[i + 1].tag, /aria-current/, p);
+  }
+  assert.match(sidebarLinks(html()).find((l) => l.href === '/plan-de-travail/').tag, /aria-current="page"/);
+});
+
+// ── Navigateur ──────────────────────────────────────────────────────────────
+// Contraste WCAG du texte des sections sur leur fond, composé dans le PIRE cas (fond blanc
+// sous la carte translucide : l'image de fond peut être claire).
+const worstContrast = (page) => page.evaluate(() => {
+  const rgba = (s) => { const m = s.match(/[\d.]+/g).map(Number); return [m[0], m[1], m[2], m[3] ?? 1]; };
+  const lin = (c) => { c /= 255; return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4; };
+  const lum = ([r, g, b]) => 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
+  const over = ([r, g, b, a], [R, G, B]) => [r * a + R * (1 - a), g * a + G * (1 - a), b * a + B * (1 - a)];
+  const out = [];
+  for (const card of document.querySelectorAll('.plan-section, .plan-summary')) {
+    const bg = over(rgba(getComputedStyle(card).backgroundColor), [255, 255, 255]);
+    for (const el of card.querySelectorAll('h2, p, span, li')) {
+      if (!el.textContent.trim()) continue;
+      const fg = over(rgba(getComputedStyle(el).color), bg);
+      const [a, b] = [lum(fg), lum(bg)].sort((x, y) => y - x);
+      out.push({ sel: `${card.className} ${el.tagName}.${el.className}`, ratio: (a + 0.05) / (b + 0.05) });
+    }
+  }
+  return out;
+});
+
+test('reflow 320/390/1440 px : aucun défilement horizontal, contraste ≥ 4,5:1', { timeout: 120_000 }, async (t) => {
+  const env = await setupBrowser(t);
+  if (!env) return;
+  for (const width of [320, 390, 1440]) {
+    const context = await env.browser.newContext({ viewport: { width, height: width > 1000 ? 900 : 844 }, reducedMotion: 'reduce' });
+    const page = await context.newPage();
+    await page.goto(`${env.base}/plan-de-travail/`, { waitUntil: 'load' });
+    const overflow = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth);
+    assert.ok(overflow <= 0, `${width}px : débordement horizontal de ${overflow}px`);
+    const results = await worstContrast(page);
+    assert.ok(results.length > 0, 'aucun texte mesuré');
+    for (const { sel, ratio } of results) assert.ok(ratio >= 4.5, `${width}px ${sel} : ${ratio.toFixed(2)}:1`);
+    await context.close();
+  }
+});
+
+test('bureau 1440 px, au clavier : Tab atteint « Plan de travail » dans la barre latérale (contour visible), Entrée y mène', { timeout: 60_000 }, async (t) => {
+  const env = await setupBrowser(t);
+  if (!env) return;
+  const context = await env.browser.newContext({ viewport: { width: 1440, height: 900 } });
+  const page = await context.newPage();
+  await page.goto(`${env.base}/pandora/`, { waitUntil: 'load' });
+  let reached = false;
+  for (let i = 0; i < 40 && !reached; i++) {
+    await page.keyboard.press('Tab');
+    reached = await page.evaluate(() => document.activeElement?.getAttribute('href') === '/plan-de-travail/');
+  }
+  assert.ok(reached, 'lien Plan de travail hors de l’ordre de tabulation');
+  const outline = await page.evaluate(() => getComputedStyle(document.activeElement).outlineStyle);
+  assert.notEqual(outline, 'none', 'contour de focus invisible');
+  await Promise.all([page.waitForURL((u) => u.pathname === '/plan-de-travail/'), page.keyboard.press('Enter')]);
+  await context.close();
+});
+
+test('téléphone 390 px : le tiroir propose « Plan de travail » sous « Nouveautés » et y mène', { timeout: 60_000 }, async (t) => {
+  const env = await setupBrowser(t);
+  if (!env) return;
+  const context = await env.browser.newContext({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce' });
+  const page = await context.newPage();
+  await page.goto(`${env.base}/pandora/`, { waitUntil: 'load' });
+  await page.click('#eywa-burger');
+  const link = page.locator('#eywa-sidebar a[href="/plan-de-travail/"]');
+  await link.scrollIntoViewIfNeeded();
+  assert.ok(await link.isVisible(), 'lien absent du tiroir');
+  const box = await link.boundingBox();
+  assert.ok(box.x >= 0 && box.x + box.width <= 390, `lien hors de l’écran (${box.x}…${box.x + box.width})`);
+  await Promise.all([page.waitForURL((u) => u.pathname === '/plan-de-travail/'), link.click()]);
+  await page.waitForSelector('.plan-section');
+  await context.close();
+});
+
+test('320/390 px : le sur-titre des pages méta ne passe pas sous le bouton menu fixe', { timeout: 60_000 }, async (t) => {
+  const env = await setupBrowser(t);
+  if (!env) return;
+  for (const width of [320, 390]) {
+    const context = await env.browser.newContext({ viewport: { width, height: 700 }, reducedMotion: 'reduce' });
+    const page = await context.newPage();
+    for (const path of ['/nouveautes/', '/plan-de-travail/']) {
+      await page.goto(`${env.base}${path}`, { waitUntil: 'load' });
+      const { text, burger } = await page.evaluate(() => {
+        const range = document.createRange();
+        range.selectNodeContents(document.querySelector('.meta-eyebrow'));
+        const rects = [...range.getClientRects()];
+        const b = document.getElementById('eywa-burger').getBoundingClientRect();
+        return { text: rects.map((r) => ({ right: r.right, top: r.top, bottom: r.bottom })), burger: { left: b.left, top: b.top, bottom: b.bottom } };
+      });
+      for (const r of text) {
+        const sameRow = r.bottom > burger.top && r.top < burger.bottom;
+        assert.ok(!sameRow || r.right <= burger.left - 4, `${path} @${width}px : sur-titre jusqu’à ${r.right}px, bouton menu dès ${burger.left}px`);
+      }
+    }
+    await context.close();
+  }
+});

@@ -62,9 +62,11 @@ Dev local : `cd frontend && source ~/.nvm/nvm.sh && nvm use 22 && npm run dev`. 
 
 ## Tests
 
-`cd frontend && npm run build` (80 pages) valide la cohérence (Content Collections + schéma Zod, types, intégrations Astro).
-Puis `npm run test:scripts` (`node --test ../scripts/*.test.mjs`, Node ≥ 22.12) : données des Nouveautés,
-et tests navigateur sur le site **construit** (`frontend/dist`, lancer le build avant) — page Nouveautés,
+`cd frontend && npm run build` (81 pages) valide la cohérence (Content Collections + schéma Zod, types, intégrations Astro).
+Puis `npm run test:scripts` (`node --test ../scripts/*.test.mjs`, Node ≥ 22.18 : les tests importent les
+modules `.ts` tels quels — `export PATH=$HOME/.nvm/versions/node/v22.22.3/bin:$PATH`) : données des
+Nouveautés et du Plan de travail, et tests navigateur sur le site **construit** (`frontend/dist`, lancer le
+build avant) — pages Nouveautés et Plan de travail (dont l'absence de tout texte privé du plan dans `dist/`),
 tiroir du téléphone (y compris après une navigation ClientRouter), contraste au pire pixel. Chromium via
 `playwright-core` (devDependency) ; les tests navigateur passent en « skip » s'il manque.
 `EYWA_E2E_SHOTS=<dossier>` enregistre des captures de /nouveautes/ à 1440, 390 et 320 px.
@@ -100,3 +102,16 @@ cadence, la page lit ce JSON au build. `npm run test:scripts` échoue si le JSON
 Lien permanent `/nouveautes/#<slug>` par entrée ; pastille « non vues » sur le lien du menu et séparateur
 « Déjà vu lors de ta visite du … » (localStorage `eywa.news.seen-v1`, logique pure `src/lib/news-seen.ts`,
 script dans `Sidebar.astro` rejoué à chaque `astro:page-load`).
+
+**Plan de travail** (page `/plan-de-travail/`, L20, modèle evatosorus/finance-tracker) : en cours, prévu,
+récemment livré, rendue **au build** depuis `docs/plan/raf.yaml` (`src/lib/plan-public.ts`, lu depuis
+`frontend/` : `../docs/plan/raf.yaml`, vrai aussi sur Cloudflare Pages dont la commande est
+`cd frontend && …`). `raf.yaml` absent ou sans `lots` = build en échec. Ne sont publiés que les lots
+`visible: true`, non abandonnés, qui ont un **titre public** : champ `public:` du lot, sinon titre de la
+Nouveauté la plus récente qui le cite ; les lots « Revue … » exigent un `public:` ; sinon masqués. Liste
+blanche : id (en `data-id` seulement), titre public, état, date de livraison, étapes faites/total
+(abandonnées exclues). Jamais notes, verdicts UX, raisons, titres bruts ni titres d'étapes —
+`scripts/plan-page.e2e.test.mjs` le vérifie sur tout `dist/`. Un `public:` non conforme (> 80 caractères,
+« / », fichier, identifiant de lot, nom de technique, sujet de sécurité) fait échouer le build : écrire
+`public:` en français pour le lecteur. Dates par le formateur unique `src/lib/format-date.mjs`
+(« 1er octobre 2026 »). En-tête commun aux deux pages méta : `components/MetaHeader.astro`.

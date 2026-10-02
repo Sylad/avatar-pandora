@@ -1,0 +1,71 @@
+---
+/*
+  En-tête des pages « méta » du codex (Nouveautés, Plan de travail — L20) : sur-titre,
+  titre h1, chapeau, posés sans carte sur l'ambiance du codex. Un seul gabarit pour que le
+  contraste mesuré (scripts/header-contrast.e2e.test.mjs) vaille pour les deux pages.
+  Le slot reçoit ce qui suit le chapeau dans l'en-tête (bandeaux d'état de la page).
+*/
+interface Props {
+  eyebrow: string;
+  title: string;
+  lede: string;
+}
+const { eyebrow, title, lede } = Astro.props;
+---
+<header class="meta-header">
+  <p class="meta-eyebrow">{eyebrow}</p>
+  <h1 class="meta-title">{title}</h1>
+  <p class="meta-lede">{lede}</p>
+  <slot />
+</header>
+
+<style>
+  .meta-header {
+    margin-bottom: 2.5rem;
+  }
+  /* Sur-titre, titre et chapeau posés sans carte sur l'ambiance du codex : le pollen
+     bioluminescent (particules cyan/vert vif) passe derrière les lettres. Contour de
+     nuit plein sur 3 px (36 ombres nettes, une par décalage) puis halo doux : l'anneau
+     que l'œil lit autour de chaque lettre reste sombre quoi qu'il passe derrière.
+     ≥ 4,5:1 au pire pixel des glyphes et sur l'anneau de 2 px (revue UX L14,
+     scripts/header-contrast.e2e.test.mjs). Invisible sur le fond de nuit. */
+  .meta-header {
+    --meta-halo: -3px -1px 0 #0a0a1f, -3px 0px 0 #0a0a1f, -3px 1px 0 #0a0a1f, -2px -2px 0 #0a0a1f, -2px -1px 0 #0a0a1f, -2px 0px 0 #0a0a1f, -2px 1px 0 #0a0a1f, -2px 2px 0 #0a0a1f, -1px -3px 0 #0a0a1f, -1px -2px 0 #0a0a1f, -1px -1px 0 #0a0a1f, -1px 0px 0 #0a0a1f, -1px 1px 0 #0a0a1f, -1px 2px 0 #0a0a1f, -1px 3px 0 #0a0a1f, 0px -3px 0 #0a0a1f, 0px -2px 0 #0a0a1f, 0px -1px 0 #0a0a1f, 0px 1px 0 #0a0a1f, 0px 2px 0 #0a0a1f, 0px 3px 0 #0a0a1f, 1px -3px 0 #0a0a1f, 1px -2px 0 #0a0a1f, 1px -1px 0 #0a0a1f, 1px 0px 0 #0a0a1f, 1px 1px 0 #0a0a1f, 1px 2px 0 #0a0a1f, 1px 3px 0 #0a0a1f, 2px -2px 0 #0a0a1f, 2px -1px 0 #0a0a1f, 2px 0px 0 #0a0a1f, 2px 1px 0 #0a0a1f, 2px 2px 0 #0a0a1f, 3px -1px 0 #0a0a1f, 3px 0px 0 #0a0a1f, 3px 1px 0 #0a0a1f, 0 0 6px rgba(10, 10, 31, 0.85);
+  }
+  .meta-eyebrow {
+    font-family: var(--font-display);
+    font-size: 12.5px;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--color-eywa-text-muted);
+    margin: 0 0 0.5rem;
+    text-shadow: var(--meta-halo);
+  }
+  /* Sous 1024 px, le sur-titre est à la hauteur du bouton menu fixe (en haut à droite) :
+     sa ligne s'arrête avant lui (L20 — « Plan de travail · Eywa » passait 12 px dessous
+     à 320 px, dans le halo cyan du bouton). */
+  @media (max-width: 1023.98px) {
+    .meta-eyebrow {
+      padding-right: 3.75rem;
+    }
+  }
+  .meta-title {
+    font-family: var(--font-display);
+    font-size: clamp(1.7rem, 6vw, 2.25rem);
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--color-eywa-bio-primary);
+    margin: 0 0 0.8rem;
+    overflow-wrap: anywhere;
+    text-shadow: var(--meta-halo);
+  }
+  .meta-lede {
+    font-family: var(--font-body);
+    font-size: 1.15rem;
+    line-height: 1.6;
+    color: var(--color-eywa-text);
+    margin: 0;
+    text-shadow: var(--meta-halo);
+  }
+</style>
