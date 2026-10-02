@@ -179,3 +179,10 @@ lots:
     status: todo
     estimate: 0.5
     created: 2026-10-02
+  - id: L23
+    title: "Veille et enrichissement du contenu (consigne Sylvain 02-10 : « Eywa est un peu vide en ce moment ») : rechercher des informations à jour sur l'univers (films sortis et à venir, clans, faune, flore, langue), articles et actualités, les rédiger avec leurs sources vérifiées en ligne, compléter les fiches les plus pauvres d'abord ; images seulement si libres de droits ou créées pour le site ; puis fixer un rythme de mise à jour régulier (revue du contenu, date de dernière mise à jour visible)"
+    public: "Un codex plus riche : nouvelles fiches, actualités et mises à jour régulières"
+    status: todo
+    estimate: 1
+    visible: true
+    created: 2026-10-02
