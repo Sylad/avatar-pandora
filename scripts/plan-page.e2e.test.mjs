@@ -296,3 +296,30 @@ test('320/390 px : le sur-titre des pages méta ne passe pas sous le bouton menu
     await context.close();
   }
 });
+
+test('320 px : le sur-titre des pages méta ne laisse jamais « · » en fin de ligne (« · Eywa » insécable)', { timeout: 60_000 }, async (t) => {
+  const env = await setupBrowser(t);
+  if (!env) return;
+  const context = await env.browser.newContext({ viewport: { width: 320, height: 640 }, reducedMotion: 'reduce' });
+  const page = await context.newPage();
+  for (const path of ['/nouveautes/', '/plan-de-travail/']) {
+    await page.goto(`${env.base}${path}`, { waitUntil: 'load' });
+    await page.evaluate(() => document.fonts.ready);
+    const lines = await page.evaluate(() => {
+      // Texte de chaque ligne rendue : caractères groupés par ordonnée.
+      const node = document.querySelector('.meta-eyebrow').firstChild;
+      const rows = new Map();
+      for (let i = 0; i < node.textContent.length; i++) {
+        const r = document.createRange(); r.setStart(node, i); r.setEnd(node, i + 1);
+        const rect = r.getClientRects()[0];
+        if (!rect) continue;
+        const y = Math.round(rect.top);
+        rows.set(y, (rows.get(y) ?? '') + node.textContent[i]);
+      }
+      return [...rows.values()].map((s) => s.trim());
+    });
+    for (const l of lines) assert.doesNotMatch(l, /·$/, `${path} : ligne « ${l} »`);
+    assert.match(lines.at(-1), /·\s*Eywa$/, `${path} : « · Eywa » séparé`);
+  }
+  await context.close();
+});

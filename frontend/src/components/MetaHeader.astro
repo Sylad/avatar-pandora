@@ -10,7 +10,10 @@ interface Props {
   title: string;
   lede: string;
 }
-const { eyebrow, title, lede } = Astro.props;
+const { eyebrow: rawEyebrow, title, lede } = Astro.props;
+// « · Eywa » insécable : à 320 px, « Plan de travail · Eywa » passait à la ligne en
+// laissant « · » seul en fin de ligne (revue UX L20).
+const eyebrow = rawEyebrow.replace(/ · /g, '\u00a0·\u00a0');
 ---
 <header class="meta-header">
   <p class="meta-eyebrow">{eyebrow}</p>
