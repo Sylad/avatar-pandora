@@ -45,8 +45,8 @@ test('une entrée par nouveauté, dans l’ordre du JSON (la plus récente en ha
   }
 });
 
-test('date affichée en français (« 1 octobre 2026 »)', () => {
-  assert.match(html(), /<time datetime="2026-10-01"[^>]*>1 octobre 2026<\/time>/);
+test('date affichée en français, « 1er » le premier du mois (« 1er octobre 2026 »)', () => {
+  assert.match(html(), /<time datetime="2026-10-01"[^>]*>1er octobre 2026<\/time>/);
 });
 
 test('pas de page cadence brute servie sous /nouveautes-data/', () => {
