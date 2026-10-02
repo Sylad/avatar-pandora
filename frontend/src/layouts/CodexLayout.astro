@@ -430,6 +430,11 @@ const ambient = AMBIENTS[current ?? ''] ?? AMBIENTS.pandora;
   .eywa-burger__dot[hidden] {
     display: none;
   }
+  /* Tiroir ouvert : le bouton devient une croix, le point rose n'y a plus de sens
+     (revue UX L20). */
+  :global(html[data-drawer-open="true"]) .eywa-burger__dot {
+    display: none;
+  }
   .eywa-burger__line {
     transition: transform 250ms ease, opacity 200ms ease;
     transform-origin: center;

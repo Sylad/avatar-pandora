@@ -103,7 +103,10 @@ test('téléphone : le nom du bouton menu dit le nombre de nouveautés non vues 
   assert.ok(await burger.locator('.eywa-burger__dot').isVisible(), 'point absent');
   await burger.click();
   assert.equal(await burger.getAttribute('aria-label'), 'Fermer la navigation');
+  // Revue UX L20 : tiroir ouvert, le bouton est une croix — pas de point rose dessus.
+  assert.equal(await burger.locator('.eywa-burger__dot').isVisible(), false, 'point rose sur la croix');
   await page.keyboard.press('Escape');
+  assert.ok(await burger.locator('.eywa-burger__dot').isVisible(), 'point absent après fermeture');
   assert.equal(await burger.getAttribute('aria-label'), `Ouvrir la navigation (${unseenText(n)})`, 'nombre perdu à la fermeture');
   // Navigation sans rechargement (ClientRouter) vers une autre page : toujours annoncé.
   await burger.click();
