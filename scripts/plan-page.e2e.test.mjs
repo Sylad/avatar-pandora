@@ -13,6 +13,7 @@ import { existsSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSy
 import { tmpdir } from 'node:os';
 import { extname, join } from 'node:path';
 import { DIST, setupBrowser } from './lib/e2e-dist.mjs';
+import { newsTitlesByLot, publicTitleOf } from '../frontend/src/lib/plan-public.ts';
 
 const require = createRequire(new URL('../frontend/package.json', import.meta.url));
 const { parse } = require('yaml');
@@ -59,9 +60,13 @@ function findLeaks(files, needles, root) {
 
 const lots = RAF.lots;
 const NEWS = JSON.parse(readFileSync(new URL('../frontend/public/nouveautes-data/nouveautes.json', import.meta.url), 'utf8')).entries;
-// Titre public attendu (modèle finance-tracker) : public:, sinon titre de la Nouveauté la plus
-// récente du lot (sauf lots de processus « Revue … »), sinon lot masqué.
-const publicTitle = (l) => l.public ?? (/^revue\b/i.test(l.title) ? undefined : NEWS.find((e) => e.lots.includes(l.id))?.title);
+// Titre public attendu : la MÊME règle que le code (importée, pas recopiée) — public:, sinon
+// titre de Nouveauté pour un lot livré hors lots de processus (revue, audit, campagne).
+const NEWS_TITLES = newsTitlesByLot(NEWS);
+const publicTitle = (l) => {
+  const t = publicTitleOf(l, NEWS_TITLES);
+  return typeof t === 'string' ? t.trim() : undefined;
+};
 const published = lots.filter((l) => l.visible === true && ['doing', 'todo', 'done'].includes(l.status) && publicTitle(l));
 const shown = (status) => published.filter((l) => l.status === status);
 
@@ -98,6 +103,8 @@ test('AUCUN texte privé du plan dans le site construit : titres bruts, notes, v
     if (l.ux?.verdict) secrets.push([`${l.id} ux`, l.ux.verdict]);
     if (l.reason) secrets.push([`${l.id} raison`, l.reason]);
     for (const t of l.tasks ?? []) secrets.push([`${l.id}/${t.id} titre`, t.title]);
+    // public: d'un lot NON publié (non visible, abandonné…) : privé lui aussi.
+    if (typeof l.public === 'string' && !published.includes(l)) secrets.push([`${l.id} public: non publié`, l.public]);
   }
   assert.ok(secrets.filter(([k]) => k.endsWith('note')).length > 0, 'aucune note dans raf.yaml : le test ne prouverait rien');
   // Texte entier (60 premiers caractères pour les longs). Plancher de 12 caractères : en
@@ -111,6 +118,17 @@ test('AUCUN texte privé du plan dans le site construit : titres bruts, notes, v
   const files = distFiles(DIST);
   assert.ok(files.length > 100, `dist presque vide (${files.length} fichiers)`);
   assert.deepEqual(findLeaks(files, needles, DIST), []);
+});
+
+test('le test de fuite cherche aussi le public: des lots non publiés (non visibles ou abandonnés)', () => {
+  const fake = [
+    { id: 'X1', title: 'Titre brut assez long', public: 'Titre public d’un lot caché', visible: false, status: 'todo' },
+    { id: 'X2', title: 'Titre brut assez long', public: 'Titre public d’un lot abandonné', visible: true, status: 'dropped' },
+  ];
+  const pub = fake.filter((l) => l.visible === true && ['doing', 'todo', 'done'].includes(l.status) && publicTitle(l));
+  assert.deepEqual(pub, []);
+  const needles = fake.filter((l) => typeof l.public === 'string' && !pub.includes(l)).map((l) => l.public);
+  assert.deepEqual(needles, ['Titre public d’un lot caché', 'Titre public d’un lot abandonné']);
 });
 
 test('le détecteur de fuites trouve un texte privé planté, en clair, échappé HTML ou JSON', () => {
