@@ -71,9 +71,15 @@ const isProcessLot = (title: unknown) => PROCESS.some((re) => re.test(fold(Strin
 
 /** Titre montré au visiteur ; non conforme → erreur (le build échoue). */
 export function checkPublicTitle(title: unknown, where: string): string {
-  const t = String(title ?? '').trim();
+  // Un `public:` YAML mal écrit peut être un objet ({a: b}) ou une liste ([x, y]) : publié tel
+  // quel, il donnerait « [object Object] » ou « x,y ». Texte d'une seule ligne exigé.
+  if (typeof title !== 'string') {
+    throw new Error(`titre public de ${where} non conforme (pas un texte : ${JSON.stringify(title)})`);
+  }
+  const t = title.trim();
   const why =
     !t ? 'vide'
+      : /[\r\n]/.test(t) ? 'plusieurs lignes'
       : t.length > PUBLIC_TITLE_MAX ? `${t.length} caractères (> ${PUBLIC_TITLE_MAX})`
         : t.includes('/') ? 'contient « / »'
           : /\.ya?ml\b/i.test(t) ? 'cite un fichier'
@@ -95,15 +101,27 @@ export function newsTitlesByLot(entries: readonly { title?: unknown; lots?: unkn
   return m;
 }
 
+/**
+ * Titre public brut d'un lot (non vérifié) : son `public:`, sinon — pour un lot LIVRÉ
+ * seulement, hors lots de processus — le titre de la Nouveauté la plus récente qui le cite.
+ * Un lot prévu ou en cours ne prend jamais le titre d'une Nouveauté (elle raconte ce qui est
+ * livré, souvent avec un autre lot) : sans `public:`, il reste masqué. Partagé avec le test
+ * de fuite (scripts/plan-page.e2e.test.mjs), pour qu'il applique la même règle.
+ */
+export function publicTitleOf(r: Record<string, unknown>, newsTitles: ReadonlyMap<string, string | undefined>): unknown {
+  if (r.public != null) return r.public;
+  if (r.status !== 'done' || isProcessLot(r.title)) return undefined;
+  return newsTitles.get(String(r.id)) ?? undefined;
+}
+
 function toPublic(raw: unknown, newsTitles: ReadonlyMap<string, string | undefined>): (PublicLot & { sortKey: string }) | null {
   if (typeof raw !== 'object' || raw === null) return null;
   const r = raw as Record<string, unknown>;
   if (r.visible !== true || typeof r.id !== 'string') return null;
   if (typeof r.status !== 'string' || !STATUSES.has(r.status)) return null;
   if (isDenied(r.title)) return null;
-  let title: unknown = r.public;
-  if (title == null && !isProcessLot(r.title)) title = newsTitles.get(r.id);
-  if (title == null) return null;
+  const title = publicTitleOf(r, newsTitles);
+  if (title === undefined) return null;
   const lot: PublicLot & { sortKey: string } = {
     id: r.id,
     title: checkPublicTitle(title, r.id),

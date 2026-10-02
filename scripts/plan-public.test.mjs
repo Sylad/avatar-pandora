@@ -7,7 +7,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
-import { publicPlan, parsePublicPlan, loadPublicPlan, newsTitlesByLot, checkPublicTitle, planSummary, stepsLabel, RECENT_DONE } from '../frontend/src/lib/plan-public.ts';
+import { publicPlan, parsePublicPlan, loadPublicPlan, publicTitleOf, newsTitlesByLot, checkPublicTitle, planSummary, stepsLabel, RECENT_DONE } from '../frontend/src/lib/plan-public.ts';
 
 const { parse } = createRequire(new URL('../frontend/package.json', import.meta.url))('yaml');
 
@@ -118,8 +118,8 @@ test('lots au même titre public (une Nouveauté pour deux lots) : une seule lig
     { id: 'L19', title: 'b', visible: true, status: 'done', finished: '2026-10-01', tasks: [{ id: 't1', status: 'done' }] },
     { id: 'L20', title: 'b', visible: true, status: 'done', finished: '2026-10-03', tasks: [{ id: 't1', status: 'todo' }, { id: 't2', status: 'done' }] },
     { id: 'L21', title: 'b', visible: true, status: 'done', finished: '2026-10-02' },
-    { id: 'L22', title: 'b', visible: true, status: 'todo' },
-    { id: 'L23', title: 'b', visible: true, status: 'todo' },
+    { id: 'L22', title: 'b', public: 'Même suite', visible: true, status: 'todo' },
+    { id: 'L23', title: 'b', public: 'Même suite', visible: true, status: 'todo' },
   ] }, { newsTitles: new Map([['L19', 'Le codex se lit mieux'], ['L20', 'Le codex se lit mieux'], ['L21', 'Autre'], ['L22', 'Même suite'], ['L23', 'Même suite']]) });
   assert.deepEqual(p.done, [
     { id: 'L20', title: 'Le codex se lit mieux', status: 'done', finished: '2026-10-03', tasks: { done: 2, total: 3 }, also: ['L19'] },
@@ -162,4 +162,27 @@ test('le vrai plan : L20 et L21 publiés en cours sous leur titre public', () =>
     assert.ok(shown, `${id} non publié`);
     assert.equal(shown.title, lot.public.trim());
   }
+});
+
+test('public: qui n’est pas un texte d’une ligne (objet, liste, nombre, saut de ligne) : le build échoue', () => {
+  for (const bad of [{ a: 'b' }, ['x', 'y'], 42, true, 'Deux\nlignes', 'Retour\r chariot']) {
+    assert.throws(() => publicPlan({ lots: [{ id: 'L1', title: 'b', public: bad, visible: true, status: 'todo' }] }), /non conforme/, JSON.stringify(bad));
+  }
+  assert.throws(() => checkPublicTitle({ a: 'b' }, 'L1'), /non conforme/);
+  assert.throws(() => checkPublicTitle(['x', 'y'], 'L1'), /non conforme/);
+});
+
+test('titre de Nouveauté en repli : pour un lot LIVRÉ seulement ; un lot prévu ou en cours qui partage la Nouveauté d’un lot livré reste masqué sans public:', () => {
+  const news = new Map([['L1', 'Le codex se lit mieux'], ['L2', 'Le codex se lit mieux'], ['L3', 'Le codex se lit mieux']]);
+  const p = publicPlan({ lots: [
+    { id: 'L1', title: 'b', visible: true, status: 'done', finished: '2026-10-01' },
+    { id: 'L2', title: 'b', visible: true, status: 'todo' },
+    { id: 'L3', title: 'b', visible: true, status: 'doing' },
+  ] }, { newsTitles: news });
+  assert.deepEqual(p.done.map((l) => l.id), ['L1']);
+  assert.deepEqual([p.todo, p.doing], [[], []]);
+  assert.equal(publicTitleOf({ id: 'L2', title: 'b', status: 'todo' }, news), undefined);
+  assert.equal(publicTitleOf({ id: 'L2', title: 'b', public: 'La suite', status: 'todo' }, news), 'La suite');
+  assert.equal(publicTitleOf({ id: 'L1', title: 'b', status: 'done' }, news), 'Le codex se lit mieux');
+  assert.equal(publicTitleOf({ id: 'L1', title: 'Audit des pages', status: 'done' }, news), undefined, 'lot de processus');
 });
