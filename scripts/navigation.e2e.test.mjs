@@ -255,3 +255,37 @@ test('accueil 320/360/390 px, taille par défaut, avec pastille : chaque libell�
     await context.close();
   }
 });
+
+test('À propos : « ← Accueil », Nouveautés (pastille) et Plan de travail, même rangée que l’accueil (FollowLinks)', () => {
+  const about = readFileSync(join(DIST, 'about', 'index.html'), 'utf8');
+  const start = about.indexOf('<nav class="landing-follow');
+  assert.ok(start > 0, 'rangée « Suivre le codex » absente de À propos');
+  const nav = about.slice(start, about.indexOf('</nav>', start));
+  assert.match(nav, /aria-label="Suivre le codex"/);
+  assert.deepEqual([...nav.matchAll(/<a href="([^"]+)"/g)].map((m) => m[1]), ['/', '/nouveautes/', '/plan-de-travail/']);
+  assert.match(nav, /class="news-badge[^"]*"[^>]*hidden/, 'pastille absente');
+  assert.doesNotMatch(about, /retour à l'accueil|retour à l&#39;accueil/);
+});
+
+test('À propos 320/390/1440 px : liens visibles, pastille et nom accessible, aucun débordement', { timeout: 90_000 }, async (t) => {
+  const env = await setupBrowser(t);
+  if (!env) return;
+  const n = DATA.entries.length;
+  for (const width of [320, 390, 1440]) {
+    const context = await env.browser.newContext({ viewport: { width, height: width > 1000 ? 900 : 700 }, reducedMotion: 'reduce' });
+    const page = await context.newPage();
+    await page.goto(`${env.base}/about/`, { waitUntil: 'load' });
+    await page.evaluate(([k, v]) => localStorage.setItem(k, JSON.stringify(v)), [KEY, OLD_VISIT]);
+    await page.reload({ waitUntil: 'load' });
+    const nav = page.locator('nav[aria-label="Suivre le codex"]');
+    await nav.locator('.news-badge').waitFor({ state: 'visible' });
+    assert.equal(await page.getByRole('link', { name: new RegExp(`^Nouveautés \\(${unseenText(n)}\\)$`) }).count(), 1);
+    assert.equal(await nav.getByRole('link', { name: 'Accueil', exact: true }).count(), 1);
+    const links = await rowOf(page, 'nav[aria-label="Suivre le codex"] a');
+    for (const l of links) assert.ok(l.left >= 0 && l.right <= width && l.h >= 44, `${width}px : ${l.href} ${l.left}…${l.right} h ${l.h}`);
+    const overflow = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth);
+    assert.ok(overflow <= 0, `${width}px : débordement ${overflow}px`);
+    await Promise.all([page.waitForURL((u) => u.pathname === '/plan-de-travail/'), nav.locator('a[href="/plan-de-travail/"]').click()]);
+    await context.close();
+  }
+});

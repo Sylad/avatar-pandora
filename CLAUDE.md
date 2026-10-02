@@ -116,7 +116,11 @@ navigation — barre latérale / tiroir du codex (Plan de travail juste après N
 rangée « Suivre le codex » sous les deux boutons, deux liens côte à côte jusqu'à 320 px, jamais seuls sur
 leur ligne). Contrôlé par `scripts/navigation.e2e.test.mjs` : accueil sans défilement à 1440×900,
 1366×768 et jusqu'à 320×568 ; les 12 liens de la barre latérale visibles à 1280×720 (marges resserrées
-sous 820 px de haut). La page À propos n'a pas de menu (seulement un retour à l'accueil).
+sous 820 px de haut). La page À propos, sans menu, porte la même rangée avec un « ← Accueil » en tête
+(`components/FollowLinks.astro`, partagé par l'accueil et À propos). Au téléphone, le bouton de pause de
+l'ambiance est en haut à droite de l'accueil (en bas, il recouvrait « Plan de travail » à 320×568) ; un
+texte agrandi (×1,25, espacement WCAG 1.4.12) fait passer un libellé à la ligne dans son lien, jamais
+déborder la rangée.
 
 **Plan de travail** (page `/plan-de-travail/`, L20, modèle evatosorus/finance-tracker) : en cours, prévu,
 récemment livré, rendue **au build** depuis `docs/plan/raf.yaml` (`src/lib/plan-public.ts`, lu depuis

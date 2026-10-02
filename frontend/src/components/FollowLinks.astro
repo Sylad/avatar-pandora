@@ -1,0 +1,99 @@
+---
+/*
+  « Suivre le codex » (L20, consigne de Sylvain : Nouveautés et Plan de travail proposés
+  partout où le site a une navigation) — rangée de liens discrets, MÊME composant sur
+  l'accueil (sous les deux boutons) et sur À propos (avec un retour à l'accueil en tête).
+  Mêmes icônes que dans le menu du codex ; même pastille (NewsBadge).
+  Accueil : deux liens côte à côte jusqu'à 320 px, jamais un lien seul sur sa ligne.
+*/
+import NewsBadge from './NewsBadge.astro';
+
+interface Props {
+  /** Lien « ← Accueil » en tête (pages hors du codex sans menu, comme À propos). */
+  home?: boolean;
+  class?: string;
+}
+const { home = false, class: className } = Astro.props;
+---
+<nav class:list={['landing-follow', { 'landing-follow--wrap': home }, className]} aria-label="Suivre le codex">
+  {home && <a href="/" class="landing-follow__link"><span aria-hidden="true">←</span><span>Accueil</span></a>}
+  <a href="/nouveautes/" class="landing-follow__link">
+    <svg class="landing-follow__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M12 3.5l1.9 5.1 5.1 1.9-5.1 1.9-1.9 5.1-1.9-5.1-5.1-1.9 5.1-1.9z" />
+      <path d="M18.5 16.5l.7 1.8 1.8.7-1.8.7-.7 1.8-.7-1.8-1.8-.7 1.8-.7z" />
+    </svg>
+    <span>Nouveautés</span>
+    <NewsBadge />
+  </a>
+  <a href="/plan-de-travail/" class="landing-follow__link">
+    <svg class="landing-follow__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M4 6.5l1.6 1.6L8.5 5" />
+      <path d="M4 12.5l1.6 1.6 2.9-3.1" />
+      <circle cx="6" cy="18.5" r="1.6" />
+      <path d="M11.5 6.5H20M11.5 12.5H20M11.5 18.5H20" />
+    </svg>
+    <span>Plan de travail</span>
+  </a>
+</nav>
+
+<style>
+/* Seconde rangée « Suivre le codex » : deux liens discrets (plus petits que les deux
+   boutons au-dessus), côte à côte à toutes les largeurs — 320 px compris — donc jamais
+   un lien orphelin sur sa ligne. Cible ≥ 44 px de haut, texte muted sur le voile de
+   nuit des boutons, contour de focus cyan. */
+/* Jamais plus large que l'écran : avec un texte agrandi (×1,25, espacement WCAG 1.4.12),
+   un libellé passe à la ligne DANS son lien (cible ≥ 44 px) au lieu que la rangée centrée
+   déborde à gauche, hors d'atteinte (revue UX L20 : x = −30 px). */
+.landing-follow {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  max-width: 100%;
+}
+.landing-follow__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-height: 2.75rem;
+  padding: 0 0.9rem;
+  border-radius: 4px;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.2;
+  color: var(--color-eywa-text-muted);
+  background: rgba(10, 10, 31, 0.5);
+  backdrop-filter: blur(4px);
+  flex: 0 1 auto;
+  min-width: 0;
+  white-space: normal;
+  text-align: start;
+  text-shadow: 0 1px 2px rgba(10, 10, 31, 0.85);
+  transition: color 250ms ease, box-shadow 250ms ease;
+}
+.landing-follow__link:hover,
+.landing-follow__link:focus-visible {
+  color: var(--color-eywa-text);
+  box-shadow: 0 0 18px -6px rgba(95, 255, 230, 0.5);
+}
+.landing-follow__link:focus-visible {
+  outline: 2px solid var(--color-eywa-bio-primary);
+  outline-offset: 2px;
+}
+.landing-follow__icon {
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+  color: var(--color-eywa-bio-primary);
+  opacity: 0.8;
+}
+/* Avec le retour à l'accueil (trois liens), la rangée passe à la ligne si besoin. */
+.landing-follow--wrap {
+  flex-wrap: wrap;
+}
+@media (max-width: 399px) {
+  /* La rangée prend aussi la marge latérale de la page (≈ 10 px de chaque côté) : à 320 px
+     avec la pastille, « Plan de travail » tient sur une ligne. */
+  .landing-follow { gap: 0.3rem; margin-inline: -0.6rem; max-width: calc(100% + 1.2rem); }
+  .landing-follow__link { padding: 0 0.5rem; gap: 0.35rem; }
+}
+</style>

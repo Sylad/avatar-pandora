@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import FollowLinks from '../components/FollowLinks.astro';
 import EywaLogo from '../components/EywaLogo.astro';
 
 const STACK = [
@@ -199,10 +200,9 @@ const SOURCES = [
       </div>
     </section>
 
-    <div class="text-center pt-8">
-      <a href="/" class="text-eywa-text-muted hover:text-eywa-bio-primary transition font-body">
-        ← retour à l'accueil
-      </a>
+    {/* L20 : Accueil, Nouveautés et Plan de travail (même rangée que l'accueil). */}
+    <div class="flex justify-center pt-8">
+      <FollowLinks home />
     </div>
 
   </main>
