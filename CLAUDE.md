@@ -99,9 +99,17 @@ hautes ; guillemets « » tenus par une espace fine insécable U+202F). Après t
 d'une entrée, lancer `cd frontend && npm run news` (= `cadence news build` vers
 `frontend/public/nouveautes-data/`) et **commiter le résultat** : Cloudflare Pages construit sans
 cadence, la page lit ce JSON au build. `npm run test:scripts` échoue si le JSON versionné n'est plus à jour.
-Lien permanent `/nouveautes/#<slug>` par entrée ; pastille « non vues » sur le lien du menu et séparateur
-« Déjà vu lors de ta visite du … » (localStorage `eywa.news.seen-v1`, logique pure `src/lib/news-seen.ts`,
-script dans `Sidebar.astro` rejoué à chaque `astro:page-load`).
+Lien permanent `/nouveautes/#<slug>` par entrée ; pastille « non vues » sur TOUS les liens Nouveautés
+(un seul composant `components/NewsBadge.astro` : menu, tiroir, accueil) et séparateur « Déjà vu lors de
+ta visite du … » (localStorage `eywa.news.seen-v1`, logique pure `src/lib/news-seen.ts`, un seul script
+dans `BaseLayout.astro` qui lit l'index léger `#eywa-news-index`, rejoué à chaque `astro:page-load`).
+
+**Navigation** (consigne de Sylvain) : Nouveautés ET Plan de travail sont proposés partout où le site a une
+navigation — barre latérale / tiroir du codex (Plan de travail juste après Nouveautés) et accueil (seconde
+rangée « Suivre le codex » sous les deux boutons, deux liens côte à côte jusqu'à 320 px, jamais seuls sur
+leur ligne). Contrôlé par `scripts/navigation.e2e.test.mjs` : accueil sans défilement à 1440×900,
+1366×768 et jusqu'à 320×568 ; les 12 liens de la barre latérale visibles à 1280×720 (marges resserrées
+sous 820 px de haut). La page À propos n'a pas de menu (seulement un retour à l'accueil).
 
 **Plan de travail** (page `/plan-de-travail/`, L20, modèle evatosorus/finance-tracker) : en cours, prévu,
 récemment livré, rendue **au build** depuis `docs/plan/raf.yaml` (`src/lib/plan-public.ts`, lu depuis

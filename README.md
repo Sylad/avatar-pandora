@@ -20,10 +20,11 @@ Le site est aussi un labo perso : 4ᵉ projet où j'explore des stacks que je ne
 
 ## Aperçu
 
-- **Page d'accueil** — landing à viewport unique : logo Eywa (le `V` caché du `W` recompose le prénom **Eva** de la dédicataire) + définition d'Eywa cliquable + tagline + 2 CTAs. En fond, six images de Pandora se cross-fadent en boucle de 75 s (Pandora globe → Banshee → Hometree → Hallelujah → Metkayina → Fire & Ash), pendant qu'un champ de particules WebGL synchronisé sur le même clock change de palette par scène. Pas de scroll forcé : le visiteur s'assoit, l'atmosphère bouge autour de lui.
+- **Page d'accueil** — landing à viewport unique : logo Eywa (le `V` caché du `W` recompose le prénom **Eva** de la dédicataire) + définition d'Eywa cliquable + tagline + 2 CTAs, et dessous les liens **Nouveautés** (pastille des nouveautés non vues) et **Plan de travail**. En fond, six images de Pandora se cross-fadent en boucle de 75 s (Pandora globe → Banshee → Hometree → Hallelujah → Metkayina → Fire & Ash), pendant qu'un champ de particules WebGL synchronisé sur le même clock change de palette par scène. Pas de scroll forcé : le visiteur s'assoit, l'atmosphère bouge autour de lui.
 - **Codex** — sidebar 320 px sticky avec 8 sections : Pandora (lune, Eywa, biomes, sites sacrés), Clans Na'vi (Omatikaya, Metkayina, Ash People, Tipani…), Bestiaire (ikran, toruk, thanator, tulkun, pa'li, ilu, skimwing…), Flore (Hometree, Arbre des Âmes, woodsprites, plantes hélicoptères…), Personnages (24 figures de la saga, enfants Sully en détail, Quaritch, Mo'at, Tonowari, Ronal, Eytukan, Trudy Chacon, Spider, Varang…), Langue Na'vi (alphabet, grammaire, lexique de Paul Frommer), Films (Avatar 2009, La Voie de l'Eau 2022, Fire and Ash 2025), Engins (vaisseaux, AMP suit, Sea Dragon…).
 - **Effets bioluminescents** — halo cyan qui suit le curseur, cards qui s'allument au survol comme la mousse Pandora sous les pas de Jake, mots qui scintillent en cyan quand on les survole, sidebar qui respire (item actif pulse en 4 s).
 - **À propos** — la dédicace à Eva, l'explication du logo, la stack technique, les sources.
+- **Nouveautés** et **Plan de travail** — le journal de ce qui a changé, et ce qui est en cours, prévu et récemment livré (généré au build depuis le plan du projet, titres publics seulement).
 
 ## Galerie
 
@@ -68,10 +69,11 @@ npm run dev
 
 ## Tests
 
-Le site n'a plus de backend : c'est le build qui valide la cohérence (Content Collections + schéma Zod, types, intégrations Astro). Le frontend (composants Astro, îlots R3F) est vérifié visuellement.
+Le site n'a plus de backend : c'est le build qui valide la cohérence (Content Collections + schéma Zod, types, intégrations Astro). Les pages Nouveautés et Plan de travail, la navigation et le menu du téléphone sont testés dans un navigateur sur le site construit (Node ≥ 22.18, Chromium via `playwright-core`).
 
 ```bash
-cd frontend && npm run build   # 79 pages
+cd frontend && npm run build   # 81 pages
+npm run test:scripts           # node --test ../scripts/*.test.mjs
 ```
 
 ## Build & déploiement

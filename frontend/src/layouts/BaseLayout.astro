@@ -4,6 +4,7 @@ import { ClientRouter } from 'astro:transitions';
 import Lightbox from '../components/Lightbox.astro';
 import AmbientAudio from '../components/AmbientAudio.astro';
 import { BUILD_VERSION } from '../lib/build-version';
+import news from '../../public/nouveautes-data/nouveautes.json';
 
 interface Props {
   title?: string;
@@ -11,6 +12,11 @@ interface Props {
 }
 
 const { title = 'Eywa', description = 'Codex de Pandora' } = Astro.props;
+
+// Index léger des Nouveautés pour la pastille (slug + date seulement).
+const newsIndex = JSON.stringify(
+  (news as { entries: { slug: string; date: string }[] }).entries.map(({ slug, date }) => ({ slug, date })),
+);
 ---
 <!doctype html>
 <html lang="fr">
@@ -27,6 +33,67 @@ const { title = 'Eywa', description = 'Codex de Pandora' } = Astro.props;
   </head>
   <body class="bg-eywa-bg text-eywa-text min-h-screen">
     <slot />
+    <!-- Index léger (slug + date, jamais le texte) des Nouveautés, pour la pastille de tous
+         les liens Nouveautés (components/NewsBadge.astro), accueil compris (L20). -->
+    <script type="application/json" id="eywa-news-index" is:inline set:html={newsIndex}></script>
+    <script>
+      /*
+        Pastille « Nouveautés » (L14, comme AetherWX) : nombre d'entrées non vues depuis la
+        dernière visite de /nouveautes/ (localStorage, src/lib/news-seen.ts), posée sur
+        TOUS les liens Nouveautés (.news-badge : barre latérale, tiroir, accueil) et en point
+        sur le bouton menu. Sur la page Nouveautés : séparateur « Déjà vu lors de ta visite
+        du … » avant la première entrée déjà vue, puis tout est marqué vu. Rejoué à chaque
+        page (astro:page-load, ClientRouter) : un seul script pour tout le site.
+      */
+      import { formatLongDate, formatTime } from '../lib/format-date.mjs';
+      import { badgeLabel, countUnseen, isUnseen, markAllSeen, readSeen, unseenLabel, type DatedEntry, type NewsSeen } from '../lib/news-seen';
+
+      const storage = () => {
+        try { return window.localStorage; } catch { return null; }
+      };
+
+      const seenSeparator = (entries: DatedEntry[], seen: NewsSeen | null) => {
+        document.querySelectorAll('.news-seen-sep').forEach((n) => n.remove());
+        const unseen = entries.map((e) => isUnseen(e, seen));
+        const lastNew = unseen.lastIndexOf(true);
+        if (lastNew < 0 || lastNew === entries.length - 1) return;
+        const article = document.getElementById(entries[lastNew + 1].slug);
+        const item = article?.closest('li');
+        if (!item?.parentElement) return;
+        const sep = document.createElement('li');
+        sep.className = 'news-seen-sep';
+        const at = seen?.at ? new Date(seen.at) : null;
+        const label = document.createElement('span');
+        label.textContent = at
+          ? `Déjà vu lors de ta visite du ${formatLongDate(at)} à ${formatTime(at)}`
+          : 'Déjà vu lors de ta visite précédente';
+        sep.append(label);
+        item.parentElement.insertBefore(sep, item);
+      };
+
+      const update = () => {
+        let entries: DatedEntry[];
+        try { entries = JSON.parse(document.getElementById('eywa-news-index')?.textContent ?? '[]'); } catch { return; }
+        const st = storage();
+        let seen = readSeen(st);
+        if (location.pathname.replace(/\/?$/, '/') === '/nouveautes/') {
+          seenSeparator(entries, seen);
+          seen = markAllSeen(st, entries) ?? seen;
+        }
+        const n = countUnseen(entries, seen);
+        document.querySelectorAll<HTMLElement>('.news-badge').forEach((badge) => {
+          badge.hidden = n === 0;
+          const digits = badge.querySelector('.news-badge__n');
+          const sr = badge.querySelector('.news-badge__sr');
+          if (digits) digits.textContent = badgeLabel(n);
+          if (sr) sr.textContent = n ? `(${unseenLabel(n)})` : '';
+        });
+        const dot = document.querySelector<HTMLElement>('#eywa-burger .eywa-burger__dot');
+        if (dot) dot.hidden = n === 0;
+      };
+
+      document.addEventListener('astro:page-load', update);
+    </script>
     <Lightbox />
     <AmbientAudio />
     <script is:inline>

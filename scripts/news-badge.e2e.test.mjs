@@ -12,7 +12,7 @@ const [newest, older] = DATA.entries;
 
 const badge = (page) => page.evaluate(() => {
   const link = document.querySelector('#eywa-sidebar a[href="/nouveautes/"]');
-  const b = link.querySelector('.eywa-news-badge');
+  const b = link.querySelector('.news-badge');
   const dot = document.querySelector('#eywa-burger .eywa-burger__dot');
   return {
     shown: !!b && !b.hidden && getComputedStyle(b).display !== 'none',
@@ -63,7 +63,7 @@ test('pastille : rien au premier passage, nombre d’entrées non vues ensuite, 
   assert.equal(sep.count, 1);
   assert.equal(sep.next, older.slug, 'séparateur mal placé');
   assert.equal(sep.before, 1);
-  assert.match(sep.text, /Déjà vu lors de ta visite du 1 octobre 2026/);
+  assert.match(sep.text, /Déjà vu lors de ta visite du 1er octobre 2026/);
   assert.notEqual(sep.hiddenFromAT, 'true', 'séparateur caché aux lecteurs d’écran');
   assert.equal((await badge(page)).shown, false, 'pastille après la visite');
   const stored = JSON.parse(await page.evaluate((k) => localStorage.getItem(k), KEY));

@@ -1,0 +1,42 @@
+---
+/*
+  Pastille « nouveautés non vues » (L14), UN SEUL composant pour tous les liens Nouveautés
+  (barre latérale / tiroir, accueil — L20). Vide et masquée au rendu ; remplie à chaque
+  page par le script de BaseLayout (index léger des nouveautés + localStorage,
+  lib/news-seen.ts). Le chiffre est montré (aria-hidden) et la phrase « (N nouveautés non
+  vues) » est lue par les lecteurs d'écran, dans le nom du lien.
+*/
+---
+<span class="news-badge" hidden>
+  <span class="news-badge__n" aria-hidden="true"></span>
+  <span class="sr-only news-badge__sr"></span>
+</span>
+
+<style>
+  .news-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.35rem;
+    height: 1.35rem;
+    padding: 0 0.35rem;
+    margin-left: 0.15rem;
+    border-radius: 999px;
+    background: var(--color-eywa-bio-primary);
+    color: #0a0a1f;
+    font-family: var(--font-display);
+    font-size: 0.7rem;
+    font-style: normal;
+    font-weight: 700;
+    letter-spacing: 0;
+    line-height: 1;
+    text-shadow: none;
+    box-shadow: 0 0 12px -2px rgba(95, 255, 230, 0.7);
+    /* Ne grandit pas la ligne du lien. */
+    margin-block: -0.3rem;
+    vertical-align: middle;
+  }
+  .news-badge[hidden] {
+    display: none;
+  }
+</style>
