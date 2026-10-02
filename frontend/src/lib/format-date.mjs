@@ -26,9 +26,14 @@ export function formatDay(day) {
 }
 
 /**
- * Heure « 10:30 » d'un instant, dans un fuseau (par défaut celui du navigateur).
+ * Heure à la française « 20 h 42 », « 8 h 05 » (espaces insécables), d'un instant, dans un
+ * fuseau (par défaut celui du navigateur). Revue UX L20 : « 20:42 » est une notation
+ * d'horloge numérique, pas celle d'un texte.
  * @param {Date} date @param {string} [timeZone] @returns {string}
  */
 export function formatTime(date, timeZone) {
-  return date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', ...(timeZone ? { timeZone } : {}) });
+  const parts = new Intl.DateTimeFormat('fr-FR', { hour: 'numeric', minute: '2-digit', hourCycle: 'h23', ...(timeZone ? { timeZone } : {}) }).formatToParts(date);
+  const hour = parts.find((p) => p.type === 'hour')?.value ?? '';
+  const minute = parts.find((p) => p.type === 'minute')?.value ?? '';
+  return `${Number(hour)}\u00a0h\u00a0${minute}`;
 }

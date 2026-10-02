@@ -159,7 +159,7 @@ test('séparateur « Déjà vu lors de ta visite du … » : hors de toute liste
     await page.goto(`${env.base}/nouveautes/`, { waitUntil: 'load' });
     const sep = page.locator('.news-seen-sep');
     await sep.waitFor();
-    const label = 'Déjà vu lors de ta visite du 1er octobre 2026 à 10:30';
+    const label = 'Déjà vu lors de ta visite du 1er octobre 2026 à 10\u00a0h\u00a030';
     const info = await sep.evaluate((s) => ({
       role: s.getAttribute('role'),
       name: s.getAttribute('aria-label'),

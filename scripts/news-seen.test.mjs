@@ -121,7 +121,7 @@ test('libellés : pastille « 9+ » au-delà de 9, textes accordés (lecteur d�
 });
 
 test('texte du séparateur : formateur commun (« 1er »), tutoiement, repli sans instant', () => {
-  assert.equal(seenSeparatorLabel('2026-10-01T08:30:00.000Z', 'Europe/Paris'), 'Déjà vu lors de ta visite du 1er octobre 2026 à 10:30');
+  assert.equal(seenSeparatorLabel('2026-10-01T08:30:00.000Z', 'Europe/Paris'), 'Déjà vu lors de ta visite du 1er octobre 2026 à 10\u00a0h\u00a030');
   assert.equal(seenSeparatorLabel(undefined), 'Déjà vu lors d’une visite précédente');
 });
 

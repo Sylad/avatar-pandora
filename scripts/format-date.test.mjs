@@ -17,6 +17,9 @@ test('formatLongDate (instant) : dans le fuseau demandé', () => {
   assert.equal(formatLongDate(new Date('2026-09-30T22:30:00Z'), 'UTC'), '30 septembre 2026');
 });
 
-test('formatTime : heure sur deux chiffres, dans le fuseau demandé', () => {
-  assert.equal(formatTime(new Date('2026-10-01T08:30:00Z'), 'Europe/Paris'), '10:30');
+test('formatTime : « 20 h 42 » (espaces insécables), dans le fuseau demandé', () => {
+  assert.equal(formatTime(new Date('2026-10-01T08:30:00Z'), 'Europe/Paris'), '10\u00a0h\u00a030');
+  assert.equal(formatTime(new Date('2026-10-01T18:42:00Z'), 'Europe/Paris'), '20\u00a0h\u00a042');
+  assert.equal(formatTime(new Date('2026-10-01T06:05:00Z'), 'Europe/Paris'), '8\u00a0h\u00a005', 'heure sans zéro initial');
+  assert.equal(formatTime(new Date('2026-10-01T22:00:00Z'), 'Europe/Paris'), '0\u00a0h\u00a000', 'minuit');
 });
