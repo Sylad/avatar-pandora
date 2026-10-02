@@ -198,3 +198,60 @@ test('accueil 320×568, 360×640, 390×844, avec et sans pastille : aucun élém
     }
   }
 });
+
+// Revue UX L20 : rangée centrée en nowrap → avec un texte agrandi, le premier lien sortait
+// à GAUCHE de l'écran (x = −30 px à ×1,25 avec pastille), inatteignable (WCAG 1.4.4, 1.4.10,
+// 1.4.12). Le défilement vertical est admis avec un texte agrandi, pas le débordement.
+const TEXT_SPACING = '* { line-height: 1.5 !important; letter-spacing: 0.12em !important; word-spacing: 0.16em !important; } p { margin-bottom: 2em !important; }';
+test('accueil 320 px, texte ×1,125 / ×1,25 et espacement WCAG 1.4.12, avec et sans pastille : rien à gauche de l’écran, page ≤ 320 px', { timeout: 120_000 }, async (t) => {
+  const env = await setupBrowser(t);
+  if (!env) return;
+  const conditions = [['×1,125', (root) => `html { font-size: calc(${root} * 1.125) !important; }`], ['×1,25', (root) => `html { font-size: calc(${root} * 1.25) !important; }`], ['1.4.12', () => TEXT_SPACING]];
+  const report = [];
+  for (const [name, css] of conditions) {
+    for (const badge of [false, true]) {
+      const context = await env.browser.newContext({ viewport: { width: 320, height: 568 }, reducedMotion: 'reduce', hasTouch: true, isMobile: true });
+      const page = await context.newPage();
+      await page.goto(`${env.base}/`, { waitUntil: 'load' });
+      if (badge) {
+        await page.evaluate(([k, v]) => localStorage.setItem(k, JSON.stringify(v)), [KEY, OLD_VISIT]);
+        await page.reload({ waitUntil: 'load' });
+        await page.locator('.landing-follow .news-badge').waitFor({ state: 'visible' });
+      }
+      const root = await page.evaluate(() => getComputedStyle(document.documentElement).fontSize);
+      await page.addStyleTag({ content: css(root) });
+      await page.evaluate(() => document.fonts.ready);
+      const m = await page.evaluate(() => {
+        const els = [...document.querySelectorAll('main *')].filter((e) => e.getBoundingClientRect().width > 0);
+        const minX = Math.min(...els.map((e) => e.getBoundingClientRect().left));
+        const maxX = Math.max(...els.map((e) => e.getBoundingClientRect().right));
+        const follow = [...document.querySelectorAll('.landing-follow a')].map((a) => { const b = a.getBoundingClientRect(); return { l: b.left, r: b.right, h: b.height, w: b.width }; });
+        return { minX, maxX, pageW: document.documentElement.scrollWidth, follow };
+      });
+      report.push(`${name}${badge ? ' + pastille' : ''} : x min ${m.minX.toFixed(1)}, x max ${m.maxX.toFixed(1)}, page ${m.pageW} px`);
+      assert.ok(m.minX >= -0.5, `${name}${badge ? ' avec pastille' : ''} : élément à x = ${m.minX.toFixed(1)}`);
+      assert.ok(m.pageW <= 320, `${name}${badge ? ' avec pastille' : ''} : page de ${m.pageW} px`);
+      for (const f of m.follow) assert.ok(f.h >= 44 && f.w >= 44, `${name} : lien ${f.w}×${f.h}`);
+      await context.close();
+    }
+  }
+  for (const line of report) t.diagnostic(line);
+});
+
+test('accueil 320/360/390 px, taille par défaut, avec pastille : chaque libellé tient sur une ligne, les deux liens côte à côte', { timeout: 60_000 }, async (t) => {
+  const env = await setupBrowser(t);
+  if (!env) return;
+  for (const width of [320, 360, 390]) {
+    const context = await env.browser.newContext({ viewport: { width, height: 640 }, reducedMotion: 'reduce' });
+    const page = await context.newPage();
+    await page.goto(`${env.base}/`, { waitUntil: 'load' });
+    await page.evaluate(([k, v]) => localStorage.setItem(k, JSON.stringify(v)), [KEY, OLD_VISIT]);
+    await page.reload({ waitUntil: 'load' });
+    await page.locator('.landing-follow .news-badge').waitFor({ state: 'visible' });
+    await page.evaluate(() => document.fonts.ready);
+    const lines = await page.evaluate(() => [...document.querySelectorAll('.landing-follow a > span:not(.news-badge)')].map((s) => s.getClientRects().length));
+    assert.deepEqual(lines, [1, 1], `${width}px : libellé sur plusieurs lignes`);
+    assert.equal(new Set((await rowOf(page, '.landing-follow a')).map((r) => r.top)).size, 1, `${width}px : liens sur deux lignes`);
+    await context.close();
+  }
+});

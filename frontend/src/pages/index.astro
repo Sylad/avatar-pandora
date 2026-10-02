@@ -206,10 +206,14 @@ import { CycleBackdrop } from '../components/cinema/CycleBackdrop';
      boutons au-dessus), côte à côte à toutes les largeurs — 320 px compris — donc jamais
      un lien orphelin sur sa ligne. Cible ≥ 44 px de haut, texte muted sur le voile de
      nuit des boutons, contour de focus cyan. */
+  /* Jamais plus large que l'écran : avec un texte agrandi (×1,25, espacement WCAG 1.4.12),
+     un libellé passe à la ligne DANS son lien (cible ≥ 44 px) au lieu que la rangée centrée
+     déborde à gauche, hors d'atteinte (revue UX L20 : x = −30 px). */
   .landing-follow {
     display: flex;
     justify-content: center;
     gap: 0.5rem;
+    max-width: 100%;
   }
   .landing-follow__link {
     display: inline-flex;
@@ -224,7 +228,10 @@ import { CycleBackdrop } from '../components/cinema/CycleBackdrop';
     color: var(--color-eywa-text-muted);
     background: rgba(10, 10, 31, 0.5);
     backdrop-filter: blur(4px);
-    white-space: nowrap;
+    flex: 0 1 auto;
+    min-width: 0;
+    white-space: normal;
+    text-align: start;
     text-shadow: 0 1px 2px rgba(10, 10, 31, 0.85);
     transition: color 250ms ease, box-shadow 250ms ease;
   }
@@ -252,8 +259,10 @@ import { CycleBackdrop } from '../components/cinema/CycleBackdrop';
     }
   }
   @media (max-width: 399px) {
-    .landing-follow { gap: 0.35rem; }
-    .landing-follow__link { padding: 0 0.6rem; gap: 0.35rem; }
+    /* La rangée prend aussi la marge latérale de l'accueil (≈ 10 px de chaque côté) : à
+       320 px avec la pastille, « Plan de travail » tient sur une ligne. */
+    .landing-follow { gap: 0.3rem; margin-inline: -0.6rem; max-width: calc(100% + 1.2rem); }
+    .landing-follow__link { padding: 0 0.5rem; gap: 0.35rem; }
   }
 
   /* Bio-ambient gradient — same recipe as CodexLayout but slightly
