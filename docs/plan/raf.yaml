@@ -154,14 +154,18 @@ lots:
     finished: 2026-10-01
   - id: L20
     title: "Page « Plan de travail » : ce qui est prévu, en cours et récemment livré, généré au build depuis docs/plan/raf.yaml (titres et états seulement, jamais les notes) — inspirée de la page « À venir » d'AetherWX"
-    status: todo
+    public: "Une page Plan de travail pour suivre ce qui se prépare sur Eywa"
+    status: doing
     estimate: 0.5
     visible: true
     created: 2026-10-01
+    started: 2026-10-02
   - id: L21
     title: "Nouveautés, finitions a11y : séparateur « Déjà vu » hors de la liste (role separator, WCAG 1.3.1) ; nombre de nouveautés non vues dans le nom du burger au téléphone (repasse UX L14)"
-    status: todo
+    public: "Nouveautés : un lien facile à copier et des repères mieux annoncés"
+    status: doing
     estimate: 0.1
     quickwin: true
     visible: true
     created: 2026-10-01
+    started: 2026-10-02
