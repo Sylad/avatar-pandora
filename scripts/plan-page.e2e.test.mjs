@@ -84,7 +84,7 @@ test('trois sections titrées ; tous les lots en cours et prévus, dans l’ordr
     // Ordre du plan, un lot par titre public (le premier).
     const firsts = shown(status).filter((l, i, all) => all.findIndex((x) => publicTitle(x) === publicTitle(l)) === i);
     assert.deepEqual(ids, firsts.map((l) => l.id), status);
-    for (const l of shown(status)) assert.ok(page.includes(publicTitle(l)), `${l.id} : titre public absent`);
+    for (const l of shown(status)) assert.ok(page.includes(publicTitle(l).replace(/'/g, '’')), `${l.id} : titre public absent`);
   }
   const done = [...page.matchAll(/<li[^>]*class="plan-lot" data-status="done"[^>]*data-id="([^"]+)"/g)].map((m) => m[1]);
   assert.ok(done.length > 0 && done.length <= 8, `${done.length} lots livrés affichés`);
@@ -151,8 +151,9 @@ test('dates de livraison en français, « 1er » le premier du mois (ordinal en 
   const page = decode(html().replace(/<(?!\/?li\b)[^>]+>/g, ''));
   assert.doesNotMatch(html(), />1ER</, 'ordinal en capitales');
   if (shown('done').some((l) => String(l.finished).endsWith('-01'))) assert.match(html(), />1<\/span><sup class="fr-ordinal[^"]*"[^>]*>er<\/sup> /);
-  assert.ok(!/Livré le 1 /.test(page), '« Livré le 1 octobre » au lieu de « 1er »');
-  if (shown('done').some((l) => String(l.finished).endsWith('-01'))) assert.match(page, /Livré le 1er /);
+  assert.ok(!/>1 octobre/.test(page), '« 1 octobre » au lieu de « 1er »');
+  for (const l of shown('done').filter((x) => x.finished)) assert.match(html(), new RegExp(`<time[^>]*datetime="${l.finished}"`), `${l.id} : date de livraison absente`);
+  if (shown('done').some((l) => String(l.finished).endsWith('-01'))) assert.match(page, /1er octobre/);
 });
 
 test('section vide : texte honnête (« Prévu » vide → « Les prochains travaux seront annoncés ici. ») ; jamais « 0 » dans le bandeau', () => {
@@ -347,4 +348,21 @@ test('ordinal « 1ᵉʳ » dans les lignes en capitales espacées : sans espacem
     assert.ok(m.gap < 1, `${path} : exposant détaché du chiffre de ${m.gap.toFixed(1)} px`);
   }
   await context.close();
+});
+
+// Revue UX L20 : l'état du groupe (« En cours », « Prévu », « Livré ») n'est pas répété sous
+// chaque ligne ; sous une ligne : l'avancement s'il y en a un, la date pour un lot livré.
+test('sous chaque ligne : ni l’état du groupe répété, ni ligne vide ; apostrophes typographiques', () => {
+  const page = html();
+  const items = [...page.matchAll(/<li[^>]*class="plan-lot"[^>]*data-status="(\w+)"[\s\S]*?<\/li>/g)];
+  assert.ok(items.length > 0);
+  for (const [li, status] of items) {
+    const text = decode(li.replace(/<[^>]+>/g, ' ')).replace(/\s+/g, ' ');
+    assert.doesNotMatch(text, /\b(en cours|prévu|livré)\b/i, `état répété : ${text}`);
+    const meta = li.match(/<p class="plan-lot-meta"[^>]*>([\s\S]*?)<\/p>/);
+    if (meta) assert.ok(decode(meta[1].replace(/<[^>]+>/g, '')).trim(), `ligne d’état vide : ${text}`);
+    if (status === 'done') assert.match(li, /<time[^>]*datetime=/, 'date absente sous un lot livré');
+  }
+  const main = decode(page.slice(page.indexOf('<main'), page.indexOf('</main>')).replace(/<script[\s\S]*?<\/script>/g, '').replace(/<[^>]+>/g, ' '));
+  assert.doesNotMatch(main, /'/, 'apostrophe droite dans le texte de la page');
 });

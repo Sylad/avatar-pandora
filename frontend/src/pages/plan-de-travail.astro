@@ -24,8 +24,8 @@ const plan = loadPublicPlan(join(process.cwd(), '..', 'docs', 'plan', 'raf.yaml'
 
 const summary = planSummary(plan.counts);
 
-const stateLabel = (l: PublicLot) =>
-  l.status === 'doing' ? 'En cours' : l.status === 'todo' ? 'Prévu' : 'Livré';
+// Apostrophes typographiques (’) : un titre repris d'une Nouveauté peut en porter de droites.
+const typo = (t: string) => t.replace(/'/g, '’');
 
 const sections: { id: string; title: string; intro: string; lots: PublicLot[]; empty: string; news?: boolean }[] = [
   { id: 'en-cours', title: 'En cours', intro: 'Ce qui pousse en ce moment dans le codex.', lots: plan.doing, empty: 'Rien en cours pour l’instant.' },
@@ -74,11 +74,15 @@ const sections: { id: string; title: string; intro: string; lots: PublicLot[]; e
           <ol class="plan-list">
             {s.lots.map((l) => (
               <li class="plan-lot" data-status={l.status} data-id={l.id} id={`lot-${l.id}`} data-also={l.also?.join(' ')}>
-                <p class="plan-lot-title">{l.title}</p>
-                <p class="plan-lot-meta">
-                  <span class="plan-state">{stateLabel(l)}{l.finished && <Fragment> le <FrDate day={l.finished} /></Fragment>}</span>
-                  {l.tasks && <span class="plan-tasks">{stepsLabel(l.tasks)}</span>}
-                </p>
+                <p class="plan-lot-title">{typo(l.title)}</p>
+                {/* Revue UX L20 : l'état est celui du groupe (titre de section), pas répété
+                    ici ; seulement la date d'un lot livré et l'avancement s'il y en a un. */}
+                {(l.finished || l.tasks) && (
+                  <p class="plan-lot-meta">
+                    {l.finished && <time class="plan-date" datetime={l.finished}><FrDate day={l.finished} /></time>}
+                    {l.tasks && <span class="plan-tasks">{stepsLabel(l.tasks)}</span>}
+                  </p>
+                )}
               </li>
             ))}
           </ol>
@@ -181,15 +185,12 @@ const sections: { id: string; title: string; intro: string; lots: PublicLot[]; e
       font-size: 0.98rem;
       color: var(--color-eywa-text-muted);
     }
-    /* L'état est écrit en toutes lettres ; la couleur ne fait que le souligner. */
-    .plan-state {
+    /* Date de livraison : même ligne en capitales espacées que les dates des Nouveautés. */
+    .plan-date {
       font-family: var(--font-display);
       letter-spacing: 0.12em;
       text-transform: uppercase;
       font-size: 0.72rem;
-      color: var(--color-eywa-bio-primary);
-    }
-    .plan-lot[data-status="done"] .plan-state {
       color: var(--color-eywa-text-muted);
     }
   </style>
