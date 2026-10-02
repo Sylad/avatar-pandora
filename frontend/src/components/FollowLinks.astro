@@ -15,7 +15,7 @@ interface Props {
 }
 const { home = false, class: className } = Astro.props;
 ---
-<nav class:list={['landing-follow', { 'landing-follow--wrap': home }, className]} aria-label="Suivre le codex">
+<nav class:list={['landing-follow', className]} aria-label="Suivre le codex">
   {home && <a href="/" class="landing-follow__link"><span aria-hidden="true">←</span><span>Accueil</span></a>}
   <a href="/nouveautes/" class="landing-follow__link">
     <svg class="landing-follow__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -42,10 +42,14 @@ const { home = false, class: className } = Astro.props;
    un lien orphelin sur sa ligne. Cible ≥ 44 px de haut, texte muted sur le voile de
    nuit des boutons, contour de focus cyan. */
 /* Jamais plus large que l'écran : avec un texte agrandi (×1,25, espacement WCAG 1.4.12),
-   un libellé passe à la ligne DANS son lien (cible ≥ 44 px) au lieu que la rangée centrée
-   déborde à gauche, hors d'atteinte (revue UX L20 : x = −30 px). */
+   la rangée passe à la ligne (un mot seul ne peut pas se couper : un lien rétréci laissait
+   sa pastille déborder sur le voisin) et un libellé de plusieurs mots passe à la ligne DANS
+   son lien (cible ≥ 44 px), au lieu que la rangée centrée déborde à gauche, hors d'atteinte
+   (revue UX L20 : x = −30 px). À la taille par défaut, les deux liens tiennent côte à côte
+   jusqu'à 320 px (scripts/navigation.e2e.test.mjs). */
 .landing-follow {
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
   gap: 0.5rem;
   max-width: 100%;
@@ -85,10 +89,6 @@ const { home = false, class: className } = Astro.props;
   flex-shrink: 0;
   color: var(--color-eywa-bio-primary);
   opacity: 0.8;
-}
-/* Avec le retour à l'accueil (trois liens), la rangée passe à la ligne si besoin. */
-.landing-follow--wrap {
-  flex-wrap: wrap;
 }
 @media (max-width: 399px) {
   /* La rangée prend aussi la marge latérale de la page (≈ 10 px de chaque côté) : à 320 px

@@ -226,12 +226,24 @@ test('accueil 320 px, texte ×1,125 / ×1,25 et espacement WCAG 1.4.12, avec et 
         const minX = Math.min(...els.map((e) => e.getBoundingClientRect().left));
         const maxX = Math.max(...els.map((e) => e.getBoundingClientRect().right));
         const follow = [...document.querySelectorAll('.landing-follow a')].map((a) => { const b = a.getBoundingClientRect(); return { l: b.left, r: b.right, h: b.height, w: b.width }; });
-        return { minX, maxX, pageW: document.documentElement.scrollWidth, follow };
+        // Contenu (libellé, pastille) dans la boîte de son lien ; liens disjoints.
+        const spill = [...document.querySelectorAll('.landing-follow a')].flatMap((a) => {
+          const b = a.getBoundingClientRect();
+          return [...a.children].filter((c) => c.getBoundingClientRect().width > 0).filter((c) => {
+            const r = c.getBoundingClientRect();
+            return r.left < b.left - 0.5 || r.right > b.right + 0.5;
+          }).map((c) => `${a.getAttribute('href')} > ${c.className || c.tagName}`);
+        });
+        const rects = [...document.querySelectorAll('.landing-follow a')].map((a) => a.getBoundingClientRect());
+        const crossed = rects.some((a, i) => rects.slice(i + 1).some((c) => Math.min(a.right, c.right) > Math.max(a.left, c.left) && Math.min(a.bottom, c.bottom) > Math.max(a.top, c.top)));
+        return { minX, maxX, pageW: document.documentElement.scrollWidth, follow, spill, crossed };
       });
       report.push(`${name}${badge ? ' + pastille' : ''} : x min ${m.minX.toFixed(1)}, x max ${m.maxX.toFixed(1)}, page ${m.pageW} px`);
       assert.ok(m.minX >= -0.5, `${name}${badge ? ' avec pastille' : ''} : élément à x = ${m.minX.toFixed(1)}`);
       assert.ok(m.pageW <= 320, `${name}${badge ? ' avec pastille' : ''} : page de ${m.pageW} px`);
       for (const f of m.follow) assert.ok(f.h >= 44 && f.w >= 44, `${name} : lien ${f.w}×${f.h}`);
+      assert.deepEqual(m.spill, [], `${name}${badge ? ' avec pastille' : ''} : contenu hors de son lien`);
+      assert.equal(m.crossed, false, `${name}${badge ? ' avec pastille' : ''} : liens superposés`);
       await context.close();
     }
   }
