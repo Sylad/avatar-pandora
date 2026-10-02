@@ -157,3 +157,44 @@ test('accueil 1440/390 px : libellés Nouveautés et Plan de travail ≥ 4,5:1 a
   for (const line of report) t.diagnostic(line);
   assert.deepEqual(failures, []);
 });
+
+// Revue UX L20 : à 320×568, le bouton de pause de l'ambiance (fixe, en bas à droite)
+// recouvrait la fin de « Plan de travail » — un toucher mettait en pause au lieu d'ouvrir.
+test('accueil 320×568, 360×640, 390×844, avec et sans pastille : aucun élément interactif n’en recouvre un autre, sans défilement', { timeout: 120_000 }, async (t) => {
+  const env = await setupBrowser(t);
+  if (!env) return;
+  for (const [width, height] of [[320, 568], [360, 640], [390, 844]]) {
+    for (const badge of [false, true]) {
+      // Mouvement NON réduit : le bouton de pause n'existe qu'avec l'ambiance animée.
+      const context = await env.browser.newContext({ viewport: { width, height }, hasTouch: true, isMobile: true });
+      const page = await context.newPage();
+      await page.goto(`${env.base}/`, { waitUntil: 'load' });
+      if (badge) {
+        await page.evaluate(([k, v]) => localStorage.setItem(k, JSON.stringify(v)), [KEY, OLD_VISIT]);
+        await page.reload({ waitUntil: 'load' });
+        await page.locator('.landing-follow .news-badge').waitFor({ state: 'visible' });
+      }
+      await page.evaluate(() => document.fonts.ready);
+      const { boxes, overlaps, sh } = await page.evaluate(() => {
+        const els = [...document.querySelectorAll('a[href], button')].filter((e) => {
+          const s = getComputedStyle(e);
+          const b = e.getBoundingClientRect();
+          return s.display !== 'none' && s.visibility !== 'hidden' && b.width > 0 && b.height > 0;
+        });
+        const boxes = els.map((e) => ({ name: (e.id || e.getAttribute('href') || e.textContent.trim()).slice(0, 30), b: e.getBoundingClientRect() }));
+        const overlaps = [];
+        for (let i = 0; i < boxes.length; i++) for (let j = i + 1; j < boxes.length; j++) {
+          const [a, c] = [boxes[i].b, boxes[j].b];
+          const w = Math.min(a.right, c.right) - Math.max(a.left, c.left);
+          const h = Math.min(a.bottom, c.bottom) - Math.max(a.top, c.top);
+          if (w > 0 && h > 0) overlaps.push(`${boxes[i].name} × ${boxes[j].name} : ${w.toFixed(0)}×${h.toFixed(0)} px`);
+        }
+        return { boxes: boxes.map((x) => x.name), overlaps, sh: document.documentElement.scrollHeight - innerHeight };
+      });
+      assert.ok(boxes.includes('eywa-atmo-toggle'), `${width}×${height} : bouton de pause non mesuré`);
+      assert.deepEqual(overlaps, [], `${width}×${height}${badge ? ' avec pastille' : ''}`);
+      assert.ok(sh <= 0, `${width}×${height}${badge ? ' avec pastille' : ''} : l’accueil défile de ${sh}px`);
+      await context.close();
+    }
+  }
+});

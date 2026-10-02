@@ -3,7 +3,7 @@
   Pause / reprise de l'ambiance animée de l'accueil (WCAG 2.2.2).
 
   Jumeau visuel du bouton d'ambiance sonore (AmbientAudio.astro) : rond,
-  2,5 rem, en bas à droite, juste à sa gauche — ou à sa place quand le bouton
+  2,5 rem, en bas à droite (en haut à droite au téléphone, L20), juste à sa gauche — ou à sa place quand le bouton
   audio n'est pas rendu (pas de clip au build). Fige l'horloge partagée de
   l'ambiance (images de fond + particules, cinema/atmosphere-clock.ts) et les
   animations CSS du logo ; choix mémorisé dans localStorage comme l'audio.
@@ -102,9 +102,12 @@ import { HAS_AMBIENT_AUDIO } from '../lib/ambient-audio';
   .eywa-atmo-toggle.is-paused .icon-pause { display: none; }
   .eywa-atmo-toggle.is-paused .icon-play { display: block; }
 
+  /* Téléphone (L20) : en haut à droite, coin vide de l'accueil. En bas à droite, à
+     320×568, le bouton recouvrait la fin de « Plan de travail » (36×40 px) : un toucher
+     mettait l'ambiance en pause au lieu d'ouvrir la page. */
   @media (max-width: 480px) {
-    .eywa-atmo-toggle { bottom: 0.85rem; right: 0.85rem; }
-    .eywa-atmo-toggle--beside-audio { right: 3.85rem; }
+    .eywa-atmo-toggle { top: 0.5rem; bottom: auto; right: 0.5rem; }
+    .eywa-atmo-toggle--beside-audio { right: 3.5rem; }
   }
   @media (prefers-reduced-motion: reduce) {
     .eywa-atmo-toggle { display: none; }
