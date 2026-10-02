@@ -1,7 +1,31 @@
 {
   "project": "avatar-pandora",
-  "generated": "2026-10-02 09:55",
+  "generated": "2026-10-02 10:03",
   "entries": [
+    {
+      "slug": "2026-10-02-nouveautes-une-pastille-pour-tous-un-bouton-pour-copier-le-l",
+      "title": "Nouveautés : une pastille pour tous, un bouton pour copier le lien",
+      "date": "2026-10-02",
+      "lots": [
+        "L21"
+      ],
+      "captures": [
+        "captures/L21-nouveautes-copier-le-lien-telephone.png"
+      ],
+      "html": "<p>La page <strong>Nouveautés</strong> gagne en confort.</p>\n<ul><li>La <strong>pastille</strong> des nouveautés non vues s'affiche maintenant même si tu n'as jamais ouvert la page : elle compte ce qui paraît après ta première visite du codex. Son nombre est aussi annoncé par le bouton du menu au téléphone.</li><li>Chaque nouveauté a un bouton <strong>Copier le lien</strong>, visible sans survol : il copie l'adresse qui mène directement à elle.</li><li>Les dates s'écrivent à la française : le 1er du mois, et l'heure de ta dernière visite sous la forme 20 h 42.</li></ul>"
+    },
+    {
+      "slug": "2026-10-02-une-page-plan-de-travail-et-des-liens-vers-les-nouveautes-pa",
+      "title": "Une page Plan de travail, et des liens vers les Nouveautés partout",
+      "date": "2026-10-02",
+      "lots": [
+        "L20"
+      ],
+      "captures": [
+        "captures/L20-plan-de-travail-telephone.png"
+      ],
+      "html": "<p>Une nouvelle page, <strong>Plan de travail</strong>, montre où en est le codex : ce qui est en cours, ce qui est prévu et ce qui vient d'être livré.</p>\n<ul><li>Tu la trouves dans le menu, juste après <strong>Nouveautés</strong>, sur ordinateur comme au téléphone.</li><li>La page d'accueil et la page <strong>À propos</strong> ont maintenant deux liens directs : <strong>Nouveautés</strong> (avec sa pastille) et <strong>Plan de travail</strong>.</li><li>Au téléphone, le bouton pause de l'ambiance passe en haut à droite de l'accueil : en bas, il recouvrait un lien sur les petits écrans.</li></ul>"
+    },
     {
       "slug": "2026-10-01-une-page-nouveautes-et-un-menu-qui-s-ouvre-au-telephone",
       "title": "Une page Nouveautés, et un menu qui s'ouvre enfin au téléphone",
@@ -12,7 +36,7 @@
       "captures": [
         "captures/L14-page-nouveautes-telephone.png"
       ],
-      "html": "<p>Une nouvelle rubrique, <strong>Nouveautés</strong>, raconte ce qui change dans le codex, la nouveauté la plus récente en haut.</p>\n<ul><li>Elle se trouve en bas du menu, juste au-dessus de <strong>À propos</strong>, sur ordinateur comme dans le menu du téléphone.</li><li>Chaque nouveauté porte sa date, un court texte et une ou plusieurs captures d'écran. Touche ou clique une capture pour la voir en grand, ou ouvre-la au clavier avec Entrée ; Échap la referme. Au téléphone, une capture d'ordinateur s'affiche à la hauteur de l'écran : glisse pour la parcourir.</li><li>Une <strong>pastille</strong> sur le lien Nouveautés compte ce que tu n'as pas encore vu depuis ta dernière visite (un point rose sur le bouton du menu au téléphone). Sur la page, un repère « Déjà vu lors de ta visite du … » sépare le neuf de ce que tu connais déjà.</li><li>Chaque nouveauté a son <strong>lien permanent</strong> : le bouton « Copier le lien » à côté de la date le copie, pratique pour la partager.</li><li><strong>Au téléphone, le menu s'ouvre vraiment</strong> : le bouton assombrissait la page sans faire apparaître la liste des rubriques. Elle glisse désormais dans l'écran, même sur un très petit téléphone.</li><li>Le menu et l'agrandissement des images restent actifs quand tu passes d'une page à l'autre ; ils ne marchaient plus qu'à la première page visitée.</li><li>Au clavier, le menu du téléphone garde la main tant qu'il est ouvert, Échap le referme, et ses liens cachés ne se glissent plus dans la tabulation quand il est fermé. Sur ordinateur, le bouton du menu, inutile, a disparu.</li></ul>"
+      "html": "<p>Une nouvelle rubrique, <strong>Nouveautés</strong>, raconte ce qui change dans le codex, la nouveauté la plus récente en haut.</p>\n<ul><li>Elle se trouve en bas du menu, avant <strong>Plan de travail</strong> et <strong>À propos</strong>, sur ordinateur comme dans le menu du téléphone.</li><li>Chaque nouveauté porte sa date, un court texte et une ou plusieurs captures d'écran. Touche ou clique une capture pour la voir en grand, ou ouvre-la au clavier avec Entrée ; Échap la referme. Au téléphone, une capture d'ordinateur s'affiche à la hauteur de l'écran : glisse pour la parcourir.</li><li>Une <strong>pastille</strong> sur le lien Nouveautés compte ce que tu n'as pas encore vu depuis ta dernière visite (un point rose sur le bouton du menu au téléphone). Sur la page, un repère « Déjà vu lors de ta visite du … » sépare le neuf de ce que tu connais déjà.</li><li>Chaque nouveauté a son <strong>lien permanent</strong> : le bouton « Copier le lien » à côté de la date le copie, pratique pour la partager.</li><li><strong>Au téléphone, le menu s'ouvre vraiment</strong> : le bouton assombrissait la page sans faire apparaître la liste des rubriques. Elle glisse désormais dans l'écran, même sur un très petit téléphone.</li><li>Le menu et l'agrandissement des images restent actifs quand tu passes d'une page à l'autre ; ils ne marchaient plus qu'à la première page visitée.</li><li>Au clavier, le menu du téléphone garde la main tant qu'il est ouvert, Échap le referme, et ses liens cachés ne se glissent plus dans la tabulation quand il est fermé. Sur ordinateur, le bouton du menu, inutile, a disparu.</li></ul>"
     },
     {
       "slug": "2026-10-01-un-accueil-plus-lisible-et-une-ambiance-que-l-on-peut-mettre",
@@ -25,7 +49,7 @@
         "captures/L2-accueil-bureau.png",
         "captures/L2-accueil-telephone.png"
       ],
-      "html": "<p>La page d'accueil d'Eywa a été revue pour se lire aussi bien qu'elle se regarde.</p>\n<ul><li><strong>Les textes ressortent mieux</strong> : le voile sombre passe désormais sous les mots et non plus dessus, quelle que soit l'image de Pandora qui défile derrière.</li><li><strong>Les vraies polices sont enfin là</strong>, sur tout le site : Orbitron pour les titres, Cormorant Garamond pour les textes. Elles ne se chargeaient pas jusqu'ici.</li><li><strong>Un bouton pause</strong>, en bas à droite, fige l'ambiance (images, lucioles et halo du logo). Un second appui la relance, et le site se souvient de ton choix à la prochaine visite.</li><li>Dans la phrase d'accueil, <strong>« clans », « faune » et « langue »</strong> mènent directement aux pages correspondantes.</li><li><strong>Au téléphone</strong>, le logo s'adapte à la largeur de l'écran et les boutons restent visibles sans faire défiler, même sur un petit écran.</li><li>Le bouton du son est retiré tant que la bande-son de la forêt n'est pas prête : il reviendra avec elle.</li><li>L'accueil s'ouvre plus vite : les images arrivent au fil de la boucle, et rien d'animé ne se télécharge si ton appareil demande de réduire les animations.</li></ul>"
+      "html": "<p>La page d'accueil d'Eywa a été revue pour se lire aussi bien qu'elle se regarde.</p>\n<ul><li><strong>Les textes ressortent mieux</strong> : le voile sombre passe désormais sous les mots et non plus dessus, quelle que soit l'image de Pandora qui défile derrière.</li><li><strong>Les vraies polices sont enfin là</strong>, sur tout le site : Orbitron pour les titres, Cormorant Garamond pour les textes. Elles ne se chargeaient pas jusqu'ici.</li><li><strong>Un bouton pause</strong>, en bas à droite (en haut à droite au téléphone), fige l'ambiance (images, lucioles et halo du logo). Un second appui la relance, et le site se souvient de ton choix à la prochaine visite.</li><li>Dans la phrase d'accueil, <strong>« clans », « faune » et « langue »</strong> mènent directement aux pages correspondantes.</li><li><strong>Au téléphone</strong>, le logo s'adapte à la largeur de l'écran et les boutons restent visibles sans faire défiler, même sur un petit écran.</li><li>Le bouton du son est retiré tant que la bande-son de la forêt n'est pas prête : il reviendra avec elle.</li><li>L'accueil s'ouvre plus vite : les images arrivent au fil de la boucle, et rien d'animé ne se télécharge si ton appareil demande de réduire les animations.</li></ul>"
     }
   ]
 }
