@@ -192,3 +192,9 @@ lots:
     status: todo
     estimate: 0.25
     created: 2026-10-02
+  - id: L25
+    title: orchestrate.ux déclaré (port 4313) pour la revue UX automatique des vagues — suite de cadence L95
+    status: doing
+    estimate: 1
+    created: 2026-10-07
+    started: 2026-10-07
