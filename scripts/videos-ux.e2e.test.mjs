@@ -67,11 +67,13 @@ test('R5 — les titres de vidéos en anglais sont balisés lang="en" (WCAG 3.1.
   const r = await page.evaluate(() =>
     [...document.querySelectorAll('.video-card')].map((c) => ({
       chip: c.querySelector('.video-card__lang').textContent.trim(),
-      lang: c.querySelector('.video-card__title').getAttribute('lang'),
+      lang: c.querySelector('.video-card__title [lang]')?.getAttribute('lang') ?? null,
+      hint: c.querySelector('.video-card__title .sr-only')?.closest('[lang]')?.lang ?? null,
     })));
   assert.ok(r.some((x) => x.chip === 'EN') && r.some((x) => x.chip === 'FR'), 'les deux langues sont présentes');
   assert.deepEqual(r.filter((x) => x.chip === 'EN' && x.lang !== 'en'), []);
   assert.deepEqual(r.filter((x) => x.chip === 'FR' && x.lang), []);
+  assert.deepEqual(r.filter((x) => x.hint !== 'fr'), [], 'l\'indication « nouvel onglet » est lue en français, hors du passage lang="en"');
 });
 
 test('R6 — la description d\'une chaîne de la liste complète n\'est pas coupée par une ellipse à 1440 px (WCAG 1.4.4 / 1.4.10)', { timeout: 60_000 }, async (t) => {

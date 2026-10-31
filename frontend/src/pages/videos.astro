@@ -108,7 +108,7 @@ const typeLabel: Record<string, string> = {
               <span class="video-card__type">{typeLabel[v.data.type] ?? v.data.type}</span>
             </div>
             <div class="video-card__body">
-              <h3 class="video-card__title" lang={v.data.lang === 'EN' ? 'en' : undefined}>{v.data.title}<span class="sr-only"> (nouvel onglet)</span></h3>
+              <h3 class="video-card__title"><span lang={v.data.lang === 'EN' ? 'en' : undefined}>{v.data.title}</span><span class="sr-only"> (nouvel onglet)</span></h3>
               <div class="video-card__meta">
                 <span class="video-card__channel">{channel?.data.name ?? v.data.channelSlug}</span>
                 <span class="video-card__sep">·</span>
