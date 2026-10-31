@@ -33,6 +33,56 @@ test('R2 — chaque section de la page porte au moins une ligne « shows: » ou 
   }
 });
 
+function section(md, titre) {
+  return (md.split(/^## /m).slice(1).find((b) => b.split('\n')[0].trim() === titre) ?? '');
+}
+
+const dist = (chemin) => join(DIST, chemin, 'index.html');
+
+test('R5 — expectations.md porte une section /about/ dont chaque attendu se vérifie sur la page construite', (t) => {
+  const bloc = section(readFileSync(DOC, 'utf8'), '/about/');
+  assert.match(bloc, /^- (shows|never): /m, 'section « ## /about/ » absente ou sans attendu');
+  if (!existsSync(dist('about'))) return t.skip('frontend/dist absent : lancer le build');
+  const html = readFileSync(dist('about'), 'utf8');
+  assert.match(bloc, /À propos — Eywa/);
+  assert.ok(html.includes('<title>À propos — Eywa</title>'), 'titre de l\'onglet');
+  assert.match(bloc, /Vibe coded avec Claude Code & Codex/);
+  assert.equal([...html.matchAll(/<h1[ >]/g)].length, 1, 'h1 unique');
+  assert.match(html, /<h1[^>]*>\s*<span lang="en"[^>]*>Vibe coded<\/span> avec Claude Code (&|&#38;|&amp;) Codex/);
+  for (const h2 of ["L'histoire courte", 'Sous le capot', 'Sources & inspirations', 'Mes autres sites']) {
+    assert.ok(bloc.includes(h2), `« ${h2} » absent de l'attendu`);
+  }
+  assert.equal([...html.matchAll(/<h2[ >]/g)].length, 4, 'h2 ×4');
+  for (const classe of ['about-sources', 'about-sites']) {
+    const ul = html.match(new RegExp(`<ul[^>]*class="${classe}[^"]*"[^>]*>([\\s\\S]*?)</ul>`));
+    assert.ok(ul, `ul.${classe} absente`);
+    assert.equal([...ul[1].matchAll(/<li[ >]/g)].length, 4, `ul.${classe} : 4 li`);
+  }
+  const sortants = [...html.matchAll(/<a [^>]*target="_blank"[^>]*>[\s\S]*?<\/a>/g)].map((m) => m[0]);
+  assert.equal(sortants.length, 9, '9 liens sortants');
+  for (const a of sortants) {
+    assert.match(a, /href="https?:\/\//);
+    assert.match(a, /\(nouvel onglet\)/);
+  }
+  assert.equal([...html.matchAll(/lang="en"/g)].length, 2, '[lang=en] ×2');
+  assert.doesNotMatch(html, /ChatGPT/i);
+});
+
+test('R6 — la ligne du permalien de /nouveautes/ décrit ce que la page porte (id=<slug> + data-slug), pas un lien <a>', (t) => {
+  const bloc = section(readFileSync(DOC, 'utf8'), '/nouveautes/');
+  assert.doesNotMatch(bloc, /lien permanent `\/nouveautes\/#<slug>`/, 'ancienne formulation : aucun <a href="#…"> n\'existe');
+  assert.match(bloc, /id=<slug>/);
+  assert.match(bloc, /data-slug/);
+  if (!existsSync(dist('nouveautes'))) return t.skip('frontend/dist absent : lancer le build');
+  const html = readFileSync(dist('nouveautes'), 'utf8');
+  const articles = [...html.matchAll(/<article [^>]*class="news-entry"[^>]*>/g)].map((m) => m[0]);
+  assert.ok(articles.length > 0);
+  for (const a of articles) assert.match(a, /id="[^"]+"/);
+  const ids = articles.map((a) => a.match(/id="([^"]+)"/)[1]);
+  const slugs = [...html.matchAll(/data-slug="([^"]+)"/g)].map((m) => m[1]);
+  assert.deepEqual(slugs, ids, 'data-slug de chaque bouton = id de son article');
+});
+
 test('R3 — la règle du seuil écrite dans expectations.md est celle que le test mesure (16 px, 390 et 1440)', () => {
   const md = readFileSync(DOC, 'utf8');
   assert.match(md, /16 px/);
