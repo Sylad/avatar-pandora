@@ -137,6 +137,18 @@ test('R8 — le lien focalisé au clavier montre un anneau d\'au moins 2 px', { 
   }
 });
 
+test('R11 — le lien en ligne du paragraphe est souligné en permanence, pas distingué par la seule couleur (WCAG 1.4.1 / G183)', { timeout: 60_000 }, async (t) => {
+  const page = await open(t);
+  if (!page) return;
+  const links = await page.evaluate(() =>
+    [...document.querySelectorAll('main p a')].map((a) => ({
+      t: a.textContent.trim().slice(0, 30),
+      line: getComputedStyle(a).textDecorationLine,
+    })));
+  assert.ok(links.length >= 1, 'aucun lien en ligne trouvé');
+  assert.deepEqual(links.filter((l) => !l.line.includes('underline')), []);
+});
+
 test('R9 — la pile technique ne cite pas de jargon de plan interne (« Plan 2 ») que la lectrice ne peut pas comprendre', { timeout: 60_000 }, async (t) => {
   const page = await open(t);
   if (!page) return;
