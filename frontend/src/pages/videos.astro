@@ -49,23 +49,25 @@ const typeLabel: Record<string, string> = {
       Quelques voix qui valent qu'on s'y arrête — officielles, encyclopédiques, ou techniquement
       les meilleures du genre.
     </p>
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+    <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 list-none p-0 m-0">
       {priorityChannels.map((c) => (
+        <li class="min-w-0">
         <a
           href={c.data.url}
           target="_blank"
           rel="noopener noreferrer"
           class="channel-card group"
         >
-          <span class="channel-card__avatar">{c.data.avatar}</span>
+          <span class="channel-card__avatar" aria-hidden="true">{c.data.avatar}</span>
           <span class="channel-card__body">
-            <span class="channel-card__name">{c.data.name}</span>
+            <span class="channel-card__name">{c.data.name}<span class="sr-only"> (nouvel onglet)</span></span>
             <span class="channel-card__lang">{c.data.lang}</span>
             <span class="channel-card__desc">{c.data.description}</span>
           </span>
         </a>
+        </li>
       ))}
-    </div>
+    </ul>
   </section>
 
   <!-- Section 2 : Vidéos en vedette -->
@@ -75,13 +77,14 @@ const typeLabel: Record<string, string> = {
       Sélection — du teaser officiel au cours de linguistique en passant par
       le breakdown VFX. Le clic ouvre YouTube dans un nouvel onglet.
     </p>
-    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+    <ul class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 list-none p-0 m-0">
       {videos.map((v) => {
         const channel = channelById.get(v.data.channelSlug);
         const watchUrl = `https://www.youtube.com/watch?v=${v.data.videoId}`;
         const thumb = thumbFor(v.data.videoId, v.data.thumbnail);
         const maxres = maxresFor(v.data.videoId);
         return (
+          <li class="min-w-0">
           <a
             href={watchUrl}
             target="_blank"
@@ -92,7 +95,7 @@ const typeLabel: Record<string, string> = {
               <img
                 src={thumb}
                 data-maxres={maxres}
-                alt={v.data.title}
+                alt=""
                 loading="lazy"
                 class="video-card__img"
                 onerror="this.style.display='none'"
@@ -105,7 +108,7 @@ const typeLabel: Record<string, string> = {
               <span class="video-card__type">{typeLabel[v.data.type] ?? v.data.type}</span>
             </div>
             <div class="video-card__body">
-              <h3 class="video-card__title">{v.data.title}</h3>
+              <h3 class="video-card__title" lang={v.data.lang === 'EN' ? 'en' : undefined}>{v.data.title}<span class="sr-only"> (nouvel onglet)</span></h3>
               <div class="video-card__meta">
                 <span class="video-card__channel">{channel?.data.name ?? v.data.channelSlug}</span>
                 <span class="video-card__sep">·</span>
@@ -114,9 +117,10 @@ const typeLabel: Record<string, string> = {
               <p class="video-card__desc">{v.data.description}</p>
             </div>
           </a>
+          </li>
         );
       })}
-    </div>
+    </ul>
   </section>
 
   <!-- Section 3 : Toutes les chaînes (rappel complet) -->
@@ -129,8 +133,8 @@ const typeLabel: Record<string, string> = {
       {channels.map((c) => (
         <li>
           <a href={c.data.url} target="_blank" rel="noopener noreferrer" class="channel-link">
-            <span class="channel-link__avatar">{c.data.avatar}</span>
-            <span class="channel-link__name">{c.data.name}</span>
+            <span class="channel-link__avatar" aria-hidden="true">{c.data.avatar}</span>
+            <span class="channel-link__name">{c.data.name}<span class="sr-only"> (nouvel onglet)</span></span>
             <span class="channel-link__lang">{c.data.lang}</span>
             <span class="channel-link__desc">{c.data.description}</span>
           </a>
@@ -200,7 +204,7 @@ const typeLabel: Record<string, string> = {
     gap: 1rem;
     padding: 1rem 1.1rem;
     border-radius: 6px;
-    background: rgba(232, 230, 221, 0.02);
+    background: rgba(10, 10, 31, 0.78);
     border: 1px solid rgba(95, 255, 230, 0.15);
     box-shadow:
       0 0 0 1px rgba(95, 255, 230, 0.04) inset,
@@ -273,6 +277,15 @@ const typeLabel: Record<string, string> = {
   .channel-card:hover .channel-card__name {
     color: var(--color-eywa-bio-primary);
     text-shadow: 0 0 14px rgba(95, 255, 230, 0.45);
+  }
+
+  /* Anneau de focus clavier explicite (WCAG 2.4.7 / 1.4.11) : l'anneau « auto » du navigateur
+     reste à 1 px sur ces cartes translucides. */
+  .channel-card:focus-visible,
+  .video-card:focus-visible,
+  .channel-link:focus-visible {
+    outline: 2px solid var(--color-eywa-bio-primary);
+    outline-offset: 3px;
   }
 
   /* ---------- Video cards ---------- */
@@ -383,6 +396,8 @@ const typeLabel: Record<string, string> = {
     position: relative;
     z-index: 2;
     padding: 1rem 1.1rem 1.15rem;
+    /* Fond assombri : le texte ne dépend pas de l'animation (particules) derrière la carte. */
+    background: rgba(10, 10, 31, 0.78);
   }
 
   .video-card__title {
@@ -427,7 +442,6 @@ const typeLabel: Record<string, string> = {
 
   .video-card__channel {
     color: var(--color-eywa-text);
-    opacity: 0.75;
   }
 
   .video-card__desc {
@@ -510,9 +524,6 @@ const typeLabel: Record<string, string> = {
     font-size: 0.8rem;
     color: var(--color-eywa-text-muted);
     line-height: 1.4;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
   }
 
   @media (max-width: 700px) {
@@ -521,7 +532,6 @@ const typeLabel: Record<string, string> = {
     }
     .channel-link__desc {
       grid-column: 1 / -1;
-      white-space: normal;
     }
   }
 
