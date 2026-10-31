@@ -8,7 +8,7 @@ const STACK = [
     group: 'Frontend',
     items: [
       'Astro 6 (paradigme islands, statique-first)',
-      'React 19 (îlots interactifs — Plan 2)',
+      'React 19 (îlots interactifs)',
       'TypeScript strict',
       'Tailwind CSS 4 (vite plugin + tokens @theme)',
       'Astro Content Collections (markdown + Zod)',
@@ -64,11 +64,11 @@ const SOURCES = [
   <main class="max-w-4xl mx-auto px-6 lg:px-8 py-16 lg:py-20 space-y-10">
 
     <header class="flex flex-col gap-2 mb-2">
-      <p class="text-[11px] uppercase tracking-[0.22em] text-eywa-text-muted font-display font-semibold">
+      <p class="text-xs uppercase tracking-[0.22em] text-eywa-text-muted font-display font-semibold">
         À propos · Eywa
       </p>
       <h1 class="font-display text-3xl lg:text-4xl font-bold text-eywa-bio-primary">
-        Vibe coded avec Claude Code & Codex
+        <span lang="en">Vibe coded</span> avec Claude Code & Codex
       </h1>
       <p class="text-eywa-text-muted max-w-2xl font-body text-lg">
         Un codex visuel de Pandora — construit comme un cadeau, exécuté comme un labo.
@@ -108,7 +108,7 @@ const SOURCES = [
           <p>
             Construit en discutant avec
             <a href="https://claude.com/claude-code" target="_blank" rel="noopener"
-               class="text-eywa-bio-primary hover:underline font-medium">Claude Code</a>
+               class="text-eywa-bio-primary hover:underline font-medium">Claude Code<span class="sr-only"> (nouvel onglet)</span></a>
             — pair-programmation, structure, code, et prose des fiches du codex synthétisée à
             partir de Pandorapedia et de l'Avatar Wiki. Depuis, <strong class="text-eywa-bio-primary">Codex</strong>
             m'accompagne aussi sur la relecture, les corrections ciblées et les itérations
@@ -119,7 +119,8 @@ const SOURCES = [
       </div>
     </section>
 
-    <section class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+    <section class="about-stack grid grid-cols-1 lg:grid-cols-3 gap-4">
+      <h2 class="sr-only">Sous le capot</h2>
       {STACK.map((s) => (
         <div class="rounded-md border border-eywa-text-muted/20 bg-eywa-text/[0.02] p-5 hover:border-eywa-bio-primary/40 transition-colors">
           <h3 class="font-display font-semibold text-eywa-bio-primary tracking-wide text-sm uppercase mb-4 pb-3 border-b border-eywa-text-muted/20">
@@ -128,7 +129,7 @@ const SOURCES = [
           <ul class="space-y-2 text-sm text-eywa-text-muted font-body">
             {s.items.map((it) => (
               <li class="flex items-start gap-2">
-                <span class="text-eywa-bio-primary/60 select-none mt-0.5">›</span>
+                <span class="text-eywa-bio-primary select-none mt-0.5" aria-hidden="true">›</span>
                 <span>{it}</span>
               </li>
             ))}
@@ -138,55 +139,59 @@ const SOURCES = [
     </section>
 
     <section class="rounded-md border border-eywa-text-muted/20 bg-eywa-text/[0.02] p-6">
-      <h3 class="font-display text-lg font-semibold text-eywa-bio-primary mb-1">
+      <h2 class="font-display text-lg font-semibold text-eywa-bio-primary mb-1">
         Sources & inspirations
-      </h3>
+      </h2>
       <p class="text-sm text-eywa-text-muted mb-5 font-body">
         Pas une copie, mais des sources que j'ai consultées ou des principes que j'ai essayé d'appliquer.
       </p>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+      <ul class="about-sources grid grid-cols-1 md:grid-cols-2 gap-3 list-none p-0 m-0">
         {SOURCES.map((i) => (
+          <li class="min-w-0">
           <a href={i.url} target="_blank" rel="noopener"
-             class="group rounded-md border border-eywa-text-muted/15 bg-eywa-text/[0.02] p-4 flex flex-col gap-1.5 hover:border-eywa-bio-primary/40 hover:bg-eywa-text/[0.04] transition-all">
+             class="group h-full rounded-md border border-eywa-text-muted/15 bg-eywa-text/[0.02] p-4 flex flex-col gap-1.5 hover:border-eywa-bio-primary/40 hover:bg-eywa-text/[0.04] transition-all">
             <div class="flex items-center justify-between">
               <span class="font-display font-semibold text-eywa-text group-hover:text-eywa-bio-primary transition-colors">
-                {i.name}
+                {i.name}<span class="sr-only"> (nouvel onglet)</span>
               </span>
-              <span class="text-eywa-text-muted/60 group-hover:text-eywa-bio-primary text-xs transition-colors">↗</span>
+              <span class="text-eywa-text-muted group-hover:text-eywa-bio-primary text-xs transition-colors" aria-hidden="true">↗</span>
             </div>
-            <span class="text-[10px] uppercase tracking-wider text-eywa-text-muted/80 font-display">
+            <span class="about-by text-xs uppercase tracking-wider text-eywa-text-muted font-display">
               par {i.by}
             </span>
-            <p class="text-xs text-eywa-text-muted leading-relaxed mt-1 font-body">{i.why}</p>
+            <p class="about-why text-xs text-eywa-text-muted leading-relaxed mt-1 font-body">{i.why}</p>
           </a>
+          </li>
         ))}
-      </div>
+      </ul>
     </section>
 
     <section class="rounded-md border border-eywa-text-muted/20 bg-eywa-text/[0.02] p-6">
-      <h3 class="font-display text-lg font-semibold text-eywa-bio-primary mb-1">Mes autres sites</h3>
+      <h2 class="font-display text-lg font-semibold text-eywa-bio-primary mb-1">Mes autres sites</h2>
       <p class="text-sm text-eywa-text-muted mb-5 font-body">
         Quatre autres apps perso vibe-codées avec Claude Code, puis relues et enrichies au fil
         des sessions avec Codex.
       </p>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+      <ul class="about-sites grid grid-cols-1 md:grid-cols-2 gap-3 list-none p-0 m-0">
         {[
           { tag: '🦖', name: 'Evatosorus', desc: 'Codex Mésozoïque (cadeau pour Eva)', url: 'https://evatosorus.pages.dev' },
           { tag: '⚔️', name: 'Warhammer 40K Codex', desc: 'Fan codex narratif W40K', url: 'https://github.com/Sylad/warhammer40k' },
           { tag: '⚽', name: 'OL Companion', desc: 'Suivi Olympique Lyonnais', url: 'https://github.com/Sylad/ol-companion' },
           { tag: '💸', name: 'Finance Tracker', desc: 'Suivi finances perso (PDF Claude)', url: 'https://github.com/Sylad/finance-tracker' },
         ].map((s) => (
+          <li class="min-w-0">
           <a href={s.url} target="_blank" rel="noopener"
-            class="rounded-md border border-eywa-text-muted/20 p-3 flex items-center gap-3 hover:border-eywa-bio-primary/60 transition-colors group">
-            <span class="text-2xl select-none">{s.tag}</span>
+            class="h-full rounded-md border border-eywa-text-muted/20 p-3 flex items-center gap-3 hover:border-eywa-bio-primary/60 transition-colors group">
+            <span class="text-2xl select-none" aria-hidden="true">{s.tag}</span>
             <span class="flex-1 min-w-0">
-              <span class="block font-display font-semibold text-eywa-text group-hover:text-eywa-bio-primary transition-colors">{s.name}</span>
-              <span class="block text-xs text-eywa-text-muted font-body">{s.desc}</span>
+              <span class="block font-display font-semibold text-eywa-text group-hover:text-eywa-bio-primary transition-colors">{s.name}<span class="sr-only"> (nouvel onglet)</span></span>
+              <span class="about-site-desc block text-xs text-eywa-text-muted font-body">{s.desc}</span>
             </span>
-            <span class="text-eywa-text-muted/50 group-hover:text-eywa-bio-primary shrink-0">↗</span>
+            <span class="text-eywa-text-muted group-hover:text-eywa-bio-primary shrink-0" aria-hidden="true">↗</span>
           </a>
+          </li>
         ))}
-      </div>
+      </ul>
     </section>
 
     <section class="rounded-md border border-eywa-text-muted/20 bg-eywa-text/[0.02] p-6 text-center">
@@ -195,8 +200,8 @@ const SOURCES = [
         décris en langage naturel ce que tu rêves de voir exister, puis itère. Tu seras surpris
         de ce qu'on peut construire en quelques sessions.
       </p>
-      <div class="text-[10px] uppercase tracking-[0.2em] text-eywa-text-muted/60 mt-4 font-display">
-        Eywa te voit · Made with curiosity · v1
+      <div class="about-sign text-xs uppercase tracking-[0.2em] text-eywa-text-muted mt-4 font-display">
+        Eywa te voit · <span lang="en">Made with curiosity</span> · v1
       </div>
     </section>
 
@@ -207,3 +212,13 @@ const SOURCES = [
 
   </main>
 </BaseLayout>
+
+<style>
+  /* Anneau de focus clavier explicite (WCAG 2.4.7 / 1.4.11) : l'anneau « auto » reste à 1 px
+     sur ces cartes translucides. */
+  .about-sources a:focus-visible,
+  .about-sites a:focus-visible {
+    outline: 2px solid var(--color-eywa-bio-primary);
+    outline-offset: 3px;
+  }
+</style>

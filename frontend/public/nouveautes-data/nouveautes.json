@@ -1,7 +1,22 @@
 {
   "project": "avatar-pandora",
-  "generated": "2026-10-31 12:22",
+  "generated": "2026-10-31 20:37",
   "entries": [
+    {
+      "slug": "2026-10-31-page-a-propos-liens-annonces-titres-en-ordre-texte-plus-lisi",
+      "title": "Page À propos : liens annoncés, titres en ordre, texte plus lisible",
+      "date": "2026-10-31",
+      "lots": [
+        "L12"
+      ],
+      "captures": [
+        "captures/L12-about-sources-1440.png"
+      ],
+      "alts": [
+        "La liste des sources de la page À propos : quatre cartes sur fond sombre, la première entourée de l'anneau de focus cyan du clavier."
+      ],
+      "html": "<p>Sur la page À propos, chaque lien qui s'ouvre dans un nouvel onglet le précise aux lecteurs d'écran, qui annoncent « (nouvel onglet) » après son nom. Les sources et les autres sites forment des listes dont le nombre d'éléments est annoncé ; emojis et flèches ne sont plus lus.</p>\n<p>Les titres de section se suivent dans l'ordre, et les passages en anglais (« Vibe coded », « Made with curiosity ») ne sont plus prononcés à la française. Le petit texte (auteurs des sources, signature) est agrandi à 12 px et n'est plus éclairci, et une mention interne (« Plan 2 ») a disparu de la liste technique.</p>\n<p>Au clavier, la carte active est entourée d'un anneau net de 2 px.</p>"
+    },
     {
       "slug": "2026-10-31-page-videos-liens-annonces-listes-cartes-lisibles-au-clavier",
       "title": "Page Vidéos : liens annoncés, listes, cartes lisibles au clavier",
