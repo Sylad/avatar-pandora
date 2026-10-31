@@ -123,12 +123,14 @@ lots:
     finished: 2026-10-30
   - id: L11
     title: Revue UX — Vidéos
-    status: doing
+    status: done
     visible: true
     estimate: 0.25
     created: 2026-09-28
     started: 2026-10-31
     review: { date: 2026-10-31, verdict: "conforme : 0 bloquant, 0 majeur, 1 mineur (line-clamp des descriptions de vidéos à 320 px) — orchestré (vague 2026-10-31-1215-av, 3 passe(s) de correction)", commit: e7e179671bd264b632bd32ebec42ce02cb60db9a }
+    ux: { date: 2026-10-31, verdict: "conforme (revue neuve Fable conforme ; captures 390/1440 regardées par le lead : cartes lisibles, focus visible) — mineurs en lot de suite : descriptions coupées par line-clamp (4/13 à 320 px), « (nouvel onglet) » dans le h3 au lieu du lien, intro de section sur les particules (1,62:1, gabarit → L13)" }
+    finished: 2026-10-31
   - id: L12
     title: Revue UX — À propos
     status: todo
@@ -437,6 +439,12 @@ lots:
     status: todo
     estimate: 0.1
     created: 2026-10-30
+  - id: L47
+    title: "Vidéos, suite de L11 : descriptions des cartes coupées par line-clamp sans moyen de lire la suite (4/13 à 320 px, 1/13 à 1440 px — WCAG 1.4.10), « (nouvel onglet) » placé dans le h3 (nom du titre pour la navigation par titres) au lieu du lien ; intro de section sur les particules à 1,62:1 à traiter avec L13"
+    status: todo
+    estimate: 0.25
+    visible: true
+    created: 2026-10-31
 acknowledged:
   - { sha: cef464dffb920ea7b161b1b0e06fe54d3efbdcc4, subject: "plan: verdicts UX de Sylvain enregistrés, trois bloquants de la revue des Personnages clos", date: 2026-10-10, reason: entretien du plan et régénération des Nouveautés }
   - { sha: 4bc75e983dc5bff0366190611a9c578d4ed071c8, subject: "plan: prototype Pandora vivant clos, cinq idées retenues par Sylvain posées après les images", date: 2026-10-10, reason: entretien du plan et régénération des Nouveautés (fichier désormais déclaré dérivé) }
