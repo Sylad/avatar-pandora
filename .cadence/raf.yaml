@@ -455,7 +455,7 @@ lots:
       - { date: 2026-10-31, text: "QA 31-10 (40f3435) : la vignette maxresdefault de muEMyQAJreg renvoie 404 (repli hqdefault avec erreur console) — servir hqdefault d'emblée ; ajouter la section /videos/ à docs/qa/expectations.md" }
   - id: L48
     title: "À propos : anneau de focus visible sur le lien en ligne « Claude Code » (au lieu du 1 px automatique) et regex du test R4 qui ignore ⚔️ (mineurs de la revue UX de L12 ; le soulignement est déjà fait par d747d61)"
-    status: doing
+    status: done
     estimate: 0.25
     visible: true
     created: 2026-10-31
@@ -463,6 +463,8 @@ lots:
       - { date: 2026-10-31, text: "titre remplacé : « À propos : souligner en permanence le lien en ligne « Claude Code » (WCAG 1.4.1, il ne se distingue des mots en gras cyan que par la couleur), anneau de focus visible au lieu du 1 px automatique, et la regex R4 qui ignore ⚔️ (suite revue UX de L12), avec un test e2e qui mesure le soulignement »" }
     started: 2026-10-31
     review: { date: 2026-10-31, verdict: "compliant — orchestré (vague 2026-10-31-2110-ava, 0 passe(s) de correction)", commit: c8be0ab75d1f5d69dbdeb70c82483b0c72223390 }
+    ux: { date: 2026-10-31, verdict: "conforme — anneau de focus 2 px visible sur le lien « Claude Code » souligné (capture 390 regardée par le lead), regex R4 qui reconnaît ⚔️" }
+    finished: 2026-10-31
 acknowledged:
   - { sha: cef464dffb920ea7b161b1b0e06fe54d3efbdcc4, subject: "plan: verdicts UX de Sylvain enregistrés, trois bloquants de la revue des Personnages clos", date: 2026-10-10, reason: entretien du plan et régénération des Nouveautés }
   - { sha: 4bc75e983dc5bff0366190611a9c578d4ed071c8, subject: "plan: prototype Pandora vivant clos, cinq idées retenues par Sylvain posées après les images", date: 2026-10-10, reason: entretien du plan et régénération des Nouveautés (fichier désormais déclaré dérivé) }
