@@ -468,11 +468,14 @@ lots:
     finished: 2026-10-31
   - id: L49
     title: "QA : docs/qa/expectations.md — ajouter la section /about/ (proposée par la QA de L12) et reformuler la ligne du permalien de /nouveautes/ (QA de L48) ; brouillons dans les rapports QA du 31-10"
-    status: doing
+    status: done
     estimate: 0.1
     created: 2026-10-31
     started: 2026-10-31
     review: { date: 2026-10-31, verdict: "compliant (2 minor notes: R5 note overstates what is replayed, header dates not updated) — orchestré (vague 2026-10-31-2125-ava, 0 passe(s) de correction)", commit: 09c8dbcdc6af271e1ced563270e1f86e6e310126 }
+    finished: 2026-10-31
+    notes:
+      - { date: 2026-10-31, text: "Mineurs de revue non traités : expectations.md:35 dit que R5 rejoue plus qu'il ne rejoue (ni lang=fr, ni soulignement, ni les 3 h3) ; en-tête du fichier encore daté du 29-10 (L43) alors que /about/ et le permalien sont mesurés le 31-10" }
 acknowledged:
   - { sha: cef464dffb920ea7b161b1b0e06fe54d3efbdcc4, subject: "plan: verdicts UX de Sylvain enregistrés, trois bloquants de la revue des Personnages clos", date: 2026-10-10, reason: entretien du plan et régénération des Nouveautés }
   - { sha: 4bc75e983dc5bff0366190611a9c578d4ed071c8, subject: "plan: prototype Pandora vivant clos, cinq idées retenues par Sylvain posées après les images", date: 2026-10-10, reason: entretien du plan et régénération des Nouveautés (fichier désormais déclaré dérivé) }
