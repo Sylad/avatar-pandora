@@ -133,12 +133,14 @@ lots:
     finished: 2026-10-31
   - id: L12
     title: Revue UX — À propos
-    status: doing
+    status: done
     visible: true
     estimate: 0.25
     created: 2026-09-28
     started: 2026-10-31
     review: { date: 2026-10-31, verdict: "conforme (2 notes mineures : regex R4 aveugle à ⚔️, lien « Claude Code » en anneau de focus auto 1 px) — orchestré (vague 2026-10-31-2035-ava, 1 passe(s) de correction)", commit: d747d61e2516a6612c14e6e0c82ebae2bb15870a }
+    ux: { date: 2026-10-31, verdict: "conforme — captures 390/1440 et focus relues par le lead : liens annoncés, titres h2, lien Claude Code souligné ; 2 notes mineures (regex R4 aveugle à ⚔️, anneau de focus 1 px du lien Claude Code) reprises dans L48" }
+    finished: 2026-10-31
   - id: L13
     title: "Revue UX — Gabarit commun : navigation, en-tête, pied, rendu téléphone"
     status: todo
