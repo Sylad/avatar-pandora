@@ -128,6 +128,7 @@ lots:
     estimate: 0.25
     created: 2026-09-28
     started: 2026-10-31
+    review: { date: 2026-10-31, verdict: "conforme : 0 bloquant, 0 majeur, 1 mineur (line-clamp des descriptions de vidéos à 320 px) — orchestré (vague 2026-10-31-1215-av, 3 passe(s) de correction)", commit: e7e179671bd264b632bd32ebec42ce02cb60db9a }
   - id: L12
     title: Revue UX — À propos
     status: todo
