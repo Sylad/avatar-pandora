@@ -100,11 +100,11 @@ test('R7 — la carte focalisée au clavier montre un anneau d\'au moins 2 px', 
 
 // Le texte des cartes est petit (12–14 px) : peu de pixels « pleins », donc la mesure porte sur le
 // FOND derrière la boîte du texte (texte rendu transparent), comparé à la couleur du texte.
-test('R8 — le nom de la chaîne, la description et la langue d\'une carte gardent ≥ 4,5:1 sur le pire pixel de fond (WCAG 1.4.3)', { timeout: 120_000 }, async (t) => {
+test('R8 — le nom de la chaîne, la description et la langue d\'une carte ou d\'une ligne de la liste complète gardent ≥ 4,5:1 sur le pire pixel de fond (WCAG 1.4.3)', { timeout: 120_000 }, async (t) => {
   const page = await open(t);
   if (!page) return;
   await page.evaluate(() => document.fonts.ready);
-  for (const sel of ['.video-card__channel', '.video-card__desc', '.video-card__lang', '.channel-card__desc']) {
+  for (const sel of ['.video-card__channel', '.video-card__desc', '.video-card__lang', '.channel-card__desc', '.channel-link__desc', '.channel-link__lang']) {
     const el = page.locator(sel).first();
     await el.scrollIntoViewIfNeeded();
     const box = await el.boundingBox();
