@@ -215,9 +215,10 @@ const SOURCES = [
 
 <style>
   /* Anneau de focus clavier explicite (WCAG 2.4.7 / 1.4.11) : l'anneau « auto » reste à 1 px
-     sur ces cartes translucides. */
+     sur ces cartes translucides et sur le lien en ligne des paragraphes. */
   .about-sources a:focus-visible,
-  .about-sites a:focus-visible {
+  .about-sites a:focus-visible,
+  main p a:focus-visible {
     outline: 2px solid var(--color-eywa-bio-primary);
     outline-offset: 3px;
   }

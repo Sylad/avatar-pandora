@@ -53,13 +53,19 @@ test('R4 — emojis, flèches ↗ et puces › sont masqués aux lecteurs d\'éc
   if (!page) return;
   const bad = await page.evaluate(() => {
     const out = [];
+    const seen = [];
+    // Un emoji peut porter un sélecteur de variation (⚔️ = U+2694 U+FE0F) ou être une séquence ZWJ.
+    const re = /^(↗|›|\p{Extended_Pictographic}[\uFE0F\u200D\p{Extended_Pictographic}]*)$/u;
     for (const n of document.querySelectorAll('main span')) {
       const own = [...n.childNodes].filter((c) => c.nodeType === 3).map((c) => c.textContent.trim()).join('');
-      if (/^(↗|›|\p{Extended_Pictographic}+)$/u.test(own) && !n.closest('[aria-hidden="true"]')) out.push(own);
+      if (!re.test(own)) continue;
+      seen.push(own);
+      if (!n.closest('[aria-hidden="true"]')) out.push(own);
     }
-    return out;
+    return { out, seen };
   });
-  assert.deepEqual(bad, []);
+  assert.ok(bad.seen.includes('⚔️'), `⚔️ non examiné : ${bad.seen}`);
+  assert.deepEqual(bad.out, []);
 });
 
 test('R5 — le passage en anglais est balisé lang="en" (WCAG 3.1.2)', { timeout: 60_000 }, async (t) => {
@@ -121,10 +127,10 @@ test('R7 — signature, auteur d\'une source, description de source et d\'un sit
   }
 });
 
-test('R8 — le lien focalisé au clavier montre un anneau d\'au moins 2 px', { timeout: 60_000 }, async (t) => {
+test('R8 — le lien focalisé (carte ou lien en ligne « Claude Code ») au clavier montre un anneau d\'au moins 2 px', { timeout: 60_000 }, async (t) => {
   const page = await open(t);
   if (!page) return;
-  for (const sel of ['.about-sources a', '.about-sites a']) {
+  for (const sel of ['.about-sources a', '.about-sites a', 'main p a']) {
     await page.locator(sel).first().focus();
     await page.keyboard.press('Shift+Tab');
     await page.keyboard.press('Tab');
