@@ -75,7 +75,7 @@ Ce que la QA attend du site public (accueil, Nouveautés, une fiche par section 
 
 ```bash
 cd frontend && npm run build   # 81 pages
-npm run test:scripts           # node --test ../scripts/*.test.mjs
+npm run test:scripts           # node --test ../scripts/*.test.mjs, CADENCE_TEST_WORKERS fichiers à la fois (4 par défaut)
 ```
 
 ## Build & déploiement

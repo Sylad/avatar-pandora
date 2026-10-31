@@ -11,7 +11,7 @@
     "preview": "astro preview",
     "news": "rm -rf public/nouveautes-data && cadence news build -o public/nouveautes-data && rm -f public/nouveautes-data/index.html",
     "astro": "astro",
-    "test:scripts": "node --test ../scripts/*.test.mjs"
+    "test:scripts": "node --test --test-concurrency=${CADENCE_TEST_WORKERS:-4} ../scripts/*.test.mjs"
   },
   "dependencies": {
     "@astrojs/mdx": "^5.0.4",

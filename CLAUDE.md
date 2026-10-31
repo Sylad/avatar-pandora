@@ -67,7 +67,9 @@ Puis `npm run test:scripts` (`node --test ../scripts/*.test.mjs`, Node ≥ 22.18
 modules `.ts` tels quels — `export PATH=$HOME/.nvm/versions/node/v22.22.3/bin:$PATH`) : données des
 Nouveautés et du Plan de travail, et tests navigateur sur le site **construit** (`frontend/dist`, lancer le
 build avant) — pages Nouveautés et Plan de travail (dont l'absence de tout texte privé du plan dans `dist/`),
-tiroir du téléphone (y compris après une navigation ClientRouter), contraste au pire pixel. Chromium via
+tiroir du téléphone (y compris après une navigation ClientRouter), contraste au pire pixel. Les fichiers de test
+tournent `CADENCE_TEST_WORKERS` à la fois (`--test-concurrency`, 4 sans la variable) : chacun lance son Chromium,
+et tous en parallèle sur les 32 cœurs, un test navigateur dépassait son délai sous la charge. Chromium via
 `playwright-core` (devDependency) ; les tests navigateur passent en « skip » s'il manque.
 `EYWA_E2E_SHOTS=<dossier>` enregistre des captures de /nouveautes/ à 1440, 390 et 320 px.
 
