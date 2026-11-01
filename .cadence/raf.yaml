@@ -516,13 +516,18 @@ lots:
     finished: 2026-11-01
   - id: L53
     title: "Visionneuse des Nouveautés, suites de L51 : re-mesurer la hauteur de la légende (--cap-h) sur resize et changement d'orientation (légende coupée de 25 px après 1440×900 → 700×400, Lightbox.astro:107) ; au bureau, la légende ne dépasse pas la largeur de l'image (figure 863 px pour une image de 390 px) ; rendre la vérification « clipped » de R8 capable d'échouer"
-    status: doing
+    public: La visionneuse des Nouveautés s'adapte quand l'écran tourne
+    status: done
     estimate: 1
     visible: true
     created: 2026-11-01
     notes:
       - { date: 2026-11-01, text: "revue UX de L51 : alt de l'image et figcaption portent le même texte → lecture double par un lecteur d'écran (WCAG 1.3.1) ; à 320×800 la légende laisse 5 px sous la figure" }
+      - { date: 2026-11-01, text: "arbitrage du lead (01-11) : plancher min(20rem, 96vw) de la figure gardé — une image plus étroite que 20rem garde une légende de 350 px (lisibilité d'un texte de 203 caractères) plutôt qu'une colonne étroite et haute ; écart mesuré +30 px au pire, à peine visible (capture 1366 regardée)" }
     started: 2026-11-01
+    review: { date: 2026-11-01, verdict: "conforme sur arbitrage : seul majeur restant (légende plus large qu'une image < 20rem, plancher de lisibilité) tranché par le lead et noté ; re-mesure au resize, lecture double et test R8 corrigés", commit: 4fc0875541883c7e9041e392af7a6507ef1d48a8 }
+    ux: { date: 2026-11-01, verdict: "conforme — capture 1366 regardée par le lead : légende lisible, écart de largeur ≤ 30 px sur petite image (arbitrage noté)" }
+    finished: 2026-11-01
 acknowledged:
   - { sha: cef464dffb920ea7b161b1b0e06fe54d3efbdcc4, subject: "plan: verdicts UX de Sylvain enregistrés, trois bloquants de la revue des Personnages clos", date: 2026-10-10, reason: entretien du plan et régénération des Nouveautés }
   - { sha: 4bc75e983dc5bff0366190611a9c578d4ed071c8, subject: "plan: prototype Pandora vivant clos, cinq idées retenues par Sylvain posées après les images", date: 2026-10-10, reason: entretien du plan et régénération des Nouveautés (fichier désormais déclaré dérivé) }
