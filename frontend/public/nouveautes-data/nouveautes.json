@@ -1,7 +1,22 @@
 {
   "project": "avatar-pandora",
-  "generated": "2026-11-01 11:05",
+  "generated": "2026-11-01 11:23",
   "entries": [
+    {
+      "slug": "2026-11-01-videos-debordement-horizontal-de-9-px-a-320-px-scrollwidth-3",
+      "title": "La page Vidéos tient enfin sur un petit écran",
+      "date": "2026-11-01",
+      "lots": [
+        "L50"
+      ],
+      "captures": [
+        "captures/L50-videos-320.png"
+      ],
+      "alts": [
+        "La page Vidéos sur un écran de 320 px de large : le titre « Chaînes recommandées » tient dans la colonne"
+      ],
+      "html": "<p>Sur un très petit écran (320 px de large), la page Vidéos se laissait pousser de quelques pixels sur le côté.</p>\n<ul><li><strong>Le titre « Chaînes recommandées » s'adapte</strong> à la largeur de l'écran et ne dépasse plus de sa colonne.</li><li><strong>Plus de glissement latéral</strong> sur Vidéos ni sur Nouveautés : la page reste en place quand on la fait défiler.</li></ul>"
+    },
     {
       "slug": "2026-11-01-navigation-au-clavier-un-lien-aller-au-contenu-sur-chaque-pa",
       "title": "Navigation au clavier : un lien « Aller au contenu » sur chaque page",

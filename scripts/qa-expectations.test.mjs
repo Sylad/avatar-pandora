@@ -125,3 +125,22 @@ for (const width of [390, 1440]) {
     }
   });
 }
+
+test('R7 — expectations.md décrit /videos/ et /clans/ (lien d\'évitement, repères nommés, voile, 320 px) et les pages construites les portent', (t) => {
+  const md = readFileSync(DOC, 'utf8');
+  for (const chemin of ['/videos/', '/clans/']) {
+    const bloc = section(md, chemin);
+    assert.match(bloc, /^- (shows|never): /m, `section « ## ${chemin} » absente ou sans attendu`);
+    assert.match(bloc, /Aller au contenu/, `${chemin} : lien d'évitement`);
+    assert.match(bloc, /aria-label/, `${chemin} : repères nommés`);
+    assert.match(bloc, /320/, `${chemin} : 320 px sans débordement`);
+    assert.match(bloc, /scrollWidth/, `${chemin} : mesure du débordement`);
+  }
+  assert.match(section(md, '/videos/'), /codex-text-veil/, 'voile des intros de /videos/');
+  assert.doesNotMatch(md, /Non couvert :[^]*`\/videos\/`/, '/videos/ n\'est plus « non couvert »');
+  if (!existsSync(dist('videos')) || !existsSync(dist('clans'))) return t.skip('frontend/dist absent : lancer le build');
+  const videos = readFileSync(dist('videos'), 'utf8');
+  assert.match(videos, /Aller au contenu/);
+  assert.equal([...videos.matchAll(/class="vid-section-intro codex-text-veil"/g)].length, 3, 'trois intros voilées');
+  assert.match(readFileSync(dist('clans'), 'utf8'), /Aller au contenu/);
+});

@@ -6,11 +6,11 @@ après chaque livraison. Site 100 % statique : pas d'API, donc aucune ligne `api
 ordres de grandeur du jour sur `frontend/dist` (Chromium sans tête, 1440×900 et 390×900), pas des seuils —
 l'attendu est la forme décrite. Les seuils chiffrés des fiches (16 px, `.entry-body` non vide) sont rejoués à chaque
 build par `scripts/qa-expectations.test.mjs` (`cd frontend && npm run test:scripts`). Non couvert : l'ambiance
-de l'accueil (boucle de 75 s, particules WebGL), `/langue/`, `/videos/`, `/plan-de-travail/` (couverts
+de l'accueil (boucle de 75 s, particules WebGL), `/langue/`, `/plan-de-travail/` (couverts
 par leurs propres tests de `scripts/`).
 
 ## *
-- never: défilement horizontal de la page (scrollWidth == clientWidth) à 390 et à 1440 px (mesuré le 29-10 sur `/` et `/nouveautes/`)
+- never: défilement horizontal de la page (scrollWidth == clientWidth) à 390 et à 1440 px (mesuré le 29-10 sur `/` et `/nouveautes/`) ; à 320 px aussi, **avec une barre de défilement classique** (clientWidth 305, pas 320 : un navigateur sans tête la masque et laisse passer le débordement ; `scripts/template-ux.e2e.test.mjs` R4 compare scrollWidth à clientWidth)
 - never: « undefined », « [object Object] », « NaN » dans le texte visible
 
 ## /
@@ -24,6 +24,17 @@ par leurs propres tests de `scripts/`).
 - shows: sur chaque entrée un `article` avec `id=<slug>` (cible de `/nouveautes/#<slug>`) et un bouton « Copier le lien » (devient « Lien copié » ou « Lien dans l’adresse » après usage) dont le `data-slug` est cet id ; il n’y a pas de lien `<a>` `/nouveautes/#<slug>` dans l’entrée (mesuré le 31-10 : 18 `article`, 18 `id`, 18 boutons)
 - shows: les captures de chaque entrée chargées (aucune image cassée : `naturalWidth > 0` pour toute `img` qui a une source ; la visionneuse vide n’en a pas)
 - never: bandeau « N nouveautés depuis ta dernière visite » à la toute première visite (mémoire de base posée dès la première page vue)
+
+## /videos/
+- shows: un lien « Aller au contenu » premier arrêt de Tab, caché hors focus, qui place le focus sur `main#contenu`
+- shows: des repères de navigation tous nommés, sans doublon : `aside` aria-label « Navigation du codex », `nav` aria-label « Sections du codex »
+- shows: les trois intros de section (`.vid-section-intro`) portent `.codex-text-veil` (texte posé sur les particules, contraste ≥ 4,5:1 au pire pixel à 390 et 1440 px)
+- never: défilement horizontal à 320 px, barre de défilement comprise (scrollWidth ≤ clientWidth ; le titre « Chaînes recommandées » mesurait 278 px dans une colonne de 270 px le 01-11, corrigé par L50)
+
+## /clans/
+- shows: un lien « Aller au contenu » premier arrêt de Tab, caché hors focus, qui place le focus sur `main#contenu`
+- shows: des repères de navigation tous nommés, sans doublon (`aside` aria-label « Navigation du codex », `nav` aria-label « Sections du codex »)
+- never: défilement horizontal à 320 px, barre de défilement comprise (scrollWidth ≤ clientWidth, 305 mesuré le 01-11)
 
 ## /about/
 - shows: le titre de l'onglet « À propos — Eywa », `html lang=fr` ; un seul `h1` « Vibe coded avec Claude Code & Codex » ; quatre `h2` : L'histoire courte, Sous le capot, Sources & inspirations, Mes autres sites (mesuré le 31-10 ; trois `h3` : Frontend, Identité, Infra)
