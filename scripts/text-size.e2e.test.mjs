@@ -152,3 +152,46 @@ test('R3 — le bouton menu fixe ne couvre aucune fin de ligne au défilement (3
     await page.close();
   }
 });
+
+// Navigation du codex avec une police de navigateur agrandie : les points de rupture (rem dans
+// Tailwind) et les media queries du layout doivent suivre la même règle, sinon ni barre latérale
+// ni bouton menu n'apparaissent (WCAG 2.4.5).
+test('R1 — police du navigateur à 20, 24 et 32 px : une navigation reste visible (barre latérale ou bouton menu)', { timeout: 120_000 }, async (t) => {
+  const env = await setupBrowser(t);
+  if (!env) return;
+  for (const [px, w] of [[20, 1100], [24, 1440], [32, 1440], [32, 1100], [16, 1100], [16, 1000]]) {
+    const page = await pageWithDefaultFontSize(env, px);
+    await page.setViewportSize({ width: w, height: 800 });
+    await page.goto(env.base + '/plan-de-travail/', { waitUntil: 'load' });
+    const nav = await page.evaluate(() => {
+      const vis = (sel) => { const e = document.querySelector(sel); if (!e) return false; const r = e.getBoundingClientRect(); const s = getComputedStyle(e);
+        return s.display !== 'none' && s.visibility !== 'hidden' && r.width > 0 && r.right > 0 && r.left < innerWidth; };
+      return { sidebar: vis('#eywa-sidebar'), burger: vis('#eywa-burger') };
+    });
+    assert.ok(nav.sidebar || nav.burger, `police ${px} px @${w}px : ni barre latérale ni bouton menu (${JSON.stringify(nav)})`);
+    await page.close();
+  }
+});
+
+test('R1 — réglage par défaut à 320 px : aucun mot coupé en son milieu', { timeout: 120_000 }, async (t) => {
+  const env = await setupBrowser(t);
+  if (!env) return;
+  const page = await env.browser.newPage({ viewport: { width: 320, height: 568 } });
+  for (const path of ['/about/', '/nouveautes/']) {
+    await page.goto(env.base + path, { waitUntil: 'load' });
+    const split = await page.evaluate(() => {
+      const out = [];
+      const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+      for (let n = walker.nextNode(); n; n = walker.nextNode()) {
+        if (!n.textContent.trim() || n.parentElement.closest('script, style, svg')) continue;
+        for (const m of n.textContent.matchAll(/\S+/g)) {
+          const r = document.createRange();
+          r.setStart(n, m.index); r.setEnd(n, m.index + m[0].length);
+          if (r.getClientRects().length > 1 && !/[-‑­/]/.test(m[0])) out.push(m[0]);
+        }
+      }
+      return [...new Set(out)].slice(0, 8);
+    });
+    assert.deepEqual(split, [], `${path} @320px police par défaut : mots coupés`);
+  }
+});

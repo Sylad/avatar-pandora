@@ -82,12 +82,18 @@
   }
   body {
     min-height: 100vh;
-    /*
-      Texte agrandi sur écran étroit (WCAG 1.4.4, L22) : un mot plus large que son
-      cadre se coupe au lieu d'élargir la boîte flex/grille et d'être rogné par un
-      overflow: hidden (« anywhere » abaisse aussi la largeur minimale du contenu).
-    */
-    overflow-wrap: anywhere;
+  }
+  /*
+    Texte agrandi sur écran étroit (WCAG 1.4.4, L22) : un mot plus large que son cadre se
+    coupe au lieu d'élargir la boîte flex/grille et d'être rogné par un overflow: hidden
+    (« anywhere » abaisse aussi la largeur minimale du contenu). En rem, la media query suit
+    la police réglée dans le navigateur : à 16 px, 320 px = 20 rem n'est pas concerné (aucun
+    mot coupé au réglage par défaut) ; à 32 px, 390 px = 12 rem l'est.
+  */
+  @media (max-width: 19.9rem) {
+    body {
+      overflow-wrap: anywhere;
+    }
   }
   h1, h2, h3, h4 {
     font-family: var(--font-display);

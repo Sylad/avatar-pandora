@@ -136,7 +136,7 @@ const ambient = AMBIENTS[current ?? ''] ?? AMBIENTS.pandora;
     // Accessibilité clavier (revue UX L14, WCAG 2.4.3 / 2.4.11) — sous 1024 px :
     // tiroir fermé = inerte (ses liens hors écran ne prennent plus le focus) ;
     // tiroir ouvert = le reste de la page inerte et Tab bouclé tiroir ↔ bouton menu.
-    const mql = window.matchMedia('(min-width: 1024px)');
+    const mql = window.matchMedia('(min-width: 64rem)');
     const syncInert = () => {
       const sidebar = document.getElementById('eywa-sidebar');
       const burger = document.getElementById('eywa-burger');
@@ -354,7 +354,7 @@ const ambient = AMBIENTS[current ?? ''] ?? AMBIENTS.pandora;
   :global(aside.eywa-sidebar) {
     z-index: 50;
   }
-  @media (min-width: 1024px) {
+  @media (min-width: 64rem) {
     :global(aside.eywa-sidebar) {
       z-index: 2;
     }
@@ -396,11 +396,11 @@ const ambient = AMBIENTS[current ?? ''] ?? AMBIENTS.pandora;
     border-bottom: 1px solid rgba(95, 255, 230, 0.12);
     backdrop-filter: blur(6px);
   }
-  @media (min-width: 1024px) {
+  @media (min-width: 64rem) {
     .eywa-topbar { display: none; }
   }
   /* Le contenu commence sous la bande. */
-  @media (max-width: 1023px) {
+  @media (max-width: 63.99rem) {
     :global(main.eywa-codex-main) { padding-top: 5.5rem; }
   }
   .eywa-burger {
@@ -428,7 +428,7 @@ const ambient = AMBIENTS[current ?? ''] ?? AMBIENTS.pandora;
   }
   /* Le display ci-dessus (style scopé, hors couche) écrasait lg:hidden de Tailwind :
      le bouton s'affichait au bureau et bloquait le défilement (revue UX L14). */
-  @media (min-width: 1024px) {
+  @media (min-width: 64rem) {
     .eywa-burger {
       display: none;
     }
