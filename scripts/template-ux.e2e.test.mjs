@@ -12,7 +12,7 @@ for (const path of PAGES) {
     if (!env) return;
     const page = await env.browser.newPage({ viewport: { width: 1440, height: 900 } });
     await page.goto(`${env.base}${path}`, { waitUntil: 'load' });
-    const skip = page.getByRole('link', { name: 'Aller au contenu' });
+    const skip = page.getByRole('link', { name: 'Aller au contenu', exact: true });
     assert.equal(await skip.count(), 1);
     // Hors focus : hors de l'écran, pas seulement transparent.
     const rest = await skip.boundingBox();
