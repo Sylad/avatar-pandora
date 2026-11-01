@@ -26,3 +26,17 @@ test('R4 — la vidéo muEMyQAJreg (maxresdefault en 404) est déclarée maxres:
   assert.ok(f, 'fiche introuvable');
   assert.match(readFileSync(new URL(f, dir), 'utf8'), /^maxres: false$/m);
 });
+
+test('R5 — la page construite : la carte muEMyQAJreg sans data-maxres, les autres avec', (t) => {
+  const page = new URL('../frontend/dist/videos/index.html', import.meta.url);
+  let html;
+  try { html = readFileSync(page, 'utf8'); } catch { return t.skip('frontend/dist absent (lancer le build)'); }
+  const imgs = [...html.matchAll(/<img\b[^>]*\bsrc="https:\/\/img\.youtube\.com\/vi\/([^/"]+)\/[^"]*"[^>]*>/g)];
+  assert.ok(imgs.length > 1, 'aucune carte vidéo trouvée');
+  const own = imgs.filter((m) => m[1] === id);
+  assert.equal(own.length, 1, 'carte introuvable');
+  assert.doesNotMatch(own[0][0], /data-maxres/);
+  for (const m of imgs.filter((m) => m[1] !== id)) {
+    assert.match(m[0], new RegExp(`data-maxres="https://img\\.youtube\\.com/vi/${m[1]}/maxresdefault\\.jpg"`));
+  }
+});
