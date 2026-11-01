@@ -391,7 +391,11 @@ test('R1 (L53) — visionneuse : la hauteur de la légende est re-mesurée au re
   await context.close();
 });
 
-test('R2 (L53) — visionneuse au bureau : la légende ne dépasse pas la largeur de l’image, pour toutes les captures', { timeout: 180_000 }, async (t) => {
+// Largeur minimale de la légende (figure `min-width: min(20rem, 96vw)`, Lightbox.astro) : sous cette largeur, un texte
+// de ~200 caractères ferait plus de lignes qu'il n'en faut pour effondrer l'image (L53, 2e passe).
+const CAPTION_FLOOR = '() => Math.min(20 * parseFloat(getComputedStyle(document.documentElement).fontSize), 0.96 * innerWidth)';
+
+test('R2 (L53) — visionneuse au bureau : la légende ne dépasse pas la largeur de l’image (sauf sa largeur minimale de 20rem), pour toutes les captures', { timeout: 180_000 }, async (t) => {
   const env = await setupBrowser(t);
   if (!env) return;
   for (const [width, height] of [[1440, 900], [1280, 720], [1024, 768]]) {
@@ -410,7 +414,7 @@ test('R2 (L53) — visionneuse au bureau : la légende ne dépasse pas la largeu
         return document.getElementById('eywa-lightbox').hasAttribute('open') && im.complete && im.naturalWidth > 0;
       });
       await page.waitForTimeout(60);
-      const m = await page.evaluate(() => {
+      const m = await page.evaluate(`(() => {
         const d = document.getElementById('eywa-lightbox');
         const im = d.querySelector('.eywa-lightbox__img');
         return {
@@ -418,15 +422,96 @@ test('R2 (L53) — visionneuse au bureau : la légende ne dépasse pas la largeu
           img: im.getBoundingClientRect().width,
           fig: d.querySelector('.eywa-lightbox__figure').getBoundingClientRect().width,
           cap: d.querySelector('.eywa-lightbox__caption').getBoundingClientRect().width,
+          floor: (${CAPTION_FLOOR})(),
         };
-      });
-      assert.ok(m.cap <= m.img + 1, `${width}px, ${m.src} : légende de ${m.cap}px pour une image de ${m.img}px`);
-      assert.ok(m.fig <= m.img + 1, `${width}px, ${m.src} : cadre de ${m.fig}px pour une image de ${m.img}px`);
+      })()`);
+      const widest = Math.max(m.img, m.floor);
+      assert.ok(m.cap <= widest + 1, `${width}px, ${m.src} : légende de ${m.cap}px pour une image de ${m.img}px (plancher ${m.floor}px)`);
+      assert.ok(m.fig <= widest + 1, `${width}px, ${m.src} : cadre de ${m.fig}px pour une image de ${m.img}px (plancher ${m.floor}px)`);
       await page.keyboard.press('Escape');
       await page.waitForFunction(() => !document.getElementById('eywa-lightbox').hasAttribute('open'));
     }
     await context.close();
   }
+});
+
+// État effondré (2e revue de L53) : la légende mesurée avant que l'image ait une largeur était très haute, --cap-h
+// réduisait l'image à son plancher de 6rem (49 px de large), et une légende de 49 px de large restait très haute :
+// un point fixe stable, que ni le chargement ni le redimensionnement ne défaisaient. Intermittent : dépendait de
+// l'ordre d'ouverture des captures dans la même page.
+const VIEWER_STATE = `(() => {
+  const clips = ${FIGURE_CLIPS_CAPTION};
+  const d = document.getElementById('eywa-lightbox');
+  const im = d.querySelector('.eywa-lightbox__img');
+  const r = im.getBoundingClientRect();
+  const cap = d.querySelector('.eywa-lightbox__caption');
+  return { src: im.getAttribute('src').split('/').pop(), w: r.width, h: r.height, natH: im.naturalHeight, clipped: clips(),
+    capBottom: cap.getBoundingClientRect().bottom, vh: innerHeight, capH: cap.offsetHeight, varH: parseFloat(d.style.getPropertyValue('--cap-h')) };
+})()`;
+const assertViewerSound = (m, who) => {
+  // Image jamais effondrée : au moins la moitié de l'écran de haut (ou sa taille réelle si elle est plus petite).
+  const minH = Math.min(m.natH, m.vh / 2);
+  assert.ok(m.h >= minH - 1, `${who} : image effondrée à ${Math.round(m.w)}×${Math.round(m.h)}px (au moins ${Math.round(minH)}px de haut attendus)`);
+  assert.ok(!m.clipped, `${who} : légende tronquée (image ${Math.round(m.w)}×${Math.round(m.h)}, légende ${m.capH}px de haut)`);
+  assert.ok(m.capBottom <= m.vh + 0.5, `${who} : bas de la légende à ${m.capBottom}px, écran de ${m.vh}px`);
+  assert.ok(Math.abs(m.varH - m.capH) <= 1, `${who} : --cap-h (${m.varH}px) ≠ hauteur réelle de la légende (${m.capH}px)`);
+};
+
+test('R6 (L53) — visionneuse au bureau : l’image ne s’effondre jamais, la légende reste entière, pour les 22 captures ouvertes à la suite à 1366×768, 1280×600, 1024×500 et 800×481', { timeout: 240_000 }, async (t) => {
+  const env = await setupBrowser(t);
+  if (!env) return;
+  for (const [width, height] of [[1366, 768], [1280, 600], [1024, 500], [800, 481]]) {
+    const context = await env.browser.newContext({ viewport: { width, height } });
+    const page = await context.newPage();
+    await page.goto(`${env.base}/nouveautes/`, { waitUntil: 'load' });
+    const n = await page.locator('.news-capture').count();
+    assert.ok(n > 0, 'aucune capture');
+    // Dans la MÊME page, l'une après l'autre : l'effondrement dépendait de la capture ouverte juste avant.
+    for (let i = 0; i < n; i++) {
+      const link = page.locator('.news-capture').nth(i);
+      await link.scrollIntoViewIfNeeded();
+      await link.locator('img').click();
+      await page.waitForFunction(() => {
+        const im = document.querySelector('#eywa-lightbox .eywa-lightbox__img');
+        return document.getElementById('eywa-lightbox').hasAttribute('open') && im.complete && im.naturalWidth > 0;
+      });
+      await page.waitForTimeout(60);
+      const m = await page.evaluate(VIEWER_STATE);
+      assertViewerSound(m, `${width}×${height}, capture ${i + 1} (${m.src})`);
+      await page.keyboard.press('Escape');
+      await page.waitForFunction(() => !document.getElementById('eywa-lightbox').hasAttribute('open'));
+    }
+    await context.close();
+  }
+});
+
+test('R7 (L53) — visionneuse ouverte à 1440×900 puis fenêtre réduite à 1024×500 : l’image ne s’effondre pas, pour toutes les captures', { timeout: 180_000 }, async (t) => {
+  const env = await setupBrowser(t);
+  if (!env) return;
+  const context = await env.browser.newContext({ viewport: { width: 1440, height: 900 } });
+  const page = await context.newPage();
+  await page.goto(`${env.base}/nouveautes/`, { waitUntil: 'load' });
+  const n = await page.locator('.news-capture').count();
+  assert.ok(n > 0, 'aucune capture');
+  for (let i = 0; i < n; i++) {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    const link = page.locator('.news-capture').nth(i);
+    await link.scrollIntoViewIfNeeded();
+    await link.locator('img').click();
+    await page.waitForFunction(() => {
+      const im = document.querySelector('#eywa-lightbox .eywa-lightbox__img');
+      return document.getElementById('eywa-lightbox').hasAttribute('open') && im.complete && im.naturalWidth > 0;
+    });
+    for (const [width, height] of [[1024, 500], [1366, 768]]) {
+      await page.setViewportSize({ width, height });
+      await page.waitForTimeout(250);
+      const m = await page.evaluate(VIEWER_STATE);
+      assertViewerSound(m, `capture ${i + 1} (${m.src}) réduite à ${width}×${height}`);
+    }
+    await page.keyboard.press('Escape');
+    await page.waitForFunction(() => !document.getElementById('eywa-lightbox').hasAttribute('open'));
+  }
+  await context.close();
 });
 
 test('R3 (L53) — la vérification « légende tronquée » sait échouer : un cadre qui rogne la légende est détecté', { timeout: 90_000 }, async (t) => {

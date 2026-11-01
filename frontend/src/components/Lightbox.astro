@@ -1,6 +1,6 @@
 ---
 /*
-  Lightbox plein écran — vanilla, ~80 lignes JS, zero dep.
+  Lightbox plein écran — vanilla, ~150 lignes JS, zero dep.
 
   Usage : tout `<img>` à l'intérieur d'un wrapper `[data-lightbox]` (ou portant
   directement l'attribut `data-lightbox`) déclenche l'overlay au clic.
@@ -82,9 +82,13 @@
     const measureCaption = () => {
       const p = parts();
       if (!p || !p.dialog.hasAttribute('open')) return;
-      // La largeur de la légende suit celle de l'image, qui suit --cap-h : on répète jusqu'à stabilité
-      // (quelques passes suffisent à converger).
-      for (let i = 0; i < 6; i++) {
+      // La largeur de la légende suit celle de l'image, qui suit --cap-h : plusieurs états stables existent, dont
+      // un effondré (image de 49 px de large, légende de 49 px très haute) où la mesure restait prise quand elle
+      // partait d'une légende trop haute (2e revue de L53). On repart donc TOUJOURS de l'image la plus grande
+      // (--cap-h retiré) et on descend jusqu'à stabilité : la légende ne peut que s'allonger quand l'image
+      // rétrécit, la suite converge vers le plus grand état stable. Tout se joue dans une même tâche, sans rendu.
+      p.dialog.style.removeProperty('--cap-h');
+      for (let i = 0; i < 8; i++) {
         const h = `${p.cap.offsetHeight}px`;
         if (p.dialog.style.getPropertyValue('--cap-h') === h) break;
         p.dialog.style.setProperty('--cap-h', h);
@@ -111,6 +115,10 @@
         }
       }
       img.style.setProperty('--nat-h', natural && natural.h ? `${natural.h}px` : 'none');
+      // Rapport d'aspect connu AVANT le chargement (attributs width/height de la vignette) : l'image a sa largeur
+      // dès l'ouverture, la légende se mesure à la bonne largeur au lieu d'une largeur nulle (2e revue de L53).
+      if (natural && natural.w > 0 && natural.h > 0) { img.setAttribute('width', natural.w); img.setAttribute('height', natural.h); }
+      else { img.removeAttribute('width'); img.removeAttribute('height'); }
       img.setAttribute('src', src);
       img.hidden = false;
       // La légende porte déjà le texte : une image à alt identique serait lue deux fois (WCAG 1.3.1, L53).
@@ -226,21 +234,21 @@
     border-radius: 6px;
     overflow: hidden;
   }
-  /* Écran bas (téléphone tourné) : une légende à la largeur d'une image étroite serait plus haute que l'écran ;
-     elle garde alors une largeur minimale, au détriment de « pas plus large que l'image » (L53). */
-  @media (max-height: 480px) {
-    .eywa-lightbox__figure { min-width: min(20rem, 96vw); }
-  }
+  /* Largeur minimale de la légende (donc du cadre) : à la largeur d'une image étroite (capture de téléphone sur un
+     écran bas), une légende de ~200 caractères ferait plus de lignes qu'il n'en faut pour effondrer l'image, et sur
+     un téléphone tourné elle dépasserait l'écran. À 20rem elle tient en 5 lignes au plus ; en échange, elle déborde
+     de l'image quand celle-ci est plus étroite (L53). */
+  .eywa-lightbox__figure { min-width: min(20rem, 96vw); }
   .eywa-lightbox__img {
     display: block;
     /* Pas de 100 % ici : le cadre prend la largeur de l'image (la légende ne compte pas dans la sienne),
        un pourcentage ferait dépendre l'une de l'autre et le cadre s'effondrerait (L53). */
     max-width: min(96vw, 1600px);
     /* --cap-h : hauteur réelle de la légende (texte alternatif de l'entrée, parfois sur plusieurs lignes),
-       mesurée à l'ouverture ; c'est l'image qui cède la place. */
-    /* Plancher de hauteur : sans lui, une légende mesurée avant le chargement de l'image (cadre étroit, donc
-       très haute) ramenait l'image à 0 px, et la légende, restée étroite, ne se raccourcissait plus. */
-    max-height: max(6rem, calc(92vh - 0.6rem - var(--cap-h, 1.9rem)));
+       mesurée à l'ouverture et à chaque redimensionnement ; c'est l'image qui cède la place. Pas de plancher de
+       hauteur : il était l'état effondré lui-même (image de 6rem, légende aussi étroite et très haute), la
+       mesure repart de l'image la plus grande et la légende a une largeur minimale. */
+    max-height: calc(92vh - 0.6rem - var(--cap-h, 1.9rem));
     width: auto;
     height: auto;
     object-fit: contain;
