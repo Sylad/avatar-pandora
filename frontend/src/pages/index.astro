@@ -25,7 +25,7 @@ import { CycleBackdrop } from '../components/cinema/CycleBackdrop';
   <LandingParticles client:only="react" />
   <div class="bio-ambient" aria-hidden="true"></div>
 
-  <main class="relative z-10 min-h-screen flex flex-col items-center justify-center text-center px-6 py-20 max-[399px]:px-4 max-[399px]:py-8">
+  <main id="contenu" tabindex="-1" class="relative z-10 min-h-screen flex flex-col items-center justify-center text-center px-6 py-20 max-[399px]:px-4 max-[399px]:py-8">
     <!-- Titre de la page : le logo (svg role=img, aria-label « Eywa ») donne son nom au h1. -->
     <h1 class="w-full flex justify-center m-0 leading-none">
       <EywaLogo size={420} fluid />

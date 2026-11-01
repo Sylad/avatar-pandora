@@ -34,7 +34,7 @@ const sections = [
     <span class="block text-xs uppercase text-eywa-text-muted mt-2">Codex de Pandora</span>
   </a>
 
-  <nav class="flex flex-col gap-1">
+  <nav class="flex flex-col gap-1" aria-label="Sections du codex">
     {sections.map((s) => (
       <a
         href={s.href}

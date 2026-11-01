@@ -32,6 +32,9 @@ const newsIndex = JSON.stringify(
     <ClientRouter />
   </head>
   <body class="bg-eywa-bg text-eywa-text min-h-screen">
+    {/* Lien d’évitement (L13, WCAG 2.4.1) : premier arrêt de Tab, visible au focus seulement ;
+         la cible est le <main id="contenu" tabindex="-1"> de chaque page. */}
+    <a href="#contenu" class="eywa-skip-link">Aller au contenu</a>
     <slot />
     <!-- Index léger (slug + date, jamais le texte) des Nouveautés, pour la pastille de tous
          les liens Nouveautés (components/NewsBadge.astro), accueil compris (L20). -->

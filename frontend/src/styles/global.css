@@ -190,3 +190,36 @@
 .entry-body > h3 {
   margin-block: 1.8em 0.6em;
 }
+
+/* Lien d'évitement (L13, WCAG 2.4.1) : hors de l'écran au repos, en haut à gauche au focus,
+   au-dessus du menu et de la pause fixes (z-index 60 pour le menu). */
+.eywa-skip-link {
+  position: fixed;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 100;
+  padding: 0.75rem 1.1rem;
+  border-radius: 8px;
+  border: 2px solid var(--color-eywa-bio-primary);
+  background: #0a0a1f;
+  color: var(--color-eywa-bio-primary);
+  font-family: var(--font-display);
+  font-size: 0.875rem;
+  letter-spacing: 0.04em;
+  transform: translateY(calc(-100% - 1rem));
+}
+.eywa-skip-link:focus {
+  transform: none;
+}
+/* La cible du lien reçoit le focus par programme : pas de cadre autour de toute la page. */
+main#contenu:focus {
+  outline: none;
+}
+
+/* Texte nu posé sur les particules (L13, WCAG 1.4.3) : voile sombre sous le texte, comme les
+   cartes et l'article du codex. Mesuré au pire pixel : 2,62:1 sans, à 390 px (intro de /videos/). */
+.codex-text-veil {
+  background: rgba(10, 10, 31, 0.78);
+  border-radius: 6px;
+  padding: 0.5rem 0.75rem;
+}

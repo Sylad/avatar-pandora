@@ -73,7 +73,7 @@ const ambient = AMBIENTS[current ?? ''] ?? AMBIENTS.pandora;
 
   <div class="flex relative" data-codex-section={current ?? 'pandora'}>
     <Sidebar current={current} />
-    <main class="eywa-codex-main flex-1 px-4 sm:px-6 lg:px-10 py-12 max-w-7xl">
+    <main id="contenu" tabindex="-1" class="eywa-codex-main flex-1 px-4 sm:px-6 lg:px-10 py-12 max-w-7xl">
       <slot />
     </main>
   </div>
