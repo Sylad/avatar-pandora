@@ -150,3 +150,23 @@ test('R7 — expectations.md décrit /videos/ et /clans/ (lien d\'évitement, re
     }
   }
 });
+
+test('R8 — expectations.md décrit /plan-de-travail/ (titre, h1, trois sections, aucun texte privé) et ne la déclare plus « non couverte » ; la page construite porte ce qu\'il décrit', (t) => {
+  const md = readFileSync(DOC, 'utf8');
+  const bloc = section(md, '/plan-de-travail/');
+  assert.match(bloc, /^- (shows|never): /m, 'section « ## /plan-de-travail/ » absente ou sans attendu');
+  assert.match(bloc, /Plan de travail — Eywa/, 'titre de l\'onglet');
+  assert.match(bloc, /Ce qui se prépare/, 'h1');
+  for (const titre of ['En cours', 'Prévu', 'Récemment livré']) assert.match(bloc, new RegExp(titre), `section « ${titre} »`);
+  assert.match(bloc, /scrollWidth/, 'mesure du débordement');
+  assert.match(bloc, /^- never: .*(notes|verdicts)/m, 'aucun texte privé du plan');
+  assert.doesNotMatch(md.split(/^## /m)[0], /Non couvert :[^]*`\/plan-de-travail\/`/, '/plan-de-travail/ n\'est plus « non couverte »');
+  if (!existsSync(dist('plan-de-travail'))) return t.skip('frontend/dist absent : lancer le build');
+  const html = readFileSync(dist('plan-de-travail'), 'utf8');
+  assert.match(html, /<title>Plan de travail — Eywa<\/title>/);
+  assert.equal([...html.matchAll(/<h1[ >]/g)].length, 1, 'un seul h1');
+  assert.match(html, /<h1[^>]*>Ce qui se prépare/);
+  for (const titre of ['En cours', 'Prévu', 'Récemment livré']) {
+    assert.match(html, new RegExp(`<h2 id="plan-[a-z-]+"[^>]*>${titre}`), `h2 « ${titre} »`);
+  }
+});

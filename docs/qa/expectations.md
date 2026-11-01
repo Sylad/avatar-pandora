@@ -6,7 +6,7 @@ après chaque livraison. Site 100 % statique : pas d'API, donc aucune ligne `api
 ordres de grandeur du jour sur `frontend/dist` (Chromium sans tête, 1440×900 et 390×900), pas des seuils —
 l'attendu est la forme décrite. Les seuils chiffrés des fiches (16 px, `.entry-body` non vide) sont rejoués à chaque
 build par `scripts/qa-expectations.test.mjs` (`cd frontend && npm run test:scripts`). Non couvert : l'ambiance
-de l'accueil (boucle de 75 s, particules WebGL), `/langue/`, `/plan-de-travail/` (couverts
+de l'accueil (boucle de 75 s, particules WebGL), `/langue/` (couvertes
 par leurs propres tests de `scripts/`).
 
 ## *
@@ -43,6 +43,13 @@ par leurs propres tests de `scripts/`).
 - shows: deux éléments `[lang=en]` (« Vibe coded » et « Made with curiosity »)
 - never: texte visible de `main` sous 12 px ; ChatGPT cité nulle part
 - Rejoué sur la page construite par `scripts/qa-expectations.test.mjs` (R5), sans le texte sous 12 px ni l'anneau, mesurés par la QA dans un navigateur.
+
+## /plan-de-travail/
+- shows: le titre de l'onglet « Plan de travail — Eywa » ; un seul `h1` « Ce qui se prépare » ; trois `h2` dans l'ordre, En cours, Prévu, Récemment livré, chacun avec son nombre de lots entre parenthèses quand la liste n'est pas vide (mesuré le 01-11 sur `frontend/dist`)
+- shows: sous chaque `h2` soit une liste ordonnée `ol.plan-list` de lots (`li.plan-lot` avec `data-status`, titre public en français, date « 1er octobre 2026 » pour un lot livré, avancement « étapes faites/total » s'il y en a), soit une phrase de remplacement (« Rien en cours pour l’instant. ») : jamais une section vide
+- shows: dans « Récemment livré », un lien « Nouveautés » vers `/nouveautes/`
+- never: notes, verdicts UX, raisons d'abandon, titres bruts de lot ou titres d'étapes du plan (`.cadence/raf.yaml`), identifiant de lot hors `data-id` / `id=lot-…` (rejoué sur tout `dist/` par `scripts/plan-page.e2e.test.mjs`)
+- never: défilement horizontal à 320 px, barre de défilement comprise (scrollWidth ≤ clientWidth)
 
 ## /pandora/<fiche>/
 - shows: `article .entry-body` non vide (texte > 0 caractère) ; le vide entre deux paragraphes voisins du corps (`.entry-body > p`) ≥ 16 px à 390 et à 1440 px (mesuré le 29-10 : ≈ 20 px, marge basse 1,1 em de 18 px)
