@@ -94,15 +94,18 @@ test('R3 — la classe .codex-text-veil est appliquée à chaque intro de sectio
   assert.equal(await page.locator('.vid-section-intro.codex-text-veil').count(), total);
 });
 
-test('R4 — aucune page de premier niveau ne déborde à 320 px (WCAG 1.4.10)', { timeout: 120_000 }, async (t) => {
-  const env = await setupBrowser(t);
+test('R4 — aucune page de premier niveau ne déborde à 320 px, barre de défilement comprise (WCAG 1.4.10)', { timeout: 120_000 }, async (t) => {
+  const env = await setupBrowser(t, { scrollbars: true });
   if (!env) return;
   const page = await env.browser.newPage({ viewport: { width: 320, height: 568 } });
   const wide = [];
   for (const path of PAGES) {
     await page.goto(`${env.base}${path}`, { waitUntil: 'load' });
-    const sw = await page.evaluate(() => document.documentElement.scrollWidth);
-    if (sw > 320) wide.push(`${path} : ${sw} px`);
+    const { sw, cw } = await page.evaluate(() => ({
+      sw: document.documentElement.scrollWidth, cw: document.documentElement.clientWidth,
+    }));
+    // clientWidth exclut la barre : comparer à 320 laissait passer 314 > 305 (QA de L13 du 01-11).
+    if (sw > cw) wide.push(`${path} : scrollWidth ${sw} > clientWidth ${cw}`);
   }
   assert.deepEqual(wide, []);
 });

@@ -28,7 +28,9 @@ function serveDist() {
 }
 
 // Renvoie { browser, base } ou null (test passé en skip) ; ferme tout en fin de test.
-export async function setupBrowser(t) {
+// `scrollbars: true` garde les barres de défilement classiques (15 px) : Chromium sans tête les
+// masque, et un débordement qui ne se voit qu'avec elles (clientWidth < largeur de la fenêtre) échappe alors.
+export async function setupBrowser(t, { scrollbars = false } = {}) {
   let chromium;
   try {
     const require = createRequire(new URL('../../frontend/package.json', import.meta.url));
@@ -39,7 +41,7 @@ export async function setupBrowser(t) {
   }
   let browser;
   try {
-    browser = await chromium.launch();
+    browser = await chromium.launch(scrollbars ? { ignoreDefaultArgs: ['--hide-scrollbars'] } : {});
   } catch (e) {
     t.skip(`Chromium indisponible (${String(e.message).split('\n')[0]})`);
     return null;
