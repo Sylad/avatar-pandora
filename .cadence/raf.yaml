@@ -428,6 +428,7 @@ lots:
       - { date: 2026-11-01, text: "Livraison a911127 : titres publics livrés « Les captures des Nouveautés affichent leur description complète ». Article : ../claude-code-codex/frontend/src/pages/case-studies/avatar-pandora.astro. Sections à relire : (aucun titre trouvé : relire tout l'article). Réécrire ce que ces changements rendent faux ou incomplet, sans rien inventer ; les commits du dépôt ../claude-code-codex citent le lot et « avatar-pandora »." }
       - { date: 2026-11-01, text: "Livraison 6595527 : titres publics livrés « La visionneuse des Nouveautés s'adapte quand l'écran tourne ». Article : ../claude-code-codex/frontend/src/pages/case-studies/avatar-pandora.astro. Sections à relire : (aucun titre trouvé : relire tout l'article). Réécrire ce que ces changements rendent faux ou incomplet, sans rien inventer ; les commits du dépôt ../claude-code-codex citent le lot et « avatar-pandora »." }
       - { date: 2026-11-01, text: "Livraison ff62106 : titres publics livrés « Texte qui suit la taille réglée dans le navigateur, lien d'évitement ». Article : ../claude-code-codex/frontend/src/pages/case-studies/avatar-pandora.astro. Sections à relire : (aucun titre trouvé : relire tout l'article). Réécrire ce que ces changements rendent faux ou incomplet, sans rien inventer ; les commits du dépôt ../claude-code-codex citent le lot et « avatar-pandora »." }
+      - { date: 2026-11-01, text: "Livraison 7b0b337 : titres publics livrés « Titres des fiches entiers aussi sur un petit écran d'ordinateur ». Article : ../claude-code-codex/frontend/src/pages/case-studies/avatar-pandora.astro. Sections à relire : (aucun titre trouvé : relire tout l'article). Réécrire ce que ces changements rendent faux ou incomplet, sans rien inventer ; les commits du dépôt ../claude-code-codex citent le lot et « avatar-pandora »." }
   - id: L42
     title: "Fiches de toutes les sections : les paragraphes du corps n'ont aucun espacement (margin 0 mesurée sur /flore/hometree/, mur de texte à 390 px) — la classe prose prose-invert est sans effet faute de @tailwindcss/typography ; rétablir l'espacement (plugin ou règle locale) sur toutes les fiches, test de mesure ; vu à la revue UX de L5 (29-10)"
     public: "Fiches : des paragraphes aérés"
@@ -561,12 +562,14 @@ lots:
   - id: L56
     title: "Titre de fiche coupé en milieu de mot avec une barre de défilement classique (QA du 01-11 après L22) : /pandora/bioluminescent-night/ affiche « bioluminescent/e » à 320 et 390 px quand la fenêtre a une barre de défilement (clientWidth 305 / 375) ; sur téléphone (barre superposée) rien n'est coupé. Cause : .entry-title (global.css:127) calcule sa taille en vw, qui inclut la largeur de la barre ; viser la largeur réellement disponible (unités de conteneur cqi ou marge pour la barre) ; étendre le test « aucun mot coupé » au cas avec barre de défilement"
     public: Titres des fiches entiers aussi sur un petit écran d'ordinateur
-    status: doing
+    status: done
     estimate: 0.1
     visible: true
     created: 2026-11-01
     started: 2026-11-01
     review: { date: 2026-11-01, verdict: "compliant — orchestré (vague 2026-11-01-2100-ava, 0 passe(s) de correction)", commit: 7b0b337a50287335a8958e7281c9798e2ec596d9 }
+    ux: { date: 2026-11-01, verdict: "conforme — capture 390 regardée par le lead avec barre de défilement visible : « bioluminescente » entier, titre sur la largeur de la colonne (cqi)" }
+    finished: 2026-11-01
   - id: L57
     title: "QA : ajouter /plan-de-travail/ à docs/qa/expectations.md (page non couverte, QA du 01-11)"
     status: doing
