@@ -481,6 +481,12 @@ lots:
     finished: 2026-10-31
     notes:
       - { date: 2026-10-31, text: "Mineurs de revue non traités : expectations.md:35 dit que R5 rejoue plus qu'il ne rejoue (ni lang=fr, ni soulignement, ni les 3 h3) ; en-tête du fichier encore daté du 29-10 (L43) alors que /about/ et le permalien sont mesurés le 31-10" }
+  - id: L50
+    title: "Vidéos : débordement horizontal de 9 px à 320 px (scrollWidth 314 > clientWidth 305) — trouver l'élément et le corriger, étendre le garde-fou R4 de L13 à /videos/ et /clans/ ; ajouter /videos/ et /clans/ à docs/qa/expectations.md (lien d'évitement, repères nommés, voile, 320 px sans débordement) — QA de L13 du 01-11"
+    status: todo
+    estimate: 1
+    visible: true
+    created: 2026-11-01
 acknowledged:
   - { sha: cef464dffb920ea7b161b1b0e06fe54d3efbdcc4, subject: "plan: verdicts UX de Sylvain enregistrés, trois bloquants de la revue des Personnages clos", date: 2026-10-10, reason: entretien du plan et régénération des Nouveautés }
   - { sha: 4bc75e983dc5bff0366190611a9c578d4ed071c8, subject: "plan: prototype Pandora vivant clos, cinq idées retenues par Sylvain posées après les images", date: 2026-10-10, reason: entretien du plan et régénération des Nouveautés (fichier désormais déclaré dérivé) }
