@@ -237,10 +237,11 @@ lots:
   - id: L22
     title: Taille de base du texte en pourcentage (109,375 %) au lieu de 17,5px, pour respecter la taille de police réglée dans le navigateur (WCAG 1.4.4) — toutes les pages à revérifier ; lien d'évitement avant la barre latérale ; bouton menu fixe qui couvre une fin de ligne au défilement (revue UX du Plan de travail)
     public: Texte qui suit la taille réglée dans le navigateur, lien d'évitement
-    status: todo
+    status: doing
     estimate: 0.5
     visible: true
     created: 2026-10-02
+    started: 2026-11-01
   - id: L23
     title: "Veille et enrichissement du contenu (consigne Sylvain 02-10 : « Eywa est un peu vide en ce moment ») : rechercher des informations à jour sur l'univers (films sortis et à venir, clans, faune, flore, langue), articles et actualités, les rédiger avec leurs sources vérifiées en ligne, compléter les fiches les plus pauvres d'abord ; images seulement si libres de droits ou créées pour le site ; puis fixer un rythme de mise à jour régulier (revue du contenu, date de dernière mise à jour visible)"
     public: "Un codex plus riche : nouvelles fiches, actualités et mises à jour régulières"
