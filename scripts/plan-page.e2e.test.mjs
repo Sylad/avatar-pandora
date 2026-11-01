@@ -12,6 +12,7 @@ import { createRequire } from 'node:module';
 import { existsSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { extname, join } from 'node:path';
+import { formatDay } from '../frontend/src/lib/format-date.mjs';
 import { DIST, setupBrowser } from './lib/e2e-dist.mjs';
 import { RECENT_DONE, newsTitlesByLot, publicTitleOf } from '../frontend/src/lib/plan-public.ts';
 
@@ -184,9 +185,9 @@ test('dates de livraison en français, « 1er » le premier du mois (ordinal en 
   const page = decode(html().replace(/<(?!\/?li\b)[^>]+>/g, ''));
   assert.doesNotMatch(html(), />1ER</, 'ordinal en capitales');
   if (RECENT.shown.some((l) => String(l.finished).endsWith('-01'))) assert.match(html(), />1<\/span><sup class="fr-ordinal[^"]*"[^>]*>er<\/sup> /);
-  assert.ok(!/>1 octobre/.test(page), '« 1 octobre » au lieu de « 1er »');
+  assert.ok(!/(^|[^\d])1 (janvier|février|mars|avril|mai|juin|juillet|août|septembre|octobre|novembre|décembre)/.test(page), '« 1 <mois> » au lieu de « 1er »');
   for (const l of RECENT.shown.filter((x) => x.finished)) assert.match(html(), new RegExp(`<time[^>]*datetime="${l.finished}"`), `${l.id} : date de livraison absente`);
-  if (RECENT.shown.some((l) => String(l.finished).endsWith('-01'))) assert.match(page, /1er octobre/);
+  for (const l of RECENT.shown.filter((x) => String(x.finished).endsWith('-01'))) assert.ok(page.includes(formatDay(l.finished)), `${l.id} : « ${formatDay(l.finished)} » absent`);
 });
 
 test('section vide : texte honnête (« Prévu » vide → « Les prochains travaux seront annoncés ici. ») ; jamais « 0 » dans le bandeau', () => {

@@ -7,6 +7,8 @@ import { formatDay, formatLongDate, formatTime } from '../frontend/src/lib/forma
 
 test('formatDay (YYYY-MM-DD) : « 1er » le premier du mois, chiffre simple ensuite', () => {
   assert.equal(formatDay('2026-10-01'), '1er octobre 2026');
+  assert.equal(formatDay('2026-11-01'), '1er novembre 2026', 'tout premier du mois, pas seulement octobre');
+  assert.equal(formatDay('2027-01-01'), '1er janvier 2027');
   assert.equal(formatDay('2026-10-02'), '2 octobre 2026');
   assert.equal(formatDay('2026-09-21'), '21 septembre 2026', '21 n’est pas « 21er »');
   assert.equal(formatDay('2026-01-11'), '11 janvier 2026');
