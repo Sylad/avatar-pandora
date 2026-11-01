@@ -496,9 +496,10 @@ lots:
     finished: 2026-11-01
   - id: L51
     title: "Nouveautés : le texte alternatif déclaré dans l'entrée (docs/nouveautes/*.md) n'est jamais rendu sur l'image de la capture (nouveautes.astro:83) — mineur de la revue UX de L50"
-    status: todo
+    status: doing
     estimate: 1
     created: 2026-11-01
+    started: 2026-11-01
   - id: L52
     title: "Vidéos : miniature YouTube muEMyQAJreg en 404 (maxresdefault.jpg) → erreur console ; repli sur hqdefault.jpg quand maxres n'existe pas — QA de L50 du 01-11"
     status: todo
