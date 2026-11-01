@@ -46,6 +46,48 @@ test('R1 — taille de police réglée à 32 px dans le navigateur : le texte la
   }
 });
 
+// Texte coupé par son cadre : un mot dont la boîte déborde à droite d'un ancêtre qui rogne
+// (overflow hidden/clip) ou du bord de la fenêtre. Les décors (éléments vides) ne comptent pas.
+async function clippedText(page) {
+  return page.evaluate(() => {
+    const out = [];
+    const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+    for (let n = walker.nextNode(); n; n = walker.nextNode()) {
+      if (!n.textContent.trim()) continue;
+      const host = n.parentElement;
+      if (host.closest('svg, script, style, .sr-only') || getComputedStyle(host).visibility === 'hidden') continue;
+      const range = document.createRange();
+      range.selectNodeContents(n);
+      const rects = [...range.getClientRects()].filter((r) => r.width > 0);
+      if (!rects.length) continue;
+      const right = Math.max(...rects.map((r) => r.right));
+      for (let el = host; el && el !== document.documentElement; el = el.parentElement) {
+        if (!/hidden|clip/.test(getComputedStyle(el).overflowX)) continue;
+        const lim = el.getBoundingClientRect().right;
+        if (right > lim + 1) {
+          out.push(`${Math.round(right - lim)}px coupés dans ${el.tagName.toLowerCase()}.${String(el.className).split(' ')[0]} : « ${n.textContent.trim().slice(0, 40)} »`);
+          break;
+        }
+      }
+    }
+    return out.slice(0, 5);
+  });
+}
+
+test('R1 — à 390 px avec la police du navigateur à 32 px, aucun texte coupé ni défilement horizontal', { timeout: 180_000 }, async (t) => {
+  const env = await setupBrowser(t);
+  if (!env) return;
+  const page = await pageWithDefaultFontSize(env, 32);
+  await page.setViewportSize({ width: 390, height: 844 });
+  for (const path of PAGES) {
+    await page.goto(env.base + path, { waitUntil: 'load' });
+    const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+    assert.ok(overflow <= 0, `${path} @390px police 32 : défilement horizontal de ${overflow}px`);
+    const clipped = await clippedText(page);
+    assert.deepEqual(clipped, [], `${path} @390px police 32 : texte coupé`);
+  }
+});
+
 test('R2 — le lien d’évitement est le premier arrêt de Tab, avant la barre latérale, et mène au contenu', { timeout: 120_000 }, async (t) => {
   const env = await setupBrowser(t);
   if (!env) return;
