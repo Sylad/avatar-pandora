@@ -566,6 +566,7 @@ lots:
     visible: true
     created: 2026-11-01
     started: 2026-11-01
+    review: { date: 2026-11-01, verdict: "compliant — orchestré (vague 2026-11-01-2100-ava, 0 passe(s) de correction)", commit: 7b0b337a50287335a8958e7281c9798e2ec596d9 }
   - id: L57
     title: "QA : ajouter /plan-de-travail/ à docs/qa/expectations.md (page non couverte, QA du 01-11)"
     status: todo
