@@ -237,11 +237,22 @@ lots:
   - id: L22
     title: Taille de base du texte en pourcentage (109,375 %) au lieu de 17,5px, pour respecter la taille de police réglée dans le navigateur (WCAG 1.4.4) — toutes les pages à revérifier ; lien d'évitement avant la barre latérale ; bouton menu fixe qui couvre une fin de ligne au défilement (revue UX du Plan de travail)
     public: Texte qui suit la taille réglée dans le navigateur, lien d'évitement
-    status: doing
+    status: done
     estimate: 0.5
     visible: true
     created: 2026-10-02
     started: 2026-11-01
+    review: { date: 2026-11-01, verdict: "conforme : les deux majeurs de la passe 4 sont fermés (0 mot coupé au réglage par défaut de 320 à 1440 px contre 31 avant, README à jour), défilement horizontal corrigé (529 cas → 0, test 81 pages × 5 réglages × 5 largeurs), sans régression ; 1 note mineure (filtre line-clamp du test trop large) — reprise Fable par le lead après rendu pour budget", commit: d2dc0ec93901548df5ec089d6193dd1981c72ad1 }
+    ux: { date: 2026-11-01, verdict: "conforme — captures regardées par le lead : titres de fiche entiers à 320 px (bioluminescent-night, omatikaya) et 1440 px ; défilement horizontal mesuré nul sur 81 pages × 5 réglages × 5 largeurs" }
+    tasks:
+      - { id: t1, title: "Bouton pause de l'accueil : seuil 480px en rem (30rem) — avec une police de 24 px à 600 px il revient en bas et chevauche « À propos » et « Plan de travail » ; à 24 et 32 px sur 390 px il recouvre le logo (revue de L22)", status: dropped }
+      - { id: t2, title: "Sur-titre .meta-eyebrow (MetaHeader.astro:40) encore en px : il ne suit pas la police réglée ; seuils 1023.98px restants (Sidebar.astro:118, MetaHeader.astro:51) en rem (revue de L22)", status: dropped }
+      - { id: t3, title: "Entrée Nouveautés de L22 : retirer le second paragraphe qui annonce le lien « Aller au contenu » déjà annoncé par L13", status: dropped }
+    notes:
+      - { date: 2026-11-01, text: "[L22/t1] abandonné : repris dans le lot L54" }
+      - { date: 2026-11-01, text: "[L22/t2] abandonné : repris dans le lot L54" }
+      - { date: 2026-11-01, text: "[L22/t3] abandonné : repris dans le lot L55" }
+    finished: 2026-11-01
   - id: L23
     title: "Veille et enrichissement du contenu (consigne Sylvain 02-10 : « Eywa est un peu vide en ce moment ») : rechercher des informations à jour sur l'univers (films sortis et à venir, clans, faune, flore, langue), articles et actualités, les rédiger avec leurs sources vérifiées en ligne, compléter les fiches les plus pauvres d'abord ; images seulement si libres de droits ou créées pour le site ; puis fixer un rythme de mise à jour régulier (revue du contenu, date de dernière mise à jour visible)"
     public: "Un codex plus riche : nouvelles fiches, actualités et mises à jour régulières"
@@ -532,6 +543,20 @@ lots:
     review: { date: 2026-11-01, verdict: "conforme sur arbitrage : seul majeur restant (légende plus large qu'une image < 20rem, plancher de lisibilité) tranché par le lead et noté ; re-mesure au resize, lecture double et test R8 corrigés", commit: 4fc0875541883c7e9041e392af7a6507ef1d48a8 }
     ux: { date: 2026-11-01, verdict: "conforme — capture 1366 regardée par le lead : légende lisible, écart de largeur ≤ 30 px sur petite image (arbitrage noté)" }
     finished: 2026-11-01
+    tasks:
+      - { id: t1, title: "Test R1 (L53) de nouveautes-page.e2e : remplacer waitForTimeout(250) par une attente de l'égalité --cap-h / hauteur de la légende (rouge isolé sous charge le 01-11)", status: todo }
+  - id: L54
+    title: "Texte agrandi, suites de L22 : bouton pause de l'accueil au seuil 30rem au lieu de 480px (à 24 px sur 600 px il chevauche « À propos » et « Plan de travail », à 24-32 px sur 390 px il recouvre le logo) ; sur-titre .meta-eyebrow (MetaHeader.astro:40) en rem ; seuils 1023.98px restants (Sidebar.astro:118, MetaHeader.astro:51) en rem"
+    public: "Texte agrandi : bouton pause et sur-titres qui suivent la taille réglée"
+    status: todo
+    estimate: 0.25
+    visible: true
+    created: 2026-11-01
+  - id: L55
+    title: "Entrée Nouveautés de L22 : retirer le second paragraphe qui annonce le lien « Aller au contenu » déjà annoncé par L13"
+    status: todo
+    estimate: 0.05
+    created: 2026-11-01
 acknowledged:
   - { sha: cef464dffb920ea7b161b1b0e06fe54d3efbdcc4, subject: "plan: verdicts UX de Sylvain enregistrés, trois bloquants de la revue des Personnages clos", date: 2026-10-10, reason: entretien du plan et régénération des Nouveautés }
   - { sha: 4bc75e983dc5bff0366190611a9c578d4ed071c8, subject: "plan: prototype Pandora vivant clos, cinq idées retenues par Sylvain posées après les images", date: 2026-10-10, reason: entretien du plan et régénération des Nouveautés (fichier désormais déclaré dérivé) }
