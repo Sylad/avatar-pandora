@@ -294,6 +294,27 @@ test('visionneuse au téléphone : capture de bureau à la hauteur disponible, d
 // Lien permanent (/nouveautes/#<slug>) : bouton « Copier le lien », arrivée sur l'ancre —
 // voir scripts/nouveautes-l21.e2e.test.mjs (L21).
 
+// Le cadre de la visionneuse (`overflow: hidden`) rogne ce qui le dépasse : la légende est tronquée
+// quand son contenu déborde de la boîte du cadre (L53 R3). Mesurer `caption.scrollHeight` ne
+// pouvait jamais échouer : une légende de hauteur automatique s'agrandit avec son texte.
+const FIGURE_CLIPS_CAPTION = `() => {
+  const fig = document.querySelector('#eywa-lightbox .eywa-lightbox__figure');
+  const cap = fig.querySelector('.eywa-lightbox__caption');
+  return fig.scrollHeight > fig.clientHeight + 1 || cap.getBoundingClientRect().bottom > fig.getBoundingClientRect().bottom + 0.5;
+}`;
+
+// Ouvre la visionneuse sur la capture dont le fichier se termine par `file` et attend l'image.
+async function openViewer(page, file) {
+  const link = page.locator(`.news-capture:has(img[src$="${file}"])`).first();
+  await link.scrollIntoViewIfNeeded();
+  await link.locator('img').click();
+  await page.waitForFunction(() => {
+    const im = document.querySelector('#eywa-lightbox .eywa-lightbox__img');
+    return document.getElementById('eywa-lightbox').hasAttribute('open') && im.complete && im.naturalWidth > 0;
+  });
+  await page.waitForTimeout(100);
+}
+
 test('R8 (L51) — visionneuse : la légende (texte alternatif déclaré, jusqu’à ~200 caractères) tient en entier à l’écran, à 390 et 320 px', { timeout: 180_000 }, async (t) => {
   const env = await setupBrowser(t);
   if (!env) return;
@@ -312,16 +333,17 @@ test('R8 (L51) — visionneuse : la légende (texte alternatif déclaré, jusqu�
         return document.getElementById('eywa-lightbox').hasAttribute('open') && im.complete && im.naturalWidth > 0;
       });
       await page.waitForTimeout(80);
-      const m = await page.evaluate(() => {
+      const m = await page.evaluate(`(() => {
+        const figureClipsCaption = ${FIGURE_CLIPS_CAPTION};
         const d = document.getElementById('eywa-lightbox');
         const cap = d.querySelector('.eywa-lightbox__caption');
         const fig = d.querySelector('.eywa-lightbox__figure');
         const c = cap.getBoundingClientRect();
         return {
           text: cap.textContent.slice(0, 40), bottom: c.bottom, figBottom: fig.getBoundingClientRect().bottom,
-          clipped: cap.scrollHeight > cap.clientHeight + 1, vh: innerHeight,
+          clipped: figureClipsCaption(), vh: innerHeight,
         };
-      });
+      })()`);
       const who = `${width}px, capture ${i + 1} (« ${m.text}… »)`;
       assert.ok(m.bottom <= m.vh + 0.5, `${who} : bas de la légende à ${m.bottom}px, écran de ${m.vh}px`);
       assert.ok(m.bottom <= m.figBottom + 0.5, `${who} : légende rognée par le cadre (${m.bottom} > ${m.figBottom})`);
@@ -331,4 +353,117 @@ test('R8 (L51) — visionneuse : la légende (texte alternatif déclaré, jusqu�
     }
     await context.close();
   }
+});
+
+// L53 — suites de L51.
+// Capture de bureau (1440×900) à la légende de 203 caractères / capture de téléphone (390 px) à 147.
+const LONG_CAPTION = 'L27-cartes-clans.png';
+const PHONE_SHOT = 'L13-lien-evitement-390.png';
+
+test('R1 (L53) — visionneuse : la hauteur de la légende est re-mesurée au redimensionnement et au changement d’orientation, elle ne se coupe plus', { timeout: 120_000 }, async (t) => {
+  const env = await setupBrowser(t);
+  if (!env) return;
+  const context = await env.browser.newContext({ viewport: { width: 1440, height: 900 } });
+  const page = await context.newPage();
+  await page.goto(`${env.base}/nouveautes/`, { waitUntil: 'load' });
+  for (const file of [LONG_CAPTION, PHONE_SHOT]) {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await openViewer(page, file);
+    for (const [width, height] of [[700, 400], [400, 700], [1440, 900], [320, 568], [568, 320]]) {
+      await page.setViewportSize({ width, height });
+      await page.waitForTimeout(250);
+      const m = await page.evaluate(`(() => {
+        const clips = ${FIGURE_CLIPS_CAPTION};
+        const d = document.getElementById('eywa-lightbox');
+        const cap = d.querySelector('.eywa-lightbox__caption');
+        const img = d.querySelector('.eywa-lightbox__img').getBoundingClientRect();
+        return { clipped: clips(), capH: cap.offsetHeight, varH: parseFloat(d.style.getPropertyValue('--cap-h')),
+          bottom: cap.getBoundingClientRect().bottom, vh: innerHeight, imgTop: img.top };
+      })()`);
+      const who = `${file} après redimensionnement à ${width}×${height}`;
+      assert.ok(Math.abs(m.varH - m.capH) <= 1, `${who} : --cap-h (${m.varH}px) ≠ hauteur réelle de la légende (${m.capH}px)`);
+      assert.ok(!m.clipped, `${who} : légende coupée`);
+      assert.ok(m.bottom <= m.vh + 0.5, `${who} : bas de la légende à ${m.bottom}px, écran de ${m.vh}px`);
+    }
+    await page.keyboard.press('Escape');
+    await page.waitForFunction(() => !document.getElementById('eywa-lightbox').hasAttribute('open'));
+  }
+  await context.close();
+});
+
+test('R2 (L53) — visionneuse au bureau : la légende ne dépasse pas la largeur de l’image', { timeout: 90_000 }, async (t) => {
+  const env = await setupBrowser(t);
+  if (!env) return;
+  for (const [width, height] of [[1440, 900], [1024, 768]]) {
+    const context = await env.browser.newContext({ viewport: { width, height } });
+    const page = await context.newPage();
+    await page.goto(`${env.base}/nouveautes/`, { waitUntil: 'load' });
+    // La capture de téléphone (étroite) à la légende longue est le cas qui élargissait le cadre.
+    for (const file of [PHONE_SHOT, LONG_CAPTION]) {
+      await openViewer(page, file);
+      const m = await page.evaluate(() => {
+        const d = document.getElementById('eywa-lightbox');
+        return {
+          img: d.querySelector('.eywa-lightbox__img').getBoundingClientRect().width,
+          fig: d.querySelector('.eywa-lightbox__figure').getBoundingClientRect().width,
+          cap: d.querySelector('.eywa-lightbox__caption').getBoundingClientRect().width,
+        };
+      });
+      assert.ok(m.cap <= m.img + 1, `${width}px, ${file} : légende de ${m.cap}px pour une image de ${m.img}px`);
+      assert.ok(m.fig <= m.img + 1, `${width}px, ${file} : cadre de ${m.fig}px pour une image de ${m.img}px`);
+      await page.keyboard.press('Escape');
+      await page.waitForFunction(() => !document.getElementById('eywa-lightbox').hasAttribute('open'));
+    }
+    await context.close();
+  }
+});
+
+test('R3 (L53) — la vérification « légende tronquée » sait échouer : un cadre qui rogne la légende est détecté', { timeout: 90_000 }, async (t) => {
+  const env = await setupBrowser(t);
+  if (!env) return;
+  const context = await env.browser.newContext({ viewport: { width: 390, height: 844 } });
+  const page = await context.newPage();
+  await page.goto(`${env.base}/nouveautes/`, { waitUntil: 'load' });
+  await openViewer(page, PHONE_SHOT);
+  const run = () => page.evaluate(`(${FIGURE_CLIPS_CAPTION})()`);
+  assert.equal(await run(), false, 'état sain : rien de tronqué');
+  // Image forcée à la hauteur de l'écran : le cadre (92vh, rogné) ne tient plus la légende.
+  await page.addStyleTag({ content: '#eywa-lightbox .eywa-lightbox__img { max-height: none !important; height: 100vh !important; }' });
+  assert.equal(await run(), true, 'cadre qui rogne la légende : la vérification doit échouer');
+  await context.close();
+});
+
+test('R4 (L53) — visionneuse : le texte de la capture n’est lu qu’une fois (image décorative, la légende le porte)', { timeout: 90_000 }, async (t) => {
+  const env = await setupBrowser(t);
+  if (!env) return;
+  const context = await env.browser.newContext({ viewport: { width: 1440, height: 900 } });
+  const page = await context.newPage();
+  await page.goto(`${env.base}/nouveautes/`, { waitUntil: 'load' });
+  await openViewer(page, LONG_CAPTION);
+  const m = await page.evaluate(() => {
+    const d = document.getElementById('eywa-lightbox');
+    return { alt: d.querySelector('.eywa-lightbox__img').getAttribute('alt'), cap: d.querySelector('.eywa-lightbox__caption').textContent.trim() };
+  });
+  assert.ok(m.cap.length > 100, 'la légende porte le texte déclaré');
+  assert.equal(m.alt, '', 'l’image de la visionneuse doit avoir alt="" (la légende dit déjà la même chose)');
+  await context.close();
+});
+
+test('R5 (L53) — visionneuse à 320×800 : la légende ne laisse pas d’écart sous le cadre', { timeout: 90_000 }, async (t) => {
+  const env = await setupBrowser(t);
+  if (!env) return;
+  const context = await env.browser.newContext({ viewport: { width: 320, height: 800 } });
+  const page = await context.newPage();
+  await page.goto(`${env.base}/nouveautes/`, { waitUntil: 'load' });
+  for (const file of [LONG_CAPTION, PHONE_SHOT]) {
+    await openViewer(page, file);
+    const m = await page.evaluate(() => {
+      const d = document.getElementById('eywa-lightbox');
+      return { cap: d.querySelector('.eywa-lightbox__caption').getBoundingClientRect().bottom, fig: d.querySelector('.eywa-lightbox__figure').getBoundingClientRect().bottom };
+    });
+    assert.ok(Math.abs(m.fig - m.cap) <= 1, `${file} : le cadre finit à ${m.fig}px, la légende à ${m.cap}px`);
+    await page.keyboard.press('Escape');
+    await page.waitForFunction(() => !document.getElementById('eywa-lightbox').hasAttribute('open'));
+  }
+  await context.close();
 });

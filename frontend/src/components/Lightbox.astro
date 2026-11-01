@@ -73,6 +73,20 @@
     // dans un cadre qui défile horizontalement (revue UX L14). Sinon, image entière.
     const PAN_MAX_WIDTH = 640;
     const PAN_RATIO = 1.5;
+    // --cap-h : hauteur réelle de la légende, dont dépend la place laissée à l'image. Elle change avec la
+    // largeur de la légende (fenêtre redimensionnée, téléphone tourné) et avec la largeur de l'image une
+    // fois chargée : à re-mesurer à chacun de ces événements (L53), pas seulement à l'ouverture.
+    const measureCaption = () => {
+      const p = parts();
+      if (!p || !p.dialog.hasAttribute('open')) return;
+      // La largeur de la légende suit celle de l'image, qui suit --cap-h : on répète jusqu'à stabilité
+      // (le plancher de largeur du cadre fait converger en quelques passes).
+      for (let i = 0; i < 6; i++) {
+        const h = `${p.cap.offsetHeight}px`;
+        if (p.dialog.style.getPropertyValue('--cap-h') === h) break;
+        p.dialog.style.setProperty('--cap-h', h);
+      }
+    };
     const open = (src, alt, natural) => {
       const p = parts();
       if (!p) return false;
@@ -95,7 +109,8 @@
       img.style.setProperty('--nat-h', natural && natural.h ? `${natural.h}px` : 'none');
       img.setAttribute('src', src);
       img.hidden = false;
-      img.setAttribute('alt', alt || '');
+      // La légende porte déjà le texte : une image à alt identique serait lue deux fois (WCAG 1.3.1, L53).
+      img.setAttribute('alt', '');
       cap.textContent = alt || '';
       cap.style.display = alt ? '' : 'none';
       // Use native <dialog> when possible, fallback to manual class
@@ -104,7 +119,7 @@
       } else {
         dialog.setAttribute('open', '');
       }
-      dialog.style.setProperty('--cap-h', `${cap.offsetHeight}px`);
+      measureCaption();
       document.documentElement.classList.add('eywa-lightbox-open');
       return true;
     };
@@ -137,6 +152,13 @@
       const natural = { w: target.naturalWidth || +target.getAttribute('width') || 0, h: target.naturalHeight || +target.getAttribute('height') || 0 };
       if (open(src, target.alt || '', natural)) e.preventDefault();
     });
+    window.addEventListener('resize', measureCaption);
+    window.addEventListener('orientationchange', measureCaption);
+    // L'image se charge après l'ouverture : sa largeur, donc celle de la légende, n'est connue qu'ensuite
+    // (« load » ne remonte pas : phase de capture).
+    document.addEventListener('load', (e) => {
+      if (e.target instanceof Element && e.target.classList.contains('eywa-lightbox__img')) measureCaption();
+    }, true);
     // « cancel » ne remonte pas : écouté en phase de capture.
     document.addEventListener('cancel', (e) => {
       if (e.target instanceof Element && e.target.id === 'eywa-lightbox') { e.preventDefault(); close(); }
@@ -191,6 +213,8 @@
     margin: 0;
     max-width: min(96vw, 1600px);
     max-height: 92vh;
+    /* Plancher : une image étroite ou un écran bas ne réduisent pas la légende à une colonne de mots. */
+    min-width: min(20rem, 96vw);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -202,7 +226,9 @@
   }
   .eywa-lightbox__img {
     display: block;
-    max-width: 100%;
+    /* Pas de 100 % ici : le cadre prend la largeur de l'image (la légende ne compte pas dans la sienne),
+       un pourcentage ferait dépendre l'une de l'autre et le cadre s'effondrerait (L53). */
+    max-width: min(96vw, 1600px);
     /* --cap-h : hauteur réelle de la légende (texte alternatif de l'entrée, parfois sur plusieurs lignes),
        mesurée à l'ouverture ; c'est l'image qui cède la place. */
     max-height: calc(92vh - 0.6rem - var(--cap-h, 1.9rem));
@@ -219,7 +245,11 @@
     padding: 0.5rem 1rem;
     margin: 0;
     background: rgba(8, 12, 22, 0.85);
-    width: 100%;
+    /* width: 0 + min-width: 100% : la légende ne compte pas dans la largeur du cadre (celle de l'image),
+       puis la prend ; sinon un texte long élargissait le cadre bien au-delà de l'image (L53). */
+    width: 0;
+    min-width: 100%;
+    box-sizing: border-box;
   }
   .eywa-lightbox__close {
     position: fixed;
