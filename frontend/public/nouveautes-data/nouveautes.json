@@ -1,7 +1,22 @@
 {
   "project": "avatar-pandora",
-  "generated": "2026-11-01 11:52",
+  "generated": "2026-11-01 15:04",
   "entries": [
+    {
+      "slug": "2026-11-01-la-legende-des-captures-agrandies-reste-lisible-quelle-que-s",
+      "title": "La légende des captures agrandies reste lisible, quelle que soit la fenêtre",
+      "date": "2026-11-01",
+      "lots": [
+        "L53"
+      ],
+      "captures": [
+        "captures/L53-visionneuse-1440.png"
+      ],
+      "alts": [
+        "Une capture agrandie sur un écran de bureau : la légende occupe exactement la largeur de l'image"
+      ],
+      "html": "<p>Quand tu agrandis une capture dans les Nouveautés, la légende s'affiche sous l'image. Elle gagne en netteté.</p>\n<ul><li><strong>La légende ne se coupe plus</strong> quand tu redimensionnes la fenêtre ou que tu tournes le téléphone : l'image s'ajuste et le texte reste entier.</li><li><strong>Au bureau, la légende a la largeur de l'image</strong>, au lieu de s'étaler bien au-delà d'une capture étroite.</li><li><strong>Un lecteur d'écran ne lit plus le texte deux fois</strong> : l'image est décrite une seule fois, par la légende.</li></ul>"
+    },
     {
       "slug": "2026-11-01-videos-debordement-horizontal-de-9-px-a-320-px-scrollwidth-3",
       "title": "La page Vidéos tient enfin sur un petit écran",
