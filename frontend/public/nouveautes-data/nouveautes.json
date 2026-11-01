@@ -1,7 +1,22 @@
 {
   "project": "avatar-pandora",
-  "generated": "2026-11-01 17:32",
+  "generated": "2026-11-01 21:04",
   "entries": [
+    {
+      "slug": "2026-11-01-titres-des-fiches-entiers-aussi-sur-un-petit-ecran-d-ordinat",
+      "title": "Titres des fiches entiers aussi sur un petit écran d'ordinateur",
+      "date": "2026-11-01",
+      "lots": [
+        "L56"
+      ],
+      "captures": [
+        "captures/L56-titre-fiche-barre-390.png"
+      ],
+      "alts": [
+        "Fiche Nuit bioluminescente sur un écran étroit avec barre de défilement : le titre « bioluminescente » est entier"
+      ],
+      "html": "<p>Sur un écran d'ordinateur étroit (fenêtre réduite, barre de défilement visible), le titre d'une fiche n'est plus coupé au milieu d'un mot : « bioluminescente » s'affiche en entier sur la fiche de la nuit bioluminescente. Sur téléphone, rien ne change.</p>"
+    },
     {
       "slug": "2026-11-01-texte-qui-suit-la-taille-reglee-dans-le-navigateur-lien-d-ev",
       "title": "Texte qui suit la taille réglée dans le navigateur, lien d'évitement",

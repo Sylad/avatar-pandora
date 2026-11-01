@@ -216,8 +216,11 @@ test('R1 — police du navigateur à 20, 24 et 32 px : une navigation reste visi
 // réglage par défaut (Prolemuris, Omatikaya, Sturmbeest…). Toutes les pages, largeurs de téléphone.
 const DEFAULT_WIDTHS = [320, 360, 375, 390, 414];
 
-test('R1 — réglage par défaut, 320 à 414 px : aucun mot coupé en son milieu sur aucune page', { timeout: 600_000 }, async (t) => {
-  const env = await setupBrowser(t);
+// L56 : avec une barre de défilement classique (15 px), la colonne est plus étroite que la fenêtre
+// (clientWidth 305 à 320 px) : le titre, calculé sur la largeur de la fenêtre, y était coupé.
+for (const scrollbars of [false, true]) {
+test(`R1 — réglage par défaut, 320 à 414 px${scrollbars ? ', barre de défilement classique' : ''} : aucun mot coupé en son milieu sur aucune page`, { timeout: 600_000 }, async (t) => {
+  const env = await setupBrowser(t, { scrollbars });
   if (!env) return;
   assert.ok(ALL_PAGES.length >= 81, `${ALL_PAGES.length} pages construites trouvées dans dist/ (81 attendues)`);
   const page = await env.browser.newPage({ viewport: { width: 320, height: 568 } });
@@ -247,9 +250,10 @@ test('R1 — réglage par défaut, 320 à 414 px : aucun mot coupé en son milie
         }
         return [...new Set(out)].slice(0, 8);
       });
-      if (split.length) failures.push(`${path} @${width}px police par défaut : ${split.join(', ')}`);
+      if (split.length) failures.push(`${path} @${width}px police par défaut${scrollbars ? ', barre classique' : ''} : ${split.join(', ')}`);
     }
   }
   await page.close();
   assert.deepEqual(failures, [], `${failures.length} page(s) avec un mot coupé :\n${failures.join('\n')}`);
 });
+}
