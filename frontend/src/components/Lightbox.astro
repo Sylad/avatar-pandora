@@ -76,11 +76,14 @@
     // --cap-h : hauteur réelle de la légende, dont dépend la place laissée à l'image. Elle change avec la
     // largeur de la légende (fenêtre redimensionnée, téléphone tourné) et avec la largeur de l'image une
     // fois chargée : à re-mesurer à chacun de ces événements (L53), pas seulement à l'ouverture.
+    // La largeur de l'image (donc celle de la légende) se connaît au décodage, parfois avant l'événement « load » :
+    // on suit aussi la taille de l'image et de la légende. Branché à l'ouverture : ClientRouter remplace le DOM.
+    const sizeWatcher = typeof ResizeObserver === 'function' ? new ResizeObserver(() => measureCaption()) : null;
     const measureCaption = () => {
       const p = parts();
       if (!p || !p.dialog.hasAttribute('open')) return;
       // La largeur de la légende suit celle de l'image, qui suit --cap-h : on répète jusqu'à stabilité
-      // (le plancher de largeur du cadre fait converger en quelques passes).
+      // (quelques passes suffisent à converger).
       for (let i = 0; i < 6; i++) {
         const h = `${p.cap.offsetHeight}px`;
         if (p.dialog.style.getPropertyValue('--cap-h') === h) break;
@@ -91,6 +94,7 @@
       const p = parts();
       if (!p) return false;
       const { dialog, img, cap } = p;
+      if (sizeWatcher) { sizeWatcher.observe(img); sizeWatcher.observe(cap); }
       const scroller = dialog.querySelector('.eywa-lightbox__scroller');
       const pan = !!natural && natural.w > 0 && window.innerWidth < PAN_MAX_WIDTH && natural.w > PAN_RATIO * window.innerWidth;
       dialog.classList.toggle('is-pan', pan);
@@ -213,8 +217,6 @@
     margin: 0;
     max-width: min(96vw, 1600px);
     max-height: 92vh;
-    /* Plancher : une image étroite ou un écran bas ne réduisent pas la légende à une colonne de mots. */
-    min-width: min(20rem, 96vw);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -224,6 +226,11 @@
     border-radius: 6px;
     overflow: hidden;
   }
+  /* Écran bas (téléphone tourné) : une légende à la largeur d'une image étroite serait plus haute que l'écran ;
+     elle garde alors une largeur minimale, au détriment de « pas plus large que l'image » (L53). */
+  @media (max-height: 480px) {
+    .eywa-lightbox__figure { min-width: min(20rem, 96vw); }
+  }
   .eywa-lightbox__img {
     display: block;
     /* Pas de 100 % ici : le cadre prend la largeur de l'image (la légende ne compte pas dans la sienne),
@@ -231,7 +238,9 @@
     max-width: min(96vw, 1600px);
     /* --cap-h : hauteur réelle de la légende (texte alternatif de l'entrée, parfois sur plusieurs lignes),
        mesurée à l'ouverture ; c'est l'image qui cède la place. */
-    max-height: calc(92vh - 0.6rem - var(--cap-h, 1.9rem));
+    /* Plancher de hauteur : sans lui, une légende mesurée avant le chargement de l'image (cadre étroit, donc
+       très haute) ramenait l'image à 0 px, et la légende, restée étroite, ne se raccourcissait plus. */
+    max-height: max(6rem, calc(92vh - 0.6rem - var(--cap-h, 1.9rem)));
     width: auto;
     height: auto;
     object-fit: contain;

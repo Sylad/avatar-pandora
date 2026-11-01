@@ -391,26 +391,37 @@ test('R1 (L53) — visionneuse : la hauteur de la légende est re-mesurée au re
   await context.close();
 });
 
-test('R2 (L53) — visionneuse au bureau : la légende ne dépasse pas la largeur de l’image', { timeout: 90_000 }, async (t) => {
+test('R2 (L53) — visionneuse au bureau : la légende ne dépasse pas la largeur de l’image, pour toutes les captures', { timeout: 180_000 }, async (t) => {
   const env = await setupBrowser(t);
   if (!env) return;
-  for (const [width, height] of [[1440, 900], [1024, 768]]) {
+  for (const [width, height] of [[1440, 900], [1280, 720], [1024, 768]]) {
     const context = await env.browser.newContext({ viewport: { width, height } });
     const page = await context.newPage();
     await page.goto(`${env.base}/nouveautes/`, { waitUntil: 'load' });
-    // La capture de téléphone (étroite) à la légende longue est le cas qui élargissait le cadre.
-    for (const file of [PHONE_SHOT, LONG_CAPTION]) {
-      await openViewer(page, file);
+    const n = await page.locator('.news-capture').count();
+    assert.ok(n > 0, 'aucune capture');
+    // Toutes les captures : les portraits de téléphone (390×844) sont les plus étroites, celles qu'un plancher de largeur élargirait.
+    for (let i = 0; i < n; i++) {
+      const link = page.locator('.news-capture').nth(i);
+      await link.scrollIntoViewIfNeeded();
+      await link.locator('img').click();
+      await page.waitForFunction(() => {
+        const im = document.querySelector('#eywa-lightbox .eywa-lightbox__img');
+        return document.getElementById('eywa-lightbox').hasAttribute('open') && im.complete && im.naturalWidth > 0;
+      });
+      await page.waitForTimeout(60);
       const m = await page.evaluate(() => {
         const d = document.getElementById('eywa-lightbox');
+        const im = d.querySelector('.eywa-lightbox__img');
         return {
-          img: d.querySelector('.eywa-lightbox__img').getBoundingClientRect().width,
+          src: im.getAttribute('src'),
+          img: im.getBoundingClientRect().width,
           fig: d.querySelector('.eywa-lightbox__figure').getBoundingClientRect().width,
           cap: d.querySelector('.eywa-lightbox__caption').getBoundingClientRect().width,
         };
       });
-      assert.ok(m.cap <= m.img + 1, `${width}px, ${file} : légende de ${m.cap}px pour une image de ${m.img}px`);
-      assert.ok(m.fig <= m.img + 1, `${width}px, ${file} : cadre de ${m.fig}px pour une image de ${m.img}px`);
+      assert.ok(m.cap <= m.img + 1, `${width}px, ${m.src} : légende de ${m.cap}px pour une image de ${m.img}px`);
+      assert.ok(m.fig <= m.img + 1, `${width}px, ${m.src} : cadre de ${m.fig}px pour une image de ${m.img}px`);
       await page.keyboard.press('Escape');
       await page.waitForFunction(() => !document.getElementById('eywa-lightbox').hasAttribute('open'));
     }
