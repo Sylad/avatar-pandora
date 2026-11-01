@@ -99,6 +99,19 @@
     font-family: var(--font-display);
     letter-spacing: 0.05em;
   }
+  /*
+    Titres longs (L22, revue de code) : un seul mot d'un titre text-4xl (« bioluminescente »,
+    « Recombinants ») dépasse une page de téléphone dès le réglage par défaut à 320 px, et
+    jusqu'à 480 px avec la police du navigateur à 24 px — défilement horizontal sur huit
+    fiches (WCAG 1.4.4, 1.4.10). Seul le mot qui ne tient pas sur sa ligne est coupé ; pas de
+    hyphens: auto, qui césure aussi des titres de Nouveautés qui tenaient (« lisibi-lité » à
+    320 px au réglage par défaut). « anywhere » et non break-word : dans une colonne flex
+    alignée au début (À propos), break-word garde le mot entier comme largeur minimale et
+    c'est la colonne qui déborde de son cadre.
+  */
+  h1, h2 {
+    overflow-wrap: anywhere;
+  }
 }
 
 /*

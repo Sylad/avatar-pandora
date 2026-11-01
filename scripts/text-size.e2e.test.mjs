@@ -3,8 +3,9 @@
 // Lit frontend/dist (lancer `npm run build` avant) ; skip sans playwright-core/Chromium.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
-import { setupBrowser } from './lib/e2e-dist.mjs';
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
+import { join } from 'node:path';
+import { DIST, setupBrowser } from './lib/e2e-dist.mjs';
 
 const CSS = readFileSync(new URL('../frontend/src/styles/global.css', import.meta.url), 'utf8');
 const PAGES = ['/', '/about/', '/pandora/', '/pandora/eywa/', '/bestiaire/', '/clans/', '/flore/', '/personnages/',
@@ -74,18 +75,47 @@ async function clippedText(page) {
   });
 }
 
-test('R1 — à 390 px avec la police du navigateur à 32 px, aucun texte coupé ni défilement horizontal', { timeout: 180_000 }, async (t) => {
+// Toutes les pages construites (les 81, fiches du codex comprises) : un mot long d'un titre
+// (« bioluminescente ») ne doit déborder sur aucune d'elles — la revue de L22 a trouvé huit
+// fiches en défilement horizontal, que 14 pages témoins ne voyaient pas.
+const ALL_PAGES = (() => {
+  const out = [];
+  const walk = (dir, path) => {
+    for (const e of readdirSync(dir, { withFileTypes: true })) {
+      if (e.isDirectory()) walk(join(dir, e.name), `${path}${e.name}/`);
+      else if (e.name === 'index.html') out.push(path);
+    }
+  };
+  if (existsSync(DIST)) walk(DIST, '/');
+  return out.sort();
+})();
+
+// Réglages de police du navigateur (16 = défaut) × largeurs de téléphone (WCAG 1.4.4 et 1.4.10).
+const FONT_SIZES = [16, 18, 20, 24, 32];
+const WIDTHS = [320, 375, 390, 414, 480];
+
+test('R1 — toutes les pages, police du navigateur de 16 à 32 px, largeurs de 320 à 480 px : ni défilement horizontal ni texte coupé', { timeout: 600_000 }, async (t) => {
   const env = await setupBrowser(t);
   if (!env) return;
-  const page = await pageWithDefaultFontSize(env, 32);
-  await page.setViewportSize({ width: 390, height: 844 });
-  for (const path of PAGES) {
-    await page.goto(env.base + path, { waitUntil: 'load' });
-    const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
-    assert.ok(overflow <= 0, `${path} @390px police 32 : défilement horizontal de ${overflow}px`);
-    const clipped = await clippedText(page);
-    assert.deepEqual(clipped, [], `${path} @390px police 32 : texte coupé`);
-  }
+  assert.ok(ALL_PAGES.length >= 81, `${ALL_PAGES.length} pages construites trouvées dans dist/ (81 attendues)`);
+  // Une page Chromium par réglage de police, les cinq en parallèle : ~2 000 chargements en moins d'une minute.
+  const failures = (await Promise.all(FONT_SIZES.map(async (px) => {
+    const page = await pageWithDefaultFontSize(env, px);
+    const out = [];
+    for (const width of WIDTHS) {
+      await page.setViewportSize({ width, height: 800 });
+      for (const path of ALL_PAGES) {
+        await page.goto(env.base + path, { waitUntil: 'load' });
+        const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+        if (overflow > 0) out.push(`${path} @${width}px police ${px} : défilement horizontal de ${overflow}px`);
+        const clipped = await clippedText(page);
+        if (clipped.length) out.push(`${path} @${width}px police ${px} : texte coupé — ${clipped.join(' ; ')}`);
+      }
+    }
+    await page.close();
+    return out;
+  }))).flat();
+  assert.deepEqual(failures, [], `${failures.length} défaut(s) :\n${failures.join('\n')}`);
 });
 
 test('R2 — le lien d’évitement est le premier arrêt de Tab, avant la barre latérale, et mène au contenu', { timeout: 120_000 }, async (t) => {

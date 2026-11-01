@@ -187,9 +187,11 @@ const pngSize = (rel: string) => {
       display: inline-grid;
       text-align: start;
     }
+    /* Pas de nowrap : la case garde la largeur du plus long libellé tant qu'il tient ; avec la
+       police du navigateur à 32 px sur 320 px (L22), il passe à la ligne au lieu de faire
+       défiler la page. */
     .news-copy-label {
       grid-area: 1 / 1;
-      white-space: nowrap;
     }
     .news-copy-label.is-hidden {
       visibility: hidden;
