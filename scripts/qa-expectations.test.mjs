@@ -126,7 +126,7 @@ for (const width of [390, 1440]) {
   });
 }
 
-test('R7 — expectations.md décrit /videos/ et /clans/ (lien d\'évitement, repères nommés, voile, 320 px) et les pages construites les portent', (t) => {
+test('R7 — expectations.md décrit /videos/ et /clans/ (lien d\'évitement, repères nommés, voile, 320 px) et les pages construites portent lien, repères et voile (le 320 px est mesuré par template-ux R4)', (t) => {
   const md = readFileSync(DOC, 'utf8');
   for (const chemin of ['/videos/', '/clans/']) {
     const bloc = section(md, chemin);
@@ -142,5 +142,11 @@ test('R7 — expectations.md décrit /videos/ et /clans/ (lien d\'évitement, re
   const videos = readFileSync(dist('videos'), 'utf8');
   assert.match(videos, /Aller au contenu/);
   assert.equal([...videos.matchAll(/class="vid-section-intro codex-text-veil"/g)].length, 3, 'trois intros voilées');
-  assert.match(readFileSync(dist('clans'), 'utf8'), /Aller au contenu/);
+  const clans = readFileSync(dist('clans'), 'utf8');
+  assert.match(clans, /Aller au contenu/);
+  for (const [nom, html] of [['/videos/', videos], ['/clans/', clans]]) {
+    for (const repere of ['Navigation du codex', 'Sections du codex']) {
+      assert.match(html, new RegExp(`aria-label="${repere}"`), `${nom} : repère « ${repere} »`);
+    }
+  }
 });
