@@ -63,13 +63,15 @@
     color: var(--color-eywa-text);
     font-family: var(--font-body);
     /*
-      Body taille bumpée de 16px (default) à 17.5px (~+9%). Cormorant
+      Body taille bumpée de 16px (default) à 17.5px (~+9%), exprimée en pourcentage
+      (109,375 % = 17,5 / 16) pour suivre la taille de police réglée dans le navigateur
+      (WCAG 1.4.4, L22) : 17,5px en dur l'ignorait. Cormorant
       Garamond a une x-height basse — à 16px les paragraphes du codex
       paraissent étriqués sur grand écran. À 17.5px la copy respire
       sans toucher aux titres (déjà dimensionnés en rem) ni aux cards
       dense (qui sont pinnées en rem fractionnels).
     */
-    font-size: 17.5px;
+    font-size: 109.375%;
     line-height: 1.65;
     /*
       Cormorant Garamond dessine par défaut des chiffres elzéviriens :

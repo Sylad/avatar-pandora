@@ -1,7 +1,22 @@
 {
   "project": "avatar-pandora",
-  "generated": "2026-11-01 16:04",
+  "generated": "2026-11-01 17:32",
   "entries": [
+    {
+      "slug": "2026-11-01-texte-qui-suit-la-taille-reglee-dans-le-navigateur-lien-d-ev",
+      "title": "Texte qui suit la taille réglée dans le navigateur, lien d'évitement",
+      "date": "2026-11-01",
+      "lots": [
+        "L22"
+      ],
+      "captures": [
+        "captures/L22-texte-agrandi-390.png"
+      ],
+      "alts": [
+        "La page Pandora sur un écran de 390 px, la taille de police du navigateur réglée plus grande : le texte de la fiche suit ce réglage."
+      ],
+      "html": "<p>Le texte du site suit maintenant la taille de police réglée dans ton navigateur : si tu l'as agrandie, toutes les pages (accueil, À propos, codex, Vidéos, Nouveautés, Plan de travail) s'agrandissent avec elle. Avec le réglage par défaut, rien ne change à l'écran.</p>\n<p>Au clavier, le premier appui sur Tab affiche « Aller au contenu » avant la barre latérale ; Entrée t'amène au contenu. Au téléphone, le bouton menu reste dans une bande en haut de l'écran : le texte qui défile passe dessous, il n'est plus coupé en fin de ligne.</p>"
+    },
     {
       "slug": "2026-11-01-la-legende-des-captures-agrandies-reste-lisible-quelle-que-s",
       "title": "La légende des captures agrandies reste lisible, quelle que soit la fenêtre",
