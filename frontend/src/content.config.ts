@@ -42,6 +42,8 @@ const videosListSchema = z.object({
   publishedAt: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
   // Override if maxresdefault is available; otherwise hqdefault is used.
   thumbnail: z.string().url().optional(),
+  // false quand maxresdefault.jpg répond 404 : la page ne le sonde alors pas (pas d'erreur console).
+  maxres: z.boolean().optional(),
   order: z.number().default(99),
 });
 
