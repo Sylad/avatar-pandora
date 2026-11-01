@@ -1,7 +1,22 @@
 {
   "project": "avatar-pandora",
-  "generated": "2026-10-31 21:03",
+  "generated": "2026-11-01 11:03",
   "entries": [
+    {
+      "slug": "2026-11-01-navigation-au-clavier-un-lien-aller-au-contenu-sur-chaque-pa",
+      "title": "Navigation au clavier : un lien « Aller au contenu » sur chaque page",
+      "date": "2026-11-01",
+      "lots": [
+        "L13"
+      ],
+      "captures": [
+        "captures/L13-lien-evitement-390.png"
+      ],
+      "alts": [
+        "Le haut de la page Clans sur un écran de 390 px : le lien « Aller au contenu », entouré d'un anneau cyan, à gauche des boutons de pause et de menu."
+      ],
+      "html": "<p>Au clavier, le premier appui sur Tab fait apparaître en haut à gauche un lien « Aller au contenu » : un second appui sur Entrée t'amène directement au contenu de la page, sans repasser par les douze liens de la barre latérale. Il est présent sur l'accueil, sur À propos et sur toutes les pages du codex, et reste invisible tant qu'on ne navigue pas au clavier.</p>\n<p>Les lecteurs d'écran distinguent maintenant les deux blocs de navigation de la barre latérale : « Navigation du codex » pour le tiroir, « Sections du codex » pour la liste des neuf sections.</p>\n<p>Sur la page Vidéos, les phrases d'introduction de chaque section ont un fond sombre : elles restent lisibles à tout instant de l'animation des particules, y compris au téléphone.</p>"
+    },
     {
       "slug": "2026-10-31-page-a-propos-le-lien-claude-code-montre-un-anneau-net-au-cl",
       "title": "Page À propos : le lien « Claude Code » montre un anneau net au clavier",
