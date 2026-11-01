@@ -35,7 +35,8 @@ test('une entrée par nouveauté, dans l’ordre du JSON (la plus récente en ha
     const start = page.indexOf(`id="${e.slug}"`);
     const block = page.slice(start, page.indexOf('</article>', start));
     assert.ok(block.includes(`<time datetime="${e.date}"`), `${e.slug} : date absente`);
-    assert.ok(block.includes(e.title), `${e.slug} : titre absent`);
+    // Astro échappe l'apostrophe (&#39;) dans le titre : le comparer au titre échappé, pas à celui du JSON.
+    assert.ok(block.includes(`<h2 id="${e.slug}-titre">${e.title.replace(/&/g, '&amp;').replace(/'/g, '&#39;').replace(/"/g, '&quot;')}</h2>`), `${e.slug} : titre absent`);
     assert.ok(block.includes(e.html.slice(0, 60)), `${e.slug} : texte absent`);
     for (const c of e.captures) {
       assert.ok(block.includes(`src="/nouveautes-data/${c}"`), `${e.slug} : capture ${c} absente`);
@@ -43,6 +44,23 @@ test('une entrée par nouveauté, dans l’ordre du JSON (la plus récente en ha
     }
     assert.match(block, /<img [^>]*width="\d+"[^>]*height="\d+"/, `${e.slug} : dimensions des captures absentes`);
   }
+});
+
+test('R7 (L51) — l’image de chaque capture porte le texte alternatif déclaré dans son entrée', () => {
+  const page = html();
+  const unescape = (v) => v.replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
+  let declared = 0;
+  for (const e of DATA.entries) {
+    e.captures.forEach((c, i) => {
+      const img = page.match(new RegExp(`<img [^>]*src="/nouveautes-data/${c.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}"[^>]*>`));
+      assert.ok(img, `${e.slug} : image ${c} absente`);
+      const alt = unescape(img[0].match(/alt="([^"]*)"/)[1]);
+      const want = e.alts?.[i]?.trim();
+      if (want) { declared++; assert.equal(alt, want, `${e.slug} : alt de ${c}`); }
+      else assert.match(alt, /^Capture d'écran/, `${e.slug} : repli attendu pour ${c}`);
+    });
+  }
+  assert.ok(declared > 0, 'aucun alt déclaré dans le JSON : le test ne prouverait rien');
 });
 
 test('date affichée en français, « 1er » le premier du mois (« 1er octobre 2026 »)', () => {

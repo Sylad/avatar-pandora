@@ -12,6 +12,7 @@ import { join } from 'node:path';
 import CodexLayout from '../layouts/CodexLayout.astro';
 import MetaHeader from '../components/MetaHeader.astro';
 import FrDate from '../components/FrDate.astro';
+import { captureAlt } from '../lib/news-alt';
 import news from '../../public/nouveautes-data/nouveautes.json';
 
 interface NewsEntry {
@@ -20,6 +21,7 @@ interface NewsEntry {
   date: string;
   lots: string[];
   captures: string[];
+  alts?: string[];
   html: string;
 }
 
@@ -80,9 +82,7 @@ const pngSize = (rel: string) => {
                 <div class="news-captures" data-lightbox>
                   {e.captures.map((c, i) => {
                     const { width, height } = pngSize(c);
-                    const alt = e.captures.length > 1
-                      ? `Capture d'écran ${i + 1} sur ${e.captures.length} : ${e.title}`
-                      : `Capture d'écran : ${e.title}`;
+                    const alt = captureAlt(e, i);
                     return (
                       <a
                         href={`${BASE}/${c}`}
