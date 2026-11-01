@@ -36,7 +36,7 @@ test('une entrée par nouveauté, dans l’ordre du JSON (la plus récente en ha
     const block = page.slice(start, page.indexOf('</article>', start));
     assert.ok(block.includes(`<time datetime="${e.date}"`), `${e.slug} : date absente`);
     // Astro échappe l'apostrophe (&#39;) dans le titre : le comparer au titre échappé, pas à celui du JSON.
-    assert.ok(block.includes(`<h2 id="${e.slug}-titre">${e.title.replace(/&/g, '&amp;').replace(/'/g, '&#39;').replace(/"/g, '&quot;')}</h2>`), `${e.slug} : titre absent`);
+    assert.ok(new RegExp(`<h2 id="${e.slug}-titre"[^>]*>${e.title.replace(/&/g, '&amp;').replace(/'/g, '&#39;').replace(/"/g, '&quot;').replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}</h2>`).test(block), `${e.slug} : titre absent`);
     assert.ok(block.includes(e.html.slice(0, 60)), `${e.slug} : texte absent`);
     for (const c of e.captures) {
       assert.ok(block.includes(`src="/nouveautes-data/${c}"`), `${e.slug} : capture ${c} absente`);
