@@ -6,7 +6,7 @@ après chaque livraison. Site 100 % statique : pas d'API, donc aucune ligne `api
 ordres de grandeur du jour sur `frontend/dist` (Chromium sans tête, 1440×900 et 390×900), pas des seuils —
 l'attendu est la forme décrite. Les seuils chiffrés des fiches (16 px, `.entry-body` non vide) sont rejoués à chaque
 build par `scripts/qa-expectations.test.mjs` (`cd frontend && npm run test:scripts`). Non couvert : l'ambiance
-de l'accueil (boucle de 75 s, particules WebGL), `/langue/` (couvertes
+de l'accueil (boucle de 75 s, particules WebGL), `/langue/` (couverts
 par leurs propres tests de `scripts/`).
 
 ## *
