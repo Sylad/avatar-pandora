@@ -98,8 +98,18 @@ test('R1 — toutes les pages, police du navigateur de 16 à 32 px, largeurs de 
   const env = await setupBrowser(t);
   if (!env) return;
   assert.ok(ALL_PAGES.length >= 81, `${ALL_PAGES.length} pages construites trouvées dans dist/ (81 attendues)`);
-  // Une page Chromium par réglage de police, les cinq en parallèle : ~2 000 chargements en moins d'une minute.
-  const failures = (await Promise.all(FONT_SIZES.map(async (px) => {
+  // Une page Chromium par réglage de police, trois à la fois (cinq chargeaient la machine au point de
+  // faire tomber un autre fichier de la suite) : ~2 000 chargements en une minute environ.
+  const queue = [...FONT_SIZES];
+  const lane = async () => {
+    const out = [];
+    for (let px = queue.shift(); px !== undefined; px = queue.shift()) out.push(...await checkFontSize(px));
+    return out;
+  };
+  const failures = (await Promise.all([lane(), lane(), lane()])).flat();
+  assert.deepEqual(failures, [], `${failures.length} défaut(s) :\n${failures.join('\n')}`);
+
+  async function checkFontSize(px) {
     const page = await pageWithDefaultFontSize(env, px);
     const out = [];
     for (const width of WIDTHS) {
@@ -114,8 +124,7 @@ test('R1 — toutes les pages, police du navigateur de 16 à 32 px, largeurs de 
     }
     await page.close();
     return out;
-  }))).flat();
-  assert.deepEqual(failures, [], `${failures.length} défaut(s) :\n${failures.join('\n')}`);
+  }
 });
 
 test('R2 — le lien d’évitement est le premier arrêt de Tab, avant la barre latérale, et mène au contenu', { timeout: 120_000 }, async (t) => {
@@ -203,25 +212,44 @@ test('R1 — police du navigateur à 20, 24 et 32 px : une navigation reste visi
   }
 });
 
-test('R1 — réglage par défaut à 320 px : aucun mot coupé en son milieu', { timeout: 120_000 }, async (t) => {
+// Revue de d9f745c : « anywhere » sur les titres coupait 15 fiches en milieu de mot à 320 px au
+// réglage par défaut (Prolemuris, Omatikaya, Sturmbeest…). Toutes les pages, largeurs de téléphone.
+const DEFAULT_WIDTHS = [320, 360, 375, 390, 414];
+
+test('R1 — réglage par défaut, 320 à 414 px : aucun mot coupé en son milieu sur aucune page', { timeout: 600_000 }, async (t) => {
   const env = await setupBrowser(t);
   if (!env) return;
+  assert.ok(ALL_PAGES.length >= 81, `${ALL_PAGES.length} pages construites trouvées dans dist/ (81 attendues)`);
   const page = await env.browser.newPage({ viewport: { width: 320, height: 568 } });
-  for (const path of ['/about/', '/nouveautes/']) {
-    await page.goto(env.base + path, { waitUntil: 'load' });
-    const split = await page.evaluate(() => {
-      const out = [];
-      const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
-      for (let n = walker.nextNode(); n; n = walker.nextNode()) {
-        if (!n.textContent.trim() || n.parentElement.closest('script, style, svg')) continue;
-        for (const m of n.textContent.matchAll(/\S+/g)) {
-          const r = document.createRange();
-          r.setStart(n, m.index); r.setEnd(n, m.index + m[0].length);
-          if (r.getClientRects().length > 1 && !/[-‑­/]/.test(m[0])) out.push(m[0]);
+  const failures = [];
+  for (const width of DEFAULT_WIDTHS) {
+    await page.setViewportSize({ width, height: 568 });
+    for (const path of ALL_PAGES) {
+      await page.goto(env.base + path, { waitUntil: 'load' });
+      const split = await page.evaluate(() => {
+        const out = [];
+        // Résumé de carte tronqué par -webkit-line-clamp : le mot coupé par les points de
+        // suspension a deux boîtes, ce n'est pas une césure. Réponse mémorisée par élément.
+        const clampedMemo = new Map();
+        const clamped = (el) => {
+          if (!el || el === document.body) return false;
+          if (!clampedMemo.has(el)) clampedMemo.set(el, getComputedStyle(el).webkitLineClamp !== 'none' || clamped(el.parentElement));
+          return clampedMemo.get(el);
+        };
+        const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+        for (let n = walker.nextNode(); n; n = walker.nextNode()) {
+          if (!n.textContent.trim() || n.parentElement.closest('script, style, svg') || clamped(n.parentElement)) continue;
+          for (const m of n.textContent.matchAll(/\S+/g)) {
+            const r = document.createRange();
+            r.setStart(n, m.index); r.setEnd(n, m.index + m[0].length);
+            if (r.getClientRects().length > 1 && !/[-‑­/]/.test(m[0])) out.push(m[0]);
+          }
         }
-      }
-      return [...new Set(out)].slice(0, 8);
-    });
-    assert.deepEqual(split, [], `${path} @320px police par défaut : mots coupés`);
+        return [...new Set(out)].slice(0, 8);
+      });
+      if (split.length) failures.push(`${path} @${width}px police par défaut : ${split.join(', ')}`);
+    }
   }
+  await page.close();
+  assert.deepEqual(failures, [], `${failures.length} page(s) avec un mot coupé :\n${failures.join('\n')}`);
 });

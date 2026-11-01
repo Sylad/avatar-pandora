@@ -114,6 +114,22 @@
   }
 }
 
+@layer components {
+  /*
+    Titre d'une fiche du codex (revue de d9f745c) : à 2,25 rem fixes, le plus long mot d'un titre
+    (« bioluminescente », 9,56 em ; « Recombinants », 8,4 em) ne tenait pas dans les 241 px de
+    colonne d'une page de 320 px et « anywhere » le coupait au réglage par défaut sur 15 fiches.
+    La taille suit la largeur de l'écran, de 1,4 rem à 320 px jusqu'à 2,25 rem dès 465 px environ
+    (la colonne fait la largeur de l'écran moins 79 px) : au réglage par défaut, aucun titre n'est
+    coupé de 320 à 1440 px (9,56 em × 24,5 px = 234 px < 241 ; à 414 px, 328 < 335) ;
+    « anywhere » ne sert plus qu'en dernier recours aux polices agrandies.
+  */
+  .entry-title {
+    font-size: clamp(1.4rem, 10.4vw - 0.5rem, 2.25rem);
+    line-height: 1.15;
+  }
+}
+
 /*
   Bioluminescent word-hover effect — used by the article body inside
   the codex AND by the landing tagline. Each text node is split into
