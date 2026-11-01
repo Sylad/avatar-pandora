@@ -496,8 +496,10 @@ lots:
     finished: 2026-11-01
   - id: L51
     title: "Nouveautés : le texte alternatif déclaré dans l'entrée (docs/nouveautes/*.md) n'est jamais rendu sur l'image de la capture (nouveautes.astro:83) — mineur de la revue UX de L50"
+    public: Les captures des Nouveautés affichent leur description complète
     status: doing
     estimate: 1
+    visible: true
     created: 2026-11-01
     started: 2026-11-01
   - id: L52
@@ -507,6 +509,12 @@ lots:
     created: 2026-11-01
     started: 2026-11-01
     review: { date: 2026-11-01, verdict: "conforme — orchestré (vague 2026-11-01-1405-ava, 0 passe(s) de correction + passe des mineurs)", commit: eb55c085040e0a48e1ff032617788cc025d7a357 }
+  - id: L53
+    title: "Visionneuse des Nouveautés, suites de L51 : re-mesurer la hauteur de la légende (--cap-h) sur resize et changement d'orientation (légende coupée de 25 px après 1440×900 → 700×400, Lightbox.astro:107) ; au bureau, la légende ne dépasse pas la largeur de l'image (figure 863 px pour une image de 390 px) ; rendre la vérification « clipped » de R8 capable d'échouer"
+    status: todo
+    estimate: 1
+    visible: true
+    created: 2026-11-01
 acknowledged:
   - { sha: cef464dffb920ea7b161b1b0e06fe54d3efbdcc4, subject: "plan: verdicts UX de Sylvain enregistrés, trois bloquants de la revue des Personnages clos", date: 2026-10-10, reason: entretien du plan et régénération des Nouveautés }
   - { sha: 4bc75e983dc5bff0366190611a9c578d4ed071c8, subject: "plan: prototype Pandora vivant clos, cinq idées retenues par Sylvain posées après les images", date: 2026-10-10, reason: entretien du plan et régénération des Nouveautés (fichier désormais déclaré dérivé) }
