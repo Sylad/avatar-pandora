@@ -148,6 +148,7 @@ lots:
     estimate: 0.25
     created: 2026-09-28
     started: 2026-11-01
+    review: { date: 2026-11-01, verdict: "compliant — 0 finding (skip link verified on /clans/ and /videos/ at 390/1440 px; the 6 interpretation choices of the author hold) — orchestré (vague 2026-11-01-1020-ava, 0 passe(s) de correction)", commit: 74ae10b011c25d0e32d36900163c8f3e0c39620a }
   - id: L14
     title: Page Nouveautés branchée sur cadence news (raf news → page), signature commune des apps
     status: done
