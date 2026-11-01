@@ -293,3 +293,42 @@ test('visionneuse au téléphone : capture de bureau à la hauteur disponible, d
 
 // Lien permanent (/nouveautes/#<slug>) : bouton « Copier le lien », arrivée sur l'ancre —
 // voir scripts/nouveautes-l21.e2e.test.mjs (L21).
+
+test('R8 (L51) — visionneuse : la légende (texte alternatif déclaré, jusqu’à ~200 caractères) tient en entier à l’écran, à 390 et 320 px', { timeout: 180_000 }, async (t) => {
+  const env = await setupBrowser(t);
+  if (!env) return;
+  for (const [width, height] of [[390, 844], [320, 568]]) {
+    const context = await env.browser.newContext({ viewport: { width, height } });
+    const page = await context.newPage();
+    await page.goto(`${env.base}/nouveautes/`, { waitUntil: 'load' });
+    const n = await page.locator('.news-capture').count();
+    assert.ok(n > 0, 'aucune capture');
+    for (let i = 0; i < n; i++) {
+      const link = page.locator('.news-capture').nth(i);
+      await link.scrollIntoViewIfNeeded();
+      await link.locator('img').click();
+      await page.waitForFunction(() => {
+        const im = document.querySelector('#eywa-lightbox .eywa-lightbox__img');
+        return document.getElementById('eywa-lightbox').hasAttribute('open') && im.complete && im.naturalWidth > 0;
+      });
+      await page.waitForTimeout(80);
+      const m = await page.evaluate(() => {
+        const d = document.getElementById('eywa-lightbox');
+        const cap = d.querySelector('.eywa-lightbox__caption');
+        const fig = d.querySelector('.eywa-lightbox__figure');
+        const c = cap.getBoundingClientRect();
+        return {
+          text: cap.textContent.slice(0, 40), bottom: c.bottom, figBottom: fig.getBoundingClientRect().bottom,
+          clipped: cap.scrollHeight > cap.clientHeight + 1, vh: innerHeight,
+        };
+      });
+      const who = `${width}px, capture ${i + 1} (« ${m.text}… »)`;
+      assert.ok(m.bottom <= m.vh + 0.5, `${who} : bas de la légende à ${m.bottom}px, écran de ${m.vh}px`);
+      assert.ok(m.bottom <= m.figBottom + 0.5, `${who} : légende rognée par le cadre (${m.bottom} > ${m.figBottom})`);
+      assert.ok(!m.clipped, `${who} : légende tronquée`);
+      await page.keyboard.press('Escape');
+      await page.waitForFunction(() => !document.getElementById('eywa-lightbox').hasAttribute('open'));
+    }
+    await context.close();
+  }
+});

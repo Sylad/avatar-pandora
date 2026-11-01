@@ -104,6 +104,7 @@
       } else {
         dialog.setAttribute('open', '');
       }
+      dialog.style.setProperty('--cap-h', `${cap.offsetHeight}px`);
       document.documentElement.classList.add('eywa-lightbox-open');
       return true;
     };
@@ -202,7 +203,9 @@
   .eywa-lightbox__img {
     display: block;
     max-width: 100%;
-    max-height: calc(92vh - 2.5rem);
+    /* --cap-h : hauteur réelle de la légende (texte alternatif de l'entrée, parfois sur plusieurs lignes),
+       mesurée à l'ouverture ; c'est l'image qui cède la place. */
+    max-height: calc(92vh - 0.6rem - var(--cap-h, 1.9rem));
     width: auto;
     height: auto;
     object-fit: contain;
@@ -276,7 +279,7 @@
   .eywa-lightbox.is-pan .eywa-lightbox__img {
     max-width: none;
     width: auto;
-    height: min(var(--nat-h, 100dvh), calc(100dvh - 9.5rem));
+    height: min(var(--nat-h, 100dvh), calc(100dvh - 7rem - var(--cap-h, 2.5rem)));
     max-height: none;
   }
   .eywa-lightbox.is-pan .eywa-lightbox__hint {
