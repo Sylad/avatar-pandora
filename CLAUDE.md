@@ -71,6 +71,11 @@ tiroir du téléphone (y compris après une navigation ClientRouter), contraste 
 tournent `CADENCE_TEST_WORKERS` à la fois (`--test-concurrency`, 4 sans la variable) : chacun lance son Chromium,
 et tous en parallèle sur les 32 cœurs, un test navigateur dépassait son délai sous la charge. Chromium via
 `playwright-core` (devDependency) ; les tests navigateur passent en « skip » s'il manque.
+`playwright-core` est épinglé à la version dont la révision Chromium est installée dans `~/.cache/ms-playwright`
+(1.65.1 → `chromium_headless_shell-1255`) : jusqu'au 17-11-2026, la 1.63.0 cherchait la révision 1243, absente,
+et 156 tests sur 242 passaient en « skip » sans que la suite échoue — compter les `# skipped` après une montée.
+`overrides.vite` du `package.json` garde un seul Vite, celui d'Astro (7) : sans lui, `npm update` remonte Vite 8
+à la racine et `@tailwindcss/vite` casse le build (« Missing field `tsconfigPaths` »). À revoir au passage à Astro 7.
 `EYWA_E2E_SHOTS=<dossier>` enregistre des captures de /nouveautes/ à 1440, 390 et 320 px.
 
 ⚠ ClientRouter : un script `is:inline` identique sur toutes les pages ne s'exécute qu'au premier
