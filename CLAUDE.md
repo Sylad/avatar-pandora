@@ -69,7 +69,9 @@ passent par `scripts/lib/astro-node.mjs`, qui relance Astro avec le Node de `.nv
 comme dans la porte des vagues) : données des
 Nouveautés et du Plan de travail, et tests navigateur sur le site **construit** (`frontend/dist`, lancer le
 build avant) — pages Nouveautés et Plan de travail (dont l'absence de tout texte privé du plan dans `dist/`),
-tiroir du téléphone (y compris après une navigation ClientRouter), contraste au pire pixel. Les fichiers de test
+tiroir du téléphone (y compris après une navigation ClientRouter), contraste au pire pixel. Sans `frontend/dist`,
+`test:scripts` s'arrête d'emblée (`pretest:scripts` → `scripts/lib/require-dist.mjs`) : le 17-11, la porte avait tourné
+sans lui, 158 échecs trompeurs sur 246. Les fichiers de test
 tournent `CADENCE_TEST_WORKERS` à la fois (`--test-concurrency`, 4 sans la variable) : chacun lance son Chromium,
 et tous en parallèle sur les 32 cœurs, un test navigateur dépassait son délai sous la charge. Chromium via
 `playwright-core` (devDependency) ; les tests navigateur passent en « skip » s'il manque.

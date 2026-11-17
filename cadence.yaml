@@ -26,11 +26,12 @@ orchestrate:
   # Porte de tests (L38, 25-10) : la vague lance ces deux commandes après chaque écriture ; un rouge part en correction.
   # Vérifiées vertes sur main le 25-10 : 112/112 tests, 81 pages construites. Il n'y a rien d'autre à tester : le projet n'a
   # que la suite `node --test` des scripts (données de Nouveautés et du Plan de travail, tests navigateur sur frontend/dist).
-  # Les tests navigateur lisent frontend/dist (sinon ils passent en « skip »).
+  # Les tests navigateur lisent frontend/dist ; sans lui, `test:scripts` s'arrête tout de suite (scripts/lib/require-dist.mjs).
   build: 'cd frontend && npm run build'
-  # L39 (25-10) : cadence joue maintenant `build` AVANT `test`, ligne de base comprise (cadence L333) — le build
-  # n'est plus répété ici ; les tests qui lisent frontend/dist le trouvent construit par la porte `build`.
-  test: 'cd frontend && npm run test:scripts'
+  # L39 (25-10) : cadence joue `build` AVANT `test` (cadence L333). L59 (17-11) : le build est rejoué ici quand même —
+  # la porte complète a tourné une fois sans frontend/dist (158 échecs sur 246, pages vides) ; ~7 s, et `test`
+  # ne dépend plus de l'état laissé par une autre commande. `test:scripts` refuse aussi de démarrer sans dist.
+  test: 'cd frontend && npm run build && npm run test:scripts'
   # Précheck sur Sonnet (cadence L328) : tranche si le livrable d'un lot est déjà là avant de lancer le travail.
   precheck: true
   ux:
