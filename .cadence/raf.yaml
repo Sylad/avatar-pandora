@@ -315,10 +315,11 @@ lots:
   - id: L29
     title: "Fiches du codex : classe prose sans effet (typography absent, Tailwind 4) — paragraphes collés, h2 à la taille du corps, lignes de ~128 car. ; styles de lecture aux couleurs Eywa (revue UX L3)"
     public: "Fiches : paragraphes et titres enfin mis en forme"
-    status: todo
+    status: doing
     estimate: 0.25
     visible: true
     created: 2026-10-10
+    started: 2026-11-17
   - id: L30
     title: "Cartes du codex au toucher : 1,6 s d'attente avant la navigation (bloom) puis rechargement complet — naviguer tout de suite par le ClientRouter, effet ≤ 200 ms (Nielsen 1, revue UX L3)"
     public: "Codex : une carte touchée ouvre sa fiche sans attendre"
