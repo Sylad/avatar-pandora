@@ -58,7 +58,7 @@ Sidebar 320px sticky pattern warhammer (lore court, liens rapides, ressources ex
 
 ## Workflow dev
 
-Dev local : `cd frontend && source ~/.nvm/nvm.sh && nvm use 22 && npm run dev`. Cloudflare Pages construit et publie lui-même à chaque `git push origin main` (~2 min) ; la livraison se fait par `cadence deliver` (config dans `cadence.yaml`), qui vérifie que la page d'accueil porte le sha poussé.
+Dev local : `cd frontend && source ~/.nvm/nvm.sh && nvm use && npm run dev` (Node ≥ 22.23.4, 22.23.5 épinglé dans `.nvmrc`, que `nvm use` lit). Cloudflare Pages construit et publie lui-même à chaque `git push origin main` (~2 min) ; la livraison se fait par `cadence deliver` (config dans `cadence.yaml`), qui vérifie que la page d'accueil porte le sha poussé.
 
 ## Tests
 

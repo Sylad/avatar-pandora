@@ -34,7 +34,10 @@ orchestrate:
   # Précheck sur Sonnet (cadence L328) : tranche si le livrable d'un lot est déjà là avant de lancer le travail.
   precheck: true
   ux:
-    command: 'cd frontend && npx astro dev --port 4313 --host 127.0.0.1'
+    # --ignore-lock (L59) : Astro 7 détecte un agent (AI_AGENT, CLAUDECODE) et passe alors `astro dev` en arrière-plan ;
+    # la commande rendait le code 0 en 2 s et laissait un serveur orphelin sur 4313. Avec l'option, il reste au premier plan.
+    # Par le lanceur (npm run dev) : Node de .nvmrc si celui du PATH est trop ancien pour Astro 7.
+    command: 'cd frontend && npm run dev -- --port 4313 --host 127.0.0.1 --ignore-lock'
     url: http://127.0.0.1:4313
     timeout: 300
 

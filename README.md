@@ -47,7 +47,7 @@ Le site est aussi un labo perso : 4ᵉ projet où j'explore des stacks que je ne
 | Animation | **GSAP** (animations + ScrollTrigger réservé Plan 2 si besoin) |
 | Contenu | **Astro Content Collections** (markdown + Zod schema) |
 | Backend | **Aucun** — site 100 % statique ; l'ancien proxy d'images Fandom (NestJS + Cloudflare Function) et le backend NestJS ont été retirés le 01-10-2026 |
-| Dev local | `npm run dev` dans `frontend/` (Node 22) |
+| Dev local | `npm run dev` dans `frontend/` (Node ≥ 22.23.4, 22.23.5 épinglé dans `.nvmrc`) |
 | Infra public | **Cloudflare Pages** — build auto sur push, CDN mondial, HTTPS auto, free tier généreux |
 
 ## Sources canoniques pour le contenu
@@ -59,11 +59,11 @@ Le site est aussi un labo perso : 4ᵉ projet où j'explore des stacks que je ne
 
 ## Développement local
 
-Pré-requis : Node 22 (ou 22+), npm.
+Pré-requis : Node ≥ 22.23.4 (Astro 7 refuse de démarrer en dessous ; 22.23.5 épinglé dans `.nvmrc`), npm.
 
 ```bash
 cd frontend
-nvm use 22
+nvm use      # lit .nvmrc (22.23.5)
 npm install
 npm run dev
 # → http://localhost:4321
