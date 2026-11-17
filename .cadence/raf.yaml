@@ -318,6 +318,7 @@ lots:
     status: done
     estimate: 0.25
     visible: true
+    delivered: { date: 2026-11-17, sha: e424b70a331fa213748506d471ffc4c45159c55f }
     created: 2026-10-10
     started: 2026-11-17
     review: { date: 2026-11-17, verdict: "conforme (revue UX avec lecture du diff) : styles de lecture aux jetons Eywa, 0 majeur ; mineurs en note : intertitre égal au corps à 320 px (clamp 1em), colonne calée à gauche à 1440, #fff en dur sur strong ; joué sur mini-blue (D-10)", commit: a01a9dd37f33ff37d60a029ffc96a47241a0d0c8 }
