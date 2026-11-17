@@ -6,7 +6,7 @@
 // Lit frontend/dist ; skip sans playwright-core/Chromium.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { ringContrast, setupBrowser, worstPixelContrast } from './lib/e2e-dist.mjs';
+import { nextFrames, ringContrast, setupBrowser, worstPixelContrast } from './lib/e2e-dist.mjs';
 
 // En-tête commun des pages méta (components/MetaHeader.astro) : Nouveautés et Plan de
 // travail (L20), mesurés tous les deux.
@@ -59,6 +59,9 @@ test('en-tête de /nouveautes/ et /plan-de-travail/ : anneau de 2 px autour des 
     const page = await context.newPage();
     await page.goto(`${env.base}${path}`, { waitUntil: 'load' });
     await page.evaluate(() => document.fonts.ready);
+    // L60 — page rendue (démarrage du GPU parfois long sous charge, cf. nextFrames) avant de laisser
+    // l'ambiance tourner 1,5 s : sinon la première capture attendait une image au-delà de 30 s.
+    await nextFrames(page);
     await page.waitForTimeout(1500);
     for (const sel of SELECTORS) {
       const { ring, min, p1, share } = await ringContrast(page, sel);

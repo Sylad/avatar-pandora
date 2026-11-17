@@ -54,6 +54,19 @@ export async function setupBrowser(t, { scrollbars = false } = {}) {
   return { browser, base: `http://127.0.0.1:${server.address().port}` };
 }
 
+// Attend `n` images rendues (requestAnimationFrame), sans délai propre : seul celui du test borne l'attente (L60).
+// - Première image d'une page : le processus GPU de Chromium (SwiftShader) met parfois jusqu’à une minute à démarrer, plus
+//   souvent sous charge ; d'ici là aucune image n'est produite, et la première capture ou le premier
+//   `scrollIntoViewIfNeeded` (qui en attendent une) dépassaient leur délai de 30 s.
+// - Après un redimensionnement : l'événement `resize` et les rappels ResizeObserver partent au rendu d'une image,
+//   pas après un délai fixe ; deux images garantissent qu'ils ont tourné.
+export function nextFrames(page, n = 2) {
+  return page.evaluate((count) => new Promise((resolve) => {
+    const step = () => (--count <= 0 ? resolve() : requestAnimationFrame(step));
+    requestAnimationFrame(step);
+  }), n);
+}
+
 // Contraste au PIRE PIXEL d'un texte posé sur un fond non uni (image, vidéo).
 // Deux captures de la boîte de l'élément : texte transparent (le fond tel qu'il est
 // vu derrière les lettres, ombre portée comprise), puis texte visible ; les pixels qui

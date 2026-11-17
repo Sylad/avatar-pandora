@@ -10,7 +10,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { existsSync, mkdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { DIST, setupBrowser } from './lib/e2e-dist.mjs';
+import { DIST, nextFrames, setupBrowser } from './lib/e2e-dist.mjs';
 
 const DATA = JSON.parse(readFileSync(new URL('../frontend/public/nouveautes-data/nouveautes.json', import.meta.url), 'utf8'));
 const PAGE = join(DIST, 'nouveautes', 'index.html');
@@ -360,18 +360,23 @@ test('R8 (L51) — visionneuse : la légende (texte alternatif déclaré, jusqu�
 const LONG_CAPTION = 'L27-cartes-clans.png';
 const PHONE_SHOT = 'L13-lien-evitement-390.png';
 
-test('R1 (L53) — visionneuse : la hauteur de la légende est re-mesurée au redimensionnement et au changement d’orientation, elle ne se coupe plus', { timeout: 120_000 }, async (t) => {
+test('R1 (L53) — visionneuse : la hauteur de la légende est re-mesurée au redimensionnement et au changement d’orientation, elle ne se coupe plus', { timeout: 240_000 }, async (t) => {
   const env = await setupBrowser(t);
   if (!env) return;
   const context = await env.browser.newContext({ viewport: { width: 1440, height: 900 } });
   const page = await context.newPage();
   await page.goto(`${env.base}/nouveautes/`, { waitUntil: 'load' });
+  // L60 — première image rendue avant tout (démarrage du GPU parfois long sous charge, cf. nextFrames).
+  await nextFrames(page);
   for (const file of [LONG_CAPTION, PHONE_SHOT]) {
     await page.setViewportSize({ width: 1440, height: 900 });
     await openViewer(page, file);
     for (const [width, height] of [[700, 400], [400, 700], [1440, 900], [320, 568], [568, 320]]) {
       await page.setViewportSize({ width, height });
-      await page.waitForTimeout(250);
+      // L60 — « resize » et ResizeObserver ne partent qu'au rendu d'une image : sous charge, 250 ms fixes
+      // pouvaient passer avant, et --cap-h était lu périmé. On attend la nouvelle taille, puis deux images.
+      await page.waitForFunction(([w, h]) => innerWidth === w && innerHeight === h, [width, height]);
+      await nextFrames(page);
       const m = await page.evaluate(`(() => {
         const clips = ${FIGURE_CLIPS_CAPTION};
         const d = document.getElementById('eywa-lightbox');
