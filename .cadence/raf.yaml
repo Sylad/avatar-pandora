@@ -327,10 +327,11 @@ lots:
   - id: L30
     title: "Cartes du codex au toucher : 1,6 s d'attente avant la navigation (bloom) puis rechargement complet — naviguer tout de suite par le ClientRouter, effet ≤ 200 ms (Nielsen 1, revue UX L3)"
     public: "Codex : une carte touchée ouvre sa fiche sans attendre"
-    status: todo
+    status: doing
     estimate: 0.25
     visible: true
     created: 2026-10-10
+    started: 2026-11-17
   - id: L31
     title: "Direction « Pandora vivant » : prototype interactif publié en lien privé (lumière bioluminescente qui s'allume au toucher puis s'éteint, cartes qui s'éveillent au survol, silhouettes d'ikrans dans les bandeaux, cycle jour/nuit, eau qui ondule) avec les images générées en local, respect de prefers-reduced-motion et pause ; Sylvain choisit ce qui devient des lots"
     status: done
