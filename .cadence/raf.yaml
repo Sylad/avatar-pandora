@@ -262,10 +262,14 @@ lots:
     created: 2026-10-02
   - id: L24
     title: "Nettoyage récurrent des fichiers de travail devenus inutiles (consigne Sylvain 02-10) : dossier tmp partagé (captures, scripts de mesure, builds de démonstration), documents périmés (specs et plans de lots livrés, audits dépassés), scripts jetables, captures non référencées, dépendances et fichiers générés orphelins — lister avant de supprimer, ne rien effacer hors tmp sans l'avoir regardé, garder ce que les Nouveautés ou la doc référencent ; à refaire à chaque clôture de vague, rouvrir ce lot ou en créer un nouveau"
-    status: doing
+    status: done
     estimate: 0.25
     created: 2026-10-02
     started: 2026-11-17
+    review: { date: 2026-11-17, verdict: "conforme (relu par le lead, documents seuls) : 3 plans de mai livrés et périmés retirés, aucune référence restante hors README mis à jour ; porte rejouée sur Big-Blue avec Chromium : verte (un 1er passage rouge sur R1 L53 visionneuse, vert au 2e : instable sous charge)", commit: bbe030b329624983166de2746c7d8eb0c19c526a }
+    notes:
+      - { date: 2026-11-17, text: "17-11 : 1er lot joué sur mini-blue (essai D-10) : run de 61 min, 1 commit ramené par bundle ; Chromium absent là-bas → 156 tests navigateur sautés dans sa porte, rejouée ici" }
+    finished: 2026-11-17
   - id: L25
     title: orchestrate.ux déclaré (port 4313) pour la revue UX automatique des vagues — suite de cadence L95
     status: done
