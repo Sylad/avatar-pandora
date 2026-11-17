@@ -104,8 +104,7 @@ avatar-pandora/
 │   │   ├── pages/            ← landing + codex + entries dynamiques
 │   │   └── styles/global.css
 └── docs/superpowers/
-    ├── specs/                ← spec design initial
-    └── plans/                ← plans d'implémentation V1, V2, V3
+    └── specs/                ← spec design initial
 ```
 
 ## Crédits
