@@ -239,6 +239,39 @@
   margin-block: 1.8em 0.6em;
 }
 
+/* Styles de lecture des fiches (L29, revue UX de L3) : sans le plugin, les h2 tombaient à la
+   taille du corps (préflight) et les lignes faisaient ~120 caractères à 1440 px. Colonne de
+   lecture de 28 em (~75 caractères en Cormorant), titres en Orbitron cyan à 1,2 em, sources en
+   citation sobre. L'intertitre suit la largeur de l'article (conteneur de .entry-title) entre
+   1 et 1,2 em : « Bioluminescence » (9,7 em) tient dans les 226 px de colonne d'une page de
+   320 px avec barre de défilement ; jamais plus petit que le corps aux polices agrandies. */
+.entry-body {
+  max-inline-size: 28em;
+}
+.entry-body > :first-child {
+  margin-block-start: 0;
+}
+.entry-body > h2 {
+  font-size: clamp(1em, 8cqi, 1.2em);
+  line-height: 1.3;
+  letter-spacing: 0.03em;
+  color: var(--color-eywa-bio-primary);
+  text-wrap: balance;
+}
+.entry-body strong {
+  font-weight: 650;
+  color: #fff;
+}
+.entry-body > blockquote {
+  border-inline-start: 2px solid rgba(95, 255, 230, 0.45);
+  padding-inline-start: 1em;
+  color: var(--color-eywa-text-muted);
+  font-style: italic;
+}
+.entry-body > blockquote > p {
+  margin: 0;
+}
+
 /* Lien d'évitement (L13, WCAG 2.4.1) : hors de l'écran au repos, en haut à gauche au focus,
    au-dessus du menu et de la pause fixes (z-index 60 pour le menu). */
 .eywa-skip-link {

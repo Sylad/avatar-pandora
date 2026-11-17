@@ -8,6 +8,8 @@ import { setupBrowser, worstPixelContrast } from './lib/e2e-dist.mjs';
 const CASES = [
   { path: '/clans/', sel: '.entry-card__summary', label: 'résumé de carte' },
   { path: '/clans/omatikaya/', sel: 'article .font-body p', label: 'paragraphe de fiche' },
+  { path: '/clans/omatikaya/', sel: 'article .entry-body > h2', label: 'intertitre de fiche (L29)' },
+  { path: '/clans/omatikaya/', sel: 'article .entry-body > blockquote', label: 'source en citation (L29)' },
   { path: '/langue/', sel: 'header p.italic', label: 'chapô de la page Langue' },
   { path: '/langue/', sel: 'header h1', label: 'titre de la page Langue' },
 ];
