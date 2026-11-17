@@ -612,10 +612,12 @@ lots:
     finished: 2026-11-17
   - id: L60
     title: "Tests navigateur instables sous charge : R1 (L53) visionneuse et le contraste de l'anneau de l'en-tête de /nouveautes/ et /plan-de-travail/ rougissent un 1er passage de porte puis passent au 2e (17-11, portes de L24 et L29 avec un banc ou une éval en parallèle) — attendre l'état stable avant de mesurer, sans relâcher les seuils"
-    status: doing
+    status: done
     estimate: 0.25
     created: 2026-11-17
     started: 2026-11-17
+    review: { date: 2026-11-17, verdict: "conforme (relu par le lead, tests seuls) : attente d'images rendues au lieu de délais fixes, aucun seuil changé ; mesuré sous charge (20 boucles CPU, 10 passages) : R1 6/10 → 0/10, anneau 8/10 → 0/10 ; joué sur mini-blue (D-10)", commit: 74df650a5d50810cc043249dc3b9a6db393ef059 }
+    finished: 2026-11-17
 acknowledged:
   - { sha: cef464dffb920ea7b161b1b0e06fe54d3efbdcc4, subject: "plan: verdicts UX de Sylvain enregistrés, trois bloquants de la revue des Personnages clos", date: 2026-10-10, reason: entretien du plan et régénération des Nouveautés }
   - { sha: 4bc75e983dc5bff0366190611a9c578d4ed071c8, subject: "plan: prototype Pandora vivant clos, cinq idées retenues par Sylvain posées après les images", date: 2026-10-10, reason: entretien du plan et régénération des Nouveautés (fichier désormais déclaré dérivé) }
