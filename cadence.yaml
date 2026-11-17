@@ -16,7 +16,7 @@ deliver:
   verifyTimeout: 600
 
 # Revue UX automatique des vagues (cadence orchestrate) : le programme lance l'app depuis la racine,
-# sonde l'URL puis tue le groupe. Node 22 (.nvmrc) : le Node par défaut de la machine est trop ancien pour Astro 6.
+# sonde l'URL puis tue le groupe. Node 22.23.5 (.nvmrc) : le Node par défaut de la machine est trop ancien pour Astro 7 (≥ 22.23.4).
 orchestrate:
   # Un test de la porte lit le plan (plan publié / page Plan) : verify --gate rejoue sous des commits de plan seuls (cadence L450, 30-10).
   gate: { readsPlan: true }

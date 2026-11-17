@@ -64,7 +64,7 @@ Dev local : `cd frontend && source ~/.nvm/nvm.sh && nvm use 22 && npm run dev`. 
 
 `cd frontend && npm run build` (81 pages) valide la cohérence (Content Collections + schéma Zod, types, intégrations Astro).
 Puis `npm run test:scripts` (`node --test ../scripts/*.test.mjs`, Node ≥ 22.18 : les tests importent les
-modules `.ts` tels quels — `export PATH=$HOME/.nvm/versions/node/v22.22.3/bin:$PATH`) : données des
+modules `.ts` tels quels — `export PATH=$HOME/.nvm/versions/node/v22.23.5/bin:$PATH` ; Astro 7 refuse de démarrer avant Node 22.23.4, `.nvmrc` épingle 22.23.5) : données des
 Nouveautés et du Plan de travail, et tests navigateur sur le site **construit** (`frontend/dist`, lancer le
 build avant) — pages Nouveautés et Plan de travail (dont l'absence de tout texte privé du plan dans `dist/`),
 tiroir du téléphone (y compris après une navigation ClientRouter), contraste au pire pixel. Les fichiers de test
@@ -74,8 +74,10 @@ et tous en parallèle sur les 32 cœurs, un test navigateur dépassait son déla
 `playwright-core` est épinglé à la version dont la révision Chromium est installée dans `~/.cache/ms-playwright`
 (1.65.1 → `chromium_headless_shell-1255`) : jusqu'au 17-11-2026, la 1.63.0 cherchait la révision 1243, absente,
 et 156 tests sur 242 passaient en « skip » sans que la suite échoue — compter les `# skipped` après une montée.
-`overrides.vite` du `package.json` garde un seul Vite, celui d'Astro (7) : sans lui, `npm update` remonte Vite 8
-à la racine et `@tailwindcss/vite` casse le build (« Missing field `tsconfigPaths` »). À revoir au passage à Astro 7.
+Astro 7 (L59, 17-11-2026) embarque Vite 8 : l'ancien `overrides.vite` (qui forçait Vite 7 sous Astro 6) est retiré.
+`compressHTML: true` dans `astro.config.mjs` garde les espaces entre éléments en ligne (défaut `'jsx'` d'Astro 7 :
+le texte des 81 pages changeait). Le minifieur CSS de Vite 8 fusionne `transform` et `translate` d'une même règle en
+un seul `transform` : ne pas les poser ensemble quand `translate` doit annuler un utilitaire Tailwind 4 (tiroir de la Sidebar).
 `EYWA_E2E_SHOTS=<dossier>` enregistre des captures de /nouveautes/ à 1440, 390 et 320 px.
 
 ⚠ ClientRouter : un script `is:inline` identique sur toutes les pages ne s'exécute qu'au premier

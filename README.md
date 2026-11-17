@@ -2,7 +2,7 @@
 
 [![Built with Claude Code](https://img.shields.io/badge/Built%20with-Claude%20Code-D97757?logo=anthropic&logoColor=white)](https://claude.com/claude-code)
 [![Reviewed with Codex](https://img.shields.io/badge/Reviewed%20with-Codex-111827?logo=openai&logoColor=white)](https://openai.com/codex)
-[![Astro 6](https://img.shields.io/badge/Astro-6-FF5D01?logo=astro&logoColor=white)](https://astro.build)
+[![Astro 7](https://img.shields.io/badge/Astro-7-FF5D01?logo=astro&logoColor=white)](https://astro.build)
 [![Three.js](https://img.shields.io/badge/Three.js-R3F-000000?logo=three.js&logoColor=white)](https://r3f.docs.pmnd.rs)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
@@ -41,7 +41,7 @@ Le site est aussi un labo perso : 4ᵉ projet où j'explore des stacks que je ne
 
 | Couche | Choix |
 |---|---|
-| Frontend | **Astro 6** (paradigme islands, statique-first), **React 19** pour les îlots interactifs, **TypeScript strict** |
+| Frontend | **Astro 7** (paradigme islands, statique-first), **React 19** pour les îlots interactifs, **TypeScript strict** |
 | Style | **Tailwind CSS 4** (vite plugin + tokens `@theme`), palette bioluminescente Pandora custom |
 | WebGL | **@react-three/fiber** + **@react-three/drei** + **three** — ParticleField shader GLSL custom |
 | Animation | **GSAP** (animations + ScrollTrigger réservé Plan 2 si besoin) |

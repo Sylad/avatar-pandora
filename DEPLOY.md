@@ -28,7 +28,7 @@ Renseigner :
 | Build command | `cd frontend && npm install && npm run build` |
 | Build output directory | `frontend/dist` |
 | Root directory | (laisser vide — racine du repo) |
-| Node version (env var `NODE_VERSION`) | `22` |
+| Node version (env var `NODE_VERSION`) | `22.23.5` (Astro 7 exige ≥ 22.23.4 ; même valeur que `.nvmrc`) |
 
 ### 3. Premier déploiement
 
