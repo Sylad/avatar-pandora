@@ -574,6 +574,7 @@ lots:
     title: "QA : ajouter /plan-de-travail/ à docs/qa/expectations.md (page non couverte, QA du 01-11)"
     status: done
     estimate: 0.05
+    delivered: { date: 2026-11-17, sha: bbabb22cffdf30fd88226d2519dfa6accf1af28f }
     created: 2026-11-01
     started: 2026-11-01
     review: { date: 2026-11-01, verdict: "compliant — orchestré (vague 2026-11-01-2125-ava, 0 passe(s) de correction)", commit: d9dfe9230ffd2b197b70e825fc477f9a07fe8823 }
@@ -583,6 +584,7 @@ lots:
     status: done
     estimate: 0.5
     every: 30
+    delivered: { date: 2026-11-17, sha: bbabb22cffdf30fd88226d2519dfa6accf1af28f }
     created: 2026-11-16
     started: 2026-11-17
     review: { date: 2026-11-17, verdict: "conforme : 0 bloquant ; aucune majeure directe ; override vite ^7.3.8 compris par npm 10.9 de Cloudflare ; 242 tests, 0 sauté ; non vérifié : build Cloudflare Pages, npm audit", commit: 97473b1f498a89528d73b8db574fa99987449dc8 }
