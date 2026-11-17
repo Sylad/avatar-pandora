@@ -84,9 +84,10 @@ const imgSrc = coverImageSrc(cover);
   }
 
   /*
-    Tap → bloom : on tactile devices (no hover), JS intercepts the click,
-    adds .is-blooming for 1.5s with a stronger glow + scale, then runs
-    the navigation. Mirrors the "Pandora floor lights up under footstep"
+    Tap → bloom : on tactile devices (no hover), JS adds .is-blooming on the
+    tap for 200 ms (stronger glow + scale) while the ClientRouter already
+    loads the entry — the feedback never delays the navigation (L30,
+    Nielsen 1). Mirrors the "Pandora floor lights up under footstep"
     metaphor for fingertip taps.
   */
   .entry-card.is-blooming {
@@ -95,7 +96,7 @@ const imgSrc = coverImageSrc(cover);
       0 0 0 1px rgba(95, 255, 230, 0.20) inset,
       0 0 48px -2px rgba(95, 255, 230, 0.65),
       0 0 90px -10px rgba(127, 255, 143, 0.45);
-    animation: entry-card-bloom 1500ms ease-out;
+    animation: entry-card-bloom 200ms ease-out;
   }
   .entry-card.is-blooming::before {
     opacity: 1;
@@ -235,17 +236,19 @@ const imgSrc = coverImageSrc(cover);
 <script is:inline data-entry-card-tap>
   /*
     Tap-friendly bloom on .entry-card. On devices without hover
-    (mobile/tablet — `(hover: none)`), we intercept the click, paint
-    .is-blooming for 1.5s, then run the navigation. Honors:
-      - prefers-reduced-motion → skip the bloom, navigate immediately
-      - middle/cmd/ctrl/shift click → don't intercept (let new tab work)
-      - already-blooming card → don't re-trigger
+    (mobile/tablet — `(hover: none)`), a tap paints .is-blooming for 200 ms.
+    The click is NOT intercepted : the ClientRouter navigates at once,
+    without reload (L30 — it used to wait 1.5 s then reload the page). Honors:
+      - prefers-reduced-motion → no bloom
+      - middle/cmd/ctrl/shift click → no bloom (new tab / new window)
+    One listener on `document`, set once : it survives ClientRouter swaps.
   */
   (() => {
     if (typeof window === 'undefined') return;
     if (window.__eywaEntryCardTapInit) return;
     window.__eywaEntryCardTapInit = true;
 
+    const BLOOM_MS = 200;
     const wantsBloom = () => window.matchMedia('(hover: none)').matches;
     const reducedMotion = () =>
       window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -258,22 +261,16 @@ const imgSrc = coverImageSrc(cover);
         if (!card) return;
         if (!wantsBloom()) return;
         if (reducedMotion()) return;
-        // Modifier keys → let the browser handle (new tab / new window)
-        const me = e;
-        if (me.metaKey || me.ctrlKey || me.shiftKey || me.altKey) return;
-        if (me.button !== undefined && me.button !== 0) return;
-        if (card.classList.contains('is-blooming')) return;
+        if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+        if (e.button !== undefined && e.button !== 0) return;
 
-        const href = card.getAttribute('href');
-        if (!href) return;
-
-        e.preventDefault();
+        // Restart the animation if the card is tapped again.
+        card.classList.remove('is-blooming');
+        void card.offsetWidth;
         card.classList.add('is-blooming');
-        window.setTimeout(() => {
-          window.location.assign(href);
-        }, 1500);
+        window.setTimeout(() => card.classList.remove('is-blooming'), BLOOM_MS);
       },
-      // Capture phase so we run before any inner element steals the click.
+      // Capture phase so the bloom is painted before the router swaps the page.
       true
     );
   })();

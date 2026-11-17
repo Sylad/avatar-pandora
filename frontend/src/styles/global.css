@@ -160,7 +160,7 @@
   Tap-friendly bioluminescence — devices without hover (mobile/tablet)
   never see the cursor halo, the .bio-word:hover tint, or the entry-card
   hover bloom. We compensate with an IntersectionObserver-driven random
-  pulse on .bio-word and a tap → .is-blooming → navigate flow on cards.
+  pulse on .bio-word and a short tap → .is-blooming flash on cards (L30).
 
   .is-pulsing is added by JS to 2-3 visible bio-words at a time on a
   ~3-5s cycle. The animation fades the cyan glow in/out so a few words
