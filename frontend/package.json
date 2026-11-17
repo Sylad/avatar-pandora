@@ -6,11 +6,11 @@
     "node": ">=22.23.4"
   },
   "scripts": {
-    "dev": "astro dev",
-    "build": "astro build",
-    "preview": "astro preview",
+    "dev": "node ../scripts/lib/astro-node.mjs dev",
+    "build": "node ../scripts/lib/astro-node.mjs build",
+    "preview": "node ../scripts/lib/astro-node.mjs preview",
     "news": "rm -rf public/nouveautes-data && cadence news build -o public/nouveautes-data && rm -f public/nouveautes-data/index.html",
-    "astro": "astro",
+    "astro": "node ../scripts/lib/astro-node.mjs",
     "test:scripts": "node --test --test-concurrency=${CADENCE_TEST_WORKERS:-4} ../scripts/*.test.mjs"
   },
   "dependencies": {
