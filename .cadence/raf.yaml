@@ -330,6 +330,7 @@ lots:
     status: done
     estimate: 0.25
     visible: true
+    delivered: { date: 2026-11-17, sha: 32993b0d951dc2a16b5f9d175c6f0db1e38338e1 }
     created: 2026-10-10
     started: 2026-11-17
     review: { date: 2026-11-17, verdict: "conforme (relu par le lead) : le clic n'est plus intercepté, ClientRouter navigue aussitôt, éclat ramené à 200 ms, reduced-motion et touches modificatrices respectées ; mesuré 1 593 ms → 123 ms ; test e2e au toucher 390 et au clic 1440 ; joué sur mini-blue (D-10)", commit: ac27a98e5614cc9931ab7bd87f1e70af9e9915da }
@@ -618,6 +619,7 @@ lots:
     title: "Tests navigateur instables sous charge : R1 (L53) visionneuse et le contraste de l'anneau de l'en-tête de /nouveautes/ et /plan-de-travail/ rougissent un 1er passage de porte puis passent au 2e (17-11, portes de L24 et L29 avec un banc ou une éval en parallèle) — attendre l'état stable avant de mesurer, sans relâcher les seuils"
     status: done
     estimate: 0.25
+    delivered: { date: 2026-11-17, sha: 32993b0d951dc2a16b5f9d175c6f0db1e38338e1 }
     created: 2026-11-17
     started: 2026-11-17
     review: { date: 2026-11-17, verdict: "conforme (relu par le lead, tests seuls) : attente d'images rendues au lieu de délais fixes, aucun seuil changé ; mesuré sous charge (20 boucles CPU, 10 passages) : R1 6/10 → 0/10, anneau 8/10 → 0/10 ; joué sur mini-blue (D-10)", commit: 74df650a5d50810cc043249dc3b9a6db393ef059 }
