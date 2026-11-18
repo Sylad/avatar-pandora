@@ -632,6 +632,12 @@ lots:
     visible: true
     created: 2026-11-18
     started: 2026-11-18
+    review: { date: 2026-11-18, verdict: "conforme : 0 bloquant ; test L61 6/6, il échoue quand on annule chacune des 4 corrections ; liens de retour des 7 sections identiques ; identité cyan inchangée ; porte verte à c11b989", commit: c11b9895dc39aafd4a88a7b1a73a6ac9b9cebd2a }
+  - id: L62
+    title: "Description propre à chaque page (revue UX L61) : toutes les pages du codex, la 404 comprise, partagent la description « Codex de Pandora » — aperçu de lien partagé et résultat de recherche indistincts"
+    status: todo
+    estimate: 0.25
+    created: 2026-11-18
 acknowledged:
   - { sha: cef464dffb920ea7b161b1b0e06fe54d3efbdcc4, subject: "plan: verdicts UX de Sylvain enregistrés, trois bloquants de la revue des Personnages clos", date: 2026-10-10, reason: entretien du plan et régénération des Nouveautés }
   - { sha: 4bc75e983dc5bff0366190611a9c578d4ed071c8, subject: "plan: prototype Pandora vivant clos, cinq idées retenues par Sylvain posées après les images", date: 2026-10-10, reason: entretien du plan et régénération des Nouveautés (fichier désormais déclaré dérivé) }
