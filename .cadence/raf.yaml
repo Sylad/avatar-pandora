@@ -627,13 +627,14 @@ lots:
     finished: 2026-11-17
   - id: L61
     title: "Revue UX — bonnes pratiques d'une appli web standard (D-13 du registre parent) : chaque page en vrai navigateur à 390 et 1440 px, au clavier, contre WCAG 2.2 AA, les heuristiques de Nielsen et la skill interface-utilisable (tailles de texte en rem ≥ 12 px, cibles ≥ 24 px, contrastes, focus visible, états vides et d'erreur) ; constats mesurés, sous-lots proposés"
-    status: doing
+    status: done
     estimate: 0.5
     visible: true
     created: 2026-11-18
     started: 2026-11-18
     review: { date: 2026-11-18, verdict: "conforme : 0 bloquant ; test L61 6/6, il échoue quand on annule chacune des 4 corrections ; liens de retour des 7 sections identiques ; identité cyan inchangée ; porte verte à c11b989", commit: c11b9895dc39aafd4a88a7b1a73a6ac9b9cebd2a }
     ux: { date: 2026-11-18, verdict: "conforme (lead, captures regardées) : 404 claire (cause dite, deux sorties de 48 px, statut 404 en local), texte ≥ 12,25 px partout, retour des fiches 157×48 px avec focus visible, identité cyan inchangée ; à confirmer sur Cloudflare : statut 404 réel" }
+    finished: 2026-11-18
   - id: L62
     title: "Description propre à chaque page (revue UX L61) : toutes les pages du codex, la 404 comprise, partagent la description « Codex de Pandora » — aperçu de lien partagé et résultat de recherche indistincts"
     status: todo
