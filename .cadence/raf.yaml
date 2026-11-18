@@ -630,6 +630,7 @@ lots:
     status: done
     estimate: 0.5
     visible: true
+    delivered: { date: 2026-11-18, sha: dc7528d5ba646a26f4ce0d04e75cbda9ecfd752e }
     created: 2026-11-18
     started: 2026-11-18
     review: { date: 2026-11-18, verdict: "conforme : 0 bloquant ; test L61 6/6, il échoue quand on annule chacune des 4 corrections ; liens de retour des 7 sections identiques ; identité cyan inchangée ; porte verte à c11b989", commit: c11b9895dc39aafd4a88a7b1a73a6ac9b9cebd2a }
