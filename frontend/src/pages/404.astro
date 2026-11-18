@@ -1,0 +1,29 @@
+---
+/*
+  Page introuvable (revue UX L61, Nielsen 9 « aider à se sortir d'une erreur »). Sans 404.html,
+  Cloudflare Pages traite le site comme une appli d'une page : une adresse fausse rendait
+  l'accueil avec un statut 200, sans dire que la page n'existait pas. Avec ce fichier, il le
+  sert avec un statut 404. Gabarit du codex : la barre latérale (ou le tiroir au téléphone)
+  propose déjà toutes les sections pour repartir.
+*/
+import CodexLayout from '../layouts/CodexLayout.astro';
+---
+<CodexLayout title="Page introuvable — Eywa">
+  <div class="reading-veil max-w-2xl">
+    <header class="mb-6">
+      <p class="text-xs uppercase tracking-[0.25em] text-eywa-text-muted font-display mb-3">
+        Erreur 404
+      </p>
+      <h1 class="font-display text-4xl text-eywa-bio-primary mb-4">Cette page n'existe pas</h1>
+      <p class="text-lg text-eywa-text font-body leading-relaxed">
+        Même Eywa ne trouve pas ce chemin dans la forêt. L'adresse est peut-être mal tapée, ou la page a changé de place.
+      </p>
+    </header>
+    <nav aria-label="Repartir">
+      <ul class="flex flex-wrap gap-x-6 gap-y-2 font-body text-lg">
+        <li><a href="/" class="inline-flex items-center min-h-11 text-eywa-bio-primary underline underline-offset-4 hover:no-underline">← Retour à l'accueil</a></li>
+        <li><a href="/pandora/" class="inline-flex items-center min-h-11 text-eywa-bio-primary underline underline-offset-4 hover:no-underline">Ouvrir le codex</a></li>
+      </ul>
+    </nav>
+  </div>
+</CodexLayout>

@@ -13,6 +13,10 @@ par leurs propres tests de `scripts/`).
 - never: défilement horizontal de la page (scrollWidth == clientWidth) à 390 et à 1440 px (mesuré le 29-10 sur `/` et `/nouveautes/`) ; à 320 px aussi, **avec une barre de défilement classique** (clientWidth 305, pas 320 : un navigateur sans tête la masque et laisse passer le débordement ; `scripts/template-ux.e2e.test.mjs` R4 compare scrollWidth à clientWidth)
 - never: « undefined », « [object Object] », « NaN » dans le texte visible
 
+## /<adresse inconnue>/
+- shows: statut HTTP 404 (Cloudflare Pages sert `404.html` ; sans lui, il rendait l'accueil en 200), onglet « Page introuvable — Eywa », `h1` « Cette page n'existe pas », navigation « Repartir » vers `/` et `/pandora/`, barre latérale du codex (L61, `scripts/web-practices.e2e.test.mjs`)
+- never: l'accueil rendu à la place, statut 200
+
 ## /
 - shows: le titre de l'onglet « Eywa — Codex de Pandora » ; un seul `h1` dont le logo (svg `role=img`, nom « Eywa ») donne le nom
 - shows: les deux boutons d'entrée vers `/pandora/intro/` et `/about/`, puis la rangée « Suivre le codex » avec Nouveautés (`/nouveautes/`) et Plan de travail (`/plan-de-travail/`), le tout visible sans défilement à 1440×900 et à 390×844

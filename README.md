@@ -76,7 +76,7 @@ Le site n'a plus de backend : c'est le build qui valide la cohérence (Content C
 Ce que la QA attend du site public (accueil, Nouveautés, une fiche par section : `.entry-body` non vide, vide ≥ 16 px entre deux paragraphes à 390 et 1440 px) est écrit dans [`docs/qa/expectations.md`](docs/qa/expectations.md), et ses mesures sur les fiches sont rejouées par `scripts/qa-expectations.test.mjs`.
 
 ```bash
-cd frontend && npm run build   # 81 pages
+cd frontend && npm run build   # 82 pages (dont 404.html)
 npm run test:scripts           # node --test ../scripts/*.test.mjs, CADENCE_TEST_WORKERS fichiers à la fois (4 par défaut)
 ```
 

@@ -22,11 +22,13 @@ const first = text.startsWith('1er ');
     letter-spacing: 0;
   }
   .fr-ordinal {
-    font-size: 0.8em;
+    /* Jamais sous 12 px (0,7 rem) : à 0,8 em d'une ligne de 12,6 px, l'exposant tombait à 10 px (revue L61). */
+    font-size: max(0.8em, 0.7rem);
     line-height: 0;
     /* Revue UX L20 : à 0,4 em et avec l'espacement de la ligne, l'exposant flottait
-       au-dessus des capitales et se détachait du « 1 ». */
-    vertical-align: 0.3em;
+       au-dessus des capitales et se détachait du « 1 ». Plus grand depuis L61, il remonte
+       moins (0,1 em) pour garder son milieu dans la moitié haute du « 1 ». */
+    vertical-align: 0.1em;
     text-transform: none;
     letter-spacing: 0;
   }

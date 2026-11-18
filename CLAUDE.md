@@ -62,7 +62,7 @@ Dev local : `cd frontend && source ~/.nvm/nvm.sh && nvm use && npm run dev` (Nod
 
 ## Tests
 
-`cd frontend && npm run build` (81 pages) valide la cohérence (Content Collections + schéma Zod, types, intégrations Astro).
+`cd frontend && npm run build` (82 pages, dont `404.html`) valide la cohérence (Content Collections + schéma Zod, types, intégrations Astro).
 Puis `npm run test:scripts` (`node --test ../scripts/*.test.mjs`, Node ≥ 22.18 : les tests importent les
 modules `.ts` tels quels — `export PATH=$HOME/.nvm/versions/node/v22.23.5/bin:$PATH` ; Astro 7 refuse de démarrer avant Node 22.23.4, `.nvmrc` épingle 22.23.5 ; les scripts `dev`, `build`, `preview` et `astro`
 passent par `scripts/lib/astro-node.mjs`, qui relance Astro avec le Node de `.nvmrc` (nvm) quand celui du PATH est trop ancien,
