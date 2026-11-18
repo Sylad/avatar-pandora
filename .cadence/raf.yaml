@@ -633,6 +633,7 @@ lots:
     created: 2026-11-18
     started: 2026-11-18
     review: { date: 2026-11-18, verdict: "conforme : 0 bloquant ; test L61 6/6, il échoue quand on annule chacune des 4 corrections ; liens de retour des 7 sections identiques ; identité cyan inchangée ; porte verte à c11b989", commit: c11b9895dc39aafd4a88a7b1a73a6ac9b9cebd2a }
+    ux: { date: 2026-11-18, verdict: "conforme (lead, captures regardées) : 404 claire (cause dite, deux sorties de 48 px, statut 404 en local), texte ≥ 12,25 px partout, retour des fiches 157×48 px avec focus visible, identité cyan inchangée ; à confirmer sur Cloudflare : statut 404 réel" }
   - id: L62
     title: "Description propre à chaque page (revue UX L61) : toutes les pages du codex, la 404 comprise, partagent la description « Codex de Pandora » — aperçu de lien partagé et résultat de recherche indistincts"
     status: todo
