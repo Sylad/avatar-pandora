@@ -152,7 +152,104 @@
      "ressemble_film": "en partie",
      "decalque": "vue de face ailes ouvertes sur fond blanc, comme la référence en vol"
     }
-   ]
+   ],
+   "passe3": {
+    "date": "2026-11-19",
+    "description": "Corrigée d'après les images du film fournies par Sylvain (la 1re description, tirée du texte, disait rouge écarlate et crête jaune : les vues du film montrent autre chose). Grand léonoptère, bien plus massif qu'un ikran. Ailes avant immenses, membrane orange à jaune doré parcourue de veines noires, l'extrémité découpée en longues lanières translucides (comme des ailes d'insecte) ; une seconde paire d'ailes plus petite à l'arrière. Corps orange à motifs tigrés noirs (rayures et taches), ventre plus clair. Tête : une haute crête (quille) bleu-gris au-dessus du museau et une seconde quille bleue sous la mâchoire inférieure, de forme triangulaire ; deux cornes noires recourbées vers l'arrière ; gueule longue, ouverte sur de nombreuses dents fines. Longues pattes arrière fines à griffes.",
+    "sources": [
+     "sylvain_toruk_vol.png et sylvain_toruk_tete.png (images du film fournies par Sylvain)",
+     "références Pandorapedia de la 2e passe"
+    ],
+    "corps": "colossal alien pterosaur, huge orange wings with black veins, small hind wings, orange body with black tiger stripes, blue keel crest above the snout and below the jaw, curved black horns",
+    "neg": "feathers, bird, beak, european dragon, rider, person, saddle, white background, studio background, floating islands, planet, two creatures, flock, red body, yellow crest, spikes, mohawk",
+    "references": [
+     {
+      "fichier": "sylvain_toruk_vol.png",
+      "source": "fournie par Sylvain (image du film)",
+      "court": "vol (Sylvain)",
+      "vue": "en vol de trois quarts, ailes levées, îles flottantes et planète en fond ; ikrans et cavalier en haut à gauche floutés, recadrée en carré serré sur le toruk",
+      "flou": [
+       [
+        0,
+        100,
+        430,
+        410
+       ]
+      ],
+      "recadrage": [
+       150,
+       20,
+       950,
+       820
+      ]
+     },
+     {
+      "fichier": "sylvain_toruk_tete.png",
+      "source": "fournie par Sylvain (image du film)",
+      "court": "tête (Sylvain)",
+      "vue": "tête de près, gueule ouverte, quilles bleues haute et basse, cornes ; recadrée en carré",
+      "recadrage": [
+       0,
+       40,
+       415,
+       455
+      ]
+     }
+    ],
+    "variantes": [
+     {
+      "graine": 11,
+      "echelle": 0.5,
+      "scene_courte": "seul, en piqué vers une mer d'orage, vu de côté",
+      "scene": "single creature diving toward a stormy sea from below dark clouds, seen from the side",
+      "refs": [
+       0,
+       1
+      ],
+      "jugement": "tête bleue à quille sur le museau, cornes recourbées, ailes orange veinées de noir : ok ; corps grêle de ptérosaure, ni rayures tigrées, ni quille sous la mâchoire, une seule paire d'ailes",
+      "ressemble_film": "en partie"
+     },
+     {
+      "graine": 11,
+      "echelle": 0.65,
+      "scene_courte": "seul, en piqué vers une mer d'orage, vu de côté",
+      "scene": "single creature diving toward a stormy sea from below dark clouds, seen from the side",
+      "refs": [
+       0,
+       1
+      ],
+      "jugement": "quille bleue nette en haut et amorcée sous la mâchoire, cornes, flancs rayés : ok ; corps grêle, pattes emmêlées, une seule paire d'ailes",
+      "ressemble_film": "en partie"
+     },
+     {
+      "graine": 5,
+      "echelle": 0.5,
+      "scene_courte": "portrait tête et cou de profil, au bord d'une falaise, jungle brumeuse au crépuscule",
+      "scene": "close-up of the head and neck in profile, perched on a cliff edge above misty jungle at dusk",
+      "corps": "colossal alien pterosaur, tall blue keel crest above the snout and blue keel crest below the jaw, two curved black horns, open jaws with many thin teeth, orange skin with black tiger stripes",
+      "refs": [
+       1,
+       0
+      ],
+      "jugement": "gueule ouverte sur des dents fines comme au film, ailes orange : ok ; tête brune sans quille bleue ni cornes, corps de ptérosaure ordinaire",
+      "ressemble_film": "en partie"
+     },
+     {
+      "graine": 5,
+      "echelle": 0.65,
+      "scene_courte": "portrait tête et cou de profil, au bord d'une falaise, jungle brumeuse au crépuscule",
+      "scene": "close-up of the head and neck in profile, perched on a cliff edge above misty jungle at dusk",
+      "corps": "colossal alien pterosaur, tall blue keel crest above the snout and blue keel crest below the jaw, two curved black horns, open jaws with many thin teeth, orange skin with black tiger stripes",
+      "refs": [
+       1,
+       0
+      ],
+      "jugement": "tête crêtée, dents fines, gorge bleutée qui évoque la quille basse : ok ; quille haute absente, ailes sans lanières translucides, corps grêle",
+      "ressemble_film": "en partie"
+     }
+    ],
+    "essais_graines": "19-11 : graines 5, 7, 11, 23, 42, 77 essayées sur chaque scène (échelle 0,55 ou 0,65) avant de retenir celles-ci ; scènes écartées : toruk en vol plané de profil (ptérosaure grêle), toruk perché en pied (deux créatures), tulkun « fait surface calmement » (jaillit à la verticale comme la référence du saut)."
+   }
   },
   {
    "id": "thanator",
@@ -375,7 +472,124 @@
      "jugement": "silhouette en contre-jour, longues nageoires : ok ; baleine terrestre, queue déformée, aucun trait du film",
      "ressemble_film": "non"
     }
-   ]
+   ],
+   "passe3": {
+    "date": "2026-11-19",
+    "description": "Corrigée d'après les images du film fournies par Sylvain (la 2e passe sortait une baleine à bosse terrestre). Cétacé colossal au corps long et fuselé, plus proche d'un grand cétacé à bec que d'une baleine à bosse. Tête massive couverte de plaques osseuses, museau allongé ; sur le dessus de la tête une haute crête sombre (brun-rouge à noir selon la lumière), dressée comme une voile, et une crête dorsale qui se prolonge sur le dos. Gueule fermée en long sillon, sans dents de prédateur. Quatre petits yeux (deux paires) sur le côté de la tête. Longues nageoires pectorales. Queue double : deux nageoires caudales l'une au-dessus de l'autre. Peau gris-bleu sombre sur le dos, ventre clair, rayures sombres sur les flancs et la gorge.",
+    "sources": [
+     "sylvain_tulkun_sous_eau.png (vue de dessous, corps entier : privilégiée) et sylvain_tulkun_saut.png (images du film fournies par Sylvain)",
+     "fiche du codex bestiaire/tulkun"
+    ],
+    "corps": "colossal alien whale, long streamlined body, armored plated head, tall dark sail crest on the head, long snout, toothless, four small eyes, long pectoral fins, double tail flukes, dark grey-blue striped skin, pale belly",
+    "neg": "humpback whale, barnacles, teeth, fangs, shark, dolphin, orca, person, swimmer, diver, boat, ship, white background, breaching, jumping",
+    "references": [
+     {
+      "fichier": "sylvain_tulkun_sous_eau.png",
+      "source": "fournie par Sylvain (image du film)",
+      "court": "sous l'eau, tête et corps (Sylvain)",
+      "vue": "vu de dessous sous la surface, tête, crête et corps ; nageur déjà flouté ; recadrée en carré sur la tête et le corps",
+      "recadrage": [
+       340,
+       0,
+       985,
+       645
+      ]
+     },
+     {
+      "fichier": "sylvain_tulkun_sous_eau.png",
+      "source": "fournie par Sylvain (image du film)",
+      "court": "sous l'eau, queue double (Sylvain)",
+      "vue": "même image, recadrée en carré sur l'arrière du corps et la queue double",
+      "recadrage": [
+       40,
+       160,
+       525,
+       645
+      ]
+     },
+     {
+      "fichier": "sylvain_tulkun_saut.png",
+      "source": "fournie par Sylvain (image du film)",
+      "court": "saut (Sylvain)",
+      "vue": "jaillit de l'eau, tête à plaques et crête ; aile d'ikran à gauche et navire à droite floutés, recadrée en carré",
+      "flou": [
+       [
+        0,
+        320,
+        140,
+        470
+       ],
+       [
+        565,
+        440,
+        736,
+        515
+       ]
+      ],
+      "recadrage": [
+       110,
+       30,
+       650,
+       570
+      ]
+     }
+    ],
+    "variantes": [
+     {
+      "graine": 7,
+      "echelle": 0.5,
+      "scene_courte": "corps entier de profil au-dessus d'un récif profond, eau bleu sombre",
+      "scene": "wide shot, entire body in frame, side view, swimming above a deep coral reef in dark blue water",
+      "refs": [
+       0,
+       1,
+       2
+      ],
+      "jugement": "corps long et fuselé, longues pectorales, peau gris-bleu : ok, plus de baleine à bosse ; tête sans plaques ni crête nettes, queue simple, une nageoire ventrale en trop",
+      "ressemble_film": "en partie"
+     },
+     {
+      "graine": 7,
+      "echelle": 0.65,
+      "scene_courte": "corps entier de profil au-dessus d'un récif profond, eau bleu sombre",
+      "scene": "wide shot, entire body in frame, side view, swimming above a deep coral reef in dark blue water",
+      "refs": [
+       0,
+       1,
+       2
+      ],
+      "jugement": "grande crête sombre dressée sur le dos comme au film, corps fuselé, pectorales : ok ; tête floue sans plaques, queue hors champ",
+      "ressemble_film": "en partie"
+     },
+     {
+      "graine": 11,
+      "echelle": 0.5,
+      "scene_courte": "en surface au coucher du soleil, de trois quarts face, lumière dorée",
+      "scene": "wide shot, swimming in the open ocean at sunset, front three-quarter view, head toward the viewer, golden light",
+      "corps": "colossal alien whale, long streamlined body, armored plated head, tall dark sail crest on the head, long snout, toothless, four small eyes, long pectoral fins, dark grey-blue striped skin",
+      "refs": [
+       0,
+       2
+      ],
+      "jugement": "tête massive à plaques et sillons, museau long, gueule sans dents, crête dressée derrière : ok, la plus proche du film ; gros plan, un seul œil visible, corps hors champ",
+      "ressemble_film": "en partie"
+     },
+     {
+      "graine": 11,
+      "echelle": 0.65,
+      "scene_courte": "en surface au coucher du soleil, de trois quarts face, lumière dorée",
+      "scene": "wide shot, swimming in the open ocean at sunset, front three-quarter view, head toward the viewer, golden light",
+      "corps": "colossal alien whale, long streamlined body, armored plated head, tall dark sail crest on the head, long snout, toothless, four small eyes, long pectoral fins, dark grey-blue striped skin",
+      "refs": [
+       0,
+       2
+      ],
+      "jugement": "même tête à plaques, crête dressée, œil vert repris du saut : ok ; une seule paire d'yeux visible, corps hors champ, nageoire qui traverse le cadre",
+      "ressemble_film": "en partie"
+     }
+    ],
+    "essais_graines": "19-11 : graines 5, 7, 11, 23, 42, 77 essayées sur chaque scène (échelle 0,55 ou 0,65) avant de retenir celles-ci ; scènes écartées : toruk en vol plané de profil (ptérosaure grêle), toruk perché en pied (deux créatures), tulkun « fait surface calmement » (jaillit à la verticale comme la référence du saut)."
+   }
   },
   {
    "id": "navi",
@@ -501,6 +715,22 @@
    "Échelle 0,5 : le décor et le cadrage du prompt sont tenus ; 0,8 : la référence s'impose (fond blanc des images détourées pour toruk et pa'li, personnage remis de face comme le portrait de Neytiri), sans gain net de ressemblance.",
    "Une référence qui montre des personnages les fait apparaître (cavalière du pa'li, Na'vi du thanator), avec les tenues légères du film : références recadrées, et « fully clothed » en tête du prompt des Na'vi ; plusieurs graines « de dos » sortaient encore torse nu et ont été écartées.",
    "Comme au 1er tour, SDXL ne compte pas : nombre d'ailes, de pattes et d'yeux toujours au hasard ; la crête jaune sous la mâchoire du toruk n'apparaît jamais."
+  ]
+ },
+ "passe3": {
+  "date": "2026-11-19",
+  "demande": "D-2 : 3e passe, toruk et tulkun seulement, avec des images des films fournies par Sylvain (fan-arts signés écartés par le lead)",
+  "modele": "SDXL base 1.0 + IP-Adapter SDXL (h94/IP-Adapter, sdxl_models/ip-adapter_sdxl.safetensors, encodeur sdxl_models/image_encoder ; Apache 2.0)",
+  "references_hors_depot": "~/projects/developpeur/tmp/l63-refs/<id>/ : les images de Sylvain sont notées « fournie par Sylvain (image du film) », sans URL ; jamais versionnées ni affichées",
+  "echelles": [
+   0.5,
+   0.65
+  ],
+  "constats": [
+   "19-11 : la description corrigée (quilles bleues, ailes orange veinées, rayures tigrées ; tulkun fuselé à tête cuirassée et crête dressée) et les images de Sylvain font sortir le tulkun de la baleine à bosse (8/8 en 2e passe, 0/4 ici) et donnent au toruk sa tête bleue à quille et cornes (#1, #2) ; aucune variante ne ressemble au film en entier : 8 « en partie » sur 8.",
+   "L'encodeur d'images d'IP-Adapter recadre au centre en carré : les références sont recadrées en carré à la main (la vue sous l'eau en deux carrés, corps et queue double) et les intrus (ikrans et cavalier, aile d'ikran, navire) floutés.",
+   "Limites qui restent : SDXL garde un corps de ptérosaure grêle pour le toruk (ni masse, ni 2e paire d'ailes, ni lanières translucides) et ne compte pas les yeux du tulkun ; à 0,65 la crête et l'œil de la référence passent mieux qu'à 0,5, sans décalque de pose ni fond blanc.",
+   "Prompts limités à 77 jetons CLIP : description raccourcie pour que la fin du style commun seule soit perdue."
   ]
  }
 }

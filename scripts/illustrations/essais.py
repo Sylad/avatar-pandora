@@ -18,6 +18,17 @@ variante retenue de la 1re passe (« passe1_retenue ») est régénérée à l'i
 prompt) pour la comparaison. Sorties : <id>-ip-<n>-g<graine>-e<échelle>.png, <id>-passe1.png,
 planche-ip-<id>.png (1re passe en petit à gauche, puis la grille 2×2) et planche-ip-ensemble.png.
 Les références ne figurent sur aucune planche.
+
+3e passe (D-2), avec --ip3 [--refs <dossier>] [--seul toruk tulkun] : seules les créatures qui portent
+un bloc « passe3 » (toruk, tulkun). Description anatomique corrigée d'après des images des films
+fournies par Sylvain ; chaque variante choisit ses références (« refs », indices dans
+passe3.references, au moins une image de Sylvain) et sa scène (pose et décor différents des
+références). Une référence est soit une URL Pandorapedia (fichier = nom de l'URL), soit un « fichier »
+fourni par Sylvain, lu dans <refs>/<id>/ ; « flou » floute des zones (cavalier, autre créature, navire)
+et « recadrage » la cadre en carré, car l'encodeur CLIP d'IP-Adapter recadre au centre en carré
+(224 px) : sans cela, la queue ou la tête sortaient du champ. Les 4 variantes de la 2e passe sont
+d'abord régénérées à l'identique pour la comparaison. Sorties : <id>-ip3-<n>-g<graine>-e<échelle>.png
+et planche-ip3-<id>.png (2e passe en petit à gauche, puis la grille 2×2).
 """
 import json, os, sys, time, textwrap
 from pathlib import Path
@@ -129,6 +140,23 @@ def nom_ip(c, i, v):
 
 def prompt_de(cfg, c, v):
     return v.get("prompt") or c["prompt"] + cfg["style"]
+
+
+def charger_ref(c, r, refs):
+    """Une image de référence, lue hors du dépôt, floutée, masquée et recadrée selon « r »."""
+    from PIL import Image, ImageDraw, ImageFilter
+    f = refs / c["id"] / (r.get("fichier") or r["image"].rsplit("/", 1)[1])
+    if not f.exists():
+        sys.exit(f"référence absente : {f} ({r.get('image') or r.get('source')})")
+    im = Image.open(f).convert("RGB")
+    for zone in r.get("flou", []):  # [x0, y0, x1, y1] : flou fort, sans tache blanche
+        zone = tuple(zone)
+        im.paste(im.crop(zone).filter(ImageFilter.GaussianBlur(40)), zone[:2])
+    if r.get("masque"):
+        ImageDraw.Draw(im).rectangle(r["masque"], fill="white")
+    if r.get("recadrage"):
+        im = im.crop(tuple(r["recadrage"]))
+    return im
 
 
 def references(c, refs):
@@ -272,6 +300,100 @@ def ensemble_ip(cfg, out):
     return chemin
 
 
+# --- 3e passe : description corrigée, images des films fournies par Sylvain ------------------
+
+def nom_ip3(c, i, v):
+    return f"{c['id']}-ip3-{i + 1}-g{v['graine']}-e{v['echelle']}.png"
+
+
+def prompt_ip3(cfg, c, v):
+    return f"{v['scene']}, {v.get('corps') or c['passe3']['corps']}" + cfg["style"]
+
+
+def generer_ip3(cfg, out, seul, refs):
+    import torch
+    from diffusers import StableDiffusionXLPipeline
+    pipe = StableDiffusionXLPipeline.from_pretrained(
+        "stabilityai/stable-diffusion-xl-base-1.0", torch_dtype=torch.float16,
+        variant="fp16", use_safetensors=True).to("cuda")
+    pipe.load_ip_adapter("h94/IP-Adapter", subfolder="sdxl_models",
+                         weight_name="ip-adapter_sdxl.safetensors")
+    r = cfg["reglages"]
+    choisies = [c for c in cfg["creatures"] if "passe3" in c and (not seul or c["id"] in seul)]
+
+    def tirer(prompt, neg, c, v, ims):
+        pipe.set_ip_adapter_scale(v["echelle"])
+        return pipe(prompt, negative_prompt=neg, guidance_scale=r["guidance_scale"],
+                    num_inference_steps=r["num_inference_steps"], width=c["largeur"], height=c["hauteur"],
+                    generator=torch.Generator("cuda").manual_seed(v["graine"]),
+                    ip_adapter_image=[ims]).images[0]
+
+    for c in choisies:
+        # 2e passe régénérée à l'identique (mêmes références, prompt, graine et échelle)
+        ims2 = references(c, refs)
+        for i, v in enumerate(c["variantes_ip"]):
+            tirer(prompt_de(cfg, c, v), cfg["neg"] + ", " + c["neg"], c, v, ims2).save(out / nom_ip(c, i, v))
+            print(nom_ip(c, i, v), flush=True)
+        p3 = c["passe3"]
+        for i, v in enumerate(p3["variantes"]):
+            t = time.time()
+            ims = [charger_ref(c, p3["references"][k], refs) for k in v["refs"]]
+            tirer(prompt_ip3(cfg, c, v), cfg["neg"] + ", " + p3["neg"], c, v, ims).save(out / nom_ip3(c, i, v))
+            print(nom_ip3(c, i, v), round(time.time() - t, 1), "s", flush=True)
+
+
+def planche_ip3(c, out, cellule=640):
+    """2e passe (4 variantes) en petit à gauche, puis la grille 2×2 de la 3e passe, chaque variante
+    légendée graine · échelle · références, ressemblance au film et jugement d'une ligne."""
+    from PIL import Image, ImageDraw, ImageFont
+    f = ImageFont.truetype(POLICE, 18)
+    fs = ImageFont.truetype(POLICE, 15)
+    fg = ImageFont.truetype(POLICE_GRAS, 19)
+    ft = ImageFont.truetype(POLICE_GRAS, 30)
+    p3 = c["passe3"]
+    vignettes = []
+    for i, v in enumerate(p3["variantes"]):
+        im = Image.open(out / nom_ip3(c, i, v)).convert("RGB")
+        im.thumbnail((cellule, cellule))
+        vignettes.append((im, v))
+    w = max(im.width for im, _ in vignettes)
+    h = max(im.height for im, _ in vignettes)
+    leg, marge, titre = 170, 16, 60
+    petites = []
+    for i, v in enumerate(c["variantes_ip"]):
+        im = Image.open(out / nom_ip(c, i, v)).convert("RGB")
+        im.thumbnail((260, 260))
+        petites.append((im, v))
+    gauche = max(im.width for im, _ in petites) + 2 * marge + 8
+    hauteur = max(titre + 2 * (h + leg) + 2 * marge, titre + 40 + sum(im.height + 44 for im, _ in petites))
+    page = Image.new("RGB", (gauche + 2 * w + 3 * marge, hauteur), "#10161c")
+    d = ImageDraw.Draw(page)
+    d.text((marge, 14), f"L63 — 3e passe IP-Adapter (images des films fournies par Sylvain) : {c['id']}"
+           f"  ({c['fiche']})", font=ft, fill="#e8f4f8")
+    y = ecrire(d, (marge, titre), "2e passe (références Pandorapedia)", fg, 22, 2, "#e8f4f8")
+    for k, (im, v) in enumerate(petites):
+        page.paste(im, (marge, y + 4))
+        y = ecrire(d, (marge, y + im.height + 6), f"#{k + 1} g{v['graine']} · éch. {v['echelle']} · film : "
+                   f"{v['ressemble_film']}", fs, 40, 1) + 14
+    d.line([(gauche - 8, titre), (gauche - 8, page.height - marge)], fill="#3a4a55", width=2)
+    for k, (im, v) in enumerate(vignettes):
+        x = gauche + marge + (k % 2) * (w + marge)
+        y = titre + (k // 2) * (h + leg + marge)
+        page.paste(im, (x, y))
+        col = max(30, w // 10)
+        refs_txt = ", ".join(p3["references"][i]["court"] for i in v["refs"])
+        tete = (f"#{k + 1}  graine {v['graine']} · échelle {v['echelle']} — ressemble au film : "
+                f"{v['ressemble_film'] or '?'}")
+        yy = ecrire(d, (x, y + h + 6), tete, fg, col, 2, "#e8f4f8")
+        yy = ecrire(d, (x, yy), f"{v['scene_courte']} · réf. : {refs_txt}", fs, col + 12, 3, "#9fb8c2")
+        if v.get("decalque"):
+            yy = ecrire(d, (x, yy), "trop proche de la référence : " + v["decalque"], f, col + 4, 2, "#ffb86b")
+        ecrire(d, (x, yy), v["jugement"], f, col + 4, 3)
+    chemin = out / f"planche-ip3-{c['id']}.png"
+    page.save(chemin)
+    return chemin
+
+
 def main():
     out = Path(sys.argv[1]); out.mkdir(parents=True, exist_ok=True)
     cfg = json.loads((ICI / "essais-faune.json").read_text())
@@ -282,6 +404,13 @@ def main():
         refs = Path(args[k + 1]).expanduser()
         del args[k:k + 2]
     seul = {a for a in args if not a.startswith("--")} if "--seul" in args else None
+    if "--ip3" in args:
+        if "--planches" not in args:
+            generer_ip3(cfg, out, seul, refs)
+        for c in cfg["creatures"]:
+            if "passe3" in c and (not seul or c["id"] in seul):
+                print(planche_ip3(c, out))
+        return
     if "--ip-adapter" in args:
         if "--planches" not in args:
             generer_ip(cfg, out, seul, refs)
