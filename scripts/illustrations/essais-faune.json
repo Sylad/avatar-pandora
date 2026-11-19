@@ -1,0 +1,225 @@
+{
+ "lot": "L63",
+ "statut": "planche d'essais : aucun de ces prompts n'est branché sur une fiche du site",
+ "modele": "stabilityai/stable-diffusion-xl-base-1.0 (CreativeML Open RAIL++-M), local, texte seul",
+ "reglages": {
+  "guidance_scale": 7.0,
+  "num_inference_steps": 32
+ },
+ "style": ", highly detailed creature concept art, cinematic lighting, sharp focus, alien jungle moon, no text",
+ "neg": "text, letters, caption, watermark, signature, logo, frame, border, blurry, low quality, deformed, extra heads, cartoon, anime, chibi, toy",
+ "creatures": [
+  {
+   "id": "ikran",
+   "fiche": "bestiaire/ikran",
+   "description": "Ptérosaure prédateur d'environ 12 m d'envergure. Deux paires d'ailes membraneuses : la grande paire portée par les membres avant, une paire plus petite à l'arrière (membres postérieurs). Os creux, corps fin. Long cou mobile, tête étroite et allongée, gueule étroite aux crocs courbés vers l'arrière. Crête rigide qui prolonge le crâne vers l'arrière (gouvernail, parade). Deux paires d'yeux (petite paire au-dessus de la grande, comme chez la plupart des hexapodes de Pandora d'après Avatar Wiki). Peau tendue sur les ailes, bleu-gris ardoise à rouge brique selon l'individu, motifs de bandes contrastées. Pas de plumes ni d'écailles de dragon. Bioluminescence discrète, peu décrite. Niche dans les falaises des montagnes flottantes.",
+   "sources": [
+    "fiche du codex bestiaire/ikran (Morphologie)",
+    "Pandorapedia et Avatar Wiki Fandom, texte seul"
+   ],
+   "prompt_court": "ptérosaure à 2 paires d'ailes, crête, bandes bleues, falaise",
+   "prompt": "a sleek alien pterosaur predator perched on a cliff ledge with wings half spread, two pairs of leathery membrane wings, large front wings and a smaller second pair of hind wings, long slender neck, narrow elongated head with a backward pointing rigid head crest, narrow jaws with curved fangs, two pairs of small eyes, smooth skin with bold blue and yellow tiger stripes, no feathers, floating mountains and waterfalls in the background",
+   "neg": "feathers, bird, european dragon, horns, fur, rider, person",
+   "largeur": 1344,
+   "hauteur": 768,
+   "variantes": [
+    {
+     "graine": 11,
+     "jugement": "bleu à bandes jaunes, long cou, gueule à crocs : ok ; une seule paire d'ailes (pas de petites ailes arrière), pas de crête nette, pas de 2e paire d'yeux"
+    },
+    {
+     "graine": 23,
+     "jugement": "grandes ailes membraneuses jaunes bordées de bleu, long cou : ok ; pattes d'échassier démesurées, une seule paire d'ailes, pas de crête, couleurs fades"
+    },
+    {
+     "graine": 42,
+     "jugement": "bandes bleu et jaune, tête à crête plate : ok ; six pattes d'insecte au lieu des membres d'un ptérosaure, une seule paire d'ailes"
+    },
+    {
+     "graine": 77,
+     "jugement": "la plus proche : bleu à bandes, ailes membraneuses, petite aile arrière visible, crête dressée derrière le crâne ; bec de ptérosaure plutôt que gueule à crocs, pas de 2e paire d'yeux"
+    }
+   ]
+  },
+  {
+   "id": "toruk",
+   "fiche": "bestiaire/toruk",
+   "description": "Grand léonoptère, plus grand prédateur volant de Pandora : plus de 25 m d'envergure, environ le double d'un ikran, silhouette massive. Même plan que l'ikran (deux paires d'ailes : grandes ailes avant, petites ailes arrière). Livrée rouge écarlate sur les flancs et le ventre, bandes et crête dorsale noir profond de la nuque à la queue. Sous la mâchoire, une grande crête / des barbillons membraneux jaunes et orangés très colorés (signal d'intimidation). Deux paires d'yeux latéraux (la fiche le dit : « ses deux paires d'yeux »). Angle mort au-dessus de lui. Vu en vol au-dessus des falaises côtières. Pas de bioluminescence décrite.",
+   "sources": [
+    "fiche du codex bestiaire/toruk (Morphologie, Toruk Makto)",
+    "Pandorapedia et Avatar Wiki Fandom, texte seul"
+   ],
+   "prompt_court": "léonoptère géant rouge et noir, crête jaune sous la mâchoire, en vol",
+   "prompt": "a colossal red and black pterosaur dragon flying above sea cliffs, leathery membrane wings with black stripes, a small second pair of hind wings, scarlet red body, black dorsal ridge, huge bright yellow and orange keel crest under the lower jaw, long toothy jaws, four eyes, reptilian skin",
+   "neg": "feathers, feathered wings, bird, eagle, hawk, parrot, beak, ship, boat, european dragon, horns, fur, rider, person",
+   "largeur": 1344,
+   "hauteur": 768,
+   "variantes": [
+    {
+     "graine": 11,
+     "jugement": "rouge et noir, ailes membraneuses, silhouette de ptérosaure : ok ; pas de crête jaune sous la mâchoire, une seule paire d'ailes, corps trop grêle pour un géant"
+    },
+    {
+     "graine": 23,
+     "jugement": "rouge à crête dorsale noire épineuse : ok ; allure de dragon européen (queue à piquants), pas de crête jaune, pas de 2e paire d'ailes"
+    },
+    {
+     "graine": 42,
+     "jugement": "massif, rouge, gueule dentée, plusieurs ailes visibles (évoque deux paires) : ok ; membres en pattes d'araignée, pas de crête jaune, anatomie confuse"
+    },
+    {
+     "graine": 77,
+     "jugement": "ne ressemble pas : dragon européen classique (cou en S, cornes) ; seule la livrée rouge et noire est juste"
+    }
+   ],
+   "essai_precedent": "19-11, 1er tour : « colossal alien flying predator soaring… » a donné 4 oiseaux de proie à plumes (et un bateau) : prompt recentré sur « pterosaur », plumes et bec écartés"
+  },
+  {
+   "id": "thanator",
+   "fiche": "bestiaire/thanator",
+   "description": "Grand prédateur de forêt, silhouette de panthère allongée mais six pattes (deux postérieures de propulsion, deux médianes, deux antérieures de saisie). Peau noire et luisante, plaques dermiques en armure : chitine souple sur les flancs, écailles très dures sur le crâne et le poitrail. Tête blindée, mâchoires primaires puissantes ; une paire de mandibules secondaires logées dans des fourreaux sur les joues, déployées à l'attaque. Longue queue préhensile et musclée. Avatar Wiki ajoute des piquants sensoriels dressés sur la nuque et le dos en colère. Nombre d'yeux : non précisé par la fiche. Bioluminescence non décrite. Chasse en sous-bois dense à 40-50 km/h.",
+   "sources": [
+    "fiche du codex bestiaire/thanator (Morphologie)",
+    "Avatar Wiki Fandom, texte seul (piquants sensoriels)"
+   ],
+   "prompt_court": "panthère noire blindée à 6 pattes, mandibules, jungle",
+   "prompt": "a huge black alien panther-like predator with six legs stalking through a dark bioluminescent jungle, glossy black armored skin, hard armor plates on its skull and chest, long muscular tail, wide snarling jaws with secondary mandible tusks on its cheeks, flared spiky sensory quills on the back of its neck, six powerful legs clearly visible, full body side view",
+   "neg": "four legs only, fur, cat, house cat, rider, person, wings",
+   "largeur": 1344,
+   "hauteur": 768,
+   "variantes": [
+    {
+     "graine": 11,
+     "jugement": "noir luisant, plaques, piquants sensoriels sur le dos, gueule hérissée : ok ; 4 pattes visibles seulement, pas de mandibules secondaires distinctes"
+    },
+    {
+     "graine": 23,
+     "jugement": "noir blindé, longue queue : ok ; posture de dinosaure, 4 pattes, tête peu lisible dans le sombre"
+    },
+    {
+     "graine": 42,
+     "jugement": "noir blindé, piquants, 6 membres visibles (la plus fidèle sur les pattes), queue : ok ; fond gris délavé façon croquis, tête de « xénomorphe »"
+    },
+    {
+     "graine": 77,
+     "jugement": "tête de panthère noire blindée, piquants, mâchoires : ok ; 4 pattes, pas de queue visible, pas de mandibules"
+    }
+   ]
+  },
+  {
+   "id": "pali",
+   "fiche": "bestiaire/pali",
+   "description": "Monture terrestre : environ 4 m au garrot, corps allongé plus proche d'un élan géant que d'un cheval, six pattes fines et coordonnées, long cou. Tête étroite sans grands yeux saillants : une paire d'yeux latéraux peu marqués selon la fiche (Avatar Wiki en compte deux paires). Antennes neurales à l'avant de la tête, en faisceaux (deux paires selon la fiche, une paire selon Avatar Wiki) qui se nouent aux tresses du cavalier. Peau sans poils : mosaïque de plaques cornées et de zones souples, motifs bioluminescents variables qui brillent la nuit. Couleurs non précisées par la fiche (gris-bleu sombre à bandes selon Avatar Wiki). Troupeaux en forêt.",
+   "sources": [
+    "fiche du codex bestiaire/pali (Morphologie, Tsaheylu)",
+    "Avatar Wiki Fandom, texte seul (couleurs, yeux, antennes)"
+   ],
+   "prompt_court": "monture à 6 pattes, long cou, antennes, peau bleu-gris luminescente",
+   "prompt": "an alien six legged horse-like beast in a twilight rainforest, six long slender legs, long arched neck, narrow head with tiny eyes, two long thin whip-like feelers trailing back from the head, hairless dark blue-grey armored hide with darker stripes, glowing cyan dots on its flanks, full body side view",
+   "neg": "antlers, horns, deer, stag, elk, four legs only, mane, fur, hair, unicorn, rider, person, saddle",
+   "largeur": 1344,
+   "hauteur": 768,
+   "variantes": [
+    {
+     "graine": 11,
+     "jugement": "bleu sombre, long cou, membres fins, environ 6 pattes : ok ; tête de prédateur à crocs, antennes peu lisibles"
+    },
+    {
+     "graine": 23,
+     "jugement": "long cou arqué, tête étroite, corps élancé : ok ; 4 pattes seulement, pas d'antennes, aspect mécanique"
+    },
+    {
+     "graine": 42,
+     "jugement": "6 pattes, longues antennes en fouet vers l'arrière, points cyan luminescents : ok ; fond de studio gris, tête d'insecte sans long cou, pattes avant en pinces"
+    },
+    {
+     "graine": 77,
+     "jugement": "6 pattes, peau bleue à plaques : ok ; tête de crocodile à crocs, pas d'antennes, fond de studio gris"
+    }
+   ],
+   "essai_precedent": "19-11, 1er tour : « neural antennae » a donné des bois de cerf sur 4 variantes sur 4 : antennes décrites en « whip-like feelers », bois et cerf écartés"
+  },
+  {
+   "id": "tulkun",
+   "fiche": "bestiaire/tulkun",
+   "description": "Cétacé pensant de 70 à 80 m, plan général de baleine mais distinct : longues nageoires pectorales très mobiles, corps en partie bioluminescent avec des motifs de lumière complexes sur les flancs, propres à chaque individu. Avatar Wiki ajoute une tête massive couverte de plaques d'armure, deux paires d'yeux et une peau gris-bleu marquée. Se déplace en silence sous l'eau. Échelle à rendre : un Na'vi nageant à côté paraît minuscule.",
+   "sources": [
+    "fiche du codex bestiaire/tulkun (Morphologie)",
+    "Avatar Wiki Fandom, texte seul (plaques, yeux)"
+   ],
+   "prompt_court": "baleine géante à plaques, longues pectorales, motifs lumineux, sous l'eau",
+   "prompt": "a gigantic alien whale swimming in a clear turquoise tropical ocean, massive armored head covered with bony plates, two pairs of eyes, very long mobile pectoral fins, grey-blue skin with intricate glowing cyan bioluminescent patterns along its flanks, sunbeams from the surface, sense of enormous scale, underwater wide shot",
+   "neg": "ship, boat, harpoon, person, diver, shark, dolphin, fish teeth",
+   "largeur": 1344,
+   "hauteur": 768,
+   "variantes": [
+    {
+     "graine": 11,
+     "jugement": "baleine bleu-gris aux motifs gravés, longues pectorales : ok ; bioluminescence faible, pas de plaques de tête nettes, échelle non rendue"
+    },
+    {
+     "graine": 23,
+     "jugement": "pectorales très longues, sillons lumineux : ok ; baleine à bosse terrestre, pas de plaques, pas de 2e paire d'yeux"
+    },
+    {
+     "graine": 42,
+     "jugement": "motifs lumineux cyan sur les flancs, tête massive à plaques, points évoquant plusieurs yeux : ok ; gueule à dents de prédateur (hors description), nageoires en tentacules"
+    },
+    {
+     "graine": 77,
+     "jugement": "corps massif à texture de plaques : ok ; gueule de baleine à fanons, peu de lumière, pectorales courtes"
+    }
+   ]
+  },
+  {
+   "id": "navi",
+   "fiche": "clans/omatikaya",
+   "description": "Na'vi (Omatikaya) : humanoïde d'environ 3 m, très élancé, membres longs, taille fine. Peau bleu cobalt à rayures plus sombres, points bioluminescents sur le visage et le corps. Grands yeux jaune doré, nez large et plat, grandes oreilles pointues et mobiles. Longue queue. Cheveux noirs tressés en une longue natte (la « queue » neurale qui sert au tsaheylu). Mains à quatre doigts (trois doigts et un pouce). Pagne et parures de perles, de plumes et d'os ; arc et carquois. Deux cadrages demandés : en pied, et de dos ou de loin.",
+   "sources": [
+    "fiche du codex clans/omatikaya",
+    "Pandorapedia et Avatar Wiki Fandom, texte seul (taille, peau, yeux, oreilles, queue, mains)"
+   ],
+   "prompt_court": "Na'vi : humanoïde bleu de 3 m, rayures, queue, natte",
+   "prompt": "",
+   "neg": "nude, nsfw, topless, nipples, human skin, pale skin, green skin, short, chubby, modern clothing, armor, helmet, wings, horns, monster, skeleton",
+   "largeur": 832,
+   "hauteur": 1216,
+   "variantes": [
+    {
+     "graine": 11,
+     "cadrage": "en pied",
+     "prompt_court": "Na'vi en pied, face",
+     "prompt": "full body, a tall slender blue-skinned humanoid huntress in a glowing rainforest, darker tiger stripes, glowing dots on the face, big golden eyes, flat wide nose, large pointed ears, long thin tail, long black braid, beaded chest piece and loincloth, holding a bow",
+     "jugement": "peau bleue, longue queue rayée, cheveux noirs, silhouette élancée, tenue couvrante : ok ; tête et oreilles de chat (museau félin), rayures sur la queue seulement"
+    },
+    {
+     "graine": 23,
+     "cadrage": "en pied",
+     "prompt_court": "Na'vi en pied, face",
+     "prompt": "full body, a tall slender blue-skinned humanoid huntress in a glowing rainforest, darker tiger stripes, glowing dots on the face, big golden eyes, flat wide nose, large pointed ears, long thin tail, long black braid, beaded chest piece and loincloth, holding a bow",
+     "jugement": "peau bleue, arc, tresses, parures : ok ; pas de queue, oreilles peu visibles, armure dorée trop chargée (hors description)"
+    },
+    {
+     "graine": 11,
+     "cadrage": "de dos",
+     "prompt_court": "Na'vi de dos, sur une branche",
+     "prompt": "back view, full body, a tall slender blue-skinned humanoid hunter with darker stripes standing on a giant tree branch, long thin tail, long black braid down the back, large pointed ears, loincloth, bow on the shoulder, looking over a misty rainforest with floating mountains",
+     "jugement": "silhouette bleue élancée de dos sur une corniche, arc, montagnes dans la brume : ok ; trop petite pour voir queue ou natte, se lit comme un humain bleu"
+    },
+    {
+     "graine": 23,
+     "cadrage": "de loin",
+     "prompt_court": "Na'vi de loin, silhouette dans la forêt",
+     "prompt": "wide shot, a lone tall slender blue-skinned humanoid hunter with a long thin tail and a long black braid walking on a path through a giant glowing rainforest at night, small figure in the frame, bow in hand",
+     "jugement": "silhouette bleue sur un sentier de forêt nocturne : ok ; trait de lumière vertical parasite, ni queue ni natte, proportions humaines"
+    }
+   ],
+   "essai_precedent": "19-11, 1er tour : en pied seins nus (refusé pour le site), « alien hunter » de loin a donné un monstre squelettique : torse couvert d'une parure de perles, « blue-skinned humanoid » au lieu de « alien »"
+  }
+ ],
+ "constats": [
+  "19-11 : variantes les plus proches de leur description — ikran #4 (g77), thanator #3 (g42), pa'li #3 (g42), tulkun #3 (g42), Na'vi #1 (g11) en pied et #3 (g11) de dos ; toruk : aucune satisfaisante (#1 au mieux).",
+  "SDXL ne compte pas : nombre de pattes, d'ailes et d'yeux obtenu au hasard des graines ; la crête jaune du toruk n'apparaît jamais.",
+  "Prompts tronqués à 77 jetons CLIP : la fin du style commun (« alien jungle moon, no text ») est perdue, sans effet visible."
+ ]
+}
