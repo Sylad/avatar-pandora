@@ -249,6 +249,162 @@
      }
     ],
     "essais_graines": "19-11 : graines 5, 7, 11, 23, 42, 77 essayées sur chaque scène (échelle 0,55 ou 0,65) avant de retenir celles-ci ; scènes écartées : toruk en vol plané de profil (ptérosaure grêle), toruk perché en pied (deux créatures), tulkun « fait surface calmement » (jaillit à la verticale comme la référence du saut)."
+   },
+   "passe_cn": {
+    "date": "2026-11-19",
+    "description": "Demande de Sylvain sur toruk-ip3-2 : « pas bon du tout ton image la tete fusionne avec les aile on voit rien ». ControlNet impose la silhouette (tête, quille bleue haute et basse, quatre ailes séparées) tirée de l'image du film en vol ; IP-Adapter garde couleurs et matière ; la description anatomique de la 3e passe garde le reste. Décor différent de la référence, pose en miroir, sans cavalier.",
+    "carte": {
+     "reference": 0,
+     "methode": "boîte du polygone découpée dans l'image du film en vol, mise en miroir et à l'échelle de la génération, puis bords Canny (OpenCV) limités au polygone : ikrans, cavalier, îles flottantes, planète, arbre et collines restent dehors, donc absents de la carte ; composantes de moins de « aire_min » pixels retirées ; posée sur fond noir",
+     "polygone": [
+      [
+       640,
+       15
+      ],
+      [
+       700,
+       15
+      ],
+      [
+       870,
+       200
+      ],
+      [
+       870,
+       520
+      ],
+      [
+       840,
+       540
+      ],
+      [
+       800,
+       620
+      ],
+      [
+       930,
+       790
+      ],
+      [
+       860,
+       840
+      ],
+      [
+       790,
+       830
+      ],
+      [
+       700,
+       770
+      ],
+      [
+       560,
+       770
+      ],
+      [
+       480,
+       760
+      ],
+      [
+       260,
+       775
+      ],
+      [
+       170,
+       760
+      ],
+      [
+       300,
+       640
+      ],
+      [
+       350,
+       600
+      ],
+      [
+       395,
+       500
+      ],
+      [
+       440,
+       505
+      ],
+      [
+       560,
+       520
+      ],
+      [
+       580,
+       400
+      ],
+      [
+       630,
+       360
+      ]
+     ],
+     "canny": [
+      100,
+      200
+     ],
+     "aire_min": 15,
+     "miroir": true,
+     "hauteur_relative": 0.94,
+     "centre_x": 0.55
+    },
+    "ip_refs": [
+     0,
+     1
+    ],
+    "echelle_ip": 0.5,
+    "precedente": 1,
+    "corps": "colossal alien pterosaur, orange body with black tiger stripes, four separate orange wings with black veins, head separate from the wings, tall blue crest above the snout, blue keel below the jaw, curved black horns",
+    "neg": "feathers, bird, beak, european dragon, rider, person, saddle, white background, studio background, floating islands, planet, two creatures, flock, red body, yellow crest, spikes, mohawk, wings merged with head, fused wings, extra heads, blue body, blue wings, orange crest",
+    "variantes": [
+     {
+      "graine": 11,
+      "poids": 0.8,
+      "scene_courte": "seul, ciel d'orage gris, océan sombre et agité",
+      "scene": "alone under a grey storm sky above a dark rough ocean",
+      "tete_separee": true,
+      "crete_bleue": "basse seulement (haute orange)",
+      "ressemble_film": "en partie",
+      "trop_proche": "pose oui (miroir), décor non",
+      "jugement": "tête, cornes, gueule et quille basse bleue bien détachées des ailes, quatre ailes distinctes ; mais cou, ventre et ailes arrière bleus, quille haute orange ; l'océan demandé est sorti en collines"
+     },
+     {
+      "graine": 11,
+      "poids": 1.0,
+      "scene_courte": "seul, ciel d'orage gris, océan sombre et agité",
+      "scene": "alone under a grey storm sky above a dark rough ocean",
+      "tete_separee": true,
+      "crete_bleue": "basse seulement (haute orange)",
+      "ressemble_film": "en partie",
+      "trop_proche": "pose oui (miroir), décor non",
+      "jugement": "comme #1, silhouette un peu plus nette ; même bleu sur le corps, quille haute orange"
+     },
+     {
+      "graine": 42,
+      "poids": 0.8,
+      "scene_courte": "seul, ciel clair du matin, montagnes enneigées",
+      "scene": "alone in a clear morning sky above snowy mountains",
+      "tete_separee": true,
+      "crete_bleue": "non (haute orange, basse peu marquée)",
+      "ressemble_film": "en partie",
+      "trop_proche": "pose oui (miroir), décor non",
+      "jugement": "corps orange à rayures noires, ailes orange veinées, tête séparée : le plus proche des couleurs du film ; arche de roche parasite à gauche"
+     },
+     {
+      "graine": 42,
+      "poids": 1.0,
+      "scene_courte": "seul, ciel clair du matin, montagnes enneigées",
+      "scene": "alone in a clear morning sky above snowy mountains",
+      "tete_separee": true,
+      "crete_bleue": "basse seulement (gris-bleu, haute orange)",
+      "ressemble_film": "en partie",
+      "trop_proche": "pose oui (miroir), décor non",
+      "jugement": "la meilleure : corps et ailes orange rayés, tête détachée avec cornes et quille basse ; quille haute orange au lieu de bleue, aile parasite vers la roche à gauche"
+     }
+    ]
    }
   },
   {
@@ -731,6 +887,22 @@
    "L'encodeur d'images d'IP-Adapter recadre au centre en carré : les références sont recadrées en carré à la main (la vue sous l'eau en deux carrés, corps et queue double) et les intrus (ikrans et cavalier, aile d'ikran, navire) floutés.",
    "Limites qui restent : SDXL garde un corps de ptérosaure grêle pour le toruk (ni masse, ni 2e paire d'ailes, ni lanières translucides) et ne compte pas les yeux du tulkun ; à 0,65 la crête et l'œil de la référence passent mieux qu'à 0,5, sans décalque de pose ni fond blanc.",
    "Prompts limités à 77 jetons CLIP : description raccourcie pour que la fin du style commun seule soit perdue."
+  ]
+ },
+ "passe_cn": {
+  "date": "2026-11-19",
+  "demande": "D-2 : essai ControlNet pour le toruk seulement (« essaie ControlNet pour le toruk »), après « la tete fusionne avec les aile on voit rien » sur toruk-ip3-2",
+  "modele": "SDXL base 1.0 + ControlNet canny SDXL (diffusers/controlnet-canny-sdxl-1.0, OpenRAIL++, sans jeton) + IP-Adapter SDXL (h94/IP-Adapter)",
+  "references_hors_depot": "la carte de bords est tirée de sylvain_toruk_vol.png (image du film fournie par Sylvain), dans ~/projects/developpeur/tmp/l63-refs/toruk/ ; ni la carte ni la référence ne sont versionnées ni sur la planche",
+  "poids": [
+   0.8,
+   1.0
+  ],
+  "constats": [
+   "19-11, premier tirage (non gardé) aux poids 0,5 et 0,8 : à 0,5 la silhouette n'est pas suivie (ptérosaure grêle, ailes en arche, tête noyée), à 0,8 elle tient (ailes avant dressées, tête à quille séparée) ; un ciel violet et un éclair teintaient les ailes de rose et de bleu. Retenus : poids 0,8 et 1,0, Canny calculé à la taille finale, décors neutres (orage gris, matin clair sur la neige).",
+   "19-11 : avec ControlNet canny, la tête est séparée des ailes dans les 4 variantes (0 sur 4 en 3e passe d'après Sylvain sur toruk-ip3-2) et les quatre ailes sont distinctes ; ControlNet 0,8 et 1,0 donnent presque la même forme, 1,0 un peu plus nette.",
+   "La quille haute sort orange dans les 4 variantes malgré « tall blue crest » et « orange crest » au négatif : la carte de bords fixe la forme, pas la couleur ; la quille basse est bleue ou gris-bleu dans 3 sur 4. Graine 11 : le bleu de la quille déborde sur le cou et le ventre ; graine 42 : corps orange à rayures noires, comme au film.",
+   "Pose : c'est celle de l'image du film (en miroir), par construction de la carte ; le décor (orage, montagnes enneigées) ne reprend ni planète, ni îles, ni soleil, ni ikrans. Prompt ramené sous 77 jetons CLIP pour que les couleurs du corps ne soient plus coupées."
   ]
  }
 }

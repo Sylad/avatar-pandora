@@ -29,6 +29,18 @@ et « recadrage » la cadre en carré, car l'encodeur CLIP d'IP-Adapter recadre 
 (224 px) : sans cela, la queue ou la tête sortaient du champ. Les 4 variantes de la 2e passe sont
 d'abord régénérées à l'identique pour la comparaison. Sorties : <id>-ip3-<n>-g<graine>-e<échelle>.png
 et planche-ip3-<id>.png (2e passe en petit à gauche, puis la grille 2×2).
+
+Essai ControlNet (D-2), avec --controlnet [--refs <dossier>] : seules les créatures qui portent un
+bloc « passe_cn » (toruk). SDXL + ControlNet canny SDXL (diffusers/controlnet-canny-sdxl-1.0, libre,
+sans jeton) + IP-Adapter. La carte de contrôle (« carte ») est faite des bords Canny d'une image du
+film fournie par Sylvain, limités à un polygone autour du sujet : les autres créatures et le décor
+n'y sont pas, seule la silhouette est contrainte ; elle est mise en miroir et posée sur fond noir,
+puis enregistrée en <id>-cn-carte.png dans le dossier de sortie (jamais dans le dépôt ni sur une
+planche). 4 variantes graine × poids du ControlNet, décor différent de la référence. La variante
+« precedente » de la 3e passe est d'abord régénérée à l'identique (même UNet et même adaptateur,
+sans ControlNet). Sorties : <id>-cn-<n>-g<graine>-p<poids>.png et planche-cn-<id>.png (3e passe en
+petit à gauche, puis la grille 2×2 jugée : tête séparée, crête bleue, ressemblance, décalque).
+Dépendance en plus : opencv-python-headless.
 """
 import json, os, sys, time, textwrap
 from pathlib import Path
@@ -394,6 +406,147 @@ def planche_ip3(c, out, cellule=640):
     return chemin
 
 
+# --- Essai ControlNet : silhouette imposée (toruk) -------------------------------------------
+
+def nom_cn(c, i, v):
+    return f"{c['id']}-cn-{i + 1}-g{v['graine']}-p{v['poids']}.png"
+
+
+def carte_cn(c, refs):
+    """Carte de bords Canny du seul sujet : bords de la référence limités au polygone qui l'entoure
+    (les autres créatures et le décor restent dehors), petites composantes retirées, boîte du
+    polygone en miroir si demandé, posée sur fond noir à la taille de la génération."""
+    import cv2
+    import numpy as np
+    from PIL import Image
+    k = c["passe_cn"]["carte"]
+    r = c["passe3"]["references"][k["reference"]]
+    f = refs / c["id"] / r["fichier"]
+    if not f.exists():
+        sys.exit(f"référence absente : {f} ({r['source']})")
+    im = cv2.imread(str(f))
+    poly = np.array(k["polygone"], np.float64)
+    x, y, w, h = cv2.boundingRect(poly.astype(np.int32))
+    L, H = c["largeur"], c["hauteur"]
+    e = min(H * k["hauteur_relative"] / h, L * 0.95 / w)
+    sujet = cv2.resize(im[y:y + h, x:x + w], (round(w * e), round(h * e)), interpolation=cv2.INTER_AREA)
+    poly = (poly - (x, y)) * e
+    if k.get("miroir"):
+        sujet = sujet[:, ::-1].copy()
+        poly[:, 0] = sujet.shape[1] - 1 - poly[:, 0]
+    # Canny à la taille de la génération : traits d'un pixel, comme l'entraînement du ControlNet
+    masque = np.zeros(sujet.shape[:2], np.uint8)
+    cv2.fillPoly(masque, [poly.round().astype(np.int32)], 255)
+    bords = cv2.Canny(cv2.GaussianBlur(sujet, (3, 3), 0), *k["canny"])
+    bords[masque == 0] = 0
+    n, lab, st, _ = cv2.connectedComponentsWithStats(bords, connectivity=8)
+    garde = np.isin(lab, [i for i in range(1, n) if st[i, cv2.CC_STAT_AREA] >= k["aire_min"]])
+    page = Image.new("L", (L, H), 0)
+    sw, sh = sujet.shape[1], sujet.shape[0]
+    x0 = min(max(0, round(L * k["centre_x"] - sw / 2)), L - sw)
+    page.paste(Image.fromarray(np.where(garde, 255, 0).astype(np.uint8)), (x0, (H - sh) // 2))
+    return page.convert("RGB")
+
+
+def prompt_cn(cfg, c, v):
+    return f"{v['scene']}, {c['passe_cn']['corps']}" + cfg["style"]
+
+
+def generer_cn(cfg, out, seul, refs):
+    import torch
+    from diffusers import ControlNetModel, StableDiffusionXLControlNetPipeline, StableDiffusionXLPipeline
+    choisies = [c for c in cfg["creatures"] if "passe_cn" in c and (not seul or c["id"] in seul)]
+    cn = ControlNetModel.from_pretrained("diffusers/controlnet-canny-sdxl-1.0", torch_dtype=torch.float16,
+                                         variant="fp16", use_safetensors=True)
+    pipe = StableDiffusionXLControlNetPipeline.from_pretrained(
+        "stabilityai/stable-diffusion-xl-base-1.0", controlnet=cn, torch_dtype=torch.float16,
+        variant="fp16", use_safetensors=True).to("cuda")
+    pipe.load_ip_adapter("h94/IP-Adapter", subfolder="sdxl_models",
+                         weight_name="ip-adapter_sdxl.safetensors")
+    # même UNet, même adaptateur, sans ControlNet : pour régénérer la variante de la 3e passe
+    sans_cn = StableDiffusionXLPipeline(**{n: m for n, m in pipe.components.items() if n != "controlnet"})
+    r = cfg["reglages"]
+
+    def tirer(p, prompt, neg, c, v, echelle, ims, **cnet):
+        pipe.set_ip_adapter_scale(echelle)
+        return p(prompt, negative_prompt=neg, guidance_scale=r["guidance_scale"],
+                 num_inference_steps=r["num_inference_steps"], width=c["largeur"], height=c["hauteur"],
+                 generator=torch.Generator("cuda").manual_seed(v["graine"]),
+                 ip_adapter_image=[ims], **cnet).images[0]
+
+    for c in choisies:
+        p3, pc = c["passe3"], c["passe_cn"]
+        k = pc["precedente"]
+        v3 = p3["variantes"][k]
+        ims3 = [charger_ref(c, p3["references"][j], refs) for j in v3["refs"]]
+        tirer(sans_cn, prompt_ip3(cfg, c, v3), cfg["neg"] + ", " + p3["neg"], c, v3, v3["echelle"], ims3) \
+            .save(out / nom_ip3(c, k, v3))
+        print(nom_ip3(c, k, v3), flush=True)
+        carte = carte_cn(c, refs)
+        carte.save(out / f"{c['id']}-cn-carte.png")  # dérivée d'une image du film : hors dépôt, hors planche
+        ims = [charger_ref(c, p3["references"][j], refs) for j in pc["ip_refs"]]
+        for i, v in enumerate(pc["variantes"]):
+            t = time.time()
+            tirer(pipe, prompt_cn(cfg, c, v), cfg["neg"] + ", " + pc["neg"], c, v, pc["echelle_ip"], ims,
+                  image=carte, controlnet_conditioning_scale=v["poids"]).save(out / nom_cn(c, i, v))
+            print(nom_cn(c, i, v), round(time.time() - t, 1), "s", flush=True)
+
+
+def oui_non(x):
+    return {True: "oui", False: "non", None: "?"}.get(x, x)
+
+
+def planche_cn(c, out, cellule=640):
+    """Variante retenue de la 3e passe en petit à gauche, puis la grille 2×2 graine × poids du
+    ControlNet, chaque variante jugée : tête séparée des ailes, crête bleue, ressemblance au film,
+    trop proche de la référence."""
+    from PIL import Image, ImageDraw, ImageFont
+    f = ImageFont.truetype(POLICE, 18)
+    fs = ImageFont.truetype(POLICE, 15)
+    fg = ImageFont.truetype(POLICE_GRAS, 19)
+    ft = ImageFont.truetype(POLICE_GRAS, 30)
+    p3, pc = c["passe3"], c["passe_cn"]
+    vignettes = []
+    for i, v in enumerate(pc["variantes"]):
+        im = Image.open(out / nom_cn(c, i, v)).convert("RGB")
+        im.thumbnail((cellule, cellule))
+        vignettes.append((im, v))
+    w = max(im.width for im, _ in vignettes)
+    h = max(im.height for im, _ in vignettes)
+    leg, marge, titre = 230, 16, 60
+    k = pc["precedente"]
+    v3 = p3["variantes"][k]
+    prec = Image.open(out / nom_ip3(c, k, v3)).convert("RGB")
+    prec.thumbnail((300, 300))
+    gauche = prec.width + 2 * marge + 8
+    page = Image.new("RGB", (gauche + 2 * w + 3 * marge, titre + 2 * (h + leg) + 2 * marge), "#10161c")
+    d = ImageDraw.Draw(page)
+    d.text((marge, 14), f"L63 — essai ControlNet canny + IP-Adapter : {c['id']}  ({c['fiche']})",
+           font=ft, fill="#e8f4f8")
+    y = ecrire(d, (marge, titre), "Avant : 3e passe, IP-Adapter seul", fg, 26, 2, "#e8f4f8")
+    page.paste(prec, (marge, y + 4))
+    y = ecrire(d, (marge, y + prec.height + 10), f"{c['id']}-ip3-{k + 1} · g{v3['graine']} · éch. "
+               f"{v3['echelle']}", fs, 34, 1)
+    ecrire(d, (marge, y + 4), "« la tête fusionne avec les ailes, on voit rien » (Sylvain)", fs, 30, 3, "#ffb86b")
+    d.line([(gauche - 8, titre), (gauche - 8, page.height - marge)], fill="#3a4a55", width=2)
+    for n, (im, v) in enumerate(vignettes):
+        x = gauche + marge + (n % 2) * (w + marge)
+        y = titre + (n // 2) * (h + leg + marge)
+        page.paste(im, (x, y))
+        col = max(30, w // 12)
+        tete = (f"#{n + 1}  graine {v['graine']} · ControlNet {v['poids']} · IP-Adapter "
+                f"{pc['echelle_ip']} — {v['scene_courte']}")
+        yy = ecrire(d, (x, y + h + 6), tete, fg, col, 2, "#e8f4f8")
+        verdict = (f"tête séparée des ailes : {oui_non(v['tete_separee'])} · crête bleue : "
+                   f"{oui_non(v['crete_bleue'])} · ressemble au film : {v['ressemble_film'] or '?'} · "
+                   f"trop proche de la référence : {oui_non(v['trop_proche'])}")
+        yy = ecrire(d, (x, yy + 2), verdict, f, col + 4, 4, "#cfe3ea")
+        ecrire(d, (x, yy + 2), v["jugement"] or "?", fs, col + 12, 3, "#9fb8c2")
+    chemin = out / f"planche-cn-{c['id']}.png"
+    page.save(chemin)
+    return chemin
+
+
 def main():
     out = Path(sys.argv[1]); out.mkdir(parents=True, exist_ok=True)
     cfg = json.loads((ICI / "essais-faune.json").read_text())
@@ -404,6 +557,13 @@ def main():
         refs = Path(args[k + 1]).expanduser()
         del args[k:k + 2]
     seul = {a for a in args if not a.startswith("--")} if "--seul" in args else None
+    if "--controlnet" in args:
+        if "--planches" not in args:
+            generer_cn(cfg, out, seul, refs)
+        for c in cfg["creatures"]:
+            if "passe_cn" in c and (not seul or c["id"] in seul):
+                print(planche_cn(c, out))
+        return
     if "--ip3" in args:
         if "--planches" not in args:
             generer_ip3(cfg, out, seul, refs)
