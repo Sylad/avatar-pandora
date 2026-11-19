@@ -5,11 +5,15 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
+import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { coverCardSrc, coverImageSrc, isIllustration, ILLUSTRATION_SIZES } from '../frontend/src/lib/cover.ts';
 import { setupBrowser } from './lib/e2e-dist.mjs';
 
 const FRONT = fileURLToPath(new URL('../frontend/', import.meta.url));
+const REPO = fileURLToPath(new URL('../', import.meta.url));
+const SOURCES = JSON.parse(readFileSync(join(REPO, 'scripts/illustrations/illustrations.json'), 'utf8'));
+const GUIDEES = SOURCES.filter((e) => e.ip_adapter);
 const CONTENT = join(FRONT, 'src/content');
 const PUBLIC = join(FRONT, 'public');
 const SECTIONS = ['pandora', 'clans', 'bestiaire', 'flore', 'engins', 'films', 'personnages'];
@@ -21,7 +25,7 @@ const MAX_TOTAL = 12 * 1024 * 1024;
 function frontmatter(file) {
   const m = readFileSync(file, 'utf8').match(/^---\n([\s\S]*?)\n---/);
   const get = (k) => m[1].match(new RegExp(`^${k}:\\s*"(.*)"\\s*$`, 'm'))?.[1];
-  return { title: get('title'), cover: get('cover'), coverAlt: get('coverAlt') };
+  return { title: get('title'), cover: get('cover'), coverAlt: get('coverAlt'), pandorapedia: get('pandorapedia') };
 }
 
 /** Vrai si le texte alternatif reprend le titre de la fiche (en entier, ou son nom avant « — ») au lieu de décrire l'image. */
@@ -115,8 +119,35 @@ test('R5 — aucun fichier de public/illustrations/ sans fiche ni bandeau qui l�
 });
 
 test('R6 — la page À propos dit d’où viennent les images', () => {
-  const about = readFileSync(join(FRONT, 'src/pages/about.astro'), 'utf8');
+  const about = readFileSync(join(FRONT, 'src/pages/about.astro'), 'utf8').replace(/\s+/g, ' ');
   assert.match(about, /illustration générée pour Eywa/);
+  // L63 : œuvres de fan guidées par des images officielles, jamais affichées ni hébergées, © aux ayants droit.
+  for (const re of [/œuvres de fan/, /IP-Adapter/, /20th Century Studios/, /références seulement/,
+    /jamais être affichées ni hébergées/, /© leurs ayants droit/]) assert.match(about, re);
+});
+
+test('R8 — illustrations guidées par IP-Adapter (L63) : réglages notés, références hors du dépôt, lien Pandorapedia', () => {
+  assert.deepEqual(GUIDEES.map((e) => e.fiche).sort(), ['bestiaire/ikran', 'bestiaire/pali', 'bestiaire/thanator']);
+  const publics = readdirSync(join(PUBLIC, 'illustrations'), { recursive: true }).map(String);
+  for (const e of GUIDEES) {
+    assert.ok(e.prompt && e.neg && Number.isInteger(e.graine), `${e.fiche} : prompt, négatif, graine`);
+    assert.ok(e.ip_adapter.echelle > 0 && e.ip_adapter.echelle <= 1, `${e.fiche} : échelle IP-Adapter`);
+    assert.ok(e.ip_adapter.references.length >= 1, `${e.fiche} : au moins une référence`);
+    for (const r of e.ip_adapter.references) {
+      assert.match(r.page, /^https:\/\/www\.avatar\.com\/pandorapedia\/[a-z0-9-]+$/, `${e.fiche} : page de la référence`);
+      assert.match(r.image, /^https:\/\//, `${e.fiche} : URL de l’image de référence`);
+      const nom = r.image.split('/').pop();
+      assert.ok(!publics.some((f) => f.endsWith(nom)), `${e.fiche} : la référence ${nom} ne doit pas être servie`);
+    }
+    const [section, slug] = e.fiche.split('/');
+    const fiche = entries.find((x) => x.section === section && x.slug === slug);
+    assert.equal(fiche.pandorapedia, e.pandorapedia, `${e.fiche} : champ pandorapedia de la fiche`);
+    assert.equal(fiche.coverAlt, e.alt, `${e.fiche} : coverAlt = alt de illustrations.json`);
+  }
+  // Aucun fichier image de référence versionné dans le dépôt.
+  const suivis = execFileSync('git', ['ls-files'], { cwd: REPO, encoding: 'utf8' }).split('\n');
+  const noms = GUIDEES.flatMap((e) => e.ip_adapter.references.map((r) => r.image.split('/').pop()));
+  assert.deepEqual(suivis.filter((f) => noms.some((n) => f.endsWith(n))), []);
 });
 
 test('R7 — site construit : la carte charge la taille carte, la fiche décrit son image, le reste garde le visuel par défaut', { timeout: 60_000 }, async (t) => {
@@ -146,6 +177,19 @@ test('R7 — site construit : la carte charge la taille carte, la fiche décrit 
   const banner = page.locator('[data-lightbox] img');
   assert.equal(await banner.getAttribute('src'), e.cover);
   assert.equal(await banner.getAttribute('alt'), e.coverAlt);
+
+  // Bandeau sans lien officiel : pas de légende.
+  assert.equal(await page.locator('main figcaption').count(), 0);
+
+  // L63 : une créature guidée par les images officielles porte sa légende et son lien Pandorapedia.
+  for (const g of GUIDEES) {
+    await page.goto(`${env.base}/${g.fiche}/`, { waitUntil: 'load' });
+    const lien = page.locator('main figure figcaption a');
+    assert.equal(await lien.count(), 1, `${g.fiche} : un lien sous le bandeau`);
+    assert.equal(await lien.getAttribute('href'), g.pandorapedia);
+    assert.match((await lien.innerText()).trim(), /^Fiche officielle sur Pandorapedia/);
+    assert.equal(await page.locator('main figure [data-lightbox] img').getAttribute('alt'), g.alt);
+  }
 
   const bare = entries.find((x) => !isIllustration(x.cover));
   if (bare) {

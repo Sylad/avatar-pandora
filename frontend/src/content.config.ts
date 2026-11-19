@@ -13,6 +13,9 @@ const codexEntrySchema = z.object({
   // coverAlt : French description of the hosted image (L17), shown as the alt
   // of the entry's banner. Required as soon as `cover` is a site path.
   coverAlt: z.string().min(20).optional(),
+  // pandorapedia : page officielle de ce qu'illustre la fiche (L63), affichée
+  // sous le bandeau (« Fiche officielle sur Pandorapedia »).
+  pandorapedia: z.string().regex(/^https:\/\/www\.avatar\.com\/pandorapedia\/[a-z0-9-]+$/).optional(),
 }).refine((d) => !d.cover?.startsWith('/') || !!d.coverAlt, {
   message: 'cover hébergée sur le site sans coverAlt (texte alternatif français, L17)',
   path: ['coverAlt'],

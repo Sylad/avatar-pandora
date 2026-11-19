@@ -3,7 +3,8 @@ title: "Ikran — le banshee de montagne"
 summary: "Premier compagnon volant de tout chasseur Omatikaya. Lien à vie, un seul ikran par cavalier."
 order: 1
 cover: "/illustrations/bestiaire/ikran.webp"
-coverAlt: "Falaises vertigineuses couvertes de jungle, une cascade lumineuse tombant dans la brume, une corniche rocheuse au premier plan"
+coverAlt: "Ptérosaure bleu-vert aux longues ailes membraneuses, gueule étroite hérissée de crocs, planant devant une falaise au-dessus de la mer"
+pandorapedia: "https://www.avatar.com/pandorapedia/mountain-banshee"
 ---
 
 Il n'existe pas, dans toute la cosmologie Omatikaya, de rite aussi nu dans sa violence et aussi absolu dans ce qu'il scelle. Le jeune chasseur grimpe seul les parois d'Iknimaya, trouve l'ikran qui le choisit autant qu'il le choisit, et repart lié pour la vie — ou ne repart pas. C'est ainsi depuis que la mémoire des ancêtres peut remonter, et personne ne songe à en atténuer les termes.

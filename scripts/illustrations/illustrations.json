@@ -134,10 +134,30 @@
  },
  {
   "fiche": "bestiaire/ikran",
-  "prompt": "sheer cliffs of floating jungle mountains with nests on high rocky ledges, vines and waterfalls, mist far below, wind",
-  "neg": "creature, animal, bird, dragon",
-  "graine": 99,
-  "alt": "Falaises vertigineuses couvertes de jungle, une cascade lumineuse tombant dans la brume, une corniche rocheuse au premier plan"
+  "prompt": "a sleek alien pterosaur predator perched on a cliff ledge with wings half spread, two pairs of leathery membrane wings, large front wings and a smaller second pair of hind wings, long slender neck, narrow elongated head with a backward pointing rigid head crest, narrow jaws with curved fangs, two pairs of small eyes, smooth skin with bold blue and yellow tiger stripes, no feathers, floating mountains and waterfalls in the background, highly detailed creature concept art, cinematic lighting, sharp focus, alien jungle moon, no text",
+  "neg": "text, letters, caption, watermark, signature, logo, frame, border, blurry, low quality, deformed, extra heads, cartoon, anime, chibi, toy, feathers, bird, european dragon, horns, fur, rider, person",
+  "graine": 77,
+  "largeur": 1344,
+  "hauteur": 768,
+  "ip_adapter": {
+   "echelle": 0.5,
+   "dossier_refs": "ikran",
+   "references": [
+    {
+     "page": "https://www.avatar.com/pandorapedia/mountain-banshee",
+     "image": "https://lumiere-a.akamaihd.net/v1/images/a_avatarpandorapedia_banshee_16x9_1032_02_dfe02846.jpeg"
+    },
+    {
+     "page": "https://www.avatar.com/pandorapedia/mountain-banshee",
+     "image": "https://lumiere-a.akamaihd.net/v1/images/a_avatarpandorapedia_banshee_16x9_990_02_ee0d2642.jpeg"
+    }
+   ]
+  },
+  "choix": "L63 (D-2) : variante #1 de la 2e passe d'essais (planche-ip-ikran), choisie par Sylvain le 19-11-2026",
+  "cadre": 0.15,
+  "cadre_x": 1.0,
+  "pandorapedia": "https://www.avatar.com/pandorapedia/mountain-banshee",
+  "alt": "Ptérosaure bleu-vert aux longues ailes membraneuses, gueule étroite hérissée de crocs, planant devant une falaise au-dessus de la mer"
  },
  {
   "fiche": "bestiaire/ilu",
@@ -155,10 +175,38 @@
  },
  {
   "fiche": "bestiaire/pali",
-  "prompt": "a lush meadow at the edge of an alien jungle with tall grass and glowing flowers, morning light, wide open",
-  "neg": "creature, animal, bird, fish, dragon, whale, shark",
+  "prompt": "an alien six legged horse-like beast in a twilight rainforest, six long slender legs, long arched neck, narrow head with tiny eyes, two long thin whip-like feelers trailing back from the head, hairless dark blue-grey armored hide with darker stripes, glowing cyan dots on its flanks, full body side view, highly detailed creature concept art, cinematic lighting, sharp focus, alien jungle moon, no text",
+  "neg": "text, letters, caption, watermark, signature, logo, frame, border, blurry, low quality, deformed, extra heads, cartoon, anime, chibi, toy, antlers, horns, deer, stag, elk, four legs only, mane, fur, hair, unicorn, rider, person, saddle",
   "graine": 42,
-  "alt": "Prairie fleurie de fleurs violettes et turquoise au bord de la jungle, sous un ciel rose et cyan"
+  "largeur": 1344,
+  "hauteur": 768,
+  "ip_adapter": {
+   "echelle": 0.5,
+   "dossier_refs": "pali",
+   "references": [
+    {
+     "page": "https://www.avatar.com/pandorapedia/direhorse",
+     "image": "https://lumiere-a.akamaihd.net/v1/images/a_avatarpandorapedia_direhorse_16x9_990_05_aa14286f.jpeg",
+     "recadrage": [
+      400,
+      60,
+      1045,
+      1010
+     ],
+     "masque": [
+      960,
+      270,
+      1045,
+      370
+     ]
+    }
+   ]
+  },
+  "choix": "L63 (D-2) : variante #1 de la 2e passe d'essais (planche-ip-pali), choisie par Sylvain le 19-11-2026",
+  "cadre": 0.55,
+  "cadre_x": 1.0,
+  "pandorapedia": "https://www.avatar.com/pandorapedia/direhorse",
+  "alt": "Monture bleu sombre à six longues pattes fines, au long cou et à la crête dorsale hérissée, la tête étroite tournée vers la droite, sur un fond gris"
  },
  {
   "fiche": "bestiaire/prolemuris",
@@ -183,10 +231,30 @@
  },
  {
   "fiche": "bestiaire/thanator",
-  "prompt": "the darkest depths of a dense alien jungle at night, huge twisted roots, glowing eyes far in the shadows, ominous",
-  "neg": "creature, animal",
+  "prompt": "a huge black alien panther-like predator with six legs stalking through a dark bioluminescent jungle, glossy black armored skin, hard armor plates on its skull and chest, long muscular tail, wide snarling jaws with secondary mandible tusks on its cheeks, flared spiky sensory quills on the back of its neck, six powerful legs clearly visible, full body side view, highly detailed creature concept art, cinematic lighting, sharp focus, alien jungle moon, no text",
+  "neg": "text, letters, caption, watermark, signature, logo, frame, border, blurry, low quality, deformed, extra heads, cartoon, anime, chibi, toy, four legs only, fur, cat, house cat, rider, person, wings",
   "graine": 42,
-  "alt": "Profondeur d'une jungle nocturne aux racines tordues, fleurs violettes lumineuses et ruisseau bleuté"
+  "largeur": 1344,
+  "hauteur": 768,
+  "ip_adapter": {
+   "echelle": 0.5,
+   "dossier_refs": "thanator",
+   "references": [
+    {
+     "page": "https://www.avatar.com/pandorapedia/thanator",
+     "image": "https://lumiere-a.akamaihd.net/v1/images/a_avatarpandorapedia_thanator_16x9_990_11_01b986dc.jpeg"
+    },
+    {
+     "page": "https://www.avatar.com/pandorapedia/thanator",
+     "image": "https://lumiere-a.akamaihd.net/v1/images/a_avatarpandorapedia_thanator01_16x9_990_12_4316c18c.png"
+    }
+   ]
+  },
+  "choix": "L63 (D-2) : variante #1 de la 2e passe d'essais (planche-ip-thanator), choisie par Sylvain le 19-11-2026",
+  "cadre": 0.4,
+  "cadre_x": 0.7,
+  "pandorapedia": "https://www.avatar.com/pandorapedia/thanator",
+  "alt": "Grand prédateur noir et luisant à la tête blindée, gueule ouverte sur des crocs et piquants dressés sur la nuque, rôdant dans une jungle sombre"
  },
  {
   "fiche": "bestiaire/toruk",
