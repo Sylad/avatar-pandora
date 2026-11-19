@@ -2,8 +2,6 @@
 title: "Thanator (Palulukan) — le grand prédateur des forêts"
 summary: "Six pattes blindées, mâchoires capables de broyer la magnétite, peau noire luisante. Considéré indomptable."
 order: 3
-cover: "/illustrations/bestiaire/thanator.webp"
-coverAlt: "Grand prédateur noir et luisant à la tête blindée, gueule ouverte sur des crocs et piquants dressés sur la nuque, rôdant dans une jungle sombre"
 pandorapedia: "https://www.avatar.com/pandorapedia/thanator"
 ---
 

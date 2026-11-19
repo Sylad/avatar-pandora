@@ -2,8 +2,6 @@
 title: "Ikran — le banshee de montagne"
 summary: "Premier compagnon volant de tout chasseur Omatikaya. Lien à vie, un seul ikran par cavalier."
 order: 1
-cover: "/illustrations/bestiaire/ikran.webp"
-coverAlt: "Ptérosaure bleu-vert aux longues ailes membraneuses, gueule étroite hérissée de crocs, planant devant une falaise au-dessus de la mer"
 pandorapedia: "https://www.avatar.com/pandorapedia/mountain-banshee"
 ---
 

@@ -2,8 +2,6 @@
 title: "Glow Snake — le fil de lumière"
 summary: "Deux mètres de serpent bioluminescent, venimeux et contemplé — la créature qui pulse au rythme d'Eywa dans les nuits profondes de la forêt."
 order: 14
-cover: "/illustrations/bestiaire/glow-snake.webp"
-coverAlt: "Serpent fin et lumineux couleur cyan, enroulé sur une branche moussue dans une forêt nocturne"
 ---
 
 La forêt pandorienne la nuit est un phénomène qui demande du temps à apprivoiser — non pas parce qu'elle est hostile, mais parce qu'elle est trop belle pour qu'on y reste pratique. Champignons phosphorescents, mousses bleues, lianes qui pulsent, traces lumineuses laissées par les pas dans le sol vivant. Dans cet écosystème de lumière douce, le *glow snake* passe parfois inaperçu au premier coup d'œil : une liane bioluminescente parmi d'autres, enroulée dans les branches, pulsant en rythme lent. Jusqu'à ce que la liane bouge.

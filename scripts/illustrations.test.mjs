@@ -14,6 +14,8 @@ const FRONT = fileURLToPath(new URL('../frontend/', import.meta.url));
 const REPO = fileURLToPath(new URL('../', import.meta.url));
 const SOURCES = JSON.parse(readFileSync(join(REPO, 'scripts/illustrations/illustrations.json'), 'utf8'));
 const GUIDEES = SOURCES.filter((e) => e.ip_adapter);
+/** Entrée gardée pour être refaite mais posée sur aucune fiche (`"branchee": false`, bestiaire depuis le 19-11-2026). */
+const branchee = (e) => e.branchee !== false;
 const CONTENT = join(FRONT, 'src/content');
 const PUBLIC = join(FRONT, 'public');
 const SECTIONS = ['pandora', 'clans', 'bestiaire', 'flore', 'engins', 'films', 'personnages'];
@@ -118,15 +120,43 @@ test('R5 — aucun fichier de public/illustrations/ sans fiche ni bandeau qui l�
   assert.deepEqual(orphans, []);
 });
 
-test('R6 — la page À propos dit d’où viennent les images', () => {
+test('R6 — la page À propos dit d’où viennent les images, et que le bestiaire n’est pas illustré', () => {
   const about = readFileSync(join(FRONT, 'src/pages/about.astro'), 'utf8').replace(/\s+/g, ' ');
   assert.match(about, /illustration générée pour Eywa/);
-  // L63 : œuvres de fan guidées par des images officielles, jamais affichées ni hébergées, © aux ayants droit.
-  for (const re of [/œuvres de fan/, /IP-Adapter/, /20th Century Studios/, /références seulement/,
-    /jamais être affichées ni hébergées/, /© leurs ayants droit/]) assert.match(about, re);
+  // L63 (19-11-2026) : bestiaire revenu au visuel par défaut ; plus rien ne dit que des créatures sont illustrées.
+  assert.match(about, /bestiaire, lui, n'est pas illustré pour l'instant/);
+  assert.match(about, /visuel par défaut/);
+  for (const re of [/œuvres de fan/, /IP-Adapter/, /Trois créatures du bestiaire/]) assert.doesNotMatch(about, re);
 });
 
-test('R8 — illustrations guidées par IP-Adapter (L63) : réglages notés, références hors du dépôt, lien Pandorapedia', () => {
+test('R9 — fiches sans illustration : Spider et tout le bestiaire, rien d’autre', () => {
+  const sans = entries.filter((e) => !isIllustration(e.cover)).map((e) => `${e.section}/${e.slug}`).sort();
+  const bestiaire = entries.filter((e) => e.section === 'bestiaire').map((e) => `${e.section}/${e.slug}`).sort();
+  assert.equal(bestiaire.length, 14);
+  assert.deepEqual(sans, ['personnages/spider', ...bestiaire].sort());
+});
+
+test('R10 — aucune fiche du bestiaire n’a d’illustration tant que illustrations.json ne la marque pas branchée', () => {
+  const publics = readdirSync(join(PUBLIC, 'illustrations'), { recursive: true }).map(String);
+  for (const e of entries.filter((x) => x.section === 'bestiaire')) {
+    const fiche = `${e.section}/${e.slug}`;
+    const source = SOURCES.find((x) => x.fiche === fiche);
+    if (source && branchee(source)) continue;
+    assert.equal(e.cover, undefined, `${fiche} : cover alors que l’entrée n’est pas branchée`);
+    assert.equal(e.coverAlt, undefined, `${fiche} : coverAlt alors que l’entrée n’est pas branchée`);
+    assert.deepEqual(publics.filter((f) => f.startsWith(`${e.section}/${e.slug}.`) || f.startsWith(`${e.section}/${e.slug}-carte.`)), [],
+      `${fiche} : WebP encore servi`);
+  }
+  // Les 14 entrées du bestiaire restent dans illustrations.json pour être refaites, toutes non branchées aujourd’hui.
+  const sources = SOURCES.filter((x) => x.fiche.startsWith('bestiaire/'));
+  assert.equal(sources.length, 14);
+  assert.deepEqual(sources.filter(branchee).map((x) => x.fiche), []);
+  assert.ok(!existsSync(join(PUBLIC, 'illustrations/bestiaire')) || readdirSync(join(PUBLIC, 'illustrations/bestiaire')).length === 0);
+  // Le bandeau de la section n’en reprend aucune non plus.
+  assert.doesNotMatch(readFileSync(join(FRONT, 'src/pages/bestiaire.astro'), 'utf8'), /cover="/);
+});
+
+test('R8 — essais guidés par IP-Adapter (L63) : réglages notés, références hors du dépôt, lien Pandorapedia', () => {
   assert.deepEqual(GUIDEES.map((e) => e.fiche).sort(), ['bestiaire/ikran', 'bestiaire/pali', 'bestiaire/thanator']);
   const publics = readdirSync(join(PUBLIC, 'illustrations'), { recursive: true }).map(String);
   for (const e of GUIDEES) {
@@ -142,7 +172,7 @@ test('R8 — illustrations guidées par IP-Adapter (L63) : réglages notés, ré
     const [section, slug] = e.fiche.split('/');
     const fiche = entries.find((x) => x.section === section && x.slug === slug);
     assert.equal(fiche.pandorapedia, e.pandorapedia, `${e.fiche} : champ pandorapedia de la fiche`);
-    assert.equal(fiche.coverAlt, e.alt, `${e.fiche} : coverAlt = alt de illustrations.json`);
+    if (branchee(e)) assert.equal(fiche.coverAlt, e.alt, `${e.fiche} : coverAlt = alt de illustrations.json`);
   }
   // Aucun fichier image de référence versionné dans le dépôt.
   const suivis = execFileSync('git', ['ls-files'], { cwd: REPO, encoding: 'utf8' }).split('\n');
@@ -181,15 +211,31 @@ test('R7 — site construit : la carte charge la taille carte, la fiche décrit 
   // Bandeau sans lien officiel : pas de légende.
   assert.equal(await page.locator('main figcaption').count(), 0);
 
-  // L63 : une créature guidée par les images officielles porte sa légende et son lien Pandorapedia.
+  // L63 : une fiche avec page officielle garde son lien Pandorapedia. Avec illustration : légende
+  // « Illustration de fan » + lien ; sans (bestiaire aujourd’hui) : visuel par défaut et le lien seul.
   for (const g of GUIDEES) {
     await page.goto(`${env.base}/${g.fiche}/`, { waitUntil: 'load' });
-    const lien = page.locator('main figure figcaption a');
+    const lien = page.locator('main .entry-cover-caption a');
     assert.equal(await lien.count(), 1, `${g.fiche} : un lien sous le bandeau`);
     assert.equal(await lien.getAttribute('href'), g.pandorapedia);
     assert.match((await lien.innerText()).trim(), /^Fiche officielle sur Pandorapedia/);
-    assert.equal(await page.locator('main figure [data-lightbox] img').getAttribute('alt'), g.alt);
+    const legende = (await page.locator('main .entry-cover-caption').innerText()).replace(/\s+/g, ' ').trim();
+    if (branchee(g)) {
+      assert.match(legende, /^Illustration de fan, générée pour Eywa/);
+      assert.equal(await page.locator('main figure [data-lightbox] img').getAttribute('alt'), g.alt);
+    } else {
+      assert.equal(legende, 'Fiche officielle sur Pandorapedia (nouvel onglet)', `${g.fiche} : le lien seul, sans mention ni « · »`);
+      assert.equal(await page.locator('main .cover-fallback').count(), 1, `${g.fiche} : visuel par défaut`);
+      assert.equal(await page.locator('main [data-lightbox], main img[src^="/illustrations/bestiaire/"]').count(), 0);
+    }
   }
+
+  // Liste du bestiaire : bandeau et 14 cartes au visuel par défaut, aucune image d’illustration.
+  await page.goto(`${env.base}/bestiaire/`, { waitUntil: 'load' });
+  const liste = await page.$$eval('.entry-card', (cs) => cs.map((c) => ({ img: !!c.querySelector('img'), fallback: !!c.querySelector('.cover-fallback') })));
+  assert.equal(liste.length, 14);
+  assert.deepEqual(liste.filter((c) => c.img || !c.fallback), []);
+  assert.equal(await page.locator('.section-hero img').count(), 0);
 
   const bare = entries.find((x) => !isIllustration(x.cover));
   if (bare) {

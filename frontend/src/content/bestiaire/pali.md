@@ -2,8 +2,6 @@
 title: "Pa'li — le direhorse"
 summary: "Monture terrestre à six pattes, deux paires d'antennes nerveuses tressables. La cavalerie des forêts."
 order: 6
-cover: "/illustrations/bestiaire/pali.webp"
-coverAlt: "Monture bleu sombre à six longues pattes fines, au long cou et à la crête dorsale hérissée, la tête étroite tournée vers la droite, sur un fond gris"
 pandorapedia: "https://www.avatar.com/pandorapedia/direhorse"
 ---
 

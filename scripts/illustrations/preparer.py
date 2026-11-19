@@ -6,6 +6,8 @@ Pour chaque entrée de illustrations.json (<dossier-png>/<section>-<fiche>.png, 
   frontend/public/illustrations/<section>/<fiche>.webp        bandeau de fiche, 1344×576 (21:9)
   frontend/public/illustrations/<section>/<fiche>-carte.webp  carte de liste, 640×480 (4:3)
 et écrit `cover` + `coverAlt` (texte alternatif français) dans le front matter de la fiche.
+Une entrée `"branchee": false` (tout le bestiaire depuis le 19-11-2026, L63) est gardée pour être refaite
+mais n'est pas posée sur sa fiche : passer `branchee` à true (ou retirer le champ) pour la rebrancher.
 Le recadrage garde le centre (ou la hauteur `cadre` de l'entrée : 0 = haut, 1 = bas ; et la position
 horizontale `cadre_x`, 0 = gauche, 1 = droite, utile pour la carte 4:3 quand la tête est au bord).
 Dimensions : src/lib/cover.ts (ILLUSTRATION_SIZES) ; contrôle : scripts/illustrations.test.mjs.
@@ -35,7 +37,11 @@ def renseigne(md, cover, alt):
     texte = md.read_text()
     tete, corps = texte.split("\n---\n", 1)
     tete = re.sub(r'^coverAlt:.*\n?', "", tete + "\n", flags=re.M).rstrip("\n")
-    tete = re.sub(r'^cover:.*$', f'cover: "{cover}"\ncoverAlt: "{alt}"', tete, flags=re.M)
+    ligne = f'cover: "{cover}"\ncoverAlt: "{alt}"'
+    if re.search(r'^cover:', tete, flags=re.M):
+        tete = re.sub(r'^cover:.*$', ligne, tete, flags=re.M)
+    else:
+        tete += "\n" + ligne
     md.write_text(tete + "\n---\n" + corps)
 
 
@@ -44,6 +50,9 @@ def main():
     seul = set(sys.argv[sys.argv.index("--seul") + 1:]) if "--seul" in sys.argv else None
     for e in json.loads((ICI / "illustrations.json").read_text()):
         if seul and e["fiche"] not in seul:
+            continue
+        if e.get("branchee") is False:
+            print(f'{e["fiche"]} : non branchée, ignorée')
             continue
         section, fiche = e["fiche"].split("/")
         img = Image.open(src / f"{section}-{fiche}.png").convert("RGB")

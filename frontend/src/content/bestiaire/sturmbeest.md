@@ -2,8 +2,6 @@
 title: "Sturmbeest — le buffle des forêts ouvertes"
 summary: "Cinq mètres de masse musculaire, cornes en couronne, troupeaux de cent têtes — la proie royale des chasseurs Na'vi depuis des millénaires."
 order: 10
-cover: "/illustrations/bestiaire/sturmbeest.webp"
-coverAlt: "Grande plaine de terre rouge et de touffes d'herbe bleutée, arbres violets isolés sous une lune turquoise"
 ---
 
 Il faut voir un troupeau de *sturmbeest* en mouvement pour comprendre ce que les Na'vi entendent par « la forêt qui respire ». Cent individus, parfois deux cents, qui progressent entre les arbres avec une synchronisation non concertée — pas la discipline d'une meute prédatrice, mais le flux d'une marée, chaque animal ajustant sa trajectoire aux pressions imperceptibles de ses voisins. Le sol tremble. Les oiseaux s'envolent à deux cents mètres de distance. La forêt se tait, puis retrouve sa voix quand le troupeau est passé.

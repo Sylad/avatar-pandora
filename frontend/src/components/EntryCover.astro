@@ -6,6 +6,8 @@
   (L17) : texte alternatif français `coverAlt` et dimensions connues (pas de
   saut de mise en page). Créature illustrée en œuvre de fan guidée par les images
   officielles (L63) : légende sous le bandeau avec le lien vers sa fiche Pandorapedia.
+  Fiche sans illustration mais avec page officielle (bestiaire depuis le 19-11-2026) :
+  visuel par défaut, puis le lien seul — pas de mention « illustration de fan ».
 */
 import CoverFallback from './CoverFallback.astro';
 import { coverImageSrc, isIllustration, ILLUSTRATION_SIZES } from '../lib/cover';
@@ -41,6 +43,16 @@ const size = isIllustration(cover) ? ILLUSTRATION_SIZES.fiche : undefined;
   <div class="relative aspect-[21/9] rounded-md overflow-hidden mb-12 border border-eywa-text-muted/20" data-lightbox>
     <img src={src} alt={coverAlt ?? title} width={size?.width} height={size?.height}
          decoding="async" class="w-full h-full object-cover" />
+  </div>
+) : pandorapedia ? (
+  <div class="mb-12">
+    <div class="relative aspect-[21/9] rounded-md overflow-hidden border border-eywa-text-muted/20">
+      <CoverFallback label={section} size={150} />
+    </div>
+    <p class="entry-cover-caption mt-2 text-sm text-eywa-text-muted font-body">
+      <a href={pandorapedia} target="_blank" rel="noopener"
+         class="inline-flex items-center min-h-11 underline underline-offset-4 hover:text-eywa-bio-primary transition">Fiche officielle sur Pandorapedia<span class="sr-only"> (nouvel onglet)</span></a>
+    </p>
   </div>
 ) : (
   <div class="relative aspect-[21/9] rounded-md overflow-hidden mb-12 border border-eywa-text-muted/20">

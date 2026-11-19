@@ -109,28 +109,32 @@
   "prompt": "the deep blue abyss at the edge of a coral reef drop-off, dark water falling away below, shafts of light from the surface, ominous",
   "neg": "creature, animal, bird, fish, dragon, whale, shark",
   "graine": 21,
-  "alt": "Fonds marins sombres entre deux falaises de corail violet, une lueur bleue au loin dans l'eau profonde"
+  "alt": "Fonds marins sombres entre deux falaises de corail violet, une lueur bleue au loin dans l'eau profonde",
+  "branchee": false
  },
  {
   "fiche": "bestiaire/glow-snake",
   "prompt": "a long thin glowing bioluminescent serpent coiled on a mossy branch in a dark alien forest at night",
   "neg": "",
   "graine": 99,
-  "alt": "Serpent fin et lumineux couleur cyan, enroulé sur une branche moussue dans une forêt nocturne"
+  "alt": "Serpent fin et lumineux couleur cyan, enroulé sur une branche moussue dans une forêt nocturne",
+  "branchee": false
  },
  {
   "fiche": "bestiaire/hammerhead-titanothere",
   "prompt": "a wide path crushed through an alien jungle, huge trampled ferns and broken saplings, an open forest clearing beyond, morning light",
   "neg": "creature, animal, bird, fish, dragon, whale, shark",
   "graine": 7,
-  "alt": "Sentier de terre violette ouvert à travers des fougères géantes, dans une forêt brumeuse éclairée de cyan"
+  "alt": "Sentier de terre violette ouvert à travers des fougères géantes, dans une forêt brumeuse éclairée de cyan",
+  "branchee": false
  },
  {
   "fiche": "bestiaire/hexapede",
   "prompt": "a misty alien forest glade at dawn with soft glowing ferns and tall grass, quiet and peaceful",
   "neg": "creature, animal, bird, fish, dragon, whale, shark",
   "graine": 99,
-  "alt": "Clairière brumeuse de forêt à l'aube, fougères vertes et plantes violettes dressées dans la lumière turquoise"
+  "alt": "Clairière brumeuse de forêt à l'aube, fougères vertes et plantes violettes dressées dans la lumière turquoise",
+  "branchee": false
  },
  {
   "fiche": "bestiaire/ikran",
@@ -157,21 +161,24 @@
   "cadre": 0.15,
   "cadre_x": 1.0,
   "pandorapedia": "https://www.avatar.com/pandorapedia/mountain-banshee",
-  "alt": "Ptérosaure bleu-vert aux longues ailes membraneuses, gueule étroite hérissée de crocs, planant devant une falaise au-dessus de la mer"
+  "alt": "Ptérosaure bleu-vert aux longues ailes membraneuses, gueule étroite hérissée de crocs, planant devant une falaise au-dessus de la mer",
+  "branchee": false
  },
  {
   "fiche": "bestiaire/ilu",
   "prompt": "a shallow turquoise lagoon over a coral reef, split view half above and half below the water surface, tropical islands",
   "neg": "creature, animal, bird, fish, dragon, whale, shark",
   "graine": 42,
-  "alt": "Récif de coraux violets sous une eau turquoise et claire, une plage visible à travers la surface"
+  "alt": "Récif de coraux violets sous une eau turquoise et claire, une plage visible à travers la surface",
+  "branchee": false
  },
  {
   "fiche": "bestiaire/nantang",
   "prompt": "a narrow jungle trail at night with luminous footprints glowing on the moss, dark trunks and eerie shadows",
   "neg": "creature, animal, bird, fish, dragon, whale, shark",
   "graine": 21,
-  "alt": "Sentier de forêt nocturne entre des troncs sombres, des empreintes lumineuses violettes sur la mousse"
+  "alt": "Sentier de forêt nocturne entre des troncs sombres, des empreintes lumineuses violettes sur la mousse",
+  "branchee": false
  },
  {
   "fiche": "bestiaire/pali",
@@ -206,28 +213,32 @@
   "cadre": 0.55,
   "cadre_x": 1.0,
   "pandorapedia": "https://www.avatar.com/pandorapedia/direhorse",
-  "alt": "Monture bleu sombre à six longues pattes fines, au long cou et à la crête dorsale hérissée, la tête étroite tournée vers la droite, sur un fond gris"
+  "alt": "Monture bleu sombre à six longues pattes fines, au long cou et à la crête dorsale hérissée, la tête étroite tournée vers la droite, sur un fond gris",
+  "branchee": false
  },
  {
   "fiche": "bestiaire/prolemuris",
   "prompt": "inside the high canopy of an alien rainforest, a maze of mossy branches, hanging vines and giant leaves seen from the treetops",
   "neg": "creature, animal, bird, fish, dragon, whale, shark",
   "graine": 42,
-  "alt": "Voûte de la canopée vue de l'intérieur, branches moussues entrelacées et lianes pendantes éclairées de cyan"
+  "alt": "Voûte de la canopée vue de l'intérieur, branches moussues entrelacées et lianes pendantes éclairées de cyan",
+  "branchee": false
  },
  {
   "fiche": "bestiaire/skimwing",
   "prompt": "ocean surface at sunset seen at wave level, sea spray and a long white wake on the water, reef islands far away",
   "neg": "creature, animal, bird, fish, dragon, whale, shark, boat, ship",
   "graine": 7,
-  "alt": "Vague turquoise qui déferle au coucher du soleil, embruns et écume sur la mer"
+  "alt": "Vague turquoise qui déferle au coucher du soleil, embruns et écume sur la mer",
+  "branchee": false
  },
  {
   "fiche": "bestiaire/sturmbeest",
   "prompt": "vast open plains with scattered huge trees and tall grass on an alien moon, dust clouds rising in the distance, wide sky",
   "neg": "creature, animal, bird, fish, dragon, whale, shark",
   "graine": 99,
-  "alt": "Grande plaine de terre rouge et de touffes d'herbe bleutée, arbres violets isolés sous une lune turquoise"
+  "alt": "Grande plaine de terre rouge et de touffes d'herbe bleutée, arbres violets isolés sous une lune turquoise",
+  "branchee": false
  },
  {
   "fiche": "bestiaire/thanator",
@@ -254,21 +265,24 @@
   "cadre": 0.4,
   "cadre_x": 0.7,
   "pandorapedia": "https://www.avatar.com/pandorapedia/thanator",
-  "alt": "Grand prédateur noir et luisant à la tête blindée, gueule ouverte sur des crocs et piquants dressés sur la nuque, rôdant dans une jungle sombre"
+  "alt": "Grand prédateur noir et luisant à la tête blindée, gueule ouverte sur des crocs et piquants dressés sur la nuque, rôdant dans une jungle sombre",
+  "branchee": false
  },
  {
   "fiche": "bestiaire/toruk",
   "prompt": "the sky above floating mountains at sunset, a huge winged shadow cast on the clouds, rays of light, epic",
   "neg": "creature, animal, bird, dragon",
   "graine": 42,
-  "alt": "Pics montagneux dressés dans la brume sous un ciel de coucher de soleil rose et violet"
+  "alt": "Pics montagneux dressés dans la brume sous un ciel de coucher de soleil rose et violet",
+  "branchee": false
  },
  {
   "fiche": "bestiaire/tulkun",
   "prompt": "the open ocean at sunset, a tall spout of mist rising from the water in the distance, calm swell, islands on the horizon",
   "neg": "creature, animal, bird, fish, dragon, whale, shark, boat, ship",
   "graine": 42,
-  "alt": "Océan calme au crépuscule, reflet d'un soleil pâle sur l'eau, falaises sombres sur la gauche"
+  "alt": "Océan calme au crépuscule, reflet d'un soleil pâle sur l'eau, falaises sombres sur la gauche",
+  "branchee": false
  },
  {
   "fiche": "flore/arbre-des-ames",
