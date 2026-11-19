@@ -21,7 +21,16 @@ const MAX_TOTAL = 12 * 1024 * 1024;
 function frontmatter(file) {
   const m = readFileSync(file, 'utf8').match(/^---\n([\s\S]*?)\n---/);
   const get = (k) => m[1].match(new RegExp(`^${k}:\\s*"(.*)"\\s*$`, 'm'))?.[1];
-  return { cover: get('cover'), coverAlt: get('coverAlt') };
+  return { title: get('title'), cover: get('cover'), coverAlt: get('coverAlt') };
+}
+
+/** Vrai si le texte alternatif reprend le titre de la fiche (en entier, ou son nom avant « — ») au lieu de décrire l'image. */
+function repeatsTitle(alt, title) {
+  const norm = (s) => s.normalize('NFC').toLocaleLowerCase('fr').replace(/[’']/g, "'").replace(/\s+/g, ' ').trim();
+  const a = norm(alt);
+  const t = norm(title);
+  const name = norm(title.split(/\s+[—–-]\s+/)[0]);
+  return a === t || a.includes(t) || a.startsWith(name);
 }
 
 const entries = SECTIONS.flatMap((s) =>
@@ -77,7 +86,13 @@ test('R3 — chaque illustration : chemin de sa section, deux WebP aux dimension
 });
 
 test('R4 — texte alternatif français qui décrit l’image (pas le titre de la fiche)', () => {
+  // Le garde-fou lui-même : un titre allongé est refusé, une vraie description passe.
+  assert.equal(repeatsTitle('Ikran — le banshee de montagne des Omatikaya', 'Ikran — le banshee de montagne'), true);
+  assert.equal(repeatsTitle('Ikran planant au-dessus des falaises', 'Ikran — le banshee de montagne'), true);
+  assert.equal(repeatsTitle('Falaises vertigineuses couvertes de jungle', 'Ikran — le banshee de montagne'), false);
   for (const e of illustrated) {
+    assert.ok(e.title, `${e.section}/${e.slug} : titre introuvable`);
+    assert.equal(repeatsTitle(e.coverAlt, e.title), false, `${e.section}/${e.slug} : coverAlt reprend le titre « ${e.title} »`);
     assert.ok(e.coverAlt && e.coverAlt.length >= 30, `${e.section}/${e.slug} : coverAlt trop court`);
     assert.match(e.coverAlt, /[a-zàâçéèêëîïôûùüÿœ]{3,} (de|du|des|la|le|les|un|une|sur|dans|au|aux|à) /i,
       `${e.section}/${e.slug} : coverAlt ne ressemble pas à une phrase française`);

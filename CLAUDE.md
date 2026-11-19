@@ -40,13 +40,13 @@ Pattern technique réutilisable : `CinemaCanvas` mode `'time'` + `CycleBackdrop`
 ## Sources de contenu
 
 1. **Pandorapedia** (officiel Disney/Cameron) — référence canon.
-2. **Avatar Wiki Fandom** (https://avatar.fandom.com) — exhaustif, source de TEXTE. Plus aucune image n'en vient : le proxy `/api/wiki-image` est retiré (01-10-2026, défi anti-robot que Sylvain refuse de contourner ; pas de captures des films non plus). Fiche sans image hébergée → visuel par défaut `CoverFallback` (`src/lib/cover.ts`).
+2. **Avatar Wiki Fandom** (https://avatar.fandom.com) — exhaustif, source de TEXTE. Plus aucune image n'en vient : le proxy `/api/wiki-image` est retiré (01-10-2026, défi anti-robot que Sylvain refuse de contourner ; pas de captures des films non plus). Fiche sans illustration (aujourd'hui Spider seul) → visuel par défaut `CoverFallback` (`src/lib/cover.ts`).
 3. **Paul Frommer** — linguiste Na'vi, source pour la page Langue Na'vi.
 4. **Synthèse Claude en français** pour les ~70 entrées lyriques du codex.
 
 ## Fair-use / publication publique
 
-- ✅ Aucune image tierce affichée (proxy wiki retiré le 01-10-2026) ; illustrations propres hébergées sur le site à venir.
+- ✅ Aucune image tierce affichée (proxy wiki retiré le 01-10-2026). Depuis L17 (19-11-2026), les fiches du codex ont des **illustrations propres générées en local** : Stable Diffusion XL base 1.0 (licence CreativeML Open RAIL++-M), à partir du texte seul, servies depuis `frontend/public/illustrations/` (WebP fiche 1344×576 + carte 640×480, `coverAlt` français qui décrit l'image). Pour les refaire : `scripts/illustrations/generer.py` (prompt, négatif et graine de chaque fiche dans `illustrations.json`, GPU + venv diffusers) puis `preparer.py` (WebP + front matter). Aucun nom des films ni d'artiste dans les prompts. Seule `personnages/spider` garde le visuel par défaut ; `scripts/illustrations.test.mjs` contrôle tailles, poids, orphelins et textes alternatifs.
 - ❌ Pas de re-host de stills films (Disney/Cameron).
 - ✅ Repo public-ready (LICENSE MIT/CC). Auto-deploy Cloudflare Pages sur `git push origin main`.
 

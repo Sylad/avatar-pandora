@@ -112,13 +112,13 @@ avatar-pandora/
 - **Code & contenu** — Sylvain Ladoire ([@Sylad](https://github.com/Sylad)), avec [Claude Code](https://claude.com/claude-code) comme pair-programmeur principal, puis Codex pour la relecture, les corrections ciblées et les itérations
 - **Univers Avatar** — James Cameron, 20th Century Studios, et toute l'équipe créative derrière Pandora
 - **Langue Na'vi** — Dr Paul Frommer
-- **Images** — aucune image tierce : les fiches affichent un visuel par défaut aux couleurs d'Eywa, en attendant des illustrations propres hébergées sur le site
+- **Images** — aucune image tierce : les fiches du codex ont des illustrations générées en local pour Eywa avec le modèle libre Stable Diffusion XL base 1.0 (licence CreativeML Open RAIL++-M), à partir du texte seul — aucune image des films ni d'un autre site. Les scripts de `scripts/illustrations/` permettent de les refaire (`generer.py` : sujet, graine et réglages de chaque image dans `illustrations.json` ; `preparer.py` : conversion en WebP). Seule la fiche de Spider garde le visuel par défaut aux couleurs d'Eywa
 
 ## Disclaimer Avatar IP
 
 > *Avatar*®, *Pandora*, *Na'vi* et l'ensemble de l'univers fictionnel auquel ce site fait référence sont la propriété de **James Cameron** et de **20th Century Studios** (Disney). Ce site est un projet personnel non-commercial à vocation de découverte et de partage entre fans, sans aucune affiliation avec les ayants-droits officiels.
 >
-> Aucune image tierce n'est affichée ni hébergée : ni capture des films, ni image de wiki. Le contenu textuel (descriptions des créatures, clans, personnages, lieux) est une synthèse personnelle en français, écrite à partir de connaissances publiques sur la franchise — pas une copie du contenu Pandorapedia ou autres wikis.
+> Aucune image tierce n'est affichée ni hébergée : ni capture des films, ni image de wiki ; les illustrations du codex sont générées en local à partir du texte seul. Le contenu textuel (descriptions des créatures, clans, personnages, lieux) est une synthèse personnelle en français, écrite à partir de connaissances publiques sur la franchise — pas une copie du contenu Pandorapedia ou autres wikis.
 >
 > Pour toute demande relative à la propriété intellectuelle Avatar, contacter directement 20th Century Studios.
 
