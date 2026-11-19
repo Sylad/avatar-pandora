@@ -39,6 +39,45 @@
      "graine": 77,
      "jugement": "la plus proche : bleu à bandes, ailes membraneuses, petite aile arrière visible, crête dressée derrière le crâne ; bec de ptérosaure plutôt que gueule à crocs, pas de 2e paire d'yeux"
     }
+   ],
+   "passe1_retenue": 3,
+   "references": [
+    {
+     "page": "https://www.avatar.com/pandorapedia/mountain-banshee",
+     "image": "https://lumiere-a.akamaihd.net/v1/images/a_avatarpandorapedia_banshee_16x9_1032_02_dfe02846.jpeg",
+     "vue": "en vol, corps entier, fond blanc"
+    },
+    {
+     "page": "https://www.avatar.com/pandorapedia/mountain-banshee",
+     "image": "https://lumiere-a.akamaihd.net/v1/images/a_avatarpandorapedia_banshee_16x9_990_02_ee0d2642.jpeg",
+     "vue": "tête et cou de près, falaise"
+    }
+   ],
+   "variantes_ip": [
+    {
+     "graine": 77,
+     "echelle": 0.5,
+     "jugement": "en vol au-dessus de la mer, tête étroite à crocs, long cou, ailes membraneuses bleu-vert comme la référence : ok ; une seule paire d'ailes, ni crête ni bandes, 2e paire d'yeux absente, patte filiforme",
+     "ressemble_film": "en partie"
+    },
+    {
+     "graine": 77,
+     "echelle": 0.8,
+     "jugement": "tête de près, gueule à crocs, livrée bleu-vert marbrée et aile translucide proches du film : ok ; corps coupé, aucune crête, une paire d'yeux",
+     "ressemble_film": "en partie"
+    },
+    {
+     "graine": 7,
+     "echelle": 0.5,
+     "jugement": "perché sur un rocher, corps bleu fin, ailes membraneuses : ok ; deux cous et deux têtes (anatomie confuse), ailes jaunes héritées du prompt",
+     "ressemble_film": "en partie"
+    },
+    {
+     "graine": 7,
+     "echelle": 0.8,
+     "jugement": "perché, corps bleu, longue tête étroite : ok ; deux cous, pattes multipliées, ailes jaunes, pas de crête",
+     "ressemble_film": "en partie"
+    }
    ]
   },
   {
@@ -72,7 +111,48 @@
      "jugement": "ne ressemble pas : dragon européen classique (cou en S, cornes) ; seule la livrée rouge et noire est juste"
     }
    ],
-   "essai_precedent": "19-11, 1er tour : « colossal alien flying predator soaring… » a donné 4 oiseaux de proie à plumes (et un bateau) : prompt recentré sur « pterosaur », plumes et bec écartés"
+   "essai_precedent": "19-11, 1er tour : « colossal alien flying predator soaring… » a donné 4 oiseaux de proie à plumes (et un bateau) : prompt recentré sur « pterosaur », plumes et bec écartés",
+   "passe1_retenue": 0,
+   "references": [
+    {
+     "page": "https://www.avatar.com/pandorapedia/the-great-leonopteryx-the-last-shadow",
+     "image": "https://lumiere-a.akamaihd.net/v1/images/a_avatarpandorapedia_toruk_16x9_1246_09_cc5e4d09.jpeg",
+     "vue": "en vol, corps entier, fond blanc"
+    },
+    {
+     "page": "https://www.avatar.com/pandorapedia/the-great-leonopteryx-the-last-shadow",
+     "image": "https://lumiere-a.akamaihd.net/v1/images/o_avatar_pandorapediaimages_675_greatleonopteryx_8b785e01.jpeg",
+     "vue": "tête de près, fond blanc"
+    }
+   ],
+   "variantes_ip": [
+    {
+     "graine": 11,
+     "echelle": 0.5,
+     "jugement": "silhouette de ptérosaure, ailes membraneuses orange bordées de noir (livrée de la référence, plus juste que le rouge du 1er tour), tête à crête : ok ; pas de crête jaune sous la mâchoire, corps grêle, une paire d'ailes",
+     "ressemble_film": "en partie"
+    },
+    {
+     "graine": 11,
+     "echelle": 0.8,
+     "jugement": "ailes orange, tête crêtée : ok ; corps disloqué, aile en anneau, échelle de géant non rendue",
+     "ressemble_film": "en partie",
+     "decalque": "fond blanc et vol ailes déployées repris de la référence détourée"
+    },
+    {
+     "graine": 7,
+     "echelle": 0.5,
+     "jugement": "deux grandes ailes orange-jaune, gueule dentée, queue : ok ; épines dorsales et allure de dragon (retour de l'heroic fantasy), pas de crête sous la mâchoire",
+     "ressemble_film": "en partie"
+    },
+    {
+     "graine": 7,
+     "echelle": 0.8,
+     "jugement": "ailes orange, gueule dentée : ok ; anatomie confuse (cou et aile mêlés), pas de crête jaune",
+     "ressemble_film": "en partie",
+     "decalque": "vue de face ailes ouvertes sur fond blanc, comme la référence en vol"
+    }
+   ]
   },
   {
    "id": "thanator",
@@ -103,6 +183,46 @@
     {
      "graine": 77,
      "jugement": "tête de panthère noire blindée, piquants, mâchoires : ok ; 4 pattes, pas de queue visible, pas de mandibules"
+    }
+   ],
+   "passe1_retenue": 2,
+   "references": [
+    {
+     "page": "https://www.avatar.com/pandorapedia/thanator",
+     "image": "https://lumiere-a.akamaihd.net/v1/images/a_avatarpandorapedia_thanator_16x9_990_11_01b986dc.jpeg",
+     "vue": "corps entier de profil, fond blanc"
+    },
+    {
+     "page": "https://www.avatar.com/pandorapedia/thanator",
+     "image": "https://lumiere-a.akamaihd.net/v1/images/a_avatarpandorapedia_thanator01_16x9_990_12_4316c18c.png",
+     "vue": "dans la forêt, face à un Na'vi"
+    }
+   ],
+   "variantes_ip": [
+    {
+     "graine": 42,
+     "echelle": 0.5,
+     "jugement": "noir luisant, éventail de piquants sensoriels derrière la tête, longue queue, 5 à 6 pattes, jungle sombre : ok ; mandibules secondaires peu lisibles",
+     "ressemble_film": "oui"
+    },
+    {
+     "graine": 42,
+     "echelle": 0.8,
+     "jugement": "même bête, piquants dressés, gueule à crocs, queue : ok ; mandibules absentes",
+     "ressemble_film": "oui",
+     "decalque": "une 2e silhouette au bord droit vient de la référence en forêt (le Na'vi face au thanator)"
+    },
+    {
+     "graine": 7,
+     "echelle": 0.5,
+     "jugement": "noir blindé, gueule à crocs, piquants dressés, queue : ok ; piquants blancs, tête de dinosaure, 4 pattes visibles",
+     "ressemble_film": "en partie"
+    },
+    {
+     "graine": 7,
+     "echelle": 0.8,
+     "jugement": "noir blindé, piquants blancs, posture d'attaque basse : ok ; 4 à 5 pattes, mandibules absentes, tête trop petite",
+     "ressemble_film": "en partie"
     }
    ]
   },
@@ -137,7 +257,54 @@
      "jugement": "6 pattes, peau bleue à plaques : ok ; tête de crocodile à crocs, pas d'antennes, fond de studio gris"
     }
    ],
-   "essai_precedent": "19-11, 1er tour : « neural antennae » a donné des bois de cerf sur 4 variantes sur 4 : antennes décrites en « whip-like feelers », bois et cerf écartés"
+   "essai_precedent": "19-11, 1er tour : « neural antennae » a donné des bois de cerf sur 4 variantes sur 4 : antennes décrites en « whip-like feelers », bois et cerf écartés",
+   "passe1_retenue": 2,
+   "references": [
+    {
+     "page": "https://www.avatar.com/pandorapedia/direhorse",
+     "image": "https://lumiere-a.akamaihd.net/v1/images/a_avatarpandorapedia_direhorse_16x9_990_05_aa14286f.jpeg",
+     "vue": "avant de la bête : tête, cou, antennes, pattes avant (recadrage ; main de la cavalière masquée en blanc)",
+     "masque": [
+      960,
+      270,
+      1045,
+      370
+     ],
+     "recadrage": [
+      400,
+      60,
+      1045,
+      1010
+     ]
+    }
+   ],
+   "variantes_ip": [
+    {
+     "graine": 42,
+     "echelle": 0.5,
+     "jugement": "six pattes fines, long cou, longue queue, crête dorsale, peau bleu sombre : ok ; tête de reptile à dents (le film a une tête allongée sans crocs), fond de studio gris",
+     "ressemble_film": "en partie"
+    },
+    {
+     "graine": 42,
+     "echelle": 0.8,
+     "jugement": "corps décharné à pattes fines, longue queue : ok ; tête hors champ, 4 pattes, fond bleu clair, ni le port ni la tête du film",
+     "ressemble_film": "non"
+    },
+    {
+     "graine": 7,
+     "echelle": 0.5,
+     "jugement": "long cou arqué, tête allongée, pattes fines : ok ; ailes membraneuses parasites sur le dos, fond de studio",
+     "ressemble_film": "en partie"
+    },
+    {
+     "graine": 7,
+     "echelle": 0.8,
+     "jugement": "long museau étroit et cou arqué proches de la référence, pattes fines : ok ; 4 pattes, forme volante parasite en arrière-plan, fond blanc",
+     "ressemble_film": "en partie"
+    }
+   ],
+   "essai_precedent_ip": "19-11 : (1) image entière en référence → la cavalière est reproduite (deux cavaliers g42 à 0,8, une humanoïde quasi nue à côté de la bête g7) ; (2) deux recadrages tête / pattes → bête décharnée qui perd le port du pa'li ; (3) retenu : un seul recadrage de l'avant de la bête, sans humain sur les 4 tirages. La seule image officielle trouvée porte une cavalière : pas de 2e référence."
   },
   {
    "id": "tulkun",
@@ -168,6 +335,45 @@
     {
      "graine": 77,
      "jugement": "corps massif à texture de plaques : ok ; gueule de baleine à fanons, peu de lumière, pectorales courtes"
+    }
+   ],
+   "passe1_retenue": 2,
+   "references": [
+    {
+     "page": "https://www.avatar.com/pandorapedia/tulkun",
+     "image": "https://lumiere-a.akamaihd.net/v1/images/a_avatarpandorapedia_tulkun_16x9_1032_09_a3ddadd2.jpeg",
+     "vue": "corps entier de profil, fond blanc"
+    },
+    {
+     "page": "https://www.avatar.com/pandorapedia/tulkun",
+     "image": "https://lumiere-a.akamaihd.net/v1/images/a_avatarpandorapedia_payakan_16x9_1098_02_96d7d6c5.jpeg",
+     "vue": "silhouette sous l'eau, nageur à côté (page tulkun)"
+    }
+   ],
+   "variantes_ip": [
+    {
+     "graine": 42,
+     "echelle": 0.5,
+     "jugement": "longues pectorales, eau turquoise, rayons : ok ; baleine à bosse terrestre, ni plaques, ni bioluminescence, ni 2e paire d'yeux ; la référence n'a presque pas agi",
+     "ressemble_film": "non"
+    },
+    {
+     "graine": 42,
+     "echelle": 0.8,
+     "jugement": "longues pectorales, peau sombre striée : ok ; baleine à bosse terrestre, rien du corps allongé ni de la tête cuirassée du film",
+     "ressemble_film": "non"
+    },
+    {
+     "graine": 7,
+     "echelle": 0.5,
+     "jugement": "pectorales, sillons ventraux, lumière sous-marine : ok ; baleine à bosse terrestre, pas de plaques ni de motifs lumineux",
+     "ressemble_film": "non"
+    },
+    {
+     "graine": 7,
+     "echelle": 0.8,
+     "jugement": "silhouette en contre-jour, longues nageoires : ok ; baleine terrestre, queue déformée, aucun trait du film",
+     "ressemble_film": "non"
     }
    ]
   },
@@ -214,12 +420,87 @@
      "jugement": "silhouette bleue sur un sentier de forêt nocturne : ok ; trait de lumière vertical parasite, ni queue ni natte, proportions humaines"
     }
    ],
-   "essai_precedent": "19-11, 1er tour : en pied seins nus (refusé pour le site), « alien hunter » de loin a donné un monstre squelettique : torse couvert d'une parure de perles, « blue-skinned humanoid » au lieu de « alien »"
+   "essai_precedent": "19-11, 1er tour : en pied seins nus (refusé pour le site), « alien hunter » de loin a donné un monstre squelettique : torse couvert d'une parure de perles, « blue-skinned humanoid » au lieu de « alien »",
+   "passe1_retenue": 0,
+   "references": [
+    {
+     "page": "https://www.avatar.com/pandorapedia/neytiri",
+     "image": "https://lumiere-a.akamaihd.net/v1/images/a_avatarpandorapedia_neytiri_16x9_1098_01_0e7d844a.jpeg",
+     "vue": "buste de profil, fond blanc"
+    },
+    {
+     "page": "https://www.avatar.com/pandorapedia/omatikaya-clan",
+     "image": "https://lumiere-a.akamaihd.net/v1/images/a_avatarpandorapedia_omatikaya_16x9_1098_13_f0fe224a.jpeg",
+     "vue": "Neytiri en pied avec parure de poitrine, arc (recadrage du groupe)",
+     "recadrage": [
+      640,
+      80,
+      1300,
+      1080
+     ]
+    }
+   ],
+   "variantes_ip": [
+    {
+     "graine": 11,
+     "echelle": 0.5,
+     "cadrage": "en pied",
+     "prompt_court": "Na'vi en pied, face",
+     "prompt": "fully clothed, woven top covering the chest, full body, a tall slender blue-skinned humanoid huntress in a glowing rainforest, darker tiger stripes, glowing dots on the face, big golden eyes, flat wide nose, large pointed ears, long thin tail, long black braid, beaded chest piece and loincloth, holding a bow",
+     "jugement": "visage na'vi (yeux dorés, nez plat, oreilles pointues), longues tresses noires, parures de perles, haut tissé couvrant, arc : ok ; cadré à mi-corps et non en pied, pas de queue, rayures du visage trop blanches",
+     "ressemble_film": "oui"
+    },
+    {
+     "graine": 11,
+     "echelle": 0.8,
+     "cadrage": "en pied",
+     "prompt_court": "Na'vi en pied, face",
+     "prompt": "fully clothed, woven top covering the chest, full body, a tall slender blue-skinned humanoid huntress in a glowing rainforest, darker tiger stripes, glowing dots on the face, big golden eyes, flat wide nose, large pointed ears, long thin tail, long black braid, beaded chest piece and loincloth, holding a bow",
+     "jugement": "même visage, plus proche du portrait de Neytiri (colliers de perles jaunes), habillée : ok ; mi-corps et non en pied, pas de queue",
+     "ressemble_film": "oui"
+    },
+    {
+     "graine": 3,
+     "echelle": 0.5,
+     "cadrage": "de dos",
+     "prompt_court": "Na'vi de dos, sur une branche",
+     "prompt": "fully clothed, woven top covering the chest, back view, full body, a tall slender blue-skinned humanoid hunter with darker stripes standing on a giant tree branch, long thin tail, long black braid down the back, large pointed ears, loincloth, bow on the shoulder, looking over a misty rainforest with floating mountains",
+     "jugement": "vraie vue de trois-quarts dos, natte sur le dos, brassards, montagnes dans la brume, habillée : ok ; oreille et profil plutôt humains, pas de queue",
+     "ressemble_film": "en partie"
+    },
+    {
+     "graine": 3,
+     "echelle": 0.8,
+     "cadrage": "de dos",
+     "prompt_court": "Na'vi de dos, sur une branche",
+     "prompt": "fully clothed, woven top covering the chest, back view, full body, a tall slender blue-skinned humanoid hunter with darker stripes standing on a giant tree branch, long thin tail, long black braid down the back, large pointed ears, loincloth, bow on the shoulder, looking over a misty rainforest with floating mountains",
+     "jugement": "visage et oreilles na'vi, tresses, colliers, haut et jupe tissés : ok ; l'échelle 0,8 a remis le personnage de face : le cadrage « de dos » est perdu, pas de queue",
+     "ressemble_film": "oui"
+    }
+   ],
+   "essai_precedent_ip": "19-11, 1er tirage : Jake Sully torse nu en référence (avec Neytiri et le groupe Omatikaya entier) → buste torse nu à l'échelle 0,8 : référence de Jake retirée, groupe recadré sur Neytiri, « fully clothed, woven top covering the chest » en tête du prompt ; « de dos » : graine 11 → buste de face torse nu à 0,5 ; sondage des graines 23, 5, 3, 99 aux deux échelles : 23 (0,8), 5 (0,5 et 0,8) et 99 (0,5) torse nu ou douteux, écartées ; graine 3 retenue (vue de dos habillée à 0,5, de face habillée à 0,8)"
   }
  ],
  "constats": [
   "19-11 : variantes les plus proches de leur description — ikran #4 (g77), thanator #3 (g42), pa'li #3 (g42), tulkun #3 (g42), Na'vi #1 (g11) en pied et #3 (g11) de dos ; toruk : aucune satisfaisante (#1 au mieux).",
   "SDXL ne compte pas : nombre de pattes, d'ailes et d'yeux obtenu au hasard des graines ; la crête jaune du toruk n'apparaît jamais.",
   "Prompts tronqués à 77 jetons CLIP : la fin du style commun (« alien jungle moon, no text ») est perdue, sans effet visible."
- ]
+ ],
+ "passe2": {
+  "date": "2026-11-19",
+  "demande": "D-2 : verdict de Sylvain sur la 1re passe (« des créatures d'heroic fantasy : dragons, chevaux morts-vivants ») ; essai d'IP-Adapter avec des images officielles en référence",
+  "modele": "SDXL base 1.0 + IP-Adapter SDXL (h94/IP-Adapter, sdxl_models/ip-adapter_sdxl.safetensors, encodeur sdxl_models/image_encoder ; Apache 2.0)",
+  "references_hors_depot": "~/projects/developpeur/tmp/l63-refs/<id>/<fichier de l'URL> : jamais versionnées ni affichées ; seules les URL sont notées ici",
+  "source_references": "avatar.com/pandorapedia (pandorapedia.com y redirige), images servies par lumiere-a.akamaihd.net ; aucun défi anti-robot rencontré ; ni fan-art ni Avatar Wiki",
+  "echelles": [
+   0.5,
+   0.8
+  ],
+  "constats": [
+   "19-11 : les références rapprochent nettement du film le thanator (#1, #2), les Na'vi (#1, #2, #4) et l'ikran (#1, #2) ; le toruk en partie (livrée orange-noir juste, anatomie toujours approximative) ; le pa'li peu (une seule image officielle, qui porte une cavalière) ; le tulkun pas du tout : baleine à bosse terrestre aux deux échelles.",
+   "Échelle 0,5 : le décor et le cadrage du prompt sont tenus ; 0,8 : la référence s'impose (fond blanc des images détourées pour toruk et pa'li, personnage remis de face comme le portrait de Neytiri), sans gain net de ressemblance.",
+   "Une référence qui montre des personnages les fait apparaître (cavalière du pa'li, Na'vi du thanator), avec les tenues légères du film : références recadrées, et « fully clothed » en tête du prompt des Na'vi ; plusieurs graines « de dos » sortaient encore torse nu et ont été écartées.",
+   "Comme au 1er tour, SDXL ne compte pas : nombre d'ailes, de pattes et d'yeux toujours au hasard ; la crête jaune sous la mâchoire du toruk n'apparaît jamais."
+  ]
+ }
 }
