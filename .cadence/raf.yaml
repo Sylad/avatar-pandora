@@ -195,6 +195,7 @@ lots:
       - { date: 2026-10-01, text: "Sylvain 01-10 : décidé avec L16 (option b, images à nous)" }
       - { date: 2026-10-10, text: "Sylvain 10-10 : images générées en LOCAL validées (« t'es génial ») — SDXL base 1.0 sur la RTX 5090, ~/ai/imggen, 4 s/image, licence OpenRAIL++ ; créatures volantes à reprendre (dragon européen au lieu d'ikran) ; priorité d'avatar avant les corrections d'ergonomie restantes. Essais : ~/projects/developpeur/tmp/pandora-essais/" }
     started: 2026-11-19
+    ux: { date: 2026-11-19, verdict: "conforme — captures 1440/390 du run (Pandora, Bestiaire, Eywa, Ikran, Personnages, Spider) regardées par le lead : palette cyan/bioluminescente du site, texte lisible sur les images, pas de débordement ; Sylvain valide la livraison le 19-11 (« Oui, livre-les »)" }
   - id: L18
     title: "Supprimer le backend NestJS d'Eywa (ne sert plus que /api/health depuis le retrait du proxy Fandom) : dossier backend, conteneur et proxy nginx /api du NAS, docker-compose, docs"
     status: done
