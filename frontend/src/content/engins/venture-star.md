@@ -2,7 +2,8 @@
 title: "ISV Venture Star — le vaisseau interstellaire"
 summary: "1,5 km de long, propulsion antimatière hybride. Six ans de voyage Terre → Pandora à 0,7 c. La porte d'entrée des humains."
 order: 1
-cover: "ISV Venture Star"
+cover: "/illustrations/engins/venture-star.webp"
+coverAlt: "Long vaisseau spatial aux panneaux lumineux verts devant une planète géante et une petite lune"
 ---
 
 Il y a des machines qui font de la distance une abstraction, et des machines qui font de la distance une expérience de chair et d'acier. L'ISV Venture Star appartient à la seconde catégorie. Quand il quitte le système solaire interne, il ne part pas en voyage — il part à la guerre contre l'espace lui-même, armé de photons et d'antimatière, dans une tentative de traversée qui dure six années terrestres et coûte, au bilan énergétique global, l'équivalent de la consommation mondiale d'une décennie.

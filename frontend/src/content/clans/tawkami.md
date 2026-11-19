@@ -2,7 +2,8 @@
 title: "Tawkami — les savants de la plante"
 summary: "Herboristes et botanistes du monde pandorien, gardiens des pharmacopées de la forêt, Tsahìks aux connaissances médicales qui dépassent les frontières de leur clan."
 order: 6
-cover: "Tawkami Clan"
+cover: "/illustrations/clans/tawkami.webp"
+coverAlt: "Intérieur d'une hutte d'herboriste aux étagères chargées de pots en terre, de plantes séchées et de lueurs turquoise"
 ---
 
 *Tawkami* se traduit littéralement en Na'vi par « ceux qui connaissent le ciel-feuille » — une formulation poétique qui désigne à la fois leur relation avec la canopée haute et leur expertise de ce qui pousse dessous. Ce clan n'a pas construit sa réputation sur les batailles ou les migrations, ni sur la beauté de ses costumes ou la férocité de ses guerriers. Les Tawkami sont reconnus sur Pandora pour une chose précise et irremplaçable : ils savent lire les plantes, en préparer les actifs, en comprendre les dangers et les pouvoirs. Quand un Na'vi d'un autre clan est blessé au-delà de ce que ses propres guérisseurs peuvent traiter, la question que posent les anciens est souvent la même : « Avons-nous des Tawkami à portée de message ? »

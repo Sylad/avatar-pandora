@@ -2,7 +2,8 @@
 title: "Samson SA-2 — le tiltrotor"
 summary: "Hélicoptère hybride à rotors basculants. Le pickup-truck volant de la RDA, transport quotidien de tout Hell's Gate."
 order: 2
-cover: "SA-2 Samson"
+cover: "/illustrations/engins/samson-tiltrotor.webp"
+coverAlt: "Appareil à deux rotors basculants volant au-dessus de la canopée dans une brume verte"
 ---
 
 Il y a des machines qui ont une personnalité. Le SA-2 Samson est l'une d'elles — pas parce qu'il est le plus rapide, pas parce qu'il est le plus armé, mais parce qu'il est *là* à chaque moment décisif de la vie de Hell's Gate. Transport médical, livraison de matériel, évacuation de personnel, reconnaissance de zones interdites, exfiltration de scientifiques en zone de conflit : le Samson fait tout, pour tout le monde, sans se plaindre. C'est le pickup-truck de Pandora, sauf qu'il vole, et que son pilote a une opinion sur absolument tout.

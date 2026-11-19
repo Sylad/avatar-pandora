@@ -2,7 +2,8 @@
 title: "Plantes hélicoptères (Loreyu)"
 summary: "Spirales bioluminescentes qui se rétractent au moindre contact. Décoration et sentinelle naturelle des Omatikaya."
 order: 4
-cover: "Helicoradian"
+cover: "/illustrations/flore/plantes-helico.webp"
+coverAlt: "Plantes orange en spirales serrées, comme des crosses de fougère géantes, dressées dans une jungle sombre"
 ---
 
 Toutes les plantes de Pandora ont appris à se défendre. Certaines secrètent des toxines, d'autres déploient des épines ou des couleurs d'avertissement. Le *Loreyu* — que les exobiologistes de la RDA ont classifié sous le nom d'*helicoradian* — a développé une stratégie différente : la vitesse. Il ne blesse pas, ne repousse pas. Il disparaît.

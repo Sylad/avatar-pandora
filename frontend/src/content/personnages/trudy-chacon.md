@@ -2,7 +2,8 @@
 title: "Trudy Chacon"
 summary: "Pilote des SecOps RDA qui choisit la résistance. Meurt au combat dans la bataille finale d'Avatar 1. Interprétée par Michelle Rodriguez."
 order: 12
-cover: "Trudy Chacon"
+cover: "/illustrations/personnages/trudy-chacon.webp"
+coverAlt: "Carcasse d'un avion à hélices échoué dans une clairière de la jungle, gagnée par la végétation"
 ---
 
 Trudy Chacon n'était pas une idéaliste. C'est ce qui rend son choix particulièrement net. Elle n'avait pas rejoint les SecOps RDA avec des réserves philosophiques sur l'extraction coloniale ou des doutes sur la mission d'Hellsgate — elle était pilote, très bonne pilote, et elle faisait ce pour quoi elle était payée avec une compétence qui n'avait pas besoin d'idéologie pour fonctionner. Elle aimait voler. Elle aimait la précision d'un banshee synthétique obéissant à ses commandes dans l'atmosphère dense de Pandora. C'était suffisant.

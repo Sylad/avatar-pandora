@@ -2,7 +2,8 @@
 title: "Avatar : La Voie de l'Eau (2022)"
 summary: "Treize ans après. 192 minutes. Les Sully exilés chez les Metkayina. Découverte des tulkuns."
 order: 2
-cover: "Avatar : La Voie de l'eau"
+cover: "/illustrations/films/voie-de-leau.webp"
+coverAlt: "Lagon vu à la surface de l'eau, îles de végétation violette au-dessus, récif de coraux sous l'eau turquoise"
 ---
 
 Treize ans s'écoulent entre *Avatar* et sa suite. La pause n'est pas un retard de production : c'est un choix. Cameron veut filmer sous l'eau en motion-capture — une technique qui n'existe pas encore en 2009. Il la fera inventer.

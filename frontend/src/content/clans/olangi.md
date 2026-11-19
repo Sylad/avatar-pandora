@@ -2,7 +2,8 @@
 title: "Olangi — le peuple des canoës-arbres"
 summary: "Riverains des confluents labyrinthiques, sculpteurs de troncs vivants, pêcheurs des rapides — le clan qui lit l'eau courante comme d'autres lisent les étoiles."
 order: 7
-cover: "Olangi Clan"
+cover: "/illustrations/clans/olangi.webp"
+coverAlt: "Rivière turquoise au cœur d'une jungle brumeuse, des canoës de bois sombre amarrés près des racines moussues"
 ---
 
 Entre la forêt profonde des Omatikaya et les récifs ouverts des Metkayina, il existe un monde intermédiaire que les deux grands clans n'habitent pas : celui des rivières de l'intérieur, de leurs méandres, de leurs crues saisonnières, de leurs rapides et de leurs eaux calmes. Un monde où la géographie change chaque saison — les cours d'eau de Pandora ne tracent pas des lignes fixes dans la roche mais des trajectoires vivantes, qui dévient, se scindent, se rejoignent, creusent de nouveaux chenaux après chaque saison des pluies. C'est dans cette instabilité permanente que les Olangi ont bâti leur culture, et ils l'ont fait de la seule façon cohérente : en devenant eux-mêmes fluides.

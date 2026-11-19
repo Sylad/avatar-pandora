@@ -2,7 +2,8 @@
 title: "AT-99 Scorpion — le gunship"
 summary: "Hélicoptère de combat lourd, lance-roquettes + gatling 30 mm. La cavalerie aérienne RDA contre les ikrans."
 order: 3
-cover: "AT-99 Scorpion"
+cover: "/illustrations/engins/scorpion-gunship.webp"
+coverAlt: "Hélicoptère de combat aux phares allumés traversant la brume au-dessus de la jungle"
 ---
 
 Il y a dans la conception de l'AT-99 Scorpion une honnêteté que les autres appareils de la RDA n'ont pas. Le Samson peut prétendre à la polyvalence, le vaisseau interstellaire à la nécessité économique — le Scorpion, lui, ne prétend à rien. C'est un engin de destruction optimisé, conçu pour une seule mission : acquérir une cible, la neutraliser, passer à la suivante. Sa silhouette agressive, ses deux rotors coaxiaux qui tournent en sens inverse pour annuler le couple sans empennage, ses pods d'armement saillants de chaque côté du fuselage — tout dans son esthétique dit la même chose : cet appareil n'est pas là pour transporter des gens ou des marchandises. Il est là pour gagner un combat aérien.

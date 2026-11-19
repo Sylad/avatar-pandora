@@ -2,7 +2,8 @@
 title: "Prolemuris — le pont entre les branches"
 summary: "Lémurien à six membres dont deux paires antérieures fusionnées au coude — miroir évolutif du Na'vi, et question gênante sur les origines du Peuple."
 order: 12
-cover: "Prolemuris"
+cover: "/illustrations/bestiaire/prolemuris.webp"
+coverAlt: "Voûte de la canopée vue de l'intérieur, branches moussues entrelacées et lianes pendantes éclairées de cyan"
 ---
 
 La science a une façon particulière de rendre inconfortables les vérités qu'on préférerait ne pas examiner. Le *prolemuris* est cette vérité-là pour les xénobiologistes : une créature de la canopée pandorienne dont l'anatomie évoque, avec une précision troublante, un stade intermédiaire entre la faune hexapode standard de Pandora et les Na'vi eux-mêmes. Pas une preuve formelle. Pas un lien génétique établi. Juste assez de convergences morphologiques pour que personne dans le domaine ne puisse prétendre ne pas avoir eu la pensée.

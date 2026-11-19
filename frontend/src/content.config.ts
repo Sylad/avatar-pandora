@@ -10,6 +10,12 @@ const codexEntrySchema = z.object({
   // L16 : it renders the default visual (src/lib/cover.ts) until L17 hosts
   // an illustration for it.
   cover: z.string().optional(),
+  // coverAlt : French description of the hosted image (L17), shown as the alt
+  // of the entry's banner. Required as soon as `cover` is a site path.
+  coverAlt: z.string().min(20).optional(),
+}).refine((d) => !d.cover?.startsWith('/') || !!d.coverAlt, {
+  message: 'cover hébergée sur le site sans coverAlt (texte alternatif français, L17)',
+  path: ['coverAlt'],
 });
 
 const makeCollection = (folder: string) =>

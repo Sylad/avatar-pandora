@@ -2,7 +2,8 @@
 title: "Sea Dragon — le sous-marin d'assaut"
 summary: "Sous-marin lourd RDA, base mobile pour la chasse aux tulkuns. Apparu dans La Voie de l'Eau."
 order: 6
-cover: "Sea Dragon"
+cover: "/illustrations/engins/sea-dragon.webp"
+coverAlt: "Immense navire militaire gris glissant sur l'océan en soulevant de grandes vagues"
 ---
 
 Quand la RDA revient sur Pandora dans La Voie de l'Eau, elle ne revient pas seulement avec plus de soldats et des objectifs militaires différents. Elle revient avec la preuve que sa doctrine d'expansion a évolué — qu'elle a regardé ce qu'elle avait raté dans sa première campagne et en a tiré une conclusion terrifiante : le problème de Pandora n'était pas la forêt, c'était la surface. Les océans, vierges de toute présence Na'vi significative du point de vue de l'armement lourd, représentaient un théâtre d'opérations où les avantages technologiques humains pouvaient s'exprimer sans les complications posées par Eywa, les ikrans, et la faune terrestre. Le Sea Dragon est la réponse matérielle à cette conclusion.

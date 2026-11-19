@@ -1,7 +1,24 @@
 {
   "project": "avatar-pandora",
-  "generated": "2026-11-01 21:09",
+  "generated": "2026-11-19 15:09",
   "entries": [
+    {
+      "slug": "2026-11-19-le-codex-a-ses-propres-illustrations",
+      "title": "Le codex a ses propres illustrations",
+      "date": "2026-11-19",
+      "lots": [
+        "L17"
+      ],
+      "captures": [
+        "captures/L17-pandora-1440.png",
+        "captures/L17-pandora-390.png"
+      ],
+      "alts": [
+        "La section Pandora sur grand écran : bandeau d'une jungle violette sous une planète géante, puis des cartes illustrées de racines lumineuses, d'un volcan et d'un arbre bleu",
+        "La section Pandora sur téléphone : le bandeau « La lune jungle » et la première carte, une vallée brumeuse sous une planète turquoise"
+      ],
+      "html": "<p>Les fiches du codex avaient presque toutes le même visuel par défaut. Elles ont maintenant chacune leur image.</p>\n<ul><li><strong>67 fiches illustrées</strong> dans les sept sections, avec un bandeau d'ambiance en tête de chaque section.</li><li><strong>Des images faites pour Eywa</strong> : chacune a été générée sur l'ordinateur de Sylvain, puis regardée une à une avant d'être gardée. Aucune ne vient des films ni d'un autre site.</li><li><strong>Quand une créature ressemblait mal</strong>, c'est le paysage où elle vit qui la remplace : falaises de l'ikran, récifs du tulkun, plaines du sturmbeest.</li><li><strong>Personnages sans visage</strong> : chaque fiche montre un lieu ou un objet qui leur va, comme l'arc de Neytiri ou le couteau de Quaritch.</li><li><strong>Chaque image a sa description</strong> pour les lecteurs d'écran, et la page À propos explique d'où elles viennent.</li></ul>"
+    },
     {
       "slug": "2026-11-01-titres-des-fiches-entiers-aussi-sur-un-petit-ecran-d-ordinat",
       "title": "Titres des fiches entiers aussi sur un petit écran d'ordinateur",

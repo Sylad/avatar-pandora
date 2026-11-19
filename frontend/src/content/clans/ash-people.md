@@ -2,7 +2,8 @@
 title: "Ash People — le clan des Cendres"
 summary: "Peuple volcanique, peinture corporelle de cendres et de rouge. Antagonistes Na'vi de Fire and Ash."
 order: 3
-cover: "Ash People"
+cover: "/illustrations/clans/ash-people.webp"
+coverAlt: "Terre volcanique noire parcourue de coulées de lave orange, arbres calcinés et volcan sous un ciel pourpre"
 ---
 
 L'une des certitudes que l'on emporte des deux premiers films est que les Na'vi forment, malgré leurs différences, une communauté de valeurs : respect d'Eywa, équilibre avec le vivant, rejet de la prédation pure. Les Ash People — peuple des Cendres — brisent cette certitude avec la brutalité d'une éruption volcanique.

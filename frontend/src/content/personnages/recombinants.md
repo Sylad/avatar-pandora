@@ -2,7 +2,8 @@
 title: "Les Recombinants"
 summary: "La squadron Quaritch en corps Na'vi militarisés — des Marines dans des avatars bleus, antagonistes centraux d'Avatar 2 et 3."
 order: 17
-cover: "Recombinant"
+cover: "/illustrations/personnages/recombinants.webp"
+coverAlt: "Fusil militaire peint en bleu abandonné sur le sol d'une jungle parmi des feuilles violettes"
 ---
 
 Il y a une philosophie derrière le programme Recombinant que la RDA n'a jamais eu besoin de formuler explicitement parce qu'elle était contenue dans le projet lui-même : les Na'vi sont dangereux parce qu'ils sont adaptés à Pandora. La solution n'est pas de mieux équiper des humains — c'est de créer des guerriers qui *sont* Na'vi de corps mais qui *pensent* comme des Marines. Prendre l'adaptation biologique de l'espèce indigène et la remplir d'une conscience de combat humaine. Fabriquer, en somme, l'ennemi idéal de l'ennemi.

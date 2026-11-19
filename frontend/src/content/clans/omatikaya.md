@@ -2,7 +2,8 @@
 title: "Omatikaya — le clan de la forêt"
 summary: "Gardiens du Hometree et de l'Arbre des Âmes. Foyer de Neytiri, Mo'at, Tsu'tey, et désormais des Sully."
 order: 1
-cover: "Omaticaya"
+cover: "/illustrations/clans/omatikaya.webp"
+coverAlt: "Hamac tressé et lanternes suspendus dans les branches d'un arbre immense, sous-bois baigné de lumière cyan"
 ---
 
 Il y a des peuples dont l'identité est indissociable du sol qu'ils habitent, et d'autres dont l'identité survit au sol. Les Omatikaya appartiennent à la seconde catégorie — ce qu'ils ont appris, à leurs dépens, dans la première moitié du XXIIe siècle.

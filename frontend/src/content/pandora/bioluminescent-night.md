@@ -2,7 +2,8 @@
 title: "La nuit bioluminescente — quand Pandora s'allume"
 summary: "À la tombée de la nuit, toute la lune s'éclaire — champignons, mousses, lianes, créatures, et même le sol sous vos pas. Ce n'est pas de la magie : c'est de la chimie, et elle est plus belle que la magie."
 order: 8
-cover: "Pandora"
+cover: "/illustrations/pandora/bioluminescent-night.webp"
+coverAlt: "Forêt de nuit illuminée de champignons géants et de fougères aux lueurs magenta et cyan, une lune pâle derrière les troncs"
 ---
 
 Il faut attendre que les deux soleils d'Alpha Centauri descendent sous l'horizon — et cela prend du temps, car Pandora reçoit parfois la lumière de l'un quand l'autre est déjà couché, créant des crépuscules doubles qui durent. Mais quand l'obscurité vraie arrive enfin, Pandora répond par sa propre lumière. Pas la lueur timide et localisée d'une luciole ou d'un fond marin isolé : une illumination de l'écosystème entier, qui monte comme une marée bleue-verte-violette depuis le sol jusqu'à la canopée, jusqu'au ciel de forêt, jusqu'aux Montagnes Hallelujah dans le lointain.

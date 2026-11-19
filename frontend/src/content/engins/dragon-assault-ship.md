@@ -2,7 +2,8 @@
 title: "Dragon — le vaisseau d'assaut"
 summary: "Vaisseau d'assaut lourd, taille d'un porte-conteneurs. Bombardier qui devait raser l'Arbre des Âmes."
 order: 4
-cover: "Dragon Assault Ship"
+cover: "/illustrations/engins/dragon-assault-ship.webp"
+coverAlt: "Lourd appareil militaire à rotors multiples survolant la jungle sous un ciel d'orage violet"
 ---
 
 Son nom n'est pas une métaphore. Le Dragon Assault Ship de la RDA est, dans l'espace aérien de Pandora, ce que les grandes créatures prédatrices sont au sol : une masse en mouvement qui écrase tout ce qui se trouve sur sa trajectoire. Deux cent cinquante mètres de long, une capacité de charge qui permet de transporter simultanément des Scorpion gunships, des AMP suits déployables en vol, et la bombe incendiaire la plus destructrice que la RDA ait jamais livrée sur une cible civile. Quand le Dragon entre dans le champ de vision, ce n'est pas une machine qu'on observe — c'est une catastrophe programmée qui se déplace à vitesse constante.

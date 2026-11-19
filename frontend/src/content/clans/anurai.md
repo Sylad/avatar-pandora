@@ -2,7 +2,8 @@
 title: "Anurai — le peuple des plaines d'os"
 summary: "Peintures corporelles à l'argile blanche et aux ossements broyés, cavaliers du pa'li, chasseurs des steppes cendreuses — le clan des grandes plaines centrales."
 order: 5
-cover: "Anurai Clan"
+cover: "/illustrations/clans/anurai.webp"
+coverAlt: "Steppe grise et sèche sous un ciel violet, arbres morts blanchis et grand dôme d'os pâle à demi enfoui dans les herbes"
 ---
 
 Il y a des clans qu'on reconnaît dans la forêt à leur silence, d'autres qu'on identifie sur l'eau à leur façon de ramer. Les Anurai, on les reconnaît à leur peau. Pas à leur couleur — tous les Na'vi partagent cette teinte bleue que la chimie et l'évolution ont sculptée — mais à ce qu'ils portent dessus : des peintures à l'argile blanche et aux ossements pulvérisés qui dessinent sur les torses, les épaules et les visages des motifs qui mêlent la carte de leur territoire et la mémoire de leurs ancêtres. Ces Na'vi portent leurs morts sur la peau. C'est une façon de dire qu'ils ne les ont jamais vraiment quittés.

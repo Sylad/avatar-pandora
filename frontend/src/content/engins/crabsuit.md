@@ -2,7 +2,8 @@
 title: "Crabsuit — le mech sous-marin"
 summary: "Variant aquatique de l'AMP suit. Six pattes pour le récif, scaphandre blindé pour piloter sous l'eau."
 order: 8
-cover: "Crabsuit"
+cover: "/illustrations/engins/crabsuit.webp"
+coverAlt: "Engin sous-marin à bulle de verre monté sur des pattes articulées, posé sur un récif de corail"
 ---
 
 Quand l'AMP Suit MK-6 a été conçu pour les opérations terrestres de Pandora, ses ingénieurs n'avaient pas prévu qu'une décennie plus tard, les opérations se déplaceraient vers l'océan. Le Crabsuit est la réponse à ce déplacement — non pas une refonte de zéro, mais une adaptation radicale du concept existant à un milieu pour lequel il n'avait pas été pensé. La bipédie, parfaitement adaptée aux terrains forestiers de Pandora, devient inutilisable dans les fonds marins coralliens : trop instable, trop lente, trop vulnérable aux courants. Le Crabsuit abandonne donc les deux jambes pour six pattes articulées, chacune dotée de griffes d'ancrage, et reconstruit autour de cette base la même logique d'amplification — force mécanique, protection de l'opérateur, armement intégré — dans un profil qui s'inspire délibérément de la morphologie des crustacés.

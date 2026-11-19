@@ -2,23 +2,29 @@
 /*
   Bandeau d'image en tête d'une fiche du codex (format 21:9). Image hébergée
   → cliquable en plein écran (visionneuse) ; sinon visuel par défaut, sans
-  requête réseau ni trou (L16, proxy Fandom retiré).
+  requête réseau ni trou (L16, proxy Fandom retiré). Illustration du site
+  (L17) : texte alternatif français `coverAlt` et dimensions connues (pas de
+  saut de mise en page).
 */
 import CoverFallback from './CoverFallback.astro';
-import { coverImageSrc } from '../lib/cover';
+import { coverImageSrc, isIllustration, ILLUSTRATION_SIZES } from '../lib/cover';
 
 interface Props {
   cover?: string;
+  /** Description française de l'image (obligatoire pour une image du site). */
+  coverAlt?: string;
   title: string;
   /** Nom de la section, affiché dans le visuel par défaut. */
   section: string;
 }
-const { cover, title, section } = Astro.props;
+const { cover, coverAlt, title, section } = Astro.props;
 const src = coverImageSrc(cover);
+const size = isIllustration(cover) ? ILLUSTRATION_SIZES.fiche : undefined;
 ---
 {src ? (
   <div class="relative aspect-[21/9] rounded-md overflow-hidden mb-12 border border-eywa-text-muted/20" data-lightbox>
-    <img src={src} alt={title} class="w-full h-full object-cover" />
+    <img src={src} alt={coverAlt ?? title} width={size?.width} height={size?.height}
+         decoding="async" class="w-full h-full object-cover" />
   </div>
 ) : (
   <div class="relative aspect-[21/9] rounded-md overflow-hidden mb-12 border border-eywa-text-muted/20">

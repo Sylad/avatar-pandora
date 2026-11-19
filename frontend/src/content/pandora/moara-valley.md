@@ -2,7 +2,8 @@
 title: "Vallée Mo'ara — le cœur meurtri du Peuple"
 summary: "Là où se dressait le Hometree, là où il a brûlé — la vallée centrale du territoire Omatikaya porte deux mémoires en même temps : la perte et la résilience."
 order: 7
-cover: "Mo'ara Valley"
+cover: "/illustrations/pandora/moara-valley.webp"
+coverAlt: "Sous-bois de forêt brumeuse où un grand tronc abattu gît parmi les jeunes pousses, lumière cyan entre les arbres"
 ---
 
 Il y a des lieux qui ne peuvent plus être vus de la même façon après ce qui s'y est passé. On peut revenir dans la Vallée Mo'ara, marcher dans son sous-bois dense, écouter les milliers de sons que produit la forêt vivante, sentir sous les pieds la pulsation douce du réseau mycorisien — et ne pas pouvoir s'empêcher de superposer à ce présent verdoyant l'image du *Hometree* en flammes, en 2154, quand la RDA a détruit en quelques heures ce que les Omatikaya avaient bâti en plusieurs siècles.

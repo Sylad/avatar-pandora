@@ -2,7 +2,8 @@
 title: "Eywa — l'âme du monde"
 summary: "Déesse-mère, conscience-réseau, mémoire vivante de Pandora. Pas une métaphore : une biologie."
 order: 2
-cover: "Eywa"
+cover: "/illustrations/pandora/eywa.webp"
+coverAlt: "Grand arbre dont les racines lumineuses cyan se ramifient sur le sol comme un réseau de neurones, dans une forêt nocturne"
 ---
 
 Eywa n'est pas une croyance. C'est un fait biologique que les Na'vi appellent par son nom et que la science humaine met du temps à reconnaître. Sur Pandora, chaque arbre, chaque liane, chaque créature porte des terminaisons neurales capables de se relier aux autres. Mises bout à bout, ces connexions forment un réseau d'une densité synaptique comparable à celle d'un cerveau humain — sauf qu'il s'étend sur une lune entière. Eywa, c'est ce réseau qui pense.

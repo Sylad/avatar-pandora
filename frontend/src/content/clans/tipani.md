@@ -2,7 +2,8 @@
 title: "Tipani — cavaliers des plaines"
 summary: "Clan nomade des steppes herbeuses, célèbres dresseurs de pa'li (chevaux à six pattes), commerçants entre clans."
 order: 4
-cover: "Tipani"
+cover: "/illustrations/clans/tipani.webp"
+coverAlt: "Steppe d'herbes dorées à perte de vue, mesas sombres à l'horizon sous un ciel violet strié de turquoise"
 ---
 
 Tous les clans de Pandora ne sont pas des empires. Certains sont des fils qui cousent les empires ensemble. Les Tipani sont de ceux-là.

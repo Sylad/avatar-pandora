@@ -1,0 +1,471 @@
+[
+ {
+  "fiche": "pandora/intro",
+  "prompt": "view from the surface of a lush jungle moon, an enormous banded gas giant planet fills the sky above an endless tropical rainforest, distant floating mountains in the haze, dawn light",
+  "neg": "creature, animal, bird",
+  "graine": 99,
+  "alt": "Vaste forêt tropicale sous une immense planète géante turquoise qui occupe le ciel, montagnes bleutées dans la brume du soir"
+ },
+ {
+  "fiche": "pandora/eywa",
+  "prompt": "an alien forest at night seen as a living neural network, glowing cyan roots and filaments connecting every tree and plant like synapses, glowing seeds drifting in the air, mystical",
+  "neg": "creature, animal",
+  "graine": 7,
+  "alt": "Grand arbre dont les racines lumineuses cyan se ramifient sur le sol comme un réseau de neurones, dans une forêt nocturne"
+ },
+ {
+  "fiche": "pandora/biomes",
+  "prompt": "epic panorama of an alien moon combining a dense tropical rainforest, floating jungle mountains, a turquoise ocean lagoon with reefs and a smoking volcano on the horizon, soft mist between them",
+  "neg": "creature, animal, bird",
+  "graine": 7,
+  "alt": "Lagon turquoise bordé de jungle et de palmiers violets, un volcan conique et une planète géante à l'horizon"
+ },
+ {
+  "fiche": "pandora/sites-sacres",
+  "prompt": "an ancient sacred willow tree in a forest clearing at night, curtains of thousands of glowing violet and cyan hanging filaments falling from its branches like frozen rain, glowing roots on the ground, mystical",
+  "neg": "creature, animal",
+  "graine": 42,
+  "alt": "Arbre sacré isolé dans une clairière de nuit, des rideaux de filaments lumineux cyan et violets tombant de ses branches"
+ },
+ {
+  "fiche": "pandora/atmosphere",
+  "prompt": "thick humid hazy atmosphere above an alien jungle, giant gas giant planet with rings low on the horizon, golden green mist, sun rays piercing dense air, enormous trees fading into haze",
+  "neg": "creature, animal, bird",
+  "graine": 7,
+  "alt": "Jungle noyée dans une brume dorée et verte, une énorme planète turquoise cerclée de lumière basse sur l'horizon"
+ },
+ {
+  "fiche": "pandora/hallelujah-mountains",
+  "prompt": "huge chunks of mountain rock floating in mid air with no ground beneath them, levitating islands covered in jungle with long hanging vines and roots dangling below, waterfalls spilling from them into a sea of clouds far below, golden hour, epic",
+  "neg": "creature, animal, bird, dragon, ground connection",
+  "graine": 99,
+  "alt": "Île de roche couverte de jungle flottant dans le ciel, des lianes et des cascades tombant de sa base vers la vallée"
+ },
+ {
+  "fiche": "pandora/moara-valley",
+  "prompt": "a vast green rainforest valley at dawn, the charred stump of a colossal fallen tree in the middle, young glowing plants sprouting around it, morning mist, hope and resilience",
+  "neg": "creature, animal, fire",
+  "graine": 21,
+  "alt": "Sous-bois de forêt brumeuse où un grand tronc abattu gît parmi les jeunes pousses, lumière cyan entre les arbres"
+ },
+ {
+  "fiche": "pandora/bioluminescent-night",
+  "prompt": "an alien rainforest at night on a lush exoplanet moon, giant trees and ferns glowing with bioluminescent cyan, violet and magenta light, glowing spores floating in the air, luminous moss lighting up, wide shot",
+  "neg": "creature, animal",
+  "graine": 21,
+  "alt": "Forêt de nuit illuminée de champignons géants et de fougères aux lueurs magenta et cyan, une lune pâle derrière les troncs"
+ },
+ {
+  "fiche": "clans/anurai",
+  "prompt": "vast ash-grey steppe plains scattered with giant bleached white bones and ribcages of ancient colossal creatures, alien grassland at dusk, wide sky",
+  "neg": "creature, animal",
+  "graine": 7,
+  "alt": "Steppe grise et sèche sous un ciel violet, arbres morts blanchis et grand dôme d'os pâle à demi enfoui dans les herbes"
+ },
+ {
+  "fiche": "clans/ash-people",
+  "prompt": "volcanic wasteland on an alien moon, rivers of glowing orange lava, black ash fields, burnt dead trees, smoky red sky with falling embers",
+  "neg": "creature, animal",
+  "graine": 7,
+  "alt": "Terre volcanique noire parcourue de coulées de lave orange, arbres calcinés et volcan sous un ciel pourpre"
+ },
+ {
+  "fiche": "clans/metkayina",
+  "prompt": "village of woven reed huts on stilts among mangrove roots over a clear turquoise reef lagoon, tropical archipelago of green islands, sunset",
+  "neg": "creature, animal",
+  "graine": 99,
+  "alt": "Village de huttes sur pilotis reliées par des pontons au-dessus d'un lagon turquoise, au crépuscule"
+ },
+ {
+  "fiche": "clans/olangi",
+  "prompt": "a labyrinth of river confluences and white water rapids in an alien jungle, carved wooden canoes made from tree trunks moored on a mossy bank, mist",
+  "neg": "creature, animal",
+  "graine": 99,
+  "alt": "Rivière turquoise au cœur d'une jungle brumeuse, des canoës de bois sombre amarrés près des racines moussues"
+ },
+ {
+  "fiche": "clans/omatikaya",
+  "prompt": "inside the branches of a colossal tree at dusk, woven hammocks and glowing lanterns hanging among giant spiral branches, jungle canopy all around",
+  "neg": "creature, animal",
+  "graine": 7,
+  "alt": "Hamac tressé et lanternes suspendus dans les branches d'un arbre immense, sous-bois baigné de lumière cyan"
+ },
+ {
+  "fiche": "clans/tawkami",
+  "prompt": "a herbalist's hut in an alien jungle, shelves of glowing medicinal plants, dried herbs, seed pods and gourds, bioluminescent flowers in clay pots",
+  "neg": "creature, animal",
+  "graine": 42,
+  "alt": "Intérieur d'une hutte d'herboriste aux étagères chargées de pots en terre, de plantes séchées et de lueurs turquoise"
+ },
+ {
+  "fiche": "clans/tipani",
+  "prompt": "rolling alien steppe with tall golden and teal grass under an immense sky, wind waves in the grass, distant mesas",
+  "neg": "creature, animal, bird, fish, dragon, whale, shark, horse",
+  "graine": 42,
+  "alt": "Steppe d'herbes dorées à perte de vue, mesas sombres à l'horizon sous un ciel violet strié de turquoise"
+ },
+ {
+  "fiche": "bestiaire/akula",
+  "prompt": "the deep blue abyss at the edge of a coral reef drop-off, dark water falling away below, shafts of light from the surface, ominous",
+  "neg": "creature, animal, bird, fish, dragon, whale, shark",
+  "graine": 21,
+  "alt": "Fonds marins sombres entre deux falaises de corail violet, une lueur bleue au loin dans l'eau profonde"
+ },
+ {
+  "fiche": "bestiaire/glow-snake",
+  "prompt": "a long thin glowing bioluminescent serpent coiled on a mossy branch in a dark alien forest at night",
+  "neg": "",
+  "graine": 99,
+  "alt": "Serpent fin et lumineux couleur cyan, enroulé sur une branche moussue dans une forêt nocturne"
+ },
+ {
+  "fiche": "bestiaire/hammerhead-titanothere",
+  "prompt": "a wide path crushed through an alien jungle, huge trampled ferns and broken saplings, an open forest clearing beyond, morning light",
+  "neg": "creature, animal, bird, fish, dragon, whale, shark",
+  "graine": 7,
+  "alt": "Sentier de terre violette ouvert à travers des fougères géantes, dans une forêt brumeuse éclairée de cyan"
+ },
+ {
+  "fiche": "bestiaire/hexapede",
+  "prompt": "a misty alien forest glade at dawn with soft glowing ferns and tall grass, quiet and peaceful",
+  "neg": "creature, animal, bird, fish, dragon, whale, shark",
+  "graine": 99,
+  "alt": "Clairière brumeuse de forêt à l'aube, fougères vertes et plantes violettes dressées dans la lumière turquoise"
+ },
+ {
+  "fiche": "bestiaire/ikran",
+  "prompt": "sheer cliffs of floating jungle mountains with nests on high rocky ledges, vines and waterfalls, mist far below, wind",
+  "neg": "creature, animal, bird, dragon",
+  "graine": 99,
+  "alt": "Falaises vertigineuses couvertes de jungle, une cascade lumineuse tombant dans la brume, une corniche rocheuse au premier plan"
+ },
+ {
+  "fiche": "bestiaire/ilu",
+  "prompt": "a shallow turquoise lagoon over a coral reef, split view half above and half below the water surface, tropical islands",
+  "neg": "creature, animal, bird, fish, dragon, whale, shark",
+  "graine": 42,
+  "alt": "Récif de coraux violets sous une eau turquoise et claire, une plage visible à travers la surface"
+ },
+ {
+  "fiche": "bestiaire/nantang",
+  "prompt": "a narrow jungle trail at night with luminous footprints glowing on the moss, dark trunks and eerie shadows",
+  "neg": "creature, animal, bird, fish, dragon, whale, shark",
+  "graine": 21,
+  "alt": "Sentier de forêt nocturne entre des troncs sombres, des empreintes lumineuses violettes sur la mousse"
+ },
+ {
+  "fiche": "bestiaire/pali",
+  "prompt": "a lush meadow at the edge of an alien jungle with tall grass and glowing flowers, morning light, wide open",
+  "neg": "creature, animal, bird, fish, dragon, whale, shark",
+  "graine": 42,
+  "alt": "Prairie fleurie de fleurs violettes et turquoise au bord de la jungle, sous un ciel rose et cyan"
+ },
+ {
+  "fiche": "bestiaire/prolemuris",
+  "prompt": "inside the high canopy of an alien rainforest, a maze of mossy branches, hanging vines and giant leaves seen from the treetops",
+  "neg": "creature, animal, bird, fish, dragon, whale, shark",
+  "graine": 42,
+  "alt": "Voûte de la canopée vue de l'intérieur, branches moussues entrelacées et lianes pendantes éclairées de cyan"
+ },
+ {
+  "fiche": "bestiaire/skimwing",
+  "prompt": "ocean surface at sunset seen at wave level, sea spray and a long white wake on the water, reef islands far away",
+  "neg": "creature, animal, bird, fish, dragon, whale, shark, boat, ship",
+  "graine": 7,
+  "alt": "Vague turquoise qui déferle au coucher du soleil, embruns et écume sur la mer"
+ },
+ {
+  "fiche": "bestiaire/sturmbeest",
+  "prompt": "vast open plains with scattered huge trees and tall grass on an alien moon, dust clouds rising in the distance, wide sky",
+  "neg": "creature, animal, bird, fish, dragon, whale, shark",
+  "graine": 99,
+  "alt": "Grande plaine de terre rouge et de touffes d'herbe bleutée, arbres violets isolés sous une lune turquoise"
+ },
+ {
+  "fiche": "bestiaire/thanator",
+  "prompt": "the darkest depths of a dense alien jungle at night, huge twisted roots, glowing eyes far in the shadows, ominous",
+  "neg": "creature, animal",
+  "graine": 42,
+  "alt": "Profondeur d'une jungle nocturne aux racines tordues, fleurs violettes lumineuses et ruisseau bleuté"
+ },
+ {
+  "fiche": "bestiaire/toruk",
+  "prompt": "the sky above floating mountains at sunset, a huge winged shadow cast on the clouds, rays of light, epic",
+  "neg": "creature, animal, bird, dragon",
+  "graine": 42,
+  "alt": "Pics montagneux dressés dans la brume sous un ciel de coucher de soleil rose et violet"
+ },
+ {
+  "fiche": "bestiaire/tulkun",
+  "prompt": "the open ocean at sunset, a tall spout of mist rising from the water in the distance, calm swell, islands on the horizon",
+  "neg": "creature, animal, bird, fish, dragon, whale, shark, boat, ship",
+  "graine": 42,
+  "alt": "Océan calme au crépuscule, reflet d'un soleil pâle sur l'eau, falaises sombres sur la gauche"
+ },
+ {
+  "fiche": "flore/arbre-des-ames",
+  "prompt": "an ancient sacred willow tree in a forest clearing at night, curtains of thousands of glowing violet and cyan hanging filaments falling from its branches like frozen rain, glowing roots on the ground, mystical",
+  "neg": "creature, animal",
+  "graine": 7,
+  "alt": "Arbre géant aux longues branches tombantes et aux filaments lumineux cyan, posé sur un tapis de mousse violette"
+ },
+ {
+  "fiche": "flore/hometree",
+  "prompt": "a colossal tree 300 meters tall towering above the jungle, its trunk made of huge spiraling buttress roots forming an open hollow, mist and light rays",
+  "neg": "creature, animal",
+  "graine": 42,
+  "alt": "Arbre colossal aux racines enchevêtrées dans une forêt brumeuse, une lueur violette au creux de son tronc"
+ },
+ {
+  "fiche": "flore/plantes-helico",
+  "prompt": "giant orange and red spiral plants shaped like tightly coiled fiddlehead ferns, tall as a person, standing in a dim alien jungle",
+  "neg": "creature, animal, portal, vortex",
+  "graine": 7,
+  "alt": "Plantes orange en spirales serrées, comme des crosses de fougère géantes, dressées dans une jungle sombre"
+ },
+ {
+  "fiche": "flore/unobtainium",
+  "prompt": "a raw silvery grey metallic mineral ore chunk levitating above a rock with faint magnetic light arcs around it, dark background",
+  "neg": "creature, animal",
+  "graine": 42,
+  "alt": "Bloc de roche grise ouvert sur des cristaux turquoise lumineux, posé dans l'ombre d'une cavité"
+ },
+ {
+  "fiche": "flore/woodsprites",
+  "prompt": "dozens of floating translucent jellyfish-like glowing white seeds drifting slowly in the dark forest air at night",
+  "neg": "creature, animal",
+  "graine": 42,
+  "alt": "Graines translucides en forme de méduses lumineuses flottant dans une forêt de nuit"
+ },
+ {
+  "fiche": "engins/amp-suit",
+  "prompt": "a 4 meter tall military mech exoskeleton with a glass cockpit canopy, heavy armor and a big rifle, standing in a rainy jungle clearing, empty cockpit",
+  "neg": "creature",
+  "graine": 21,
+  "alt": "Robot de combat bipède à cockpit lumineux, debout sous la pluie dans une jungle brumeuse"
+ },
+ {
+  "fiche": "engins/crabsuit",
+  "prompt": "an underwater six-legged armored submersible mech with a glass bubble cockpit crawling on a coral reef, headlights",
+  "neg": "creature",
+  "graine": 21,
+  "alt": "Engin sous-marin à bulle de verre monté sur des pattes articulées, posé sur un récif de corail"
+ },
+ {
+  "fiche": "engins/dragon-assault-ship",
+  "prompt": "a massive heavy military gunship aircraft with four big ducted rotors flying over a smoking jungle, dramatic",
+  "neg": "creature, dragon",
+  "graine": 21,
+  "alt": "Lourd appareil militaire à rotors multiples survolant la jungle sous un ciel d'orage violet"
+ },
+ {
+  "fiche": "engins/picador",
+  "prompt": "a fast grey military hunting boat with a harpoon cannon on its bow cutting through ocean waves, spray",
+  "neg": "creature",
+  "graine": 21,
+  "alt": "Bateau militaire gris fendant une mer agitée sous un ciel violet"
+ },
+ {
+  "fiche": "engins/samson-tiltrotor",
+  "prompt": "a military tiltrotor aircraft with two big ducted rotors flying above the jungle canopy, morning haze",
+  "neg": "creature",
+  "graine": 99,
+  "alt": "Appareil à deux rotors basculants volant au-dessus de la canopée dans une brume verte"
+ },
+ {
+  "fiche": "engins/scorpion-gunship",
+  "prompt": "a heavy attack gunship with ducted rotors, rocket pods and a gatling gun flying through mist over the jungle",
+  "neg": "creature",
+  "graine": 21,
+  "alt": "Hélicoptère de combat aux phares allumés traversant la brume au-dessus de la jungle"
+ },
+ {
+  "fiche": "engins/sea-dragon",
+  "prompt": "a gigantic military ship skimming over the ocean on hydrofoils, carrying smaller boats, grey hull, waves",
+  "neg": "creature",
+  "graine": 7,
+  "alt": "Immense navire militaire gris glissant sur l'océan en soulevant de grandes vagues"
+ },
+ {
+  "fiche": "engins/venture-star",
+  "prompt": "a very long interstellar spaceship with a huge radiator array and a heat shield at the front, orbiting a banded gas giant with a green moon, stars",
+  "neg": "creature",
+  "graine": 7,
+  "alt": "Long vaisseau spatial aux panneaux lumineux verts devant une planète géante et une petite lune"
+ },
+ {
+  "fiche": "films/avatar-2009",
+  "prompt": "a colossal tree silhouetted against an enormous gas giant planet rising over a glowing jungle, floating mountains far away",
+  "neg": "creature, animal",
+  "graine": 99,
+  "alt": "Silhouette d'un arbre immense devant une planète turquoise, au-dessus d'une jungle au crépuscule"
+ },
+ {
+  "fiche": "films/voie-de-leau",
+  "prompt": "a shallow turquoise lagoon over a coral reef, split view half above and half below the water surface, tropical islands",
+  "neg": "creature, animal, bird, fish, dragon, whale, shark",
+  "graine": 21,
+  "alt": "Lagon vu à la surface de l'eau, îles de végétation violette au-dessus, récif de coraux sous l'eau turquoise"
+ },
+ {
+  "fiche": "films/fire-and-ash",
+  "prompt": "a volcanic eruption over an alien jungle at night, ash clouds and red embers raining, lava light reflected in a river",
+  "neg": "creature, animal",
+  "graine": 42,
+  "alt": "Volcan en éruption au cœur d'une jungle de nuit, lave rouge et nuages de cendre sous un ciel turquoise"
+ },
+ {
+  "fiche": "personnages/aonung",
+  "prompt": "a carved bone and shell necklace lying on wet black rock by a turquoise sea, close-up",
+  "neg": "creature",
+  "graine": 99,
+  "alt": "Collier de coquillages et de perles turquoise posé sur une roche noire mouillée au bord de la mer"
+ },
+ {
+  "fiche": "personnages/eytukan",
+  "prompt": "a ceremonial chief's hunting bow and feathered headdress resting on giant glowing tree roots",
+  "neg": "creature",
+  "graine": 21,
+  "alt": "Grand arbre dont le cœur du tronc et les racines brillent d'une lumière cyan, sous un ciel violet"
+ },
+ {
+  "fiche": "personnages/grace",
+  "prompt": "a jungle research station table with glowing alien plant samples in glass jars, a microscope and sketches of leaves, jungle visible outside",
+  "neg": "creature, writing, handwriting",
+  "graine": 99,
+  "alt": "Table de laboratoire couverte de bocaux de plantes, devant une baie vitrée ouverte sur la jungle"
+ },
+ {
+  "fiche": "personnages/jake-sully",
+  "prompt": "an empty wheelchair at the edge of a glowing bioluminescent alien forest at night, path leading in",
+  "neg": "creature",
+  "graine": 7,
+  "alt": "Fauteuil roulant vide au milieu d'un sentier, à l'entrée d'une forêt aux champignons lumineux"
+ },
+ {
+  "fiche": "personnages/kiri",
+  "prompt": "a glowing cyan seed floating above luminous underwater sea plants and corals, sacred and calm",
+  "neg": "creature",
+  "graine": 42,
+  "alt": "Anémone de mer lumineuse rose et cyan au milieu d'un récif de corail sous l'eau"
+ },
+ {
+  "fiche": "personnages/loak",
+  "prompt": "the huge eye of a whale-like alien sea creature seen up close underwater, a scar on its skin, blue light",
+  "neg": "",
+  "graine": 7,
+  "alt": "Gros plan sur l'œil turquoise d'une immense créature marine, peau violette plissée"
+ },
+ {
+  "fiche": "personnages/moat",
+  "prompt": "a shaman's ceremonial tools, a seed-pod cup, beads and feathers on a mat, a glowing sacred willow tree in the background",
+  "neg": "creature",
+  "graine": 7,
+  "alt": "Coupe de bois où brille une lumière verte, entourée de plumes, de graines et de pierres turquoise sur une natte"
+ },
+ {
+  "fiche": "personnages/neteyam",
+  "prompt": "a quiet reef shore at dusk, a carved wooden bow lying on the sand by the water, mournful light",
+  "neg": "creature",
+  "graine": 21,
+  "alt": "Canoë turquoise échoué sur une plage de sable au crépuscule, une lune basse sur la mer"
+ },
+ {
+  "fiche": "personnages/neytiri",
+  "prompt": "a long carved wooden hunting bow with arrows and feathers leaning on a tree in front of a glowing forest at night",
+  "neg": "creature",
+  "graine": 99,
+  "alt": "Arc de chasse appuyé contre un tronc, dans une forêt nocturne aux feuillages violets"
+ },
+ {
+  "fiche": "personnages/norm-spellman",
+  "prompt": "a field laboratory inside a jungle research hut, monitors with plant scans, sample jars and a breathing mask on the table",
+  "neg": "creature, writing",
+  "graine": 7,
+  "alt": "Laboratoire de terrain ouvert sur la jungle, paillasses chargées de bocaux et d'instruments éclairés de cyan"
+ },
+ {
+  "fiche": "personnages/payakan",
+  "prompt": "a vast empty deep blue ocean seen from just below the surface, a single shaft of light falling into the abyss, loneliness, calm",
+  "neg": "creature, animal, fish, whale, shark, boat",
+  "graine": 42,
+  "alt": "Mer immense et vide au crépuscule, un rai de lumière cyan tombant sur l'horizon"
+ },
+ {
+  "fiche": "personnages/peylak",
+  "prompt": "warrior weapons of obsidian and bone resting on black volcanic rock, glowing embers, red ash painted on the stone",
+  "neg": "creature",
+  "graine": 42,
+  "alt": "Hache et lame gravées de motifs turquoise posées sur une roche volcanique noire et rougeoyante"
+ },
+ {
+  "fiche": "personnages/quaritch",
+  "prompt": "military dog tags and a combat knife hanging from a branch in a dark alien jungle, cold light",
+  "neg": "creature",
+  "graine": 99,
+  "alt": "Couteau de combat posé sur un tronc moussu dans une jungle sombre et brumeuse"
+ },
+ {
+  "fiche": "personnages/recombinants",
+  "prompt": "military camouflage gear, a rifle and blue body paint left on a jungle floor, ominous",
+  "neg": "creature",
+  "graine": 7,
+  "alt": "Fusil militaire peint en bleu abandonné sur le sol d'une jungle parmi des feuilles violettes"
+ },
+ {
+  "fiche": "personnages/rotxo",
+  "prompt": "a small woven fishing canoe on a calm turquoise lagoon near a reef village, morning",
+  "neg": "creature",
+  "graine": 7,
+  "alt": "Pirogue violette sur un lagon turquoise transparent, près d'une côte de palmiers"
+ },
+ {
+  "fiche": "personnages/selfridge",
+  "prompt": "a fortified mining colony with bulldozers and a huge open-pit mine eating into the rainforest, industrial",
+  "neg": "creature",
+  "graine": 21,
+  "alt": "Base minière et engins de chantier creusant une clairière dans la jungle, de nuit"
+ },
+ {
+  "fiche": "personnages/tonowari-ronal",
+  "prompt": "an archipelago of three green islands at sunset with a reef village of woven huts on the water",
+  "neg": "creature",
+  "graine": 99,
+  "alt": "Archipel au coucher du soleil, huttes sur pilotis éclairées éparpillées sur un lagon"
+ },
+ {
+  "fiche": "personnages/trudy-chacon",
+  "prompt": "a crashed military tiltrotor aircraft slowly overgrown by glowing jungle vines, quiet",
+  "neg": "creature",
+  "graine": 21,
+  "alt": "Carcasse d'un avion à hélices échoué dans une clairière de la jungle, gagnée par la végétation"
+ },
+ {
+  "fiche": "personnages/tsireya",
+  "prompt": "an underwater luminous coral garden with glowing sea anemones and soft sun beams from the surface",
+  "neg": "creature",
+  "graine": 21,
+  "alt": "Jardin de corail sous l'eau, anémones orange et violettes éclairées par des rayons venus de la surface"
+ },
+ {
+  "fiche": "personnages/tsutey",
+  "prompt": "a long carved wooden war spear planted upright in the ground with a feathered tassel, a glowing forest at night behind, solemn",
+  "neg": "creature, animal, tree trunk close-up",
+  "graine": 21,
+  "alt": "Lance plantée seule au milieu d'un chemin de forêt nocturne, une lune cyan au-dessus des arbres"
+ },
+ {
+  "fiche": "personnages/tuk",
+  "prompt": "a small handmade toy figure of woven fibers and a glowing flower on a mossy rock in the jungle",
+  "neg": "creature",
+  "graine": 21,
+  "alt": "Petite figurine tressée en fibres turquoise assise sur un rocher moussu, près d'une fleur violette"
+ },
+ {
+  "fiche": "personnages/varang",
+  "prompt": "a throne of black obsidian rock at the edge of a volcanic crater, fire and falling ash, a bone headdress on it",
+  "neg": "creature",
+  "graine": 42,
+  "alt": "Trône de pierre noire sculptée au bord d'un cratère, entouré de braises violettes"
+ }
+]

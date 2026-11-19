@@ -2,7 +2,8 @@
 title: "Montagnes Hallelujah — la pierre qui ne tombe pas"
 summary: "Masses rocheuses saturées de magnétite, lévitant à cinq mille mètres dans un champ magnétique permanent, cascades dans le vide — et lieu du rite Iknimaya pour les Omatikaya."
 order: 6
-cover: "Hallelujah Mountains"
+cover: "/illustrations/pandora/hallelujah-mountains.webp"
+coverAlt: "Île de roche couverte de jungle flottant dans le ciel, des lianes et des cascades tombant de sa base vers la vallée"
 ---
 
 Il existe des phénomènes naturels qui résistent obstinément à l'habitude. On peut voir les Montagnes Hallelujah cent fois et elles produisent le même effet à la centième fois qu'à la première : un arrêt complet de la pensée narrative, une stupéfaction qui ne s'érode pas. De la roche qui flotte. Des falaises suspendues dans le vide à mille, deux mille, cinq mille mètres d'altitude. Des cascades qui naissent de nulle part et tombent vers une forêt si loin en dessous qu'elles se dispersent en brume avant d'y toucher. Et au-dessus de tout cela, des *ikrans* qui planent et nichent dans des parois que rien d'autre ne peut atteindre.

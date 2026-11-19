@@ -6,18 +6,25 @@ interface Props {
   cover?: string;
 }
 import CoverFallback from './CoverFallback.astro';
-import { coverImageSrc } from '../lib/cover';
+import { coverCardSrc, isIllustration, ILLUSTRATION_SIZES } from '../lib/cover';
 
 const { href, title, summary, cover } = Astro.props;
 // Image hébergée par le site ou visuel par défaut (proxy Fandom retiré, L16).
-const imgSrc = coverImageSrc(cover);
+// Illustration du site (L17) : sa taille carte (4:3, plus légère). L'image
+// reste décorative (alt vide) : le titre de la carte nomme déjà le lien, et la
+// fiche porte la description de l'image.
+const imgSrc = coverCardSrc(cover);
+const size = isIllustration(cover) ? ILLUSTRATION_SIZES.carte : undefined;
 ---
 <a href={href} class="entry-card group">
   {imgSrc ? (
     <div class="entry-card__media">
       <img src={imgSrc}
            alt=""
+           width={size?.width}
+           height={size?.height}
            loading="lazy"
+           decoding="async"
            class="entry-card__img" />
     </div>
   ) : (
