@@ -2,10 +2,15 @@
   "id": "D-1",
   "texte": "(npouveaux?) lot pour avatar-pandora: faudrait voir si on poeu pas tropuver des images pour illustrer tout ca !",
   "date": "2026-11-19",
-  "etat": "ouverte",
-  "preuve": null,
-  "lots": ["L17"],
+  "etat": "livrée",
+  "preuve": "L17 livré le 2026-11-19 (3259237, cadence deliver vérifié en 53 s) : 134 illustrations SDXL locales sur les fiches du codex",
+  "lots": [
+    "L17"
+  ],
   "precisions": [
-    {"date": "2026-11-19", "texte": "Capture jointe : accueil du codex (Pandora), toutes les cartes montrent le visuel par défaut EYWA. Rattachée à L17 (illustrations générées en local, validées par Sylvain le 10-10 ; pas d'images des films ni de Fandom)."}
+    {
+      "date": "2026-11-19",
+      "texte": "Capture jointe : accueil du codex (Pandora), toutes les cartes montrent le visuel par défaut EYWA. Rattachée à L17 (illustrations générées en local, validées par Sylvain le 10-10 ; pas d'images des films ni de Fandom)."
+    }
   ]
 }
