@@ -186,7 +186,7 @@ lots:
   - id: L17
     title: "Illustrations propres hébergées sur le site (style Pandora, générées ou dessinées, sans droits tiers) : fiches les plus vues d'abord, visuel par défaut ailleurs"
     public: "Des illustrations de Pandora dessinées pour Eywa"
-    status: doing
+    status: done
     estimate: 2
     visible: true
     after: [ L16 ]
@@ -196,7 +196,8 @@ lots:
       - { date: 2026-10-10, text: "Sylvain 10-10 : images générées en LOCAL validées (« t'es génial ») — SDXL base 1.0 sur la RTX 5090, ~/ai/imggen, 4 s/image, licence OpenRAIL++ ; créatures volantes à reprendre (dragon européen au lieu d'ikran) ; priorité d'avatar avant les corrections d'ergonomie restantes. Essais : ~/projects/developpeur/tmp/pandora-essais/" }
     started: 2026-11-19
     ux: { date: 2026-11-19, verdict: "conforme — captures 1440/390 du run (Pandora, Bestiaire, Eywa, Ikran, Personnages, Spider) regardées par le lead : palette cyan/bioluminescente du site, texte lisible sur les images, pas de débordement ; Sylvain valide la livraison le 19-11 (« Oui, livre-les »)" }
-    review: { date: 2026-11-19, verdict: "conforme après 1 correction — revue de code (cadence:code-reviewer, 19-11, rapport avatar-L17.md) : 0 bloquant ; README Crédits et CLAUDE.md Fair-use à mettre à jour (run de correction) ; mineurs notés : R4 ne compare pas l'alt au titre, preparer.py muet sans cover:", commit: 125258a8cfad5fba8c90b9af4082754df765f2d9 }
+    review: { date: 2026-11-19, verdict: "Correction de doc bf14904 relue par le lead : README Crédits/Disclaimer et CLAUDE.md Fair-use décrivent SDXL local (Open RAIL++-M), Spider seul en visuel par défaut ; R4 compare l'alt au titre avec garde-fou testé — conforme", commit: bf14904e9a9c624cc3b7984aab625b853ccc19b6 }
+    finished: 2026-11-19
   - id: L18
     title: "Supprimer le backend NestJS d'Eywa (ne sert plus que /api/health depuis le retrait du proxy Fandom) : dossier backend, conteneur et proxy nginx /api du NAS, docker-compose, docs"
     status: done
@@ -651,6 +652,9 @@ lots:
     visible: true
     after: [ L17 ]
     created: 2026-11-19
+    notes:
+      - { date: 2026-11-19, text: "Sylvain 19-11 : piste « fan-art généré fidèle » retenue (contre photos Commons) — bestiaire qui RESSEMBLE aux films (site pour une passionnée) : FLUX en local guidé par une description anatomique de chaque créature d'après les fiches et Pandorapedia (texte), planche d'essais choisie par Sylvain avant remplacement ; lien vers la page Pandorapedia officielle sur chaque fiche ; image = œuvre de fan, mentionnée comme telle dans À propos" }
+      - { date: 2026-11-19, text: "Sylvain 19-11 : piste « fan-art généré fidèle » retenue (contre photos Commons) — bestiaire qui RESSEMBLE aux films : FLUX en local guidé par une description anatomique de chaque créature d'après les fiches et Pandorapedia (texte), planche d'essais choisie par Sylvain avant remplacement ; lien vers la page Pandorapedia sur chaque fiche ; image = œuvre de fan, dite comme telle dans À propos" }
 acknowledged:
   - { sha: cef464dffb920ea7b161b1b0e06fe54d3efbdcc4, subject: "plan: verdicts UX de Sylvain enregistrés, trois bloquants de la revue des Personnages clos", date: 2026-10-10, reason: entretien du plan et régénération des Nouveautés }
   - { sha: 4bc75e983dc5bff0366190611a9c578d4ed071c8, subject: "plan: prototype Pandora vivant clos, cinq idées retenues par Sylvain posées après les images", date: 2026-10-10, reason: entretien du plan et régénération des Nouveautés (fichier désormais déclaré dérivé) }
