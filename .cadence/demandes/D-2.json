@@ -1,0 +1,16 @@
+{
+  "id": "D-2",
+  "texte": "très beelles illustration, mais ca c'est la flore, mais les schtrounphs géants et autres bébetes?",
+  "date": "2026-11-19",
+  "etat": "ouverte",
+  "preuve": null,
+  "precisions": [
+    {
+      "date": "2026-11-19",
+      "texte": "Contexte : L17 a illustré 13 créatures sur 14 par leur habitat (SDXL dessinait des animaux terrestres) et les personnages par un lieu ou un objet, sans visage. Demande : montrer les Na'vi et la faune elle-même."
+    }
+  ],
+  "lots": [
+    "L63"
+  ]
+}

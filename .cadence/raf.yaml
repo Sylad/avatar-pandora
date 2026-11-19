@@ -643,6 +643,13 @@ lots:
     status: todo
     estimate: 0.25
     created: 2026-11-18
+  - id: L63
+    title: "Illustrer les Na'vi et la faune elle-même (D-2) : essai d'un modèle local qui suit mieux une description (FLUX.1-schnell, Apache 2.0, RTX 5090) sur ikran, toruk, thanator, direhorse, tulkun et une silhouette na'vi ; garder seulement ce qui ressemble à la créature décrite dans la fiche ; Sylvain choisit sur une planche d'essais avant tout remplacement"
+    status: todo
+    estimate: 1
+    visible: true
+    after: [ L17 ]
+    created: 2026-11-19
 acknowledged:
   - { sha: cef464dffb920ea7b161b1b0e06fe54d3efbdcc4, subject: "plan: verdicts UX de Sylvain enregistrés, trois bloquants de la revue des Personnages clos", date: 2026-10-10, reason: entretien du plan et régénération des Nouveautés }
   - { sha: 4bc75e983dc5bff0366190611a9c578d4ed071c8, subject: "plan: prototype Pandora vivant clos, cinq idées retenues par Sylvain posées après les images", date: 2026-10-10, reason: entretien du plan et régénération des Nouveautés (fichier désormais déclaré dérivé) }
