@@ -190,6 +190,7 @@ lots:
     estimate: 2
     visible: true
     after: [ L16 ]
+    delivered: { date: 2026-11-19, sha: 325923772e0e530fb9bb2a3e7b213629340ed96e }
     created: 2026-10-01
     notes:
       - { date: 2026-10-01, text: "Sylvain 01-10 : décidé avec L16 (option b, images à nous)" }
