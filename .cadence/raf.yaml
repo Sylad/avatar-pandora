@@ -676,6 +676,8 @@ lots:
     estimate: 1
     visible: true
     created: 2026-11-20
+    notes:
+      - { date: 2026-11-20, text: "D-4 (20-11, Sylvain) : revoir TOUTES les pages, pas seulement les écarts nets du relevé L63 — chaque image doit montrer le sujet de sa fiche ; personnages compris (aujourd'hui aucune image ne correspond au personnage)" }
 acknowledged:
   - { sha: cef464dffb920ea7b161b1b0e06fe54d3efbdcc4, subject: "plan: verdicts UX de Sylvain enregistrés, trois bloquants de la revue des Personnages clos", date: 2026-10-10, reason: entretien du plan et régénération des Nouveautés }
   - { sha: 4bc75e983dc5bff0366190611a9c578d4ed071c8, subject: "plan: prototype Pandora vivant clos, cinq idées retenues par Sylvain posées après les images", date: 2026-10-10, reason: entretien du plan et régénération des Nouveautés (fichier désormais déclaré dérivé) }
