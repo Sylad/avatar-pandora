@@ -675,6 +675,7 @@ lots:
     status: done
     estimate: 1
     visible: true
+    delivered: { date: 2026-11-20, sha: d22331fcd2c0e068ca8233211f221ff804c36ebc }
     created: 2026-11-20
     notes:
       - { date: 2026-11-20, text: "D-4 (20-11, Sylvain) : revoir TOUTES les pages, pas seulement les écarts nets du relevé L63 — chaque image doit montrer le sujet de sa fiche ; personnages compris (aujourd'hui aucune image ne correspond au personnage)" }
