@@ -3,7 +3,9 @@ title: "Mo'at — la Tsahìk d'Omatikaya"
 summary: "Mère de Neytiri, gardienne spirituelle du clan, voix d'Eywa avant celle de toute autre."
 order: 6
 cover: "/illustrations/personnages/moat.webp"
-coverAlt: "Coupe de bois où brille une lumière verte, entourée de plumes, de graines et de pierres turquoise sur une natte"
+coverAlt: "Portrait officiel de la chamane Na'vi, longues tresses, bandeau perlé et étole rouge sur les épaules"
+coverCredit: "© 20th Century Studios"
+pandorapedia: "https://www.avatar.com/pandorapedia/mo-at"
 ---
 
 Il y a dans chaque clan Na'vi une figure que l'on ne remarque pas tout de suite, parce qu'elle ne cherche pas à être remarquée. L'olo'eyktan commande, le guerrier frappe, le chasseur nourrit — mais c'est la tsahìk qui écoute. Mo'at est cette figure : silencieuse dans le fracas, absolue dans le discernement, autorité non pas parce qu'elle impose mais parce qu'Eywa parle à travers elle et que le clan le sait depuis toujours.

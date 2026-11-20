@@ -4,28 +4,36 @@
   "prompt": "view from the surface of a lush jungle moon, an enormous banded gas giant planet fills the sky above an endless tropical rainforest, distant floating mountains in the haze, dawn light",
   "neg": "creature, animal, bird",
   "graine": 99,
-  "alt": "Vaste forêt tropicale sous une immense planète géante turquoise qui occupe le ciel, montagnes bleutées dans la brume du soir"
+  "alt": "Vaste forêt tropicale sous une immense planète géante turquoise qui occupe le ciel, montagnes bleutées dans la brume du soir",
+  "branchee": false,
+  "remplacee": "L64 (20-11-2026) : image officielle des films, voir films.json"
  },
  {
   "fiche": "pandora/eywa",
   "prompt": "an alien forest at night seen as a living neural network, glowing cyan roots and filaments connecting every tree and plant like synapses, glowing seeds drifting in the air, mystical",
   "neg": "creature, animal",
   "graine": 7,
-  "alt": "Grand arbre dont les racines lumineuses cyan se ramifient sur le sol comme un réseau de neurones, dans une forêt nocturne"
+  "alt": "Grand arbre dont les racines lumineuses cyan se ramifient sur le sol comme un réseau de neurones, dans une forêt nocturne",
+  "branchee": false,
+  "remplacee": "L64 (20-11-2026) : image officielle des films, voir films.json"
  },
  {
   "fiche": "pandora/biomes",
   "prompt": "epic panorama of an alien moon combining a dense tropical rainforest, floating jungle mountains, a turquoise ocean lagoon with reefs and a smoking volcano on the horizon, soft mist between them",
   "neg": "creature, animal, bird",
   "graine": 7,
-  "alt": "Lagon turquoise bordé de jungle et de palmiers violets, un volcan conique et une planète géante à l'horizon"
+  "alt": "Lagon turquoise bordé de jungle et de palmiers violets, un volcan conique et une planète géante à l'horizon",
+  "branchee": false,
+  "remplacee": "L64 (20-11-2026) : image officielle des films, voir films.json"
  },
  {
   "fiche": "pandora/sites-sacres",
   "prompt": "an ancient sacred willow tree in a forest clearing at night, curtains of thousands of glowing violet and cyan hanging filaments falling from its branches like frozen rain, glowing roots on the ground, mystical",
   "neg": "creature, animal",
   "graine": 42,
-  "alt": "Arbre sacré isolé dans une clairière de nuit, des rideaux de filaments lumineux cyan et violets tombant de ses branches"
+  "alt": "Arbre sacré isolé dans une clairière de nuit, des rideaux de filaments lumineux cyan et violets tombant de ses branches",
+  "branchee": false,
+  "remplacee": "L64 (20-11-2026) : image officielle des films, voir films.json"
  },
  {
   "fiche": "pandora/atmosphere",
@@ -39,14 +47,18 @@
   "prompt": "huge chunks of mountain rock floating in mid air with no ground beneath them, levitating islands covered in jungle with long hanging vines and roots dangling below, waterfalls spilling from them into a sea of clouds far below, golden hour, epic",
   "neg": "creature, animal, bird, dragon, ground connection",
   "graine": 99,
-  "alt": "Île de roche couverte de jungle flottant dans le ciel, des lianes et des cascades tombant de sa base vers la vallée"
+  "alt": "Île de roche couverte de jungle flottant dans le ciel, des lianes et des cascades tombant de sa base vers la vallée",
+  "branchee": false,
+  "remplacee": "L64 (20-11-2026) : image officielle des films, voir films.json"
  },
  {
   "fiche": "pandora/moara-valley",
   "prompt": "a vast green rainforest valley at dawn, the charred stump of a colossal fallen tree in the middle, young glowing plants sprouting around it, morning mist, hope and resilience",
   "neg": "creature, animal, fire",
   "graine": 21,
-  "alt": "Sous-bois de forêt brumeuse où un grand tronc abattu gît parmi les jeunes pousses, lumière cyan entre les arbres"
+  "alt": "Sous-bois de forêt brumeuse où un grand tronc abattu gît parmi les jeunes pousses, lumière cyan entre les arbres",
+  "branchee": false,
+  "remplacee": "L64 (20-11-2026) : retirée, ne montre pas la vallée des films ; aucune image officielle sûre (la seule de Pandorapedia est une photo du parc Disney)"
  },
  {
   "fiche": "pandora/bioluminescent-night",
@@ -67,35 +79,45 @@
   "prompt": "volcanic wasteland on an alien moon, rivers of glowing orange lava, black ash fields, burnt dead trees, smoky red sky with falling embers",
   "neg": "creature, animal",
   "graine": 7,
-  "alt": "Terre volcanique noire parcourue de coulées de lave orange, arbres calcinés et volcan sous un ciel pourpre"
+  "alt": "Terre volcanique noire parcourue de coulées de lave orange, arbres calcinés et volcan sous un ciel pourpre",
+  "branchee": false,
+  "remplacee": "L64 (20-11-2026) : image officielle des films, voir films.json"
  },
  {
   "fiche": "clans/metkayina",
   "prompt": "village of woven reed huts on stilts among mangrove roots over a clear turquoise reef lagoon, tropical archipelago of green islands, sunset",
   "neg": "creature, animal",
   "graine": 99,
-  "alt": "Village de huttes sur pilotis reliées par des pontons au-dessus d'un lagon turquoise, au crépuscule"
+  "alt": "Village de huttes sur pilotis reliées par des pontons au-dessus d'un lagon turquoise, au crépuscule",
+  "branchee": false,
+  "remplacee": "L64 (20-11-2026) : image officielle des films, voir films.json"
  },
  {
   "fiche": "clans/olangi",
   "prompt": "a labyrinth of river confluences and white water rapids in an alien jungle, carved wooden canoes made from tree trunks moored on a mossy bank, mist",
   "neg": "creature, animal",
   "graine": 99,
-  "alt": "Rivière turquoise au cœur d'une jungle brumeuse, des canoës de bois sombre amarrés près des racines moussues"
+  "alt": "Rivière turquoise au cœur d'une jungle brumeuse, des canoës de bois sombre amarrés près des racines moussues",
+  "branchee": false,
+  "remplacee": "L64 (20-11-2026) : image officielle des films, voir films.json"
  },
  {
   "fiche": "clans/omatikaya",
   "prompt": "inside the branches of a colossal tree at dusk, woven hammocks and glowing lanterns hanging among giant spiral branches, jungle canopy all around",
   "neg": "creature, animal",
   "graine": 7,
-  "alt": "Hamac tressé et lanternes suspendus dans les branches d'un arbre immense, sous-bois baigné de lumière cyan"
+  "alt": "Hamac tressé et lanternes suspendus dans les branches d'un arbre immense, sous-bois baigné de lumière cyan",
+  "branchee": false,
+  "remplacee": "L64 (20-11-2026) : image officielle des films, voir films.json"
  },
  {
   "fiche": "clans/tawkami",
   "prompt": "a herbalist's hut in an alien jungle, shelves of glowing medicinal plants, dried herbs, seed pods and gourds, bioluminescent flowers in clay pots",
   "neg": "creature, animal",
   "graine": 42,
-  "alt": "Intérieur d'une hutte d'herboriste aux étagères chargées de pots en terre, de plantes séchées et de lueurs turquoise"
+  "alt": "Intérieur d'une hutte d'herboriste aux étagères chargées de pots en terre, de plantes séchées et de lueurs turquoise",
+  "branchee": false,
+  "remplacee": "L64 (20-11-2026) : image officielle des films, voir films.json"
  },
  {
   "fiche": "clans/tipani",
@@ -289,265 +311,341 @@
   "prompt": "an ancient sacred willow tree in a forest clearing at night, curtains of thousands of glowing violet and cyan hanging filaments falling from its branches like frozen rain, glowing roots on the ground, mystical",
   "neg": "creature, animal",
   "graine": 7,
-  "alt": "Arbre géant aux longues branches tombantes et aux filaments lumineux cyan, posé sur un tapis de mousse violette"
+  "alt": "Arbre géant aux longues branches tombantes et aux filaments lumineux cyan, posé sur un tapis de mousse violette",
+  "branchee": false,
+  "remplacee": "L64 (20-11-2026) : image officielle des films, voir films.json"
  },
  {
   "fiche": "flore/hometree",
   "prompt": "a colossal tree 300 meters tall towering above the jungle, its trunk made of huge spiraling buttress roots forming an open hollow, mist and light rays",
   "neg": "creature, animal",
   "graine": 42,
-  "alt": "Arbre colossal aux racines enchevêtrées dans une forêt brumeuse, une lueur violette au creux de son tronc"
+  "alt": "Arbre colossal aux racines enchevêtrées dans une forêt brumeuse, une lueur violette au creux de son tronc",
+  "branchee": false,
+  "remplacee": "L64 (20-11-2026) : image officielle des films, voir films.json"
  },
  {
   "fiche": "flore/plantes-helico",
   "prompt": "giant orange and red spiral plants shaped like tightly coiled fiddlehead ferns, tall as a person, standing in a dim alien jungle",
   "neg": "creature, animal, portal, vortex",
   "graine": 7,
-  "alt": "Plantes orange en spirales serrées, comme des crosses de fougère géantes, dressées dans une jungle sombre"
+  "alt": "Plantes orange en spirales serrées, comme des crosses de fougère géantes, dressées dans une jungle sombre",
+  "branchee": false,
+  "remplacee": "L64 (20-11-2026) : image officielle des films, voir films.json"
  },
  {
   "fiche": "flore/unobtainium",
   "prompt": "a raw silvery grey metallic mineral ore chunk levitating above a rock with faint magnetic light arcs around it, dark background",
   "neg": "creature, animal",
   "graine": 42,
-  "alt": "Bloc de roche grise ouvert sur des cristaux turquoise lumineux, posé dans l'ombre d'une cavité"
+  "alt": "Bloc de roche grise ouvert sur des cristaux turquoise lumineux, posé dans l'ombre d'une cavité",
+  "branchee": false,
+  "remplacee": "L64 (20-11-2026) : image officielle des films, voir films.json"
  },
  {
   "fiche": "flore/woodsprites",
   "prompt": "dozens of floating translucent jellyfish-like glowing white seeds drifting slowly in the dark forest air at night",
   "neg": "creature, animal",
   "graine": 42,
-  "alt": "Graines translucides en forme de méduses lumineuses flottant dans une forêt de nuit"
+  "alt": "Graines translucides en forme de méduses lumineuses flottant dans une forêt de nuit",
+  "branchee": false,
+  "remplacee": "L64 (20-11-2026) : image officielle des films, voir films.json"
  },
  {
   "fiche": "engins/amp-suit",
   "prompt": "a 4 meter tall military mech exoskeleton with a glass cockpit canopy, heavy armor and a big rifle, standing in a rainy jungle clearing, empty cockpit",
   "neg": "creature",
   "graine": 21,
-  "alt": "Robot de combat bipède à cockpit lumineux, debout sous la pluie dans une jungle brumeuse"
+  "alt": "Robot de combat bipède à cockpit lumineux, debout sous la pluie dans une jungle brumeuse",
+  "branchee": false,
+  "remplacee": "L64 (20-11-2026) : image officielle des films, voir films.json"
  },
  {
   "fiche": "engins/crabsuit",
   "prompt": "an underwater six-legged armored submersible mech with a glass bubble cockpit crawling on a coral reef, headlights",
   "neg": "creature",
   "graine": 21,
-  "alt": "Engin sous-marin à bulle de verre monté sur des pattes articulées, posé sur un récif de corail"
+  "alt": "Engin sous-marin à bulle de verre monté sur des pattes articulées, posé sur un récif de corail",
+  "branchee": false,
+  "remplacee": "L64 (20-11-2026) : image officielle des films, voir films.json"
  },
  {
   "fiche": "engins/dragon-assault-ship",
   "prompt": "a massive heavy military gunship aircraft with four big ducted rotors flying over a smoking jungle, dramatic",
   "neg": "creature, dragon",
   "graine": 21,
-  "alt": "Lourd appareil militaire à rotors multiples survolant la jungle sous un ciel d'orage violet"
+  "alt": "Lourd appareil militaire à rotors multiples survolant la jungle sous un ciel d'orage violet",
+  "branchee": false,
+  "remplacee": "L64 (20-11-2026) : image officielle des films, voir films.json"
  },
  {
   "fiche": "engins/picador",
   "prompt": "a fast grey military hunting boat with a harpoon cannon on its bow cutting through ocean waves, spray",
   "neg": "creature",
   "graine": 21,
-  "alt": "Bateau militaire gris fendant une mer agitée sous un ciel violet"
+  "alt": "Bateau militaire gris fendant une mer agitée sous un ciel violet",
+  "branchee": false,
+  "remplacee": "L64 (20-11-2026) : image officielle des films, voir films.json"
  },
  {
   "fiche": "engins/samson-tiltrotor",
   "prompt": "a military tiltrotor aircraft with two big ducted rotors flying above the jungle canopy, morning haze",
   "neg": "creature",
   "graine": 99,
-  "alt": "Appareil à deux rotors basculants volant au-dessus de la canopée dans une brume verte"
+  "alt": "Appareil à deux rotors basculants volant au-dessus de la canopée dans une brume verte",
+  "branchee": false,
+  "remplacee": "L64 (20-11-2026) : image officielle des films, voir films.json"
  },
  {
   "fiche": "engins/scorpion-gunship",
   "prompt": "a heavy attack gunship with ducted rotors, rocket pods and a gatling gun flying through mist over the jungle",
   "neg": "creature",
   "graine": 21,
-  "alt": "Hélicoptère de combat aux phares allumés traversant la brume au-dessus de la jungle"
+  "alt": "Hélicoptère de combat aux phares allumés traversant la brume au-dessus de la jungle",
+  "branchee": false,
+  "remplacee": "L64 (20-11-2026) : image officielle des films, voir films.json"
  },
  {
   "fiche": "engins/sea-dragon",
   "prompt": "a gigantic military ship skimming over the ocean on hydrofoils, carrying smaller boats, grey hull, waves",
   "neg": "creature",
   "graine": 7,
-  "alt": "Immense navire militaire gris glissant sur l'océan en soulevant de grandes vagues"
+  "alt": "Immense navire militaire gris glissant sur l'océan en soulevant de grandes vagues",
+  "branchee": false,
+  "remplacee": "L64 (20-11-2026) : image officielle des films, voir films.json"
  },
  {
   "fiche": "engins/venture-star",
   "prompt": "a very long interstellar spaceship with a huge radiator array and a heat shield at the front, orbiting a banded gas giant with a green moon, stars",
   "neg": "creature",
   "graine": 7,
-  "alt": "Long vaisseau spatial aux panneaux lumineux verts devant une planète géante et une petite lune"
+  "alt": "Long vaisseau spatial aux panneaux lumineux verts devant une planète géante et une petite lune",
+  "branchee": false,
+  "remplacee": "L64 (20-11-2026) : image officielle des films, voir films.json"
  },
  {
   "fiche": "films/avatar-2009",
   "prompt": "a colossal tree silhouetted against an enormous gas giant planet rising over a glowing jungle, floating mountains far away",
   "neg": "creature, animal",
   "graine": 99,
-  "alt": "Silhouette d'un arbre immense devant une planète turquoise, au-dessus d'une jungle au crépuscule"
+  "alt": "Silhouette d'un arbre immense devant une planète turquoise, au-dessus d'une jungle au crépuscule",
+  "branchee": false,
+  "remplacee": "L64 (20-11-2026) : image officielle des films, voir films.json"
  },
  {
   "fiche": "films/voie-de-leau",
   "prompt": "a shallow turquoise lagoon over a coral reef, split view half above and half below the water surface, tropical islands",
   "neg": "creature, animal, bird, fish, dragon, whale, shark",
   "graine": 21,
-  "alt": "Lagon vu à la surface de l'eau, îles de végétation violette au-dessus, récif de coraux sous l'eau turquoise"
+  "alt": "Lagon vu à la surface de l'eau, îles de végétation violette au-dessus, récif de coraux sous l'eau turquoise",
+  "branchee": false,
+  "remplacee": "L64 (20-11-2026) : image officielle des films, voir films.json"
  },
  {
   "fiche": "films/fire-and-ash",
   "prompt": "a volcanic eruption over an alien jungle at night, ash clouds and red embers raining, lava light reflected in a river",
   "neg": "creature, animal",
   "graine": 42,
-  "alt": "Volcan en éruption au cœur d'une jungle de nuit, lave rouge et nuages de cendre sous un ciel turquoise"
+  "alt": "Volcan en éruption au cœur d'une jungle de nuit, lave rouge et nuages de cendre sous un ciel turquoise",
+  "branchee": false,
+  "remplacee": "L64 (20-11-2026) : image officielle des films, voir films.json"
  },
  {
   "fiche": "personnages/aonung",
   "prompt": "a carved bone and shell necklace lying on wet black rock by a turquoise sea, close-up",
   "neg": "creature",
   "graine": 99,
-  "alt": "Collier de coquillages et de perles turquoise posé sur une roche noire mouillée au bord de la mer"
+  "alt": "Collier de coquillages et de perles turquoise posé sur une roche noire mouillée au bord de la mer",
+  "branchee": false,
+  "remplacee": "L64 (20-11-2026) : image officielle des films, voir films.json"
  },
  {
   "fiche": "personnages/eytukan",
   "prompt": "a ceremonial chief's hunting bow and feathered headdress resting on giant glowing tree roots",
   "neg": "creature",
   "graine": 21,
-  "alt": "Grand arbre dont le cœur du tronc et les racines brillent d'une lumière cyan, sous un ciel violet"
+  "alt": "Grand arbre dont le cœur du tronc et les racines brillent d'une lumière cyan, sous un ciel violet",
+  "branchee": false,
+  "remplacee": "L64 (20-11-2026) : image officielle des films, voir films.json"
  },
  {
   "fiche": "personnages/grace",
   "prompt": "a jungle research station table with glowing alien plant samples in glass jars, a microscope and sketches of leaves, jungle visible outside",
   "neg": "creature, writing, handwriting",
   "graine": 99,
-  "alt": "Table de laboratoire couverte de bocaux de plantes, devant une baie vitrée ouverte sur la jungle"
+  "alt": "Table de laboratoire couverte de bocaux de plantes, devant une baie vitrée ouverte sur la jungle",
+  "branchee": false,
+  "remplacee": "L64 (20-11-2026) : image officielle des films, voir films.json"
  },
  {
   "fiche": "personnages/jake-sully",
   "prompt": "an empty wheelchair at the edge of a glowing bioluminescent alien forest at night, path leading in",
   "neg": "creature",
   "graine": 7,
-  "alt": "Fauteuil roulant vide au milieu d'un sentier, à l'entrée d'une forêt aux champignons lumineux"
+  "alt": "Fauteuil roulant vide au milieu d'un sentier, à l'entrée d'une forêt aux champignons lumineux",
+  "branchee": false,
+  "remplacee": "L64 (20-11-2026) : image officielle des films, voir films.json"
  },
  {
   "fiche": "personnages/kiri",
   "prompt": "a glowing cyan seed floating above luminous underwater sea plants and corals, sacred and calm",
   "neg": "creature",
   "graine": 42,
-  "alt": "Anémone de mer lumineuse rose et cyan au milieu d'un récif de corail sous l'eau"
+  "alt": "Anémone de mer lumineuse rose et cyan au milieu d'un récif de corail sous l'eau",
+  "branchee": false,
+  "remplacee": "L64 (20-11-2026) : image officielle des films, voir films.json"
  },
  {
   "fiche": "personnages/loak",
   "prompt": "the huge eye of a whale-like alien sea creature seen up close underwater, a scar on its skin, blue light",
   "neg": "",
   "graine": 7,
-  "alt": "Gros plan sur l'œil turquoise d'une immense créature marine, peau violette plissée"
+  "alt": "Gros plan sur l'œil turquoise d'une immense créature marine, peau violette plissée",
+  "branchee": false,
+  "remplacee": "L64 (20-11-2026) : image officielle des films, voir films.json"
  },
  {
   "fiche": "personnages/moat",
   "prompt": "a shaman's ceremonial tools, a seed-pod cup, beads and feathers on a mat, a glowing sacred willow tree in the background",
   "neg": "creature",
   "graine": 7,
-  "alt": "Coupe de bois où brille une lumière verte, entourée de plumes, de graines et de pierres turquoise sur une natte"
+  "alt": "Coupe de bois où brille une lumière verte, entourée de plumes, de graines et de pierres turquoise sur une natte",
+  "branchee": false,
+  "remplacee": "L64 (20-11-2026) : image officielle des films, voir films.json"
  },
  {
   "fiche": "personnages/neteyam",
   "prompt": "a quiet reef shore at dusk, a carved wooden bow lying on the sand by the water, mournful light",
   "neg": "creature",
   "graine": 21,
-  "alt": "Canoë turquoise échoué sur une plage de sable au crépuscule, une lune basse sur la mer"
+  "alt": "Canoë turquoise échoué sur une plage de sable au crépuscule, une lune basse sur la mer",
+  "branchee": false,
+  "remplacee": "L64 (20-11-2026) : image officielle des films, voir films.json"
  },
  {
   "fiche": "personnages/neytiri",
   "prompt": "a long carved wooden hunting bow with arrows and feathers leaning on a tree in front of a glowing forest at night",
   "neg": "creature",
   "graine": 99,
-  "alt": "Arc de chasse appuyé contre un tronc, dans une forêt nocturne aux feuillages violets"
+  "alt": "Arc de chasse appuyé contre un tronc, dans une forêt nocturne aux feuillages violets",
+  "branchee": false,
+  "remplacee": "L64 (20-11-2026) : image officielle des films, voir films.json"
  },
  {
   "fiche": "personnages/norm-spellman",
   "prompt": "a field laboratory inside a jungle research hut, monitors with plant scans, sample jars and a breathing mask on the table",
   "neg": "creature, writing",
   "graine": 7,
-  "alt": "Laboratoire de terrain ouvert sur la jungle, paillasses chargées de bocaux et d'instruments éclairés de cyan"
+  "alt": "Laboratoire de terrain ouvert sur la jungle, paillasses chargées de bocaux et d'instruments éclairés de cyan",
+  "branchee": false,
+  "remplacee": "L64 (20-11-2026) : image officielle des films, voir films.json"
  },
  {
   "fiche": "personnages/payakan",
   "prompt": "a vast empty deep blue ocean seen from just below the surface, a single shaft of light falling into the abyss, loneliness, calm",
   "neg": "creature, animal, fish, whale, shark, boat",
   "graine": 42,
-  "alt": "Mer immense et vide au crépuscule, un rai de lumière cyan tombant sur l'horizon"
+  "alt": "Mer immense et vide au crépuscule, un rai de lumière cyan tombant sur l'horizon",
+  "branchee": false,
+  "remplacee": "L64 (20-11-2026) : image officielle des films, voir films.json"
  },
  {
   "fiche": "personnages/peylak",
   "prompt": "warrior weapons of obsidian and bone resting on black volcanic rock, glowing embers, red ash painted on the stone",
   "neg": "creature",
   "graine": 42,
-  "alt": "Hache et lame gravées de motifs turquoise posées sur une roche volcanique noire et rougeoyante"
+  "alt": "Hache et lame gravées de motifs turquoise posées sur une roche volcanique noire et rougeoyante",
+  "branchee": false,
+  "remplacee": "L64 (20-11-2026) : image officielle des films, voir films.json"
  },
  {
   "fiche": "personnages/quaritch",
   "prompt": "military dog tags and a combat knife hanging from a branch in a dark alien jungle, cold light",
   "neg": "creature",
   "graine": 99,
-  "alt": "Couteau de combat posé sur un tronc moussu dans une jungle sombre et brumeuse"
+  "alt": "Couteau de combat posé sur un tronc moussu dans une jungle sombre et brumeuse",
+  "branchee": false,
+  "remplacee": "L64 (20-11-2026) : image officielle des films, voir films.json"
  },
  {
   "fiche": "personnages/recombinants",
   "prompt": "military camouflage gear, a rifle and blue body paint left on a jungle floor, ominous",
   "neg": "creature",
   "graine": 7,
-  "alt": "Fusil militaire peint en bleu abandonné sur le sol d'une jungle parmi des feuilles violettes"
+  "alt": "Fusil militaire peint en bleu abandonné sur le sol d'une jungle parmi des feuilles violettes",
+  "branchee": false,
+  "remplacee": "L64 (20-11-2026) : image officielle des films, voir films.json"
  },
  {
   "fiche": "personnages/rotxo",
   "prompt": "a small woven fishing canoe on a calm turquoise lagoon near a reef village, morning",
   "neg": "creature",
   "graine": 7,
-  "alt": "Pirogue violette sur un lagon turquoise transparent, près d'une côte de palmiers"
+  "alt": "Pirogue violette sur un lagon turquoise transparent, près d'une côte de palmiers",
+  "branchee": false,
+  "remplacee": "L64 (20-11-2026) : image officielle des films, voir films.json"
  },
  {
   "fiche": "personnages/selfridge",
   "prompt": "a fortified mining colony with bulldozers and a huge open-pit mine eating into the rainforest, industrial",
   "neg": "creature",
   "graine": 21,
-  "alt": "Base minière et engins de chantier creusant une clairière dans la jungle, de nuit"
+  "alt": "Base minière et engins de chantier creusant une clairière dans la jungle, de nuit",
+  "branchee": false,
+  "remplacee": "L64 (20-11-2026) : image officielle des films, voir films.json"
  },
  {
   "fiche": "personnages/tonowari-ronal",
   "prompt": "an archipelago of three green islands at sunset with a reef village of woven huts on the water",
   "neg": "creature",
   "graine": 99,
-  "alt": "Archipel au coucher du soleil, huttes sur pilotis éclairées éparpillées sur un lagon"
+  "alt": "Archipel au coucher du soleil, huttes sur pilotis éclairées éparpillées sur un lagon",
+  "branchee": false,
+  "remplacee": "L64 (20-11-2026) : image officielle des films, voir films.json"
  },
  {
   "fiche": "personnages/trudy-chacon",
   "prompt": "a crashed military tiltrotor aircraft slowly overgrown by glowing jungle vines, quiet",
   "neg": "creature",
   "graine": 21,
-  "alt": "Carcasse d'un avion à hélices échoué dans une clairière de la jungle, gagnée par la végétation"
+  "alt": "Carcasse d'un avion à hélices échoué dans une clairière de la jungle, gagnée par la végétation",
+  "branchee": false,
+  "remplacee": "L64 (20-11-2026) : image officielle des films, voir films.json"
  },
  {
   "fiche": "personnages/tsireya",
   "prompt": "an underwater luminous coral garden with glowing sea anemones and soft sun beams from the surface",
   "neg": "creature",
   "graine": 21,
-  "alt": "Jardin de corail sous l'eau, anémones orange et violettes éclairées par des rayons venus de la surface"
+  "alt": "Jardin de corail sous l'eau, anémones orange et violettes éclairées par des rayons venus de la surface",
+  "branchee": false,
+  "remplacee": "L64 (20-11-2026) : image officielle des films, voir films.json"
  },
  {
   "fiche": "personnages/tsutey",
   "prompt": "a long carved wooden war spear planted upright in the ground with a feathered tassel, a glowing forest at night behind, solemn",
   "neg": "creature, animal, tree trunk close-up",
   "graine": 21,
-  "alt": "Lance plantée seule au milieu d'un chemin de forêt nocturne, une lune cyan au-dessus des arbres"
+  "alt": "Lance plantée seule au milieu d'un chemin de forêt nocturne, une lune cyan au-dessus des arbres",
+  "branchee": false,
+  "remplacee": "L64 (20-11-2026) : image officielle des films, voir films.json"
  },
  {
   "fiche": "personnages/tuk",
   "prompt": "a small handmade toy figure of woven fibers and a glowing flower on a mossy rock in the jungle",
   "neg": "creature",
   "graine": 21,
-  "alt": "Petite figurine tressée en fibres turquoise assise sur un rocher moussu, près d'une fleur violette"
+  "alt": "Petite figurine tressée en fibres turquoise assise sur un rocher moussu, près d'une fleur violette",
+  "branchee": false,
+  "remplacee": "L64 (20-11-2026) : image officielle des films, voir films.json"
  },
  {
   "fiche": "personnages/varang",
   "prompt": "a throne of black obsidian rock at the edge of a volcanic crater, fire and falling ash, a bone headdress on it",
   "neg": "creature",
   "graine": 42,
-  "alt": "Trône de pierre noire sculptée au bord d'un cratère, entouré de braises violettes"
+  "alt": "Trône de pierre noire sculptée au bord d'un cratère, entouré de braises violettes",
+  "branchee": false,
+  "remplacee": "L64 (20-11-2026) : image officielle des films, voir films.json"
  }
 ]

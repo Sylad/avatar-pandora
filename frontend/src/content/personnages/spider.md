@@ -2,7 +2,10 @@
 title: "Miles « Spider » Socorro"
 summary: "Enfant humain abandonné sur Pandora, élevé par les Sully en quasi-Na'vi. Fils biologique de Quaritch."
 order: 5
-cover: "Spider"
+cover: "/illustrations/personnages/spider.webp"
+coverAlt: "Portrait officiel d'un jeune humain aux dreadlocks blondes, masque respiratoire transparent et étole verte"
+coverCredit: "© 20th Century Studios"
+pandorapedia: "https://www.avatar.com/pandorapedia/spider"
 ---
 
 Pandora n'a pas de mots pour ce qu'est Spider, parce que Spider n'aurait pas dû pouvoir exister selon les termes de Pandora. Un humain de naissance, Na'vi de formation, sans clan d'origine et sans planète d'appartenance — un enfant que deux mondes ont produit par accident et qu'aucun des deux n'a vraiment réclamé. Il est pourtant là, exo-pack sanglé sur le visage, dreadlocks dans les yeux, langue Na'vi parfaitement maîtrisée, et la conviction tranquille que Pandora est chez lui même si Pandora ne peut pas le confirmer biologiquement.

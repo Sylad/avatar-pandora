@@ -3,7 +3,9 @@ title: "Neytiri te Tskaha Mo'at'ite"
 summary: "Tsahìk en devenir, fille de Mo'at, compagne de Jake. Chasseuse, guerrière, mère endeuillée. Interprétée par Zoe Saldaña."
 order: 2
 cover: "/illustrations/personnages/neytiri.webp"
-coverAlt: "Arc de chasse appuyé contre un tronc, dans une forêt nocturne aux feuillages violets"
+coverAlt: "Portrait officiel d'une guerrière Na'vi aux longues tresses, colliers de perles colorées, regard de côté"
+coverCredit: "© 20th Century Studios"
+pandorapedia: "https://www.avatar.com/pandorapedia/neytiri"
 ---
 
 Il existe une manière Na'vi de regarder qui n'a pas d'équivalent dans aucune langue humaine : *tse'a* ne veut pas dire "voir" au sens de percevoir des photons, mais plutôt "comprendre ce qui se tient devant soi dans toute sa réalité". Neytiri te Tskaha Mo'at'ite pratique cela depuis l'enfance — elle voit les forêts, les créatures, les humains, et le monde tel qu'il est, sans la couche de désir ou de peur qui brouille la vision de la plupart. C'est cette clarté qui fit d'elle la meilleure chasseuse des Omatikaya, la mentor de Jake Sully, et l'une des femmes les plus dangereuses de Pandora.

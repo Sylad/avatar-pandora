@@ -3,7 +3,9 @@ title: "AMP Suit MK-6 — le mech blindé"
 summary: "Amplified Mobility Platform : 4 m de haut, exosquelette militaire. La cuirasse signature de Quaritch."
 order: 5
 cover: "/illustrations/engins/amp-suit.webp"
-coverAlt: "Robot de combat bipède à cockpit lumineux, debout sous la pluie dans une jungle brumeuse"
+coverAlt: "Exosquelette de combat gris à deux jambes, pilote assis dans la bulle vitrée du cockpit"
+coverCredit: "© 20th Century Studios"
+pandorapedia: "https://www.avatar.com/pandorapedia/amp-suit"
 ---
 
 Le nom complet est Amplified Mobility Platform — *plateforme de mobilité amplifiée* — et c'est une description précise qui omet l'essentiel. L'AMP Suit MK-6 n'amplifie pas seulement la mobilité. Il amplifie la force, la portée, la résistance aux dommages, et la capacité d'un soldat de taille humaine à infliger des dégâts qui requièrent normalement un blindé lourd. À quatre mètres de haut, l'opérateur assis dans le cockpit ventral est protégé de l'atmosphère toxique de Pandora tout en disposant d'une puissance mécanique qui lui permet de soulever des véhicules, traverser des murs de béton, et faire face au front à une créature de la taille d'un thanator sans reculer.

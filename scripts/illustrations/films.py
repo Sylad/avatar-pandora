@@ -1,4 +1,5 @@
-"""L63 (D-2, D-3) — images des films pour le bestiaire, crédit discret « © 20th Century Studios ».
+"""L63 (D-2, D-3), L64 (D-4) — images officielles des films pour TOUTES les fiches illustrées du codex
+(bestiaire, Pandora, clans, flore, films, engins, personnages), crédit discret « © 20th Century Studios ».
 
 Usage : python films.py <dossier-refs> [--seul bestiaire/ikran ...] [--planche <fichier.jpg>]
         (Pillow ; opencv-python-headless pour les plans tirés de la vidéo)
@@ -15,6 +16,12 @@ Champs d'une entrée (la traçabilité est contrôlée par scripts/illustrations
   source  : {"type": "sylvain", "fichier": …}          image du film fournie par Sylvain
             {"type": "pandorapedia", "image": URL, "page": URL, "fichier": …}  image officielle
             {"type": "video", "fichier": …, "temps": secondes}                 plan de la vidéo fournie
+            {"type": "film", "image": URL, "page": URL avatar.com/movies/…, "fichier": …}
+                                                     plan officiel de la page du film (L64)
+            "fond_blanc": true  image officielle sur fond blanc (portraits, engins de Pandorapedia) :
+                                le blanc relié aux bords est remplacé par "fond" (défaut #0a0a1f),
+                                le blanc à l'intérieur du sujet (chemise, reflets) est gardé,
+            "trous": true  sauf le blanc pur enfermé dans le sujet (verrière d'un engin).
   credit  : « © 20th Century Studios », affiché en légende de l'image.
   bandeau / carte : réglage de chaque taille —
             "zone": [x0, y0, x1, y1]  partie de l'image gardée (défaut : toute l'image)
@@ -23,13 +30,17 @@ Champs d'une entrée (la traçabilité est contrôlée par scripts/illustrations
                                 floutée et assombrie (ou par "fond" : celui de l'entrée pour une image
                                 détourée, ou celui du réglage de la taille).
   fond    : couleur posée sous une image détourée (PNG transparent).
+  serrer  : true recadre sur le sujet posé sur fond uni (engins de Pandorapedia), sauf "zone" donnée.
   masquer : rectangles adoucis (flou fondu) — ex. le nageur que Sylvain a flouté sur le tulkun.
+  Une fiche peut garder une entrée refusée ET une entrée retenue (akula, nantang, hexapede : plan de
+  vidéo refusé le 20-11, image officielle de Pandorapedia retenue en L64).
+  La page Pandorapedia de la source est écrite dans le champ `pandorapedia` de la fiche si elle n'en a pas.
   retenue : false pour une image refusée (avec "raison") : l'entrée garde sa traçabilité mais n'est
             jamais posée ; la fiche garde le visuel par défaut (akula, nantang, hexapede le 20-11).
 """
 import json, re, sys
 from pathlib import Path
-from PIL import Image, ImageDraw, ImageFilter, ImageEnhance, ImageFont
+from PIL import Image, ImageChops, ImageDraw, ImageFilter, ImageEnhance, ImageFont
 
 ICI = Path(__file__).parent
 FRONT = ICI.parent.parent / "frontend"
@@ -52,7 +63,32 @@ def charge(refs, e):
         fond = Image.new("RGBA", img.size, e.get("fond", "#0a0a1f"))
         fond.alpha_composite(img)
         img = fond
-    return img.convert("RGB")
+    img = img.convert("RGB")
+    if s.get("fond_blanc"):
+        img = sans_fond_blanc(img, e.get("fond", "#0a0a1f"), trous=s.get("trous", False))
+    return img
+
+
+def sans_fond_blanc(img, fond, seuil=236, trous=False):
+    """Remplace le fond blanc relié aux bords par `fond`, bord adouci sans liseré clair."""
+    r, g, b = img.split()
+    mini = ImageChops.darker(ImageChops.darker(r, g), b)
+    masque = mini.point(lambda v: 255 if v >= seuil else 0)
+    W, H = masque.size
+    px = masque.load()
+    for x in range(0, W, 8):
+        for y in (0, H - 1):
+            if px[x, y] == 255:
+                ImageDraw.floodfill(masque, (x, y), 128)
+    for y in range(0, H, 8):
+        for x in (0, W - 1):
+            if px[x, y] == 255:
+                ImageDraw.floodfill(masque, (x, y), 128)
+    fondmasque = masque.point(lambda v: 255 if v == 128 else 0)
+    if trous:  # engins : le fond vu à travers une verrière ou entre deux pièces, blanc pur, part aussi
+        fondmasque = ImageChops.lighter(fondmasque, mini.point(lambda v: 255 if v >= 248 else 0))
+    fondmasque = fondmasque.filter(ImageFilter.MaxFilter(3)).filter(ImageFilter.GaussianBlur(1.2))
+    return Image.composite(Image.new("RGB", img.size, fond), img, fondmasque)
 
 
 def adoucit(img, rects):
@@ -86,12 +122,23 @@ def contient(img, w, h, fond=None):
     return bas
 
 
+def serre(img, fond, marge=0.08):
+    """Recadre sur le sujet posé sur un fond uni (engin détouré), avec une marge."""
+    diff = ImageChops.difference(img, Image.new("RGB", img.size, fond)).convert("L").point(lambda v: 255 if v > 24 else 0)
+    x0, y0, x1, y1 = diff.getbbox() or (0, 0, *img.size)
+    m = round(max(x1 - x0, y1 - y0) * marge)
+    return img.crop((max(0, x0 - m), max(0, y0 - m), min(img.width, x1 + m), min(img.height, y1 + m)))
+
+
 def taille(img, e, quoi, w, h):
     r = e.get(quoi, {})
     if "zone" in r:
         img = img.crop(tuple(r["zone"]))
+    elif e.get("serrer"):
+        img = serre(img, e.get("fond", "#0a0a1f"))
     if r.get("mode") == "contenir":
-        return contient(img, w, h, r.get("fond") or (e.get("fond") if e["source"].get("detouree") else None))
+        s = e["source"]
+        return contient(img, w, h, r.get("fond") or (e.get("fond", "#0a0a1f") if s.get("detouree") or s.get("fond_blanc") else None))
     return couvre(img, w, h, r.get("cadre", 0.5), r.get("cadre_x", 0.5))
 
 
@@ -99,6 +146,8 @@ def renseigne(md, champs):
     texte = md.read_text()
     tete, corps = texte.split("\n---\n", 1)
     for k, v in champs.items():
+        if k == "pandorapedia" and re.search(r"^pandorapedia:", tete, flags=re.M):
+            continue
         ligne = f'{k}: "{v}"'
         if re.search(rf"^{k}:", tete, flags=re.M):
             tete = re.sub(rf"^{k}:.*$", ligne, tete, flags=re.M)
@@ -128,8 +177,10 @@ def main():
             out.save(dest / f"{fiche}{suffixe}.webp", "WEBP", quality=q, method=6)
             if quoi == "carte":
                 vignettes.append((e["fiche"], out))
-        renseigne(FRONT / "src/content" / section / f"{fiche}.md",
-                  {"cover": f"/illustrations/{section}/{fiche}.webp", "coverAlt": e["alt"], "coverCredit": e["credit"]})
+        champs = {"cover": f"/illustrations/{section}/{fiche}.webp", "coverAlt": e["alt"], "coverCredit": e["credit"]}
+        if e["source"]["type"] == "pandorapedia":
+            champs["pandorapedia"] = e["source"]["page"]
+        renseigne(FRONT / "src/content" / section / f"{fiche}.md", champs)
         print(e["fiche"])
     if planche and vignettes:
         cols = 4

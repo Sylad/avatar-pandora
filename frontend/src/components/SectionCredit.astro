@@ -1,0 +1,17 @@
+---
+/**
+ * Crédit discret sous la liste d'une section (L63 au bestiaire, L64 partout) : une seule ligne pour
+ * toutes les cartes qui montrent une image officielle des films (`coverCredit` des fiches).
+ * Rien n'est affiché quand aucune fiche de la section n'en a.
+ */
+interface Props {
+  entries: { data: { coverCredit?: string } }[];
+  /** Ce que montrent les images : « Images des créatures », « Images des personnages »… */
+  label?: string;
+}
+const { entries, label = 'Images des films' } = Astro.props;
+const credits = [...new Set(entries.map((e) => e.data.coverCredit).filter(Boolean))];
+---
+{credits.length > 0 && (
+  <p class="section-credit mt-6 text-xs text-eywa-text-muted font-body">{label} : {credits.join(', ')}</p>
+)}

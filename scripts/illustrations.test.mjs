@@ -14,7 +14,7 @@ const FRONT = fileURLToPath(new URL('../frontend/', import.meta.url));
 const REPO = fileURLToPath(new URL('../', import.meta.url));
 const SOURCES = JSON.parse(readFileSync(join(REPO, 'scripts/illustrations/illustrations.json'), 'utf8'));
 const GUIDEES = SOURCES.filter((e) => e.ip_adapter);
-/** L63 (décision du 19-11-2026) : images des films du bestiaire, source et crédit tracés. */
+/** L63 (19-11-2026) au bestiaire, L64 (D-4, 20-11-2026) partout : images officielles des films, source et crédit tracés. */
 const FILMS_TOUS = JSON.parse(readFileSync(join(REPO, 'scripts/illustrations/films.json'), 'utf8'));
 /** Images posées ; les refusées (`"retenue": false`, avec leur raison) gardent leur traçabilité mais ne sont jamais servies. */
 const FILMS = FILMS_TOUS.filter((f) => f.retenue !== false);
@@ -25,6 +25,10 @@ const branchee = (e) => e.branchee !== false;
 const CONTENT = join(FRONT, 'src/content');
 const PUBLIC = join(FRONT, 'public');
 const SECTIONS = ['pandora', 'clans', 'bestiaire', 'flore', 'engins', 'films', 'personnages'];
+/** L64 : seules ces fiches d'ambiance gardent une illustration générée (SDXL) ; elles ne nomment ni lieu, ni être, ni objet précis des films. */
+const AMBIANCES = ['clans/anurai', 'clans/tipani', 'pandora/atmosphere', 'pandora/bioluminescent-night'];
+/** L64 : fiches sans image officielle sûre, au visuel par défaut plutôt qu'avec une image fausse. */
+const SANS_IMAGE = ['bestiaire/glow-snake', 'pandora/moara-valley'];
 // Cloudflare Pages refuse un fichier de plus de 25 Mo ; on vise bien plus léger.
 const MAX_FICHE = 250 * 1024;
 const MAX_CARTE = 90 * 1024;
@@ -74,10 +78,10 @@ test('R1 — chemins : la carte prend la taille 4:3, la fiche la 21:9 ; un titre
   assert.equal(isIllustration('/illustrations/../x.webp'), false);
 });
 
-test('R2 — les 8 fiches de la section Pandora (accueil du codex) sont illustrées', () => {
+test('R2 — section Pandora (accueil du codex) : 8 fiches, toutes illustrées sauf la vallée Mo’ara (aucune image officielle sûre, L64)', () => {
   const pandora = entries.filter((e) => e.section === 'pandora');
   assert.equal(pandora.length, 8);
-  assert.deepEqual(pandora.filter((e) => !isIllustration(e.cover)).map((e) => e.slug), []);
+  assert.deepEqual(pandora.filter((e) => !isIllustration(e.cover)).map((e) => e.slug), ['moara-valley']);
 });
 
 test('R3 — chaque illustration : chemin de sa section, deux WebP aux dimensions annoncées, poids raisonnable', () => {
@@ -126,23 +130,47 @@ test('R5 — aucun fichier de public/illustrations/ sans fiche ni bandeau qui l�
   assert.deepEqual(orphans, []);
 });
 
-test('R6 — la page À propos dit d’où viennent les images : générées hors bestiaire, films avec crédit au bestiaire', () => {
+test('R6 — la page À propos dit d’où viennent les images : officielles des films partout, générées pour quelques ambiances', () => {
   const about = readFileSync(join(FRONT, 'src/pages/about.astro'), 'utf8').replace(/\s+/g, ' ');
+  // L64 (D-4, 20-11-2026) : chaque fiche montre son sujet tel qu'il est dans les films, avec le crédit.
+  assert.match(about, /tel qu'on le voit dans les films/);
   assert.match(about, /illustration générée pour Eywa/);
-  // L63 (décision du 19-11-2026) : le bestiaire montre des images des films, avec le crédit.
-  assert.match(about, /bestiaire, lui, montre les vraies créatures/);
   assert.match(about, /© 20th Century Studios/);
   assert.match(about, /visuel par défaut/);
-  for (const re of [/œuvres de fan/, /IP-Adapter/, /aucune image des films/]) assert.doesNotMatch(about, re);
+  for (const re of [/œuvres de fan/, /IP-Adapter/, /aucune image des films/, /jamais un visage d'acteur/, /Hors bestiaire/]) assert.doesNotMatch(about, re);
 });
 
-test('R9 — fiches sans image : Spider et les créatures sans image des films retenue (glow snake, akula, nantang, hexapede), rien d’autre', () => {
+test('R9 — fiches sans image : seulement celles sans image officielle sûre (glow snake, vallée Mo’ara)', () => {
   const sans = entries.filter((e) => !isIllustration(e.cover)).map((e) => `${e.section}/${e.slug}`).sort();
   const bestiaire = entries.filter((e) => e.section === 'bestiaire').map((e) => `${e.section}/${e.slug}`);
   assert.equal(bestiaire.length, 14);
   const sansFilm = bestiaire.filter((f) => !FILMS.some((x) => x.fiche === f));
-  assert.deepEqual(sansFilm.sort(), ['bestiaire/akula', 'bestiaire/glow-snake', 'bestiaire/hexapede', 'bestiaire/nantang']);
-  assert.deepEqual(sans, ['personnages/spider', ...sansFilm].sort());
+  assert.deepEqual(sansFilm, ['bestiaire/glow-snake']);
+  assert.deepEqual(sans, SANS_IMAGE);
+});
+
+test('R13 — L64 : chaque fiche illustrée montre une image officielle des films, sauf les ambiances listées ; tous les personnages ont leur portrait', () => {
+  for (const e of illustrated) {
+    const fiche = `${e.section}/${e.slug}`;
+    const film = FILMS.find((x) => x.fiche === fiche);
+    if (AMBIANCES.includes(fiche)) {
+      assert.equal(film, undefined, `${fiche} : ambiance`);
+      assert.equal(e.coverCredit, undefined, `${fiche} : pas de crédit sur une illustration générée`);
+      assert.ok(SOURCES.some((x) => x.fiche === fiche && branchee(x)), `${fiche} : illustration générée tracée`);
+      continue;
+    }
+    assert.ok(film, `${fiche} : image sans source officielle tracée dans films.json`);
+    assert.equal(e.coverAlt, film.alt, `${fiche} : coverAlt = alt de films.json`);
+    assert.equal(e.coverCredit, CREDIT, `${fiche} : crédit`);
+    // Une image de Pandorapedia renvoie à sa page (champ `pandorapedia` de la fiche, posé par films.py).
+    if (film.source.type === 'pandorapedia') assert.ok(e.pandorapedia, `${fiche} : lien Pandorapedia`);
+  }
+  // Les illustrations générées remplacées restent tracées mais ne sont plus posées.
+  const posees = SOURCES.filter(branchee).map((x) => x.fiche).sort();
+  assert.deepEqual(posees, AMBIANCES);
+  // Personnages : portrait ou plan officiel pour tous (décision de Sylvain du 20-11-2026, humains compris).
+  const perso = entries.filter((e) => e.section === 'personnages');
+  assert.deepEqual(perso.filter((e) => !FILMS.some((x) => x.fiche === `personnages/${e.slug}`)).map((e) => e.slug), []);
 });
 
 test('R10 — bestiaire : une image n’y est posée que si films.json en trace la source et le crédit ; jamais une image générée', () => {
@@ -168,17 +196,16 @@ test('R10 — bestiaire : une image n’y est posée que si films.json en trace 
   assert.doesNotMatch(readFileSync(join(FRONT, 'src/pages/bestiaire.astro'), 'utf8'), /cover="/);
 });
 
-test('R12 — images refusées par Sylvain le 20-11 : traçabilité gardée, raison notée, rien de servi', () => {
+test('R12 — images refusées par Sylvain le 20-11 : traçabilité gardée, raison notée, jamais posées (L64 : remplacées par l’image officielle de Pandorapedia)', () => {
   assert.deepEqual(REFUSEES.map((f) => f.fiche).sort(), ['bestiaire/akula', 'bestiaire/hexapede', 'bestiaire/nantang']);
-  const publics = readdirSync(join(PUBLIC, 'illustrations'), { recursive: true }).map(String);
   for (const f of REFUSEES) {
     assert.equal(f.raison, 'modèle 3D sur grille, refusé par Sylvain le 20-11', `${f.fiche} : raison`);
     const e = entries.find((x) => `${x.section}/${x.slug}` === f.fiche);
-    assert.equal(e.cover, undefined, `${f.fiche} : aucune image posée`);
-    assert.equal(e.coverCredit, undefined, `${f.fiche} : aucun crédit sans image`);
     assert.ok(e.pandorapedia, `${f.fiche} : le lien Pandorapedia reste`);
-    const fiche = f.fiche.split('/')[1];
-    assert.deepEqual(publics.filter((x) => x.endsWith(`/${fiche}.webp`) || x.endsWith(`/${fiche}-carte.webp`)), [], `${f.fiche} : WebP servi`);
+    const retenue = FILMS.find((x) => x.fiche === f.fiche);
+    assert.equal(retenue?.source.type, 'pandorapedia', `${f.fiche} : image officielle retenue à la place`);
+    assert.notEqual(retenue.source.fichier, f.source.fichier, `${f.fiche} : jamais le plan refusé`);
+    assert.equal(e.coverAlt, retenue.alt, `${f.fiche} : l’image posée est la retenue`);
   }
   // films.py ne refait jamais une image refusée.
   assert.match(readFileSync(join(REPO, 'scripts/illustrations/films.py'), 'utf8'), /e\.get\("retenue"\) is False/);
@@ -187,19 +214,27 @@ test('R12 — images refusées par Sylvain le 20-11 : traçabilité gardée, rai
 test('R11 — films.json : chaque image du film a une source exacte, un crédit et une fiche réelle', () => {
   assert.ok(FILMS.length >= 1);
   const vues = new Set();
+  for (const f of FILMS) {
+    assert.ok(!vues.has(f.fiche), `${f.fiche} : deux images retenues`); vues.add(f.fiche);
+  }
   for (const f of FILMS_TOUS) {
-    assert.ok(!vues.has(f.fiche), `${f.fiche} en double`); vues.add(f.fiche);
-    assert.match(f.fiche, /^bestiaire\/[a-z0-9-]+$/, `${f.fiche} : seul le bestiaire prend des images des films`);
+    assert.match(f.fiche, new RegExp(`^(${SECTIONS.join('|')})/[a-z0-9-]+$`), `${f.fiche} : section du codex`);
     assert.ok(entries.some((e) => `${e.section}/${e.slug}` === f.fiche), `${f.fiche} : fiche absente`);
     assert.equal(f.credit, CREDIT, `${f.fiche} : crédit`);
     const s = f.source;
-    assert.ok(['sylvain', 'pandorapedia', 'video'].includes(s.type), `${f.fiche} : type de source ${s.type}`);
+    assert.ok(['sylvain', 'pandorapedia', 'video', 'film'].includes(s.type), `${f.fiche} : type de source ${s.type}`);
     assert.ok(s.fichier && !s.fichier.startsWith('/') && !s.fichier.includes('..'), `${f.fiche} : fichier source relatif au dossier des références`);
     if (s.type === 'sylvain') assert.match(s.fichier, /^[a-z-]+\/sylvain_[a-z0-9_]+\.png$/, `${f.fiche} : fichier de Sylvain`);
     if (s.type === 'pandorapedia') {
       assert.match(s.image, /^https:\/\/lumiere-a\.akamaihd\.net\/v1\/images\/[\w.-]+$/, `${f.fiche} : URL de l’image officielle`);
       assert.ok(s.image.endsWith(s.fichier.split('/').pop()), `${f.fiche} : le fichier est l’image de l’URL`);
       assert.match(s.page, /^https:\/\/www\.avatar\.com\/pandorapedia\/[a-z0-9-]+$/, `${f.fiche} : page Pandorapedia`);
+    }
+    if (s.type === 'film') {
+      // L64 : plan officiel publié sur la page du film (avatar.com/movies/…).
+      assert.match(s.image, /^https:\/\/lumiere-a\.akamaihd\.net\/v1\/images\/[\w.-]+$/, `${f.fiche} : URL de l’image officielle`);
+      assert.ok(s.image.endsWith(s.fichier.split('/').pop()), `${f.fiche} : le fichier est l’image de l’URL`);
+      assert.match(s.page, /^https:\/\/www\.avatar\.com\/movies\/[a-z0-9-]+$/, `${f.fiche} : page du film`);
     }
     if (s.type === 'video') assert.ok(Number.isFinite(s.temps) && s.temps >= 0, `${f.fiche} : horodatage du plan`);
     for (const re of [/fandom/i, /pinterest/i, /deviantart/i, /artstation/i]) assert.doesNotMatch(JSON.stringify(s), re, `${f.fiche} : source interdite`);
@@ -244,10 +279,10 @@ test('R7 — site construit : la carte charge la taille carte, la fiche décrit 
     fallback: !!c.querySelector('.cover-fallback'),
   })));
   assert.equal(cards.length, 8);
-  for (const c of cards) {
+  assert.equal(cards.filter((c) => c.fallback && !c.src).length, 1, 'vallée Mo’ara au visuel par défaut');
+  for (const c of cards.filter((x) => !x.fallback)) {
     assert.match(c.src ?? '', /^\/illustrations\/pandora\/[a-z0-9-]+-carte\.webp$/);
     assert.equal(c.alt, '', 'image de carte décorative : le titre nomme le lien');
-    assert.equal(c.fallback, false);
   }
   // Les images se chargent pour de bon (pas de 404).
   const broken = await page.$$eval('.entry-card img, .section-hero img', async (imgs) => {
@@ -256,8 +291,9 @@ test('R7 — site construit : la carte charge la taille carte, la fiche décrit 
   });
   assert.deepEqual(broken, []);
 
-  const e = illustrated.find((x) => x.section === 'pandora' && x.slug === 'eywa');
-  await page.goto(`${env.base}/pandora/eywa/`, { waitUntil: 'load' });
+  // L64 : seule une ambiance générée garde un bandeau sans crédit ni lien officiel.
+  const e = illustrated.find((x) => x.section === 'pandora' && x.slug === 'atmosphere');
+  await page.goto(`${env.base}/pandora/atmosphere/`, { waitUntil: 'load' });
   const banner = page.locator('[data-lightbox] img');
   assert.equal(await banner.getAttribute('src'), e.cover);
   assert.equal(await banner.getAttribute('alt'), e.coverAlt);
@@ -288,12 +324,12 @@ test('R7 — site construit : la carte charge la taille carte, la fiche décrit 
   assert.equal(cap, `${FILMS.find((f) => f.fiche === 'bestiaire/ikran').alt} — ${CREDIT}`);
   await page.keyboard.press('Escape');
 
-  // Créatures sans image des films retenue : visuel par défaut, aucun crédit, le lien Pandorapedia reste.
-  for (const fiche of ['bestiaire/glow-snake', ...REFUSEES.map((f) => f.fiche)]) {
+  // Fiches sans image officielle sûre : visuel par défaut, aucun crédit, le lien Pandorapedia reste.
+  for (const fiche of SANS_IMAGE) {
     await page.goto(`${env.base}/${fiche}/`, { waitUntil: 'load' });
     assert.equal(await page.locator('main .cover-fallback').count(), 1, `${fiche} : visuel par défaut`);
     assert.equal(await page.getByText(CREDIT).count(), 0, `${fiche} : aucun crédit`);
-    assert.equal(await page.locator('main img[src*="/illustrations/bestiaire/"]').count(), 0, `${fiche} : aucune image`);
+    assert.equal(await page.locator('main img[src*="/illustrations/"]').count(), 0, `${fiche} : aucune image`);
     const e = entries.find((x) => `${x.section}/${x.slug}` === fiche);
     if (e.pandorapedia) assert.equal(await page.locator(`main a[href="${e.pandorapedia}"]`).count() >= 1, true, `${fiche} : lien Pandorapedia`);
   }
@@ -309,7 +345,7 @@ test('R7 — site construit : la carte charge la taille carte, la fiche décrit 
     if (FILMS.some((f) => f.fiche === fiche)) assert.equal(c.src, `/${'illustrations'}/${fiche}-carte.webp`, fiche);
     else assert.ok(c.fallback && !c.src, `${fiche} : visuel par défaut`);
   }
-  assert.equal(liste.filter((c) => c.fallback).length, 4, '4 créatures au visuel par défaut');
+  assert.equal(liste.filter((c) => c.fallback).length, 1, 'une créature au visuel par défaut (glow snake)');
   const cassees = await page.$$eval('.entry-card img', async (imgs) => {
     await Promise.all(imgs.map((i) => { i.loading = 'eager'; return i.decode().catch(() => {}); }));
     return imgs.filter((i) => !i.naturalWidth).map((i) => i.getAttribute('src'));
@@ -317,6 +353,12 @@ test('R7 — site construit : la carte charge la taille carte, la fiche décrit 
   assert.deepEqual(cassees, []);
   assert.equal((await page.locator('main .section-credit').innerText()).trim(), `Images des créatures : ${CREDIT}`);
   assert.equal(await page.locator('.section-hero img').count(), 0);
+
+  // L64 : chaque liste dont les cartes montrent des images des films porte la ligne de crédit.
+  for (const s of ['pandora', 'clans', 'flore', 'engins', 'films', 'personnages']) {
+    await page.goto(`${env.base}/${s}/`, { waitUntil: 'load' });
+    assert.match((await page.locator('main .section-credit').innerText()).trim(), new RegExp(`^Images officielles des films.* : ${CREDIT}$`), `${s} : crédit sous la liste`);
+  }
 
   const bare = entries.find((x) => !isIllustration(x.cover));
   if (bare) {

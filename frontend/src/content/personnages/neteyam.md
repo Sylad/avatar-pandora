@@ -3,7 +3,9 @@ title: "Neteyam"
 summary: "Fils aîné de Jake et Neytiri. Pacificateur, protecteur de sa fratrie, fauché dans les eaux de l'archipel Metkayina. Interprété par Jamie Flatters."
 order: 41
 cover: "/illustrations/personnages/neteyam.webp"
-coverAlt: "Canoë turquoise échoué sur une plage de sable au crépuscule, une lune basse sur la mer"
+coverAlt: "Portrait officiel d'un jeune guerrier Na'vi aux tresses, bandeau doré sur le front et collier de perles"
+coverCredit: "© 20th Century Studios"
+pandorapedia: "https://www.avatar.com/pandorapedia/neteyam"
 ---
 
 Il y a des aînés qui portent leur rang comme un titre, et des aînés qui le portent comme une responsabilité qu'ils n'ont jamais vue inscrite nulle part mais qu'ils ont acceptée sans discussion. Neteyam Sully était de ces derniers. Dans une fratrie marquée par la rébellion de Lo'ak, le mystère de Kiri et la jeunesse de Tuk, Neteyam fonctionnait comme le ciment invisible — celui qui absorbait les tensions, couvrait les écarts des autres, et restait debout quand le reste cherchait encore son équilibre.

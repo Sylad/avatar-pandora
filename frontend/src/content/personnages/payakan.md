@@ -3,7 +3,9 @@ title: "Payakan"
 summary: "Tulkun mâle, paria de sa communauté pour avoir transgressé la doctrine de non-violence. Frère-âme de Lo'ak Sully dans les eaux Metkayina."
 order: 18
 cover: "/illustrations/personnages/payakan.webp"
-coverAlt: "Mer immense et vide au crépuscule, un rai de lumière cyan tombant sur l'horizon"
+coverAlt: "Silhouette d'un grand cétacé à la nageoire tendue sous la surface, un nageur Na'vi minuscule à ses côtés dans les rayons du soleil"
+coverCredit: "© 20th Century Studios"
+pandorapedia: "https://www.avatar.com/pandorapedia/payakan"
 ---
 
 Dans la cosmologie des Metkayina, les tulkuns sont des êtres sacrés — des cétacés colossaux dont les cerveaux complexes et la longévité extraordinaire en font les aînés de l'océan, des porteurs de mémoires qui remontent à des millénaires, des partenaires spirituels du clan des récifs dans une relation réciproque qui n'est pas très différente de ce que les Omatikaya entretiennent avec l'Arbre des Âmes. La non-violence est au cœur de la culture tulkun : même acculé, même menacé, un tulkun ne tue pas. C'est le code qu'Eywa aurait gravé dans leur nature, la marque de leur élévation morale.

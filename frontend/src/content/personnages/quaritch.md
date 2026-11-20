@@ -3,7 +3,9 @@ title: "Miles Quaritch"
 summary: "Colonel des SecOps. Tué dans Avatar 1, ressuscité en corps Na'vi recombinant dans Avatar 2 et 3. Interprété par Stephen Lang."
 order: 3
 cover: "/illustrations/personnages/quaritch.webp"
-coverAlt: "Couteau de combat posé sur un tronc moussu dans une jungle sombre et brumeuse"
+coverAlt: "Portrait officiel d'un soldat Na'vi au crâne rasé, avec un gilet tactique vert marqué « Proj Phnx »"
+coverCredit: "© 20th Century Studios"
+pandorapedia: "https://www.avatar.com/pandorapedia/colonel-miles-quaritch"
 ---
 
 Il y a dans la carrière de Miles Quaritch une constance que même ses ennemis reconnaissent : il n'abandonne jamais. Ce n'est pas de la bravoure — la bravoure implique la conscience du risque. C'est quelque chose de plus mécanique, une incapacité fonctionnelle à accepter la défaite comme une information pertinente. Cette qualité fit de lui le meilleur commandant que la RDA ait jamais déployé sur Pandora. Elle fit de lui, dans la mort comme dans la vie, son antagoniste le plus tenace.

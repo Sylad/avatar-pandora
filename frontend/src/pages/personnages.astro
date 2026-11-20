@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content';
 import CodexLayout from '../layouts/CodexLayout.astro';
 import EntryCard from '../components/EntryCard.astro';
 import SectionHero from '../components/SectionHero.astro';
+import SectionCredit from '../components/SectionCredit.astro';
 
 const entries = await getCollection('personnages');
 entries.sort((a, b) => (a.data.order ?? 999) - (b.data.order ?? 999));
@@ -20,4 +21,5 @@ entries.sort((a, b) => (a.data.order ?? 999) - (b.data.order ?? 999));
       <EntryCard href={`/personnages/${entry.id}/`} title={entry.data.title} summary={entry.data.summary} cover={entry.data.cover} />
     ))}
   </section>
+  <SectionCredit entries={entries} label="Images officielles des films" />
 </CodexLayout>

@@ -3,7 +3,9 @@ title: "L'Arbre des Âmes (Vitraya Ramunong)"
 summary: "Saule pleureur géant bioluminescent. Le centre spirituel de Pandora, là où Eywa entend le mieux."
 order: 2
 cover: "/illustrations/flore/arbre-des-ames.webp"
-coverAlt: "Arbre géant aux longues branches tombantes et aux filaments lumineux cyan, posé sur un tapis de mousse violette"
+coverAlt: "Arbre immense aux longs rideaux de filaments pâles, le clan rassemblé à ses pieds sur un tapis de racines"
+coverCredit: "© 20th Century Studios"
+pandorapedia: "https://www.avatar.com/pandorapedia/the-tree-of-souls"
 ---
 
 Si Eywa est partout sur Pandora — dans les racines des forêts, les courants des océans, les échanges chimiques de chaque créature vivante —, il existe pourtant un endroit où sa présence se concentre avec une intensité qui n'a pas d'équivalent sur la lune. Les Na'vi l'appellent *Vitraya Ramunong* : l'Arbre des Âmes. Les humains qui ont osé s'en approcher l'ont simplement appelé *le saule géant*, comme si une métaphore botanique pouvait suffire à décrire quelque chose qui tient autant du temple que de l'organe.

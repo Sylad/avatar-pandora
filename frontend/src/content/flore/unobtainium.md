@@ -3,7 +3,9 @@ title: "Unobtainium — le minerai qui défie la gravité"
 summary: "Supraconducteur à température ambiante, vingt millions de dollars le kilo, levier de la lévitation des Hallelujah."
 order: 5
 cover: "/illustrations/flore/unobtainium.webp"
-coverAlt: "Bloc de roche grise ouvert sur des cristaux turquoise lumineux, posé dans l'ombre d'une cavité"
+coverAlt: "Fragment de minerai gris argenté en lévitation au-dessus d'un socle métallique cerclé de lumière bleue"
+coverCredit: "© 20th Century Studios"
+pandorapedia: "https://www.avatar.com/pandorapedia/unobtanium"
 ---
 
 Son nom est une blague d'ingénieur devenue réalité : *unobtainium*, de l'anglais *unobtainable* — ce qu'on ne peut pas obtenir. La tradition veut que les physiciens et les concepteurs aérospatiaux utilisent ce terme générique pour désigner un matériau hypothétique aux propriétés impossibles, un fantasme de laboratoire qui n'existe pas. Sur Pandora, il existe. Et cette existence a coûté à la planète une guerre.

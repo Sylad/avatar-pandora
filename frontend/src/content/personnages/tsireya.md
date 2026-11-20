@@ -3,7 +3,9 @@ title: "Tsireya"
 summary: "Fille de Tonowari et Ronal, guide et amie de Lo'ak chez les Metkayina, la douceur dans l'austérité des récifs. Interprétée par Bailey Bass."
 order: 14
 cover: "/illustrations/personnages/tsireya.webp"
-coverAlt: "Jardin de corail sous l'eau, anémones orange et violettes éclairées par des rayons venus de la surface"
+coverAlt: "Portrait officiel d'une jeune Na'vi du récif aux longs cheveux noirs ondulés, parure de coquillages argentés"
+coverCredit: "© 20th Century Studios"
+pandorapedia: "https://www.avatar.com/pandorapedia/tsireya"
 ---
 
 Parmi les jeunes Metkayina, Tsireya est celle qui accueillit les Sully sans le mépris que son frère Aonung performait comme un droit d'aîné. Ce n'était pas de la naïveté — Tsireya n'avait pas grandi dans la douceur abstraite, mais dans la rigueur d'un clan qui vivait avec l'océan comme partenaire exigeant, et dont les enfants apprenaient à nager avant même d'avoir le vocabulaire pour le dire. Sa bienveillance envers les enfants Sully était un choix, pas une absence de défense.

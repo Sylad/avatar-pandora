@@ -3,7 +3,9 @@ title: "Sites sacrés"
 summary: "L'Arbre des Âmes, l'Arbre des Voix, Iknimaya — lieux où Eywa parle plus fort qu'ailleurs."
 order: 4
 cover: "/illustrations/pandora/sites-sacres.webp"
-coverAlt: "Arbre sacré isolé dans une clairière de nuit, des rideaux de filaments lumineux cyan et violets tombant de ses branches"
+coverAlt: "Jeunes chasseurs Na'vi au pied d'une falaise d'Iknimaya, face à un banshee qui les guette au premier plan"
+coverCredit: "© 20th Century Studios"
+pandorapedia: "https://www.avatar.com/pandorapedia/iknimaya"
 ---
 
 Sur Pandora, le sacré n'est pas une métaphore. Il désigne des lieux précis, mesurables en densité de connexions neurales, en concentration de filaments racinaires, en intensité du champ électrochimique ambiant. Les scientifiques de la RDA ont étudié ces sites avec leurs instruments. Ils n'ont pas su quoi en faire. Les Na'vi, eux, les connaissent par cœur depuis des générations.

@@ -3,7 +3,9 @@ title: "Peylak"
 summary: "Guerrier d'élite des Ash People, lieutenant de Varang. L'esthétique guerrière d'un clan forgé dans la lave et la cendre."
 order: 20
 cover: "/illustrations/personnages/peylak.webp"
-coverAlt: "Hache et lame gravées de motifs turquoise posées sur une roche volcanique noire et rougeoyante"
+coverAlt: "Portrait officiel d'un chef Na'vi en grande cape rouge-orangé brodée, chargé de bijoux et de lanières"
+coverCredit: "© 20th Century Studios"
+pandorapedia: "https://www.avatar.com/pandorapedia/peylak"
 ---
 
 Comprendre Peylak, c'est d'abord comprendre ce que les Ash People font de leurs guerriers — et ce qu'ils font de leurs guerriers est très différent de ce que font les Omatikaya ou les Metkayina. Chez les clans de forêt, la connexion avec Eywa passe par *tsaheylu*, par les arbres, par les créatures de la canopée. Chez les Metkayina, elle passe par l'océan et les tulkuns. Chez les Ash People, elle passe par la terre brûlée, par les minerais que le volcan expulse, par les montures que les autres clans ne montent pas et que les guerriers des zones calcinées ont appris à connaître dans des environnements que la plupart des Na'vi de forêt ne survivraient pas.

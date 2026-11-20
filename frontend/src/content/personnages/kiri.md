@@ -3,7 +3,9 @@ title: "Kiri"
 summary: "Fille adoptée des Sully, née de l'avatar de Grace Augustine. Lien direct et mystérieux avec Eywa. Interprétée par Sigourney Weaver."
 order: 43
 cover: "/illustrations/personnages/kiri.webp"
-coverAlt: "Anémone de mer lumineuse rose et cyan au milieu d'un récif de corail sous l'eau"
+coverAlt: "Portrait officiel d'une adolescente Na'vi aux cheveux courts en bataille, regard curieux, collier de coquillages"
+coverCredit: "© 20th Century Studios"
+pandorapedia: "https://www.avatar.com/pandorapedia/kiri"
 ---
 
 Il existe des questions auxquelles Pandora ne donne pas de réponse — pas parce qu'elle ne les connaît pas, mais parce que les réponses qu'elle possède n'appartiennent pas au vocabulaire humain, ni même entièrement au vocabulaire Na'vi. Kiri est l'une de ces questions incarnées. Elle marche sur Pandora comme si la planète lui avait dit quelque chose que personne d'autre n'avait entendu, et elle porte cette confidence avec la légèreté légèrement désaxée de quelqu'un qui a grandi en sachant qu'elle était différente sans savoir encore exactement en quoi.

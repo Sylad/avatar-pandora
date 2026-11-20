@@ -3,7 +3,9 @@ title: "Picador — le harpon de surface"
 summary: "Bateau de chasse RDA, harpon explosif. Tueur de tulkuns sur ordre de l'industrie pharmaceutique."
 order: 7
 cover: "/illustrations/engins/picador.webp"
-coverAlt: "Bateau militaire gris fendant une mer agitée sous un ciel violet"
+coverAlt: "Vedette militaire vert-gris à coque pneumatique, poste de pilotage et antennes sur le pont"
+coverCredit: "© 20th Century Studios"
+pandorapedia: "https://www.avatar.com/pandorapedia/picador"
 ---
 
 Le nom vient de la tauromachie — le picador est celui qui affaiblit le taureau avant la mise à mort, qui lui plante la lance dans les épaules pour épuiser sa résistance et préparer le terrain au matador. La RDA a choisi ce nom pour ses bateaux de chasse aux tulkuns sans apparente ironie, ce qui dit tout sur la façon dont ses planificateurs conceptualisaient la mission : un problème logistique avec une solution mécanique, une ressource à extraire avec des outils adaptés. Le fait que la ressource soit consciente, qu'elle ait un nom, une famille, une philosophie de vie — ces données n'entraient pas dans le modèle.

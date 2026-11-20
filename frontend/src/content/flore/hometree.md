@@ -3,7 +3,8 @@ title: "Hometree (Kelutral) — l'arbre-mère"
 summary: "300 mètres de haut, abrite plusieurs centaines de Na'vi, racine connectée au réseau Eywa. Détruit par la RDA en 2154, mais d'autres demeurent."
 order: 1
 cover: "/illustrations/flore/hometree.webp"
-coverAlt: "Arbre colossal aux racines enchevêtrées dans une forêt brumeuse, une lueur violette au creux de son tronc"
+coverAlt: "Hologramme de l'arbre-maison des Omatikaya sur la table tactique de la base humaine, devant le colonel et ses officiers"
+coverCredit: "© 20th Century Studios"
 ---
 
 Il existe des édifices que les civilisations humaines ont mis des siècles à ériger, et qui tiennent à peine quelques décennies avant de s'effriter sous le poids de leur propre ambition. Le Kelutral — l'arbre-mère, que les humains ont baptisé Hometree — n'a besoin d'aucun architecte. Il a poussé seul, sur plusieurs millénaires, et il est à la fois le bâtiment le plus grand et le plus ancien que la forêt de Pandora ait jamais produit.

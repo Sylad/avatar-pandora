@@ -3,7 +3,8 @@ title: "Avatar (2009)"
 summary: "Le premier film. Pandora révélée. James Cameron, 161 minutes, et le record absolu du box-office mondial."
 order: 1
 cover: "/illustrations/films/avatar-2009.webp"
-coverAlt: "Silhouette d'un arbre immense devant une planète turquoise, au-dessus d'une jungle au crépuscule"
+coverAlt: "Neytiri et Jake côte à côte, visages bleus tournés vers le danger, devant une chute d'eau"
+coverCredit: "© 20th Century Studios"
 ---
 
 Quand *Avatar* sort en décembre 2009, James Cameron n'a plus signé de long-métrage de fiction depuis *Titanic*, douze ans plus tôt. Le film qui paraît ce mois-là n'est pas seulement un retour : c'est l'aboutissement d'un projet qu'il porte depuis 1994, qu'il a sciemment laissé dormir le temps que la technologie le rattrape.

@@ -3,7 +3,8 @@ title: "Tsu'tey te Rongloa Ateyo'itan"
 summary: "Guerrier Omatikaya, fiancé promis de Neytiri, brièvement Olo'eyktan, mort en martyr lors de la Bataille du Tree of Souls."
 order: 7
 cover: "/illustrations/personnages/tsutey.webp"
-coverAlt: "Lance plantée seule au milieu d'un chemin de forêt nocturne, une lune cyan au-dessus des arbres"
+coverAlt: "Portrait officiel d'un guerrier Na'vi au visage fermé, haut collier de perles rouges et noires autour du cou"
+coverCredit: "© 20th Century Studios"
 ---
 
 Tsu'tey n'est pas un antagoniste. C'est l'erreur que le regard occidental commet facilement en observant sa rivalité avec Jake Sully : un guerrier orgueilleux qui résiste à l'étranger, puis s'efface quand l'étranger triomphe. Cette lecture manque l'essentiel. Tsu'tey est un homme formé par un monde cohérent, défendant ce monde avec une logique que ce monde valide pleinement — et confronté à quelque chose que ce monde n'avait pas prévu.

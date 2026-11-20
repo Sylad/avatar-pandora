@@ -3,7 +3,9 @@ title: "Grace Augustine"
 summary: "Botaniste, directrice du programme Avatar, autrice de la *Pandora Botanical Anatomy*. Première humaine accueillie par Eywa."
 order: 9
 cover: "/illustrations/personnages/grace.webp"
-coverAlt: "Table de laboratoire couverte de bocaux de plantes, devant une baie vitrée ouverte sur la jungle"
+coverAlt: "Portrait officiel de l'avatar de la botaniste, sourire en coin, en débardeur bordeaux et colliers de perles"
+coverCredit: "© 20th Century Studios"
+pandorapedia: "https://www.avatar.com/pandorapedia/dr-grace-augustine"
 ---
 
 Il y a une ironie fondamentale dans la trajectoire de Grace Augustine : elle était la personne la mieux placée sur Pandora pour comprendre ce qui allait arriver, et la moins bien placée pour l'empêcher. Scientifique dans un appareil militaro-industriel, interlocutrice de bonne foi dans une institution qui n'en avait pas, elle passa ses années à Pandora à construire des ponts que la RDA démolit dès qu'ils devinrent gênants. Ce qu'elle laissa derrière elle — une conscience dans le réseau, une fille improbable — est peut-être plus durable que tout ce qu'elle aurait pu accomplir de son vivant.

@@ -1,132 +1,1112 @@
 [
   {
     "fiche": "bestiaire/ikran",
-    "source": { "type": "sylvain", "fichier": "ikran/sylvain_ikran_film.png", "film": "Avatar : la voie de l'eau (2022)" },
+    "source": {
+      "type": "sylvain",
+      "fichier": "ikran/sylvain_ikran_film.png",
+      "film": "Avatar : la voie de l'eau (2022)"
+    },
     "credit": "© 20th Century Studios",
     "alt": "Neytiri, arc levé, file au ras d'une plage sur un banshee aux ailes bleu-vert, suivie d'autres cavaliers",
-    "bandeau": { "zone": [0, 260, 2000, 1180] },
-    "carte": { "cadre_x": 0 }
+    "bandeau": {
+      "zone": [
+        0,
+        260,
+        2000,
+        1180
+      ]
+    },
+    "carte": {
+      "cadre_x": 0
+    }
   },
   {
     "fiche": "bestiaire/toruk",
-    "source": { "type": "sylvain", "fichier": "toruk/sylvain_toruk_vol.png", "film": "Avatar (2009)" },
+    "source": {
+      "type": "sylvain",
+      "fichier": "toruk/sylvain_toruk_vol.png",
+      "film": "Avatar (2009)"
+    },
     "credit": "© 20th Century Studios",
     "alt": "Grand prédateur ailé orange et jaune en plein vol entre des montagnes flottantes, sous une planète géante",
-    "bandeau": { "mode": "contenir" },
-    "carte": { "zone": [120, 0, 1199, 972], "cadre": 0.3 }
+    "bandeau": {
+      "mode": "contenir"
+    },
+    "carte": {
+      "zone": [
+        120,
+        0,
+        1199,
+        972
+      ],
+      "cadre": 0.3
+    }
   },
   {
     "fiche": "bestiaire/tulkun",
-    "source": { "type": "sylvain", "fichier": "tulkun/sylvain_tulkun_sous_eau.png", "film": "Avatar : la voie de l'eau (2022)", "note": "nageur flouté par Sylvain, flou adouci ici" },
+    "source": {
+      "type": "sylvain",
+      "fichier": "tulkun/sylvain_tulkun_sous_eau.png",
+      "film": "Avatar : la voie de l'eau (2022)",
+      "note": "nageur flouté par Sylvain, flou adouci ici"
+    },
     "credit": "© 20th Century Studios",
     "alt": "Immense cétacé sombre qui nage sous la surface, éclairé par les rayons du soleil",
-    "masquer": [[480, 80, 660, 250]],
-    "bandeau": { "cadre": 0.2 },
-    "carte": { "zone": [70, 0, 1000, 645] }
+    "masquer": [
+      [
+        480,
+        80,
+        660,
+        250
+      ]
+    ],
+    "bandeau": {
+      "cadre": 0.2
+    },
+    "carte": {
+      "zone": [
+        70,
+        0,
+        1000,
+        645
+      ]
+    }
   },
   {
     "fiche": "bestiaire/thanator",
     "source": {
-      "type": "pandorapedia", "fichier": "thanator/a_avatarpandorapedia_thanator01_16x9_990_12_4316c18c.png",
+      "type": "pandorapedia",
+      "fichier": "thanator/a_avatarpandorapedia_thanator01_16x9_990_12_4316c18c.png",
       "image": "https://lumiere-a.akamaihd.net/v1/images/a_avatarpandorapedia_thanator01_16x9_990_12_4316c18c.png",
-      "page": "https://www.avatar.com/pandorapedia/thanator", "film": "Avatar (2009)"
+      "page": "https://www.avatar.com/pandorapedia/thanator",
+      "film": "Avatar (2009)"
     },
     "credit": "© 20th Century Studios",
     "alt": "Jake, de dos dans la jungle, fait face à un grand fauve noir à la collerette dressée",
-    "bandeau": { "cadre": 0.3 },
-    "carte": { "cadre_x": 0.75 }
+    "bandeau": {
+      "cadre": 0.3
+    },
+    "carte": {
+      "cadre_x": 0.75
+    }
   },
   {
     "fiche": "bestiaire/pali",
     "source": {
-      "type": "pandorapedia", "fichier": "pali/a_avatarpandorapedia_direhorse_16x9_990_05_7d20d35f.png", "detouree": true,
+      "type": "pandorapedia",
+      "fichier": "pali/a_avatarpandorapedia_direhorse_16x9_990_05_7d20d35f.png",
+      "detouree": true,
       "image": "https://lumiere-a.akamaihd.net/v1/images/a_avatarpandorapedia_direhorse_16x9_990_05_7d20d35f.png",
-      "page": "https://www.avatar.com/pandorapedia/direhorse", "film": "Avatar (2009)"
+      "page": "https://www.avatar.com/pandorapedia/direhorse",
+      "film": "Avatar (2009)"
     },
     "credit": "© 20th Century Studios",
     "fond": "#0a0a1f",
     "alt": "Monture à six pattes et long cou au museau étiré, montée par un cavalier Na'vi",
-    "bandeau": { "zone": [300, 0, 1620, 1080], "mode": "contenir" },
-    "carte": { "zone": [300, 0, 1620, 1080], "mode": "contenir" }
+    "bandeau": {
+      "zone": [
+        300,
+        0,
+        1620,
+        1080
+      ],
+      "mode": "contenir"
+    },
+    "carte": {
+      "zone": [
+        300,
+        0,
+        1620,
+        1080
+      ],
+      "mode": "contenir"
+    }
   },
   {
     "fiche": "bestiaire/ilu",
     "source": {
-      "type": "pandorapedia", "fichier": "_pandorapedia/a_avatarpandorapedia_ilu_16x9_990_05_3e055ce9.png", "detouree": true,
+      "type": "pandorapedia",
+      "fichier": "_pandorapedia/a_avatarpandorapedia_ilu_16x9_990_05_3e055ce9.png",
+      "detouree": true,
       "image": "https://lumiere-a.akamaihd.net/v1/images/a_avatarpandorapedia_ilu_16x9_990_05_3e055ce9.png",
-      "page": "https://www.avatar.com/pandorapedia/ilu", "film": "Avatar : la voie de l'eau (2022)"
+      "page": "https://www.avatar.com/pandorapedia/ilu",
+      "film": "Avatar : la voie de l'eau (2022)"
     },
     "credit": "© 20th Century Studios",
     "fond": "#0a0a1f",
     "alt": "Créature marine au long cou souple et aux larges nageoires en ailes, peau sombre aux reflets dorés",
-    "bandeau": { "mode": "contenir" },
-    "carte": { "mode": "contenir" }
+    "bandeau": {
+      "mode": "contenir"
+    },
+    "carte": {
+      "mode": "contenir"
+    }
   },
   {
     "fiche": "bestiaire/skimwing",
     "source": {
-      "type": "pandorapedia", "fichier": "_pandorapedia/a_avatarpandorapedia_skimwing_16x9_990_09_a5b5422f.png", "detouree": true,
+      "type": "pandorapedia",
+      "fichier": "_pandorapedia/a_avatarpandorapedia_skimwing_16x9_990_09_a5b5422f.png",
+      "detouree": true,
       "image": "https://lumiere-a.akamaihd.net/v1/images/a_avatarpandorapedia_skimwing_16x9_990_09_a5b5422f.png",
-      "page": "https://www.avatar.com/pandorapedia/skimwing", "film": "Avatar : la voie de l'eau (2022)"
+      "page": "https://www.avatar.com/pandorapedia/skimwing",
+      "film": "Avatar : la voie de l'eau (2022)"
     },
     "credit": "© 20th Century Studios",
     "fond": "#0a0a1f",
     "alt": "Poisson volant au long bec denté, grande nageoire orange déployée comme une voile",
-    "bandeau": { "mode": "contenir" },
-    "carte": { "mode": "contenir" }
+    "bandeau": {
+      "mode": "contenir"
+    },
+    "carte": {
+      "mode": "contenir"
+    }
   },
   {
     "fiche": "bestiaire/sturmbeest",
-    "source": { "type": "sylvain", "fichier": "sturmbeest/sylvain_mosaique_18_31.png", "film": "Avatar (2009)" },
+    "source": {
+      "type": "sylvain",
+      "fichier": "sturmbeest/sylvain_mosaique_18_31.png",
+      "film": "Avatar (2009)"
+    },
     "credit": "© 20th Century Studios",
     "alt": "Troupeau de grands herbivores à crête lancé au galop, poursuivi par des chasseurs Na'vi à cheval",
-    "bandeau": { "mode": "contenir" },
-    "carte": { "cadre_x": 0.4 }
+    "bandeau": {
+      "mode": "contenir"
+    },
+    "carte": {
+      "cadre_x": 0.4
+    }
   },
   {
     "fiche": "bestiaire/hammerhead-titanothere",
-    "source": { "type": "sylvain", "fichier": "hammerhead-titanothere/sylvain_mosaique_18_21.png", "film": "Avatar (2009)" },
+    "source": {
+      "type": "sylvain",
+      "fichier": "hammerhead-titanothere/sylvain_mosaique_18_21.png",
+      "film": "Avatar (2009)"
+    },
     "credit": "© 20th Century Studios",
     "alt": "Colosse gris-vert vu de face dans la forêt, tête en large marteau couronnée d'une crête violette",
-    "bandeau": { "mode": "contenir" },
-    "carte": { "cadre_x": 0.5 }
+    "bandeau": {
+      "mode": "contenir"
+    },
+    "carte": {
+      "cadre_x": 0.5
+    }
   },
   {
     "fiche": "bestiaire/prolemuris",
-    "source": { "type": "sylvain", "fichier": "prolemuris/sylvain_mosaique_18_00.png", "film": "Avatar (2009)" },
+    "source": {
+      "type": "sylvain",
+      "fichier": "prolemuris/sylvain_mosaique_18_00.png",
+      "film": "Avatar (2009)"
+    },
     "credit": "© 20th Century Studios",
     "alt": "Petit primate bleu aux grands yeux orange, bras écartés sur ses membranes de vol",
-    "bandeau": { "mode": "contenir" },
-    "carte": { "cadre_x": 0.3 }
+    "bandeau": {
+      "mode": "contenir"
+    },
+    "carte": {
+      "cadre_x": 0.3
+    }
   },
   {
     "fiche": "bestiaire/akula",
     "retenue": false,
     "raison": "modèle 3D sur grille, refusé par Sylvain le 20-11",
-    "source": { "type": "video", "fichier": "_video/comparaison-tailles.mp4", "temps": 340, "note": "modèle 3D de la créature, plan sans légende, Na'vi de comparaison hors cadre" },
+    "source": {
+      "type": "video",
+      "fichier": "_video/comparaison-tailles.mp4",
+      "temps": 340,
+      "note": "modèle 3D de la créature, plan sans légende, Na'vi de comparaison hors cadre"
+    },
     "credit": "© 20th Century Studios",
     "alt": "Gros poisson prédateur au corps massif, dos sombre tacheté et ventre clair, vu de profil",
-    "bandeau": { "zone": [262, 345, 1742, 979] },
-    "carte": { "zone": [262, 150, 1742, 1080], "mode": "contenir", "fond": "#211c23" }
+    "bandeau": {
+      "zone": [
+        262,
+        345,
+        1742,
+        979
+      ]
+    },
+    "carte": {
+      "zone": [
+        262,
+        150,
+        1742,
+        1080
+      ],
+      "mode": "contenir",
+      "fond": "#211c23"
+    }
   },
   {
-    "fiche": "bestiaire/nantang",
-    "retenue": false,
-    "raison": "modèle 3D sur grille, refusé par Sylvain le 20-11",
-    "source": { "type": "video", "fichier": "_video/comparaison-tailles.mp4", "temps": 50, "note": "modèle 3D de la créature, légende et Na'vi de comparaison hors cadre" },
+    "fiche": "bestiaire/akula",
+    "source": {
+      "type": "pandorapedia",
+      "fichier": "_l64/a_avatarpandorapedia_akula_16x9_990_01_484949a5.jpeg",
+      "image": "https://lumiere-a.akamaihd.net/v1/images/a_avatarpandorapedia_akula_16x9_990_01_484949a5.jpeg",
+      "page": "https://www.avatar.com/pandorapedia/akula",
+      "film": "Avatar : la voie de l'eau (2022)"
+    },
     "credit": "© 20th Century Studios",
-    "alt": "Carnassier sombre et efflanqué à la peau luisante, tête basse, qui avance de profil",
-    "bandeau": { "zone": [450, 600, 1477, 1040] },
-    "carte": { "zone": [560, 450, 1380, 1065] }
+    "alt": "Prédateur marin gris-bleu au corps cuirassé, gueule hérissée de dents grande ouverte, qui nage en eau profonde"
   },
   {
     "fiche": "bestiaire/hexapede",
     "retenue": false,
     "raison": "modèle 3D sur grille, refusé par Sylvain le 20-11",
-    "source": { "type": "video", "fichier": "_video/comparaison-tailles.mp4", "temps": 59, "note": "modèle 3D de la créature, légende et Na'vi de comparaison hors cadre" },
+    "source": {
+      "type": "video",
+      "fichier": "_video/comparaison-tailles.mp4",
+      "temps": 59,
+      "note": "modèle 3D de la créature, légende et Na'vi de comparaison hors cadre"
+    },
     "credit": "© 20th Century Studios",
     "alt": "Herbivore gracile à six pattes, robe violette rayée de blanc et crête en éventail sur la tête",
-    "bandeau": { "zone": [500, 480, 1807, 1040] },
-    "carte": { "zone": [750, 440, 1550, 1040] }
+    "bandeau": {
+      "zone": [
+        500,
+        480,
+        1807,
+        1040
+      ]
+    },
+    "carte": {
+      "zone": [
+        750,
+        440,
+        1550,
+        1040
+      ]
+    }
+  },
+  {
+    "fiche": "bestiaire/hexapede",
+    "source": {
+      "type": "pandorapedia",
+      "fichier": "_l64/a_avatarpandorapedia_hexapede_16x9_990_08_437bc57a.png",
+      "image": "https://lumiere-a.akamaihd.net/v1/images/a_avatarpandorapedia_hexapede_16x9_990_08_437bc57a.png",
+      "page": "https://www.avatar.com/pandorapedia/hexapede",
+      "film": "Avatar (2009)",
+      "detouree": true
+    },
+    "credit": "© 20th Century Studios",
+    "alt": "Herbivore gracile à six pattes, robe bleue rayée de blanc, tête étroite surmontée d'un grand éventail de peau",
+    "fond": "#0a0a1f",
+    "bandeau": {
+      "mode": "contenir"
+    },
+    "carte": {
+      "mode": "contenir"
+    }
+  },
+  {
+    "fiche": "bestiaire/nantang",
+    "retenue": false,
+    "raison": "modèle 3D sur grille, refusé par Sylvain le 20-11",
+    "source": {
+      "type": "video",
+      "fichier": "_video/comparaison-tailles.mp4",
+      "temps": 50,
+      "note": "modèle 3D de la créature, légende et Na'vi de comparaison hors cadre"
+    },
+    "credit": "© 20th Century Studios",
+    "alt": "Carnassier sombre et efflanqué à la peau luisante, tête basse, qui avance de profil",
+    "bandeau": {
+      "zone": [
+        450,
+        600,
+        1477,
+        1040
+      ]
+    },
+    "carte": {
+      "zone": [
+        560,
+        450,
+        1380,
+        1065
+      ]
+    }
+  },
+  {
+    "fiche": "bestiaire/nantang",
+    "source": {
+      "type": "pandorapedia",
+      "fichier": "_l64/a_avatarpandorapedia_viperwolf_16x9_990_15_4e1cdecd.png",
+      "image": "https://lumiere-a.akamaihd.net/v1/images/a_avatarpandorapedia_viperwolf_16x9_990_15_4e1cdecd.png",
+      "page": "https://www.avatar.com/pandorapedia/viperwolf",
+      "film": "Avatar (2009)",
+      "detouree": true
+    },
+    "credit": "© 20th Century Studios",
+    "alt": "Prédateur noir et bleu à six pattes, ramassé pour bondir, mâchoire ouverte sur des crocs acérés",
+    "fond": "#0a0a1f",
+    "bandeau": {
+      "mode": "contenir"
+    },
+    "carte": {
+      "mode": "contenir"
+    }
+  },
+  {
+    "fiche": "pandora/intro",
+    "source": {
+      "type": "pandorapedia",
+      "fichier": "_l64/a_avatarpandorapedia_pandora_16x9_v2_86352cc0.jpeg",
+      "image": "https://lumiere-a.akamaihd.net/v1/images/a_avatarpandorapedia_pandora_16x9_v2_86352cc0.jpeg",
+      "page": "https://www.avatar.com/pandorapedia/pandora",
+      "film": "Avatar (2009)"
+    },
+    "credit": "© 20th Century Studios",
+    "alt": "La lune vue de l'espace, océans bleus, continents verts et nuages blancs sur fond noir"
+  },
+  {
+    "fiche": "pandora/hallelujah-mountains",
+    "source": {
+      "type": "pandorapedia",
+      "fichier": "_l64/a_avatarpandorapedia_hallelujahmountains_16x9_1098_03_97ca5c58.jpeg",
+      "image": "https://lumiere-a.akamaihd.net/v1/images/a_avatarpandorapedia_hallelujahmountains_16x9_1098_03_97ca5c58.jpeg",
+      "page": "https://www.avatar.com/pandorapedia/the-hallelujah-mountains",
+      "film": "Avatar (2009)"
+    },
+    "credit": "© 20th Century Studios",
+    "alt": "Pics de roche couverts de jungle qui flottent dans la brume au-dessus de la forêt"
+  },
+  {
+    "fiche": "pandora/eywa",
+    "source": {
+      "type": "pandorapedia",
+      "fichier": "_l64/a_avatarpandorapedia_treeofvoices_16x9_1098_10_7b521f3b.jpeg",
+      "image": "https://lumiere-a.akamaihd.net/v1/images/a_avatarpandorapedia_treeofvoices_16x9_1098_10_7b521f3b.jpeg",
+      "page": "https://www.avatar.com/pandorapedia/the-tree-of-voices",
+      "film": "Avatar (2009)"
+    },
+    "credit": "© 20th Century Studios",
+    "alt": "Neytiri et Jake, reliés par leur natte aux filaments lumineux violets de l'Arbre des Voix, écoutent la mémoire des ancêtres"
+  },
+  {
+    "fiche": "pandora/sites-sacres",
+    "source": {
+      "type": "pandorapedia",
+      "fichier": "_l64/a_avatarpandorapedia_iknimaya_16x9_da6b1939.jpeg",
+      "image": "https://lumiere-a.akamaihd.net/v1/images/a_avatarpandorapedia_iknimaya_16x9_da6b1939.jpeg",
+      "page": "https://www.avatar.com/pandorapedia/iknimaya",
+      "film": "Avatar (2009)"
+    },
+    "credit": "© 20th Century Studios",
+    "alt": "Jeunes chasseurs Na'vi au pied d'une falaise d'Iknimaya, face à un banshee qui les guette au premier plan"
+  },
+  {
+    "fiche": "pandora/biomes",
+    "source": {
+      "type": "pandorapedia",
+      "fichier": "_l64/a_avatarpandorapedia_omatikayaforest_16x9_c57a35fd.jpeg",
+      "image": "https://lumiere-a.akamaihd.net/v1/images/a_avatarpandorapedia_omatikayaforest_16x9_c57a35fd.jpeg",
+      "page": "https://www.avatar.com/pandorapedia/the-omatikaya-rainforest",
+      "film": "Avatar (2009)"
+    },
+    "credit": "© 20th Century Studios",
+    "alt": "Sous-bois de la forêt tropicale des Omatikaya, plantes en bulbes pâles et feuillages sombres dans la brume"
+  },
+  {
+    "fiche": "clans/omatikaya",
+    "source": {
+      "type": "pandorapedia",
+      "fichier": "_l64/a_avatarpandorapedia_omatikaya_16x9_1098_13_f0fe224a.jpeg",
+      "image": "https://lumiere-a.akamaihd.net/v1/images/a_avatarpandorapedia_omatikaya_16x9_1098_13_f0fe224a.jpeg",
+      "page": "https://www.avatar.com/pandorapedia/omatikaya-clan",
+      "film": "Avatar (2009)"
+    },
+    "credit": "© 20th Century Studios",
+    "alt": "Neytiri, arc en main, devant des guerriers et guerrières Na'vi du clan sous un grand banshee perché"
+  },
+  {
+    "fiche": "clans/metkayina",
+    "source": {
+      "type": "pandorapedia",
+      "fichier": "_l64/a_avatarpandorapedia_maruis_16x9_1098_06_d71b9108.jpeg",
+      "image": "https://lumiere-a.akamaihd.net/v1/images/a_avatarpandorapedia_maruis_16x9_1098_06_d71b9108.jpeg",
+      "page": "https://www.avatar.com/pandorapedia/metkayina-village-marui",
+      "film": "Avatar : la voie de l'eau (2022)"
+    },
+    "credit": "© 20th Century Studios",
+    "alt": "Huttes tressées du village sur l'eau, accrochées aux racines arquées au-dessus d'un lagon turquoise"
+  },
+  {
+    "fiche": "clans/ash-people",
+    "source": {
+      "type": "pandorapedia",
+      "fichier": "_l64/a_avatarpandorapedia_mangkwanclan_16x9_c14b6b43.jpeg",
+      "image": "https://lumiere-a.akamaihd.net/v1/images/a_avatarpandorapedia_mangkwanclan_16x9_c14b6b43.jpeg",
+      "page": "https://www.avatar.com/pandorapedia/mangkwan-clan",
+      "film": "Avatar : de feu et de cendres (2025)"
+    },
+    "credit": "© 20th Century Studios",
+    "alt": "Guerriers Na'vi à la peau grise marquée de rouge, arcs en main, dans une plaine de cendres"
+  },
+  {
+    "fiche": "clans/olangi",
+    "source": {
+      "type": "pandorapedia",
+      "fichier": "_l64/a_avatarpandorapedia_olangiclan_16x9_ec2bf13b.jpeg",
+      "image": "https://lumiere-a.akamaihd.net/v1/images/a_avatarpandorapedia_olangiclan_16x9_ec2bf13b.jpeg",
+      "page": "https://www.avatar.com/pandorapedia/olangi-clan",
+      "film": "hors des films : illustration officielle de la fiche Pandorapedia du clan"
+    },
+    "credit": "© 20th Century Studios",
+    "alt": "Guerrière Na'vi lance levée sur un cheval à six pattes, dans une charge au milieu des herbes hautes"
+  },
+  {
+    "fiche": "clans/tawkami",
+    "source": {
+      "type": "pandorapedia",
+      "fichier": "_l64/a_avatarpandorapedia_tawkamiclan_16x9_e1187165.jpeg",
+      "image": "https://lumiere-a.akamaihd.net/v1/images/a_avatarpandorapedia_tawkamiclan_16x9_e1187165.jpeg",
+      "page": "https://www.avatar.com/pandorapedia/tawkami-clan",
+      "film": "hors des films : illustration officielle de la fiche Pandorapedia du clan"
+    },
+    "credit": "© 20th Century Studios",
+    "alt": "Botaniste Na'vi parée de perles qui cueille une plante en grappes bleues dans une jungle au pied d'une cascade"
+  },
+  {
+    "fiche": "flore/arbre-des-ames",
+    "source": {
+      "type": "pandorapedia",
+      "fichier": "_l64/a_avatarpandorapedia_treeofsouls_16x9_1098_09_fd4e3db9.jpeg",
+      "image": "https://lumiere-a.akamaihd.net/v1/images/a_avatarpandorapedia_treeofsouls_16x9_1098_09_fd4e3db9.jpeg",
+      "page": "https://www.avatar.com/pandorapedia/the-tree-of-souls",
+      "film": "Avatar (2009)"
+    },
+    "credit": "© 20th Century Studios",
+    "alt": "Arbre immense aux longs rideaux de filaments pâles, le clan rassemblé à ses pieds sur un tapis de racines"
+  },
+  {
+    "fiche": "flore/hometree",
+    "source": {
+      "type": "film",
+      "fichier": "_l64-films/photo-6_cbe0faaf.jpeg",
+      "image": "https://lumiere-a.akamaihd.net/v1/images/photo-6_cbe0faaf.jpeg",
+      "page": "https://www.avatar.com/movies/avatar",
+      "film": "Avatar (2009)"
+    },
+    "credit": "© 20th Century Studios",
+    "alt": "Hologramme de l'arbre-maison des Omatikaya sur la table tactique de la base humaine, devant le colonel et ses officiers"
+  },
+  {
+    "fiche": "flore/woodsprites",
+    "source": {
+      "type": "pandorapedia",
+      "fichier": "_l64/woodsprite_ccf491f8.jpeg",
+      "image": "https://lumiere-a.akamaihd.net/v1/images/woodsprite_ccf491f8.jpeg",
+      "page": "https://www.avatar.com/pandorapedia/woodsprites",
+      "film": "Avatar (2009)"
+    },
+    "credit": "© 20th Century Studios",
+    "alt": "Graines lumineuses en ombrelles blanches flottant dans la nuit violette de la forêt"
+  },
+  {
+    "fiche": "flore/plantes-helico",
+    "source": {
+      "type": "pandorapedia",
+      "fichier": "_l64/a_avatarpandorapedia_helicoradian_16x9_1098_02_6cec6a97.jpeg",
+      "image": "https://lumiere-a.akamaihd.net/v1/images/a_avatarpandorapedia_helicoradian_16x9_1098_02_6cec6a97.jpeg",
+      "page": "https://www.avatar.com/pandorapedia/helicoradian",
+      "film": "Avatar (2009)",
+      "fond_blanc": true
+    },
+    "credit": "© 20th Century Studios",
+    "alt": "Plante saumon à collerettes en spirale, comme des volants de dentelle superposés sur une tige",
+    "bandeau": {
+      "mode": "contenir"
+    },
+    "carte": {
+      "mode": "contenir"
+    },
+    "serrer": true
+  },
+  {
+    "fiche": "flore/unobtainium",
+    "source": {
+      "type": "pandorapedia",
+      "fichier": "_l64/a_avatarpandorapedia_unobtanium_16x9_c2524395.jpeg",
+      "image": "https://lumiere-a.akamaihd.net/v1/images/a_avatarpandorapedia_unobtanium_16x9_c2524395.jpeg",
+      "page": "https://www.avatar.com/pandorapedia/unobtanium",
+      "film": "Avatar (2009)"
+    },
+    "credit": "© 20th Century Studios",
+    "alt": "Fragment de minerai gris argenté en lévitation au-dessus d'un socle métallique cerclé de lumière bleue"
+  },
+  {
+    "fiche": "films/avatar-2009",
+    "source": {
+      "type": "film",
+      "fichier": "_l64-films/photo-5_88e3b21b.jpeg",
+      "image": "https://lumiere-a.akamaihd.net/v1/images/photo-5_88e3b21b.jpeg",
+      "page": "https://www.avatar.com/movies/avatar",
+      "film": "Avatar (2009)"
+    },
+    "credit": "© 20th Century Studios",
+    "alt": "Neytiri et Jake côte à côte, visages bleus tournés vers le danger, devant une chute d'eau"
+  },
+  {
+    "fiche": "films/voie-de-leau",
+    "source": {
+      "type": "film",
+      "fichier": "_l64-films/g_avatar_thewayofwater_97_07_314550a6.jpeg",
+      "image": "https://lumiere-a.akamaihd.net/v1/images/g_avatar_thewayofwater_97_07_314550a6.jpeg",
+      "page": "https://www.avatar.com/movies/avatar-the-way-of-water",
+      "film": "Avatar : la voie de l'eau (2022)"
+    },
+    "credit": "© 20th Century Studios",
+    "alt": "Jake debout sur un poisson volant aux ailes orangées qui rase la mer sous un ciel nuageux"
+  },
+  {
+    "fiche": "films/fire-and-ash",
+    "source": {
+      "type": "film",
+      "fichier": "_l64-films/g_avatar_avatarfireandash_still_01_d8bd1d78.jpeg",
+      "image": "https://lumiere-a.akamaihd.net/v1/images/g_avatar_avatarfireandash_still_01_d8bd1d78.jpeg",
+      "page": "https://www.avatar.com/movies/avatar-fire-and-ash",
+      "film": "Avatar : de feu et de cendres (2025)"
+    },
+    "credit": "© 20th Century Studios",
+    "alt": "Varang, coiffe de plumes rouges et visage peint, tend la main au-dessus des flammes"
+  },
+  {
+    "fiche": "engins/amp-suit",
+    "source": {
+      "type": "pandorapedia",
+      "fichier": "_l64/a_avatarpandorapedia_ampsuit_16x9_1098_12_99cd817a.jpeg",
+      "image": "https://lumiere-a.akamaihd.net/v1/images/a_avatarpandorapedia_ampsuit_16x9_1098_12_99cd817a.jpeg",
+      "page": "https://www.avatar.com/pandorapedia/amp-suit",
+      "film": "Avatar (2009)",
+      "fond_blanc": true,
+      "trous": true
+    },
+    "credit": "© 20th Century Studios",
+    "alt": "Exosquelette de combat gris à deux jambes, pilote assis dans la bulle vitrée du cockpit",
+    "bandeau": {
+      "mode": "contenir"
+    },
+    "carte": {
+      "mode": "contenir"
+    },
+    "serrer": true
+  },
+  {
+    "fiche": "engins/crabsuit",
+    "source": {
+      "type": "pandorapedia",
+      "fichier": "_l64/a_avatarpandorapedia_crabsuit_16x9_ad293e19.jpeg",
+      "image": "https://lumiere-a.akamaihd.net/v1/images/a_avatarpandorapedia_crabsuit_16x9_ad293e19.jpeg",
+      "page": "https://www.avatar.com/pandorapedia/crab-suit",
+      "film": "Avatar : la voie de l'eau (2022)"
+    },
+    "credit": "© 20th Century Studios",
+    "alt": "Engin à bulle vitrée posé sur quatre pattes articulées et deux bras pinces, sur une piste de sable"
+  },
+  {
+    "fiche": "engins/dragon-assault-ship",
+    "source": {
+      "type": "pandorapedia",
+      "fichier": "_l64/a_avatarpandorapedia_dragongunship_16x9_1098_14_2dca4390.jpeg",
+      "image": "https://lumiere-a.akamaihd.net/v1/images/a_avatarpandorapedia_dragongunship_16x9_1098_14_2dca4390.jpeg",
+      "page": "https://www.avatar.com/pandorapedia/c-21-dragon-assault-ship",
+      "film": "Avatar (2009)",
+      "fond_blanc": true,
+      "trous": true
+    },
+    "credit": "© 20th Century Studios",
+    "alt": "Lourd appareil gris en forme de carapace, quatre rotors carénés et tourelles sous le ventre",
+    "bandeau": {
+      "mode": "contenir"
+    },
+    "carte": {
+      "mode": "contenir"
+    },
+    "serrer": true
+  },
+  {
+    "fiche": "engins/picador",
+    "source": {
+      "type": "pandorapedia",
+      "fichier": "_l64/a_avatarpandorapedia_picador_16x9_1098_16_e3cd3f5e.jpeg",
+      "image": "https://lumiere-a.akamaihd.net/v1/images/a_avatarpandorapedia_picador_16x9_1098_16_e3cd3f5e.jpeg",
+      "page": "https://www.avatar.com/pandorapedia/picador",
+      "film": "Avatar : la voie de l'eau (2022)",
+      "fond_blanc": true,
+      "trous": true
+    },
+    "credit": "© 20th Century Studios",
+    "alt": "Vedette militaire vert-gris à coque pneumatique, poste de pilotage et antennes sur le pont",
+    "bandeau": {
+      "mode": "contenir"
+    },
+    "carte": {
+      "mode": "contenir"
+    },
+    "serrer": true
+  },
+  {
+    "fiche": "engins/samson-tiltrotor",
+    "source": {
+      "type": "pandorapedia",
+      "fichier": "_l64/a_avatarpandorapedia_samson_16x9_1098_19_646f971e.jpeg",
+      "image": "https://lumiere-a.akamaihd.net/v1/images/a_avatarpandorapedia_samson_16x9_1098_19_646f971e.jpeg",
+      "page": "https://www.avatar.com/pandorapedia/samson",
+      "film": "Avatar (2009)",
+      "fond_blanc": true,
+      "trous": true
+    },
+    "credit": "© 20th Century Studios",
+    "alt": "Appareil de transport à deux grands rotors carénés de part et d'autre d'un fuselage gris",
+    "bandeau": {
+      "mode": "contenir"
+    },
+    "carte": {
+      "mode": "contenir"
+    },
+    "serrer": true
+  },
+  {
+    "fiche": "engins/scorpion-gunship",
+    "source": {
+      "type": "pandorapedia",
+      "fichier": "_l64/a_avatarpandorapedia_scorpion_16x9_1098_20_d106d279.jpeg",
+      "image": "https://lumiere-a.akamaihd.net/v1/images/a_avatarpandorapedia_scorpion_16x9_1098_20_d106d279.jpeg",
+      "page": "https://www.avatar.com/pandorapedia/scorpion-gunship",
+      "film": "Avatar (2009)",
+      "fond_blanc": true,
+      "trous": true
+    },
+    "credit": "© 20th Century Studios",
+    "alt": "Hélicoptère de combat à deux rotors latéraux, nacelles de roquettes sous les ailes",
+    "bandeau": {
+      "mode": "contenir"
+    },
+    "carte": {
+      "mode": "contenir"
+    },
+    "serrer": true
+  },
+  {
+    "fiche": "engins/sea-dragon",
+    "source": {
+      "type": "pandorapedia",
+      "fichier": "_l64/a_avatarpandorapedia_seadragon_16x9_1098_21_cf49a4ee.jpeg",
+      "image": "https://lumiere-a.akamaihd.net/v1/images/a_avatarpandorapedia_seadragon_16x9_1098_21_cf49a4ee.jpeg",
+      "page": "https://www.avatar.com/pandorapedia/seadragon",
+      "film": "Avatar : la voie de l'eau (2022)",
+      "fond_blanc": true,
+      "trous": true
+    },
+    "credit": "© 20th Century Studios",
+    "alt": "Long navire gris à ailes basses, surmonté de trois grosses hélices carénées",
+    "bandeau": {
+      "mode": "contenir"
+    },
+    "carte": {
+      "mode": "contenir"
+    },
+    "serrer": true
+  },
+  {
+    "fiche": "engins/venture-star",
+    "source": {
+      "type": "pandorapedia",
+      "fichier": "_l64/a_avatarpandorapedia_venturestar_16x9_1535_07_7bf7b433.jpeg",
+      "image": "https://lumiere-a.akamaihd.net/v1/images/a_avatarpandorapedia_venturestar_16x9_1535_07_7bf7b433.jpeg",
+      "page": "https://www.avatar.com/pandorapedia/isv",
+      "film": "Avatar (2009)",
+      "fond_blanc": true,
+      "trous": true
+    },
+    "credit": "© 20th Century Studios",
+    "alt": "Vaisseau spatial très allongé, réacteurs rouges à l'arrière et grand bouclier à l'avant d'une longue poutre",
+    "bandeau": {
+      "mode": "contenir"
+    },
+    "carte": {
+      "mode": "contenir"
+    },
+    "serrer": true
+  },
+  {
+    "fiche": "personnages/aonung",
+    "source": {
+      "type": "pandorapedia",
+      "fichier": "_l64/a_avatarpandorapedia_aonung_16x9_1098_12_86bb99ba.jpeg",
+      "image": "https://lumiere-a.akamaihd.net/v1/images/a_avatarpandorapedia_aonung_16x9_1098_12_86bb99ba.jpeg",
+      "page": "https://www.avatar.com/pandorapedia/ao-nung",
+      "film": "Avatar : la voie de l'eau (2022)",
+      "fond_blanc": true
+    },
+    "credit": "© 20th Century Studios",
+    "alt": "Portrait officiel d'un jeune Na'vi du récif à la peau vert d'eau, cheveux tressés et collier de dent",
+    "bandeau": {
+      "cadre": 0.1
+    }
+  },
+  {
+    "fiche": "personnages/eytukan",
+    "source": {
+      "type": "pandorapedia",
+      "fichier": "_l64/a_avatarpandorapedia_eytukan_16x9_1535_03_abb584b0.jpeg",
+      "image": "https://lumiere-a.akamaihd.net/v1/images/a_avatarpandorapedia_eytukan_16x9_1535_03_abb584b0.jpeg",
+      "page": "https://www.avatar.com/pandorapedia/eytukan",
+      "film": "Avatar (2009)",
+      "fond_blanc": true
+    },
+    "credit": "© 20th Century Studios",
+    "alt": "Portrait officiel du chef Na'vi au regard sévère, coiffe de cuir au front et cape de plumes rouges",
+    "bandeau": {
+      "cadre": 0.1
+    }
+  },
+  {
+    "fiche": "personnages/grace",
+    "source": {
+      "type": "pandorapedia",
+      "fichier": "_l64/a_avatarpandorapedia_graceaugustine_16x9_1098_02_bdf8ba29.jpeg",
+      "image": "https://lumiere-a.akamaihd.net/v1/images/a_avatarpandorapedia_graceaugustine_16x9_1098_02_bdf8ba29.jpeg",
+      "page": "https://www.avatar.com/pandorapedia/dr-grace-augustine",
+      "film": "Avatar (2009)",
+      "fond_blanc": true
+    },
+    "credit": "© 20th Century Studios",
+    "alt": "Portrait officiel de l'avatar de la botaniste, sourire en coin, en débardeur bordeaux et colliers de perles",
+    "bandeau": {
+      "cadre": 0.1
+    }
+  },
+  {
+    "fiche": "personnages/jake-sully",
+    "source": {
+      "type": "pandorapedia",
+      "fichier": "_l64/a_avatarpandorapedia_jakesully_16x9_1098_02_b13c4171.jpeg",
+      "image": "https://lumiere-a.akamaihd.net/v1/images/a_avatarpandorapedia_jakesully_16x9_1098_02_b13c4171.jpeg",
+      "page": "https://www.avatar.com/pandorapedia/jake-sully",
+      "film": "Avatar : la voie de l'eau (2022)",
+      "fond_blanc": true
+    },
+    "credit": "© 20th Century Studios",
+    "alt": "Portrait officiel de l'ancien marine dans son corps Na'vi, longues dreadlocks et collier vert",
+    "bandeau": {
+      "cadre": 0.1
+    }
+  },
+  {
+    "fiche": "personnages/kiri",
+    "source": {
+      "type": "pandorapedia",
+      "fichier": "_l64/a_avatarpandorapedia_kiri_16x9_1098_04_39d940d1.jpeg",
+      "image": "https://lumiere-a.akamaihd.net/v1/images/a_avatarpandorapedia_kiri_16x9_1098_04_39d940d1.jpeg",
+      "page": "https://www.avatar.com/pandorapedia/kiri",
+      "film": "Avatar : la voie de l'eau (2022)",
+      "fond_blanc": true
+    },
+    "credit": "© 20th Century Studios",
+    "alt": "Portrait officiel d'une adolescente Na'vi aux cheveux courts en bataille, regard curieux, collier de coquillages",
+    "bandeau": {
+      "cadre": 0.1
+    }
+  },
+  {
+    "fiche": "personnages/loak",
+    "source": {
+      "type": "pandorapedia",
+      "fichier": "_l64/a_avatarpandorapedia_loak_16x9_1098_05_84010136.jpeg",
+      "image": "https://lumiere-a.akamaihd.net/v1/images/a_avatarpandorapedia_loak_16x9_1098_05_84010136.jpeg",
+      "page": "https://www.avatar.com/pandorapedia/lo-ak",
+      "film": "Avatar : la voie de l'eau (2022)",
+      "fond_blanc": true
+    },
+    "credit": "© 20th Century Studios",
+    "alt": "Portrait officiel d'un adolescent Na'vi aux tresses fines, avec un collier tressé rouge et un brassard",
+    "bandeau": {
+      "cadre": 0.1
+    }
+  },
+  {
+    "fiche": "personnages/moat",
+    "source": {
+      "type": "pandorapedia",
+      "fichier": "_l64/a_avatarpandorapedia_moat_16x9_1098_07_23778d78.jpeg",
+      "image": "https://lumiere-a.akamaihd.net/v1/images/a_avatarpandorapedia_moat_16x9_1098_07_23778d78.jpeg",
+      "page": "https://www.avatar.com/pandorapedia/mo-at",
+      "film": "Avatar (2009)",
+      "fond_blanc": true
+    },
+    "credit": "© 20th Century Studios",
+    "alt": "Portrait officiel de la chamane Na'vi, longues tresses, bandeau perlé et étole rouge sur les épaules",
+    "bandeau": {
+      "cadre": 0.1
+    }
+  },
+  {
+    "fiche": "personnages/neteyam",
+    "source": {
+      "type": "pandorapedia",
+      "fichier": "_l64/a_avatarpandorapedia_neteyam_16x9_1098_03_6846f384.jpeg",
+      "image": "https://lumiere-a.akamaihd.net/v1/images/a_avatarpandorapedia_neteyam_16x9_1098_03_6846f384.jpeg",
+      "page": "https://www.avatar.com/pandorapedia/neteyam",
+      "film": "Avatar : la voie de l'eau (2022)",
+      "fond_blanc": true
+    },
+    "credit": "© 20th Century Studios",
+    "alt": "Portrait officiel d'un jeune guerrier Na'vi aux tresses, bandeau doré sur le front et collier de perles",
+    "bandeau": {
+      "cadre": 0.1
+    }
+  },
+  {
+    "fiche": "personnages/neytiri",
+    "source": {
+      "type": "pandorapedia",
+      "fichier": "_l64/a_avatarpandorapedia_neytiri_16x9_1098_01_0e7d844a.jpeg",
+      "image": "https://lumiere-a.akamaihd.net/v1/images/a_avatarpandorapedia_neytiri_16x9_1098_01_0e7d844a.jpeg",
+      "page": "https://www.avatar.com/pandorapedia/neytiri",
+      "film": "Avatar : la voie de l'eau (2022)",
+      "fond_blanc": true
+    },
+    "credit": "© 20th Century Studios",
+    "alt": "Portrait officiel d'une guerrière Na'vi aux longues tresses, colliers de perles colorées, regard de côté",
+    "bandeau": {
+      "cadre": 0.1
+    }
+  },
+  {
+    "fiche": "personnages/norm-spellman",
+    "source": {
+      "type": "pandorapedia",
+      "fichier": "_l64/a_avatarpandorapedia_norm_16x9_1098_05_0ab32c72.jpeg",
+      "image": "https://lumiere-a.akamaihd.net/v1/images/a_avatarpandorapedia_norm_16x9_1098_05_0ab32c72.jpeg",
+      "page": "https://www.avatar.com/pandorapedia/dr-norm-spellman",
+      "film": "Avatar : la voie de l'eau (2022)",
+      "fond_blanc": true
+    },
+    "credit": "© 20th Century Studios",
+    "alt": "Portrait officiel de l'avatar du scientifique, cheveux courts, gilet de terrain beige sur la peau bleue",
+    "bandeau": {
+      "cadre": 0.1
+    }
+  },
+  {
+    "fiche": "personnages/payakan",
+    "source": {
+      "type": "pandorapedia",
+      "fichier": "_l64/a_avatarpandorapedia_payakan_16x9_1098_02_96d7d6c5.jpeg",
+      "image": "https://lumiere-a.akamaihd.net/v1/images/a_avatarpandorapedia_payakan_16x9_1098_02_96d7d6c5.jpeg",
+      "page": "https://www.avatar.com/pandorapedia/payakan",
+      "film": "Avatar : la voie de l'eau (2022)"
+    },
+    "credit": "© 20th Century Studios",
+    "alt": "Silhouette d'un grand cétacé à la nageoire tendue sous la surface, un nageur Na'vi minuscule à ses côtés dans les rayons du soleil"
+  },
+  {
+    "fiche": "personnages/peylak",
+    "source": {
+      "type": "pandorapedia",
+      "fichier": "_l64/a_avatarpandorapedia_peylak_16x9_025e1f9e.jpeg",
+      "image": "https://lumiere-a.akamaihd.net/v1/images/a_avatarpandorapedia_peylak_16x9_025e1f9e.jpeg",
+      "page": "https://www.avatar.com/pandorapedia/peylak",
+      "film": "Avatar : de feu et de cendres (2025)",
+      "fond_blanc": true
+    },
+    "credit": "© 20th Century Studios",
+    "alt": "Portrait officiel d'un chef Na'vi en grande cape rouge-orangé brodée, chargé de bijoux et de lanières",
+    "bandeau": {
+      "cadre": 0.1
+    }
+  },
+  {
+    "fiche": "personnages/quaritch",
+    "source": {
+      "type": "pandorapedia",
+      "fichier": "_l64/a_avatarpandorapedia_quaritch_16x9_1098_07_87b3efda.jpeg",
+      "image": "https://lumiere-a.akamaihd.net/v1/images/a_avatarpandorapedia_quaritch_16x9_1098_07_87b3efda.jpeg",
+      "page": "https://www.avatar.com/pandorapedia/colonel-miles-quaritch",
+      "film": "Avatar : la voie de l'eau (2022)",
+      "fond_blanc": true
+    },
+    "credit": "© 20th Century Studios",
+    "alt": "Portrait officiel d'un soldat Na'vi au crâne rasé, avec un gilet tactique vert marqué « Proj Phnx »",
+    "bandeau": {
+      "cadre": 0.1
+    }
+  },
+  {
+    "fiche": "personnages/recombinants",
+    "source": {
+      "type": "pandorapedia",
+      "fichier": "_l64/a_avatarpandorapedia_recoms_16x9_1098_08_9562feda.jpeg",
+      "image": "https://lumiere-a.akamaihd.net/v1/images/a_avatarpandorapedia_recoms_16x9_1098_08_9562feda.jpeg",
+      "page": "https://www.avatar.com/pandorapedia/recoms",
+      "film": "Avatar : la voie de l'eau (2022)",
+      "fond_blanc": true
+    },
+    "credit": "© 20th Century Studios",
+    "alt": "Deux soldats Na'vi en tenue militaire : une femme tatouée en débardeur et un homme avec une casquette camouflage",
+    "bandeau": {
+      "cadre": 0.1
+    }
+  },
+  {
+    "fiche": "personnages/rotxo",
+    "source": {
+      "type": "pandorapedia",
+      "fichier": "_l64/a_avatarpandorapedia_roxto_16x9_c62e84c9.jpeg",
+      "image": "https://lumiere-a.akamaihd.net/v1/images/a_avatarpandorapedia_roxto_16x9_c62e84c9.jpeg",
+      "page": "https://www.avatar.com/pandorapedia/rotxo",
+      "film": "Avatar : la voie de l'eau (2022)",
+      "fond_blanc": true
+    },
+    "credit": "© 20th Century Studios",
+    "alt": "Portrait officiel d'un jeune Na'vi du récif aux cheveux noirs dressés, collier de dents et baudrier tressé",
+    "bandeau": {
+      "cadre": 0.1
+    }
+  },
+  {
+    "fiche": "personnages/selfridge",
+    "source": {
+      "type": "pandorapedia",
+      "fichier": "_l64/a_avatarpandorapedia_parkerselfridge_16x9_1098_06_027105ed.jpeg",
+      "image": "https://lumiere-a.akamaihd.net/v1/images/a_avatarpandorapedia_parkerselfridge_16x9_1098_06_027105ed.jpeg",
+      "page": "https://www.avatar.com/pandorapedia/parker-selfridge",
+      "film": "Avatar (2009)",
+      "fond_blanc": true
+    },
+    "credit": "© 20th Century Studios",
+    "alt": "Portrait officiel d'un cadre en chemise et cravate rayée, un club de golf posé sur l'épaule",
+    "bandeau": {
+      "cadre": 0.1
+    }
+  },
+  {
+    "fiche": "personnages/spider",
+    "source": {
+      "type": "pandorapedia",
+      "fichier": "_l64/a_avatarpandorapedia_spider_16x9_a4aca668.jpeg",
+      "image": "https://lumiere-a.akamaihd.net/v1/images/a_avatarpandorapedia_spider_16x9_a4aca668.jpeg",
+      "page": "https://www.avatar.com/pandorapedia/spider",
+      "film": "Avatar : la voie de l'eau (2022)",
+      "fond_blanc": true
+    },
+    "credit": "© 20th Century Studios",
+    "alt": "Portrait officiel d'un jeune humain aux dreadlocks blondes, masque respiratoire transparent et étole verte",
+    "bandeau": {
+      "cadre": 0.1
+    }
+  },
+  {
+    "fiche": "personnages/tonowari-ronal",
+    "source": {
+      "type": "pandorapedia",
+      "fichier": "_l64/a_avatarpandorapedia_metkayina_16x9_1098_14_ba1265b3.jpeg",
+      "image": "https://lumiere-a.akamaihd.net/v1/images/a_avatarpandorapedia_metkayina_16x9_1098_14_ba1265b3.jpeg",
+      "page": "https://www.avatar.com/pandorapedia/metkayina-clan",
+      "film": "Avatar : la voie de l'eau (2022)"
+    },
+    "credit": "© 20th Century Studios",
+    "alt": "Le chef et la chamane du récif côte à côte, peaux vert d'eau tatouées, parures de coquillages et cape orange"
+  },
+  {
+    "fiche": "personnages/trudy-chacon",
+    "source": {
+      "type": "pandorapedia",
+      "fichier": "_l64/a_avatarpandorapedia_trudy_16x9_1098_10_962d0688.jpeg",
+      "image": "https://lumiere-a.akamaihd.net/v1/images/a_avatarpandorapedia_trudy_16x9_1098_10_962d0688.jpeg",
+      "page": "https://www.avatar.com/pandorapedia/trudy-chacon",
+      "film": "Avatar (2009)",
+      "fond_blanc": true
+    },
+    "credit": "© 20th Century Studios",
+    "alt": "Portrait officiel d'une pilote en combinaison de vol verte, cheveux noirs en queue de cheval, regard baissé",
+    "bandeau": {
+      "cadre": 0.1
+    }
+  },
+  {
+    "fiche": "personnages/tsireya",
+    "source": {
+      "type": "pandorapedia",
+      "fichier": "_l64/a_avatarpandorapedia_tsireya_16x9_1098_11_c93c0f23.jpeg",
+      "image": "https://lumiere-a.akamaihd.net/v1/images/a_avatarpandorapedia_tsireya_16x9_1098_11_c93c0f23.jpeg",
+      "page": "https://www.avatar.com/pandorapedia/tsireya",
+      "film": "Avatar : la voie de l'eau (2022)",
+      "fond_blanc": true
+    },
+    "credit": "© 20th Century Studios",
+    "alt": "Portrait officiel d'une jeune Na'vi du récif aux longs cheveux noirs ondulés, parure de coquillages argentés",
+    "bandeau": {
+      "cadre": 0.1
+    }
+  },
+  {
+    "fiche": "personnages/tsutey",
+    "source": {
+      "type": "film",
+      "fichier": "_l64-films/tsutey_300x400_ffa8d672.jpeg",
+      "image": "https://lumiere-a.akamaihd.net/v1/images/tsutey_300x400_ffa8d672.jpeg",
+      "page": "https://www.avatar.com/movies/avatar",
+      "film": "Avatar (2009)"
+    },
+    "credit": "© 20th Century Studios",
+    "alt": "Portrait officiel d'un guerrier Na'vi au visage fermé, haut collier de perles rouges et noires autour du cou",
+    "bandeau": {
+      "mode": "contenir"
+    },
+    "carte": {
+      "mode": "contenir"
+    }
+  },
+  {
+    "fiche": "personnages/tuk",
+    "source": {
+      "type": "pandorapedia",
+      "fichier": "_l64/a_avatarpandorapedia_tuk_16x9_1098_06_41be0010.jpeg",
+      "image": "https://lumiere-a.akamaihd.net/v1/images/a_avatarpandorapedia_tuk_16x9_1098_06_41be0010.jpeg",
+      "page": "https://www.avatar.com/pandorapedia/tuk",
+      "film": "Avatar : la voie de l'eau (2022)",
+      "fond_blanc": true
+    },
+    "credit": "© 20th Century Studios",
+    "alt": "Portrait officiel d'une fillette Na'vi souriante, bras croisés, avec des cheveux courts tressés et de grands yeux dorés",
+    "bandeau": {
+      "cadre": 0.1
+    }
+  },
+  {
+    "fiche": "personnages/varang",
+    "source": {
+      "type": "pandorapedia",
+      "fichier": "_l64/a_avatarpandorapedia_varang_16x9_23e4a38d.jpeg",
+      "image": "https://lumiere-a.akamaihd.net/v1/images/a_avatarpandorapedia_varang_16x9_23e4a38d.jpeg",
+      "page": "https://www.avatar.com/pandorapedia/varang",
+      "film": "Avatar : de feu et de cendres (2025)",
+      "fond_blanc": true
+    },
+    "credit": "© 20th Century Studios",
+    "alt": "Portrait officiel d'une cheffe Na'vi au visage barré de rouge, haute coiffe de plumes rouges et noires",
+    "bandeau": {
+      "zone": [
+        508,
+        0,
+        1453,
+        405
+      ]
+    },
+    "carte": {
+      "zone": [
+        660,
+        0,
+        1200,
+        405
+      ]
+    }
   }
 ]

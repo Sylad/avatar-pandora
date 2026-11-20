@@ -1,7 +1,22 @@
 {
   "project": "avatar-pandora",
-  "generated": "2026-11-20 08:45",
+  "generated": "2026-11-20 15:58",
   "entries": [
+    {
+      "slug": "2026-11-20-chaque-fiche-montre-son-sujet-tel-qu-il-est-dans-les-films",
+      "title": "Chaque fiche montre son sujet tel qu'il est dans les films",
+      "date": "2026-11-20",
+      "lots": [
+        "L64"
+      ],
+      "captures": [
+        "captures/L64-personnages-1440.png"
+      ],
+      "alts": [
+        "La liste des personnages sur grand écran : chaque carte montre le portrait officiel du personnage, comme Jake, Neytiri, Quaritch, Spider, Mo'at et Tsu'tey"
+      ],
+      "html": "<p>Les images du codex montraient le plus souvent un paysage ou un objet à la place du sujet de la fiche. Elles montrent maintenant ce que la fiche nomme, tel qu'on le voit dans les films.</p>\n<ul><li><strong>Les personnages ont leur portrait</strong> : Jake, Neytiri, Kiri, Grace, Quaritch, Tsu'tey et tous les autres, Na'vi comme humains.</li><li><strong>Les engins de la RDA sont les vrais</strong> : AMP suit, Samson, Scorpion, Dragon, Sea Dragon, Venture Star et les autres.</li><li><strong>Les lieux, les clans et la flore aussi</strong> : montagnes Hallelujah, Arbre des Âmes, Hometree, village Metkayina, graines de l'arbre sacré, unobtainium.</li><li><strong>Le bestiaire est complet</strong> : l'akula, le nantang et l'hexapede ont maintenant leur image officielle.</li><li><strong>Le crédit est écrit</strong> : « © 20th Century Studios » sous chaque image et sous chaque liste. La page À propos dit d'où viennent les images.</li><li><strong>Pas d'image plutôt qu'une image fausse</strong> : le glow snake et la vallée Mo'ara gardent le visuel Eywa, faute d'image officielle sûre.</li></ul>"
+    },
     {
       "slug": "2026-11-20-les-creatures-du-bestiaire-en-images-des-films",
       "title": "Les créatures du bestiaire en images des films",

@@ -3,7 +3,9 @@ title: "Metkayina — le peuple du récif"
 summary: "Mains palmées, queue de nageur, fraternité avec les tulkuns. Le clan océanique de l'archipel des Trois Frères."
 order: 2
 cover: "/illustrations/clans/metkayina.webp"
-coverAlt: "Village de huttes sur pilotis reliées par des pontons au-dessus d'un lagon turquoise, au crépuscule"
+coverAlt: "Huttes tressées du village sur l'eau, accrochées aux racines arquées au-dessus d'un lagon turquoise"
+coverCredit: "© 20th Century Studios"
+pandorapedia: "https://www.avatar.com/pandorapedia/metkayina-village-marui"
 ---
 
 Si les Omatikaya ont appris à lire les forêts comme d'autres lisent des textes sacrés, les Metkayina ont fait de l'océan leur écriture. Chaque courant, chaque récif, chaque migration de tulkun est une phrase dans une langue que les forestiers ne parlent pas. C'est dans cet écart — de morphologie, de spiritualité, de rythme — que réside toute la richesse du clan du récif.

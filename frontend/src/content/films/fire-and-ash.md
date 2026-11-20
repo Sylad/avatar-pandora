@@ -3,7 +3,8 @@ title: "Avatar : Fire and Ash (2025)"
 summary: "Troisième volet. Décembre 2025. Les Ash People entrent en scène. Le ton change."
 order: 3
 cover: "/illustrations/films/fire-and-ash.webp"
-coverAlt: "Volcan en éruption au cœur d'une jungle de nuit, lave rouge et nuages de cendre sous un ciel turquoise"
+coverAlt: "Varang, coiffe de plumes rouges et visage peint, tend la main au-dessus des flammes"
+coverCredit: "© 20th Century Studios"
 ---
 
 Sorti en décembre 2025, *Fire and Ash* est le troisième volet de la saga Avatar. Pour la première fois, l'antagonisme de Pandora ne vient pas seulement des humains.
