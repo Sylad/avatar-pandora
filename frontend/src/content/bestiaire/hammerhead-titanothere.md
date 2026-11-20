@@ -1,7 +1,11 @@
 ---
 title: "Angtsìk — le titan au front de marteau"
 summary: "Huit mètres de blindage vivant, front en marteau, charge à cinquante km/h — le herbivore que même les thanators contournent par prudence."
+pandorapedia: "https://www.avatar.com/pandorapedia/hammerhead-titanothere"
 order: 11
+cover: "/illustrations/bestiaire/hammerhead-titanothere.webp"
+coverAlt: "Colosse gris-vert vu de face dans la forêt, tête en large marteau couronnée d'une crête violette"
+coverCredit: "© 20th Century Studios"
 ---
 
 La biologie pandorienne a expérimenté, à plusieurs reprises dans son évolution, l'idée qu'un herbivore peut devenir plus redoutable qu'un prédateur à condition de pousser suffisamment loin l'investissement dans la défense passive. L'*angtsìk* — que les humains ont baptisé *hammerhead titanothere* par référence aux titanotherium tertiaires et à la forme caractéristique de son crâne — est l'expression la plus aboutie de cette expérience. Ce n'est pas un animal dangereux parce qu'il chasse. C'est un animal dangereux parce qu'il n'a aucune raison d'avoir peur de vous, et que cette absence de peur l'autorise à vous traverser si vous êtes sur son chemin.

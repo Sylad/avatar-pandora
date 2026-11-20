@@ -1,6 +1,6 @@
 // L63 — précaution acceptée par Sylvain : aucune page du site construit ne doit être indexée
-// ni ses liens suivis par les moteurs (certaines illustrations sont des œuvres de fan guidées
-// par des images officielles). Chaque page HTML de frontend/dist porte une seule balise
+// ni ses liens suivis par les moteurs : le bestiaire montre des images des films, avec le crédit
+// « © 20th Century Studios » (décision de Sylvain du 19-11-2026, condition du noindex). Chaque page HTML de frontend/dist porte une seule balise
 // <meta name="robots" content="noindex, nofollow">, dans le <head>.
 import test from 'node:test';
 import assert from 'node:assert/strict';

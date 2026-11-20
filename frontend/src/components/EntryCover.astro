@@ -4,10 +4,10 @@
   → cliquable en plein écran (visionneuse) ; sinon visuel par défaut, sans
   requête réseau ni trou (L16, proxy Fandom retiré). Illustration du site
   (L17) : texte alternatif français `coverAlt` et dimensions connues (pas de
-  saut de mise en page). Créature illustrée en œuvre de fan guidée par les images
-  officielles (L63) : légende sous le bandeau avec le lien vers sa fiche Pandorapedia.
-  Fiche sans illustration mais avec page officielle (bestiaire depuis le 19-11-2026) :
-  visuel par défaut, puis le lien seul — pas de mention « illustration de fan ».
+  saut de mise en page). Image des films (bestiaire, L63, décision du 19-11-2026) :
+  légende discrète « © 20th Century Studios » (`coverCredit`, repris par la visionneuse),
+  puis le lien vers la fiche Pandorapedia quand il existe. Fiche sans image mais avec
+  page officielle : visuel par défaut, puis le lien seul.
 */
 import CoverFallback from './CoverFallback.astro';
 import { coverImageSrc, isIllustration, ILLUSTRATION_SIZES } from '../lib/cover';
@@ -19,24 +19,28 @@ interface Props {
   title: string;
   /** Nom de la section, affiché dans le visuel par défaut. */
   section: string;
+  /** Crédit d'une image des films (« © 20th Century Studios », L63). */
+  coverCredit?: string;
   /** Page officielle avatar.com/pandorapedia de ce qui est illustré (L63). */
   pandorapedia?: string;
 }
-const { cover, coverAlt, title, section, pandorapedia } = Astro.props;
+const { cover, coverAlt, coverCredit, title, section, pandorapedia } = Astro.props;
 const src = coverImageSrc(cover);
 const size = isIllustration(cover) ? ILLUSTRATION_SIZES.fiche : undefined;
 ---
-{src && pandorapedia ? (
+{src && (coverCredit || pandorapedia) ? (
   <figure class="mb-12">
     <div class="relative aspect-[21/9] rounded-md overflow-hidden border border-eywa-text-muted/20" data-lightbox>
       <img src={src} alt={coverAlt ?? title} width={size?.width} height={size?.height}
-           decoding="async" class="w-full h-full object-cover" />
+           data-credit={coverCredit} decoding="async" class="w-full h-full object-cover" />
     </div>
     <figcaption class="entry-cover-caption mt-2 text-sm text-eywa-text-muted font-body flex flex-wrap items-center gap-x-2">
-      <span>Illustration de fan, générée pour Eywa</span>
-      <span aria-hidden="true" class="hidden sm:inline">·</span>
-      <a href={pandorapedia} target="_blank" rel="noopener"
-         class="inline-flex items-center min-h-11 underline underline-offset-4 hover:text-eywa-bio-primary transition">Fiche officielle sur Pandorapedia<span class="sr-only"> (nouvel onglet)</span></a>
+      {coverCredit && <span class="entry-cover-credit text-xs">{coverCredit}</span>}
+      {coverCredit && pandorapedia && <span aria-hidden="true" class="hidden sm:inline">·</span>}
+      {pandorapedia && (
+        <a href={pandorapedia} target="_blank" rel="noopener"
+           class="inline-flex items-center min-h-11 underline underline-offset-4 hover:text-eywa-bio-primary transition">Fiche officielle sur Pandorapedia<span class="sr-only"> (nouvel onglet)</span></a>
+      )}
     </figcaption>
   </figure>
 ) : src ? (

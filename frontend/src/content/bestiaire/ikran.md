@@ -3,6 +3,9 @@ title: "Ikran — le banshee de montagne"
 summary: "Premier compagnon volant de tout chasseur Omatikaya. Lien à vie, un seul ikran par cavalier."
 order: 1
 pandorapedia: "https://www.avatar.com/pandorapedia/mountain-banshee"
+cover: "/illustrations/bestiaire/ikran.webp"
+coverAlt: "Neytiri, arc levé, file au ras d'une plage sur un banshee aux ailes bleu-vert, suivie d'autres cavaliers"
+coverCredit: "© 20th Century Studios"
 ---
 
 Il n'existe pas, dans toute la cosmologie Omatikaya, de rite aussi nu dans sa violence et aussi absolu dans ce qu'il scelle. Le jeune chasseur grimpe seul les parois d'Iknimaya, trouve l'ikran qui le choisit autant qu'il le choisit, et repart lié pour la vie — ou ne repart pas. C'est ainsi depuis que la mémoire des ancêtres peut remonter, et personne ne songe à en atténuer les termes.

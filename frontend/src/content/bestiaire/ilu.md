@@ -1,7 +1,11 @@
 ---
 title: "Ilu — la monture aquatique des Metkayina"
 summary: "Reptile marin nageur agile, lien tsaheylu queue-à-tentacule. Le pa'li des récifs."
+pandorapedia: "https://www.avatar.com/pandorapedia/ilu"
 order: 7
+cover: "/illustrations/bestiaire/ilu.webp"
+coverAlt: "Créature marine au long cou souple et aux larges nageoires en ailes, peau sombre aux reflets dorés"
+coverCredit: "© 20th Century Studios"
 ---
 
 Si le *pa'li* est la monture de la forêt et l'*ikran* la monture du ciel, l'*ilu* est celle de l'entre-deux — cet espace ambigu entre la surface et les profondeurs que les Metkayina habitent avec une aisance que nul autre clan Na'vi ne possède. L'*ilu* n'est pas imposant comme le *toruk*, ni mystérieux comme le *tulkun*. C'est un animal agile, social, complice — une monture que les enfants Metkayina apprennent à connaître avant même de savoir nager seuls, et qui restera leur compagne les plus fidèles dans les récifs pour le reste de leur vie.

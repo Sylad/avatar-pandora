@@ -1,7 +1,11 @@
 ---
 title: "Hexapede — la proie didactique"
 summary: "Cerf à six pattes, peau blanche à taches dorées, antennes-cornes bioluminescentes — le gibier que tout jeune chasseur Omatikaya apprend à honorer avant d'apprendre à tuer."
+pandorapedia: "https://www.avatar.com/pandorapedia/hexapede"
 order: 13
+cover: "/illustrations/bestiaire/hexapede.webp"
+coverAlt: "Herbivore gracile à six pattes, robe violette rayée de blanc et crête en éventail sur la tête"
+coverCredit: "© 20th Century Studios"
 ---
 
 Certaines créatures existent dans l'imaginaire d'une culture moins comme des animaux que comme des concepts incarnés. Pour les Omatikaya, l'*hexapede* — que les Na'vi appellent *talioang* dans certains dialectes forestiers — est cela : le gibier-miroir, l'animal à travers lequel le chasseur apprend ce que signifie tuer avec respect. Il n'est pas le plus impressionnant du bestiaire pandorien, ni le plus dangereux. Mais il est, peut-être, le plus important.

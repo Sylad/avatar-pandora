@@ -1,7 +1,11 @@
 ---
 title: "Toruk — le grand léonoptère"
 summary: "Le plus grand prédateur volant de Pandora. Cinq Toruk Makto en mille ans. Jake Sully fut le sixième."
+pandorapedia: "https://www.avatar.com/pandorapedia/the-great-leonopteryx-the-last-shadow"
 order: 2
+cover: "/illustrations/bestiaire/toruk.webp"
+coverAlt: "Grand prédateur ailé orange et jaune en plein vol entre des montagnes flottantes, sous une planète géante"
+coverCredit: "© 20th Century Studios"
 ---
 
 Il n'y a pas de mot dans la langue Na'vi pour qualifier ce que représente le toruk dans leur monde — parce qu'ils n'en ont jamais eu besoin. Le toruk *est*. Il surplombe, il rode, il chasse ce qu'il veut quand il le veut. Le reste de la faune pandorienne a appris depuis des millénaires que son ombre portée sur le sol signifie une seule chose : ne pas bouger, ou ne plus exister.

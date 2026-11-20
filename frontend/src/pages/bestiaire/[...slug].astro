@@ -17,7 +17,7 @@ const { Content } = await render(entry);
 ---
 <CodexLayout title={`${entry.data.title} — Eywa`} current="bestiaire">
   <article class="reading-veil max-w-3xl mx-auto">
-    <EntryCover cover={entry.data.cover} coverAlt={entry.data.coverAlt} pandorapedia={entry.data.pandorapedia} title={entry.data.title} section="Bestiaire" />
+    <EntryCover cover={entry.data.cover} coverAlt={entry.data.coverAlt} coverCredit={entry.data.coverCredit} pandorapedia={entry.data.pandorapedia} title={entry.data.title} section="Bestiaire" />
     <h1 class="entry-title font-display text-eywa-bio-primary mb-3">{entry.data.title}</h1>
     <p class="text-eywa-text-muted text-lg italic mb-10">{entry.data.summary}</p>
     <div class="entry-body text-eywa-text leading-relaxed font-body text-lg sm:text-xl">

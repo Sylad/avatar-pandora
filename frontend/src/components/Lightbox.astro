@@ -94,7 +94,7 @@
         p.dialog.style.setProperty('--cap-h', h);
       }
     };
-    const open = (src, alt, natural) => {
+    const open = (src, alt, natural, credit) => {
       const p = parts();
       if (!p) return false;
       const { dialog, img, cap } = p;
@@ -123,8 +123,10 @@
       img.hidden = false;
       // La légende porte déjà le texte : une image à alt identique serait lue deux fois (WCAG 1.3.1, L53).
       img.setAttribute('alt', '');
-      cap.textContent = alt || '';
-      cap.style.display = alt ? '' : 'none';
+      // Image des films (L63) : le crédit suit la description dans la légende de la visionneuse.
+      const text = [alt, credit].filter(Boolean).join(' — ');
+      cap.textContent = text;
+      cap.style.display = text ? '' : 'none';
       // Use native <dialog> when possible, fallback to manual class
       if (typeof dialog.showModal === 'function' && !dialog.open) {
         try { dialog.showModal(); } catch (_) { dialog.setAttribute('open', ''); }
@@ -162,7 +164,7 @@
       const src = target.currentSrc || target.src;
       if (!src) return;
       const natural = { w: target.naturalWidth || +target.getAttribute('width') || 0, h: target.naturalHeight || +target.getAttribute('height') || 0 };
-      if (open(src, target.alt || '', natural)) e.preventDefault();
+      if (open(src, target.alt || '', natural, target.getAttribute('data-credit') || '')) e.preventDefault();
     });
     window.addEventListener('resize', measureCaption);
     window.addEventListener('orientationchange', measureCaption);

@@ -15,10 +15,16 @@ const codexEntrySchema = z.object({
   coverAlt: z.string().min(20).optional(),
   // pandorapedia : page officielle de ce qu'illustre la fiche (L63), affichée
   // sous le bandeau (« Fiche officielle sur Pandorapedia »).
+  // coverCredit : crédit de l'image quand c'est une image des films (L63, décision du 19-11-2026),
+  // affiché en légende discrète sous le bandeau et sous la liste de la section.
+  coverCredit: z.literal('© 20th Century Studios').optional(),
   pandorapedia: z.string().regex(/^https:\/\/www\.avatar\.com\/pandorapedia\/[a-z0-9-]+$/).optional(),
 }).refine((d) => !d.cover?.startsWith('/') || !!d.coverAlt, {
   message: 'cover hébergée sur le site sans coverAlt (texte alternatif français, L17)',
   path: ['coverAlt'],
+}).refine((d) => !d.coverCredit || !!d.cover, {
+  message: 'coverCredit sans cover : un crédit ne va qu’avec une image',
+  path: ['coverCredit'],
 });
 
 const makeCollection = (folder: string) =>

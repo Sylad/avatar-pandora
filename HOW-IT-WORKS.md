@@ -77,7 +77,7 @@ Tout le lore vient de sources fiables, jamais inventé :
 - **[Naviteri.org](https://naviteri.org/)** — blog du Dr Paul Frommer, créateur de la langue Na'vi
 - **Les films eux-mêmes** : Avatar (2009), La Voie de l'Eau (2022), Fire and Ash (2025)
 
-Aucune image tierce n'est affichée : l'ancien proxy `/api/wiki-image` est retiré (Fandom répond par un défi anti-robot, non contourné) ; les fiches montrent un visuel par défaut.
+Aucune image de wiki n'est affichée : l'ancien proxy `/api/wiki-image` est retiré (Fandom répond par un défi anti-robot, non contourné). Les fiches ont des illustrations générées en local, sauf le bestiaire, qui montre des images des films avec le crédit discret « © 20th Century Studios » (sources notées dans `scripts/illustrations/films.json`).
 
 ## Pourquoi cette transparence
 
