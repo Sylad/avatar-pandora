@@ -664,8 +664,14 @@ lots:
       - { date: 2026-11-19, text: "DÉCISION Sylvain 19-11 ~17 h 55 (« bah si c'est juste écrire le crédit discretement quelque part ok ») : bestiaire = IMAGES DES FILMS avec crédit discret © 20th Century Studios (légende + À propos), noindex gardé ; génération IA abandonnée pour les créatures (ne ressemble pas, jugement IA non fiable). Demain : une image par fiche du bestiaire tirée des références (tmp/l63-refs : Pandorapedia, images et mosaïques de Sylvain, vidéo, Allociné), choix montré à Sylvain sur capture de la PAGE ENTIÈRE /bestiaire/ avant mise en ligne ; règle « pas de re-host de stills » du CLAUDE.md à réécrire selon cette décision." }
       - { date: 2026-11-20, text: "20-11 : planche de 313ffe6 vue par Sylvain — « Visuel par défaut » pour akula, nantang, hexapede (modèles 3D sur grille) ; les 10 autres images gardées" }
     started: 2026-11-19
-    review: { date: 2026-11-19, verdict: "2713ecb relu par le lead : bestiaire au visuel par défaut (14 fiches, 28 WebP retirés, illustrations.json branchee:false), lien Pandorapedia seul sans mention fan, textes alignés, 270 tests verts ; capture de la liste entière regardée — conforme", commit: 2713ecb056e0b2353a0402a5a9f4368a9811b157 }
-    ux: { date: 2026-11-19, verdict: "Lead : liste /bestiaire/ entière à 1440 regardée — 14 cartes et bandeau au visuel Eywa, cohérent (décision de Sylvain « Visuel Eywa partout ») ; conforme" }
+    review: { date: 2026-11-20, verdict: "conforme : 0 bloquant ; 2 mineurs — CLAUDE.md:43 dit encore « pas de captures des films / tout le bestiaire sans image », D-3 sans champ lots (revue r2 du 20-11, 2713ecb..9bab0ab)", commit: 9bab0abfb536117e733f9f1e95071acc7f01f68e }
+    ux: { date: 2026-11-20, verdict: "conforme : captures pleine page 1440 et 390 (v2) validées par Sylvain le 20-11 (« Oui, en ligne ») — 10 images des films créditées, 4 au visuel Eywa" }
+  - id: L64
+    title: "Tour du site D-3, suite du bestiaire (L63) : remplacer, section par section, les illustrations qui ne ressemblent pas à leur sujet des films par une image des films créditée (© 20th Century Studios), d'après le relevé ~/projects/developpeur/tmp/l63-d3/rapport-tour-du-site.md ; corriger CLAUDE.md:43 (bestiaire illustré) ; capture pleine page validée par Sylvain avant toute mise en ligne"
+    status: todo
+    estimate: 1
+    visible: true
+    created: 2026-11-20
 acknowledged:
   - { sha: cef464dffb920ea7b161b1b0e06fe54d3efbdcc4, subject: "plan: verdicts UX de Sylvain enregistrés, trois bloquants de la revue des Personnages clos", date: 2026-10-10, reason: entretien du plan et régénération des Nouveautés }
   - { sha: 4bc75e983dc5bff0366190611a9c578d4ed071c8, subject: "plan: prototype Pandora vivant clos, cinq idées retenues par Sylvain posées après les images", date: 2026-10-10, reason: entretien du plan et régénération des Nouveautés (fichier désormais déclaré dérivé) }
