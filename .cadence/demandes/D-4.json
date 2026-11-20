@@ -2,8 +2,8 @@
   "id": "D-4",
   "texte": "quand je disais qu'il fallait faire une passe sur eywa/pandora je ne plaisantais pas, typiquement la pafe personnage, aucune images ne correspond à un personnage, faut revoir TOUTES les pages",
   "date": "2026-11-20",
-  "etat": "ouverte",
-  "preuve": null,
+  "etat": "livrée",
+  "preuve": "L64 livré et vérifié en prod le 2026-11-20 : d22331f (cadence deliver, meta version sur https://avatar-pandora-12q.pages.dev/) ; captures pleine page validées par Sylvain (« Oui, en ligne »)",
   "liens": [
     "D-3"
   ],
