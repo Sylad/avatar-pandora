@@ -650,10 +650,11 @@ lots:
     created: 2026-11-18
   - id: L63
     title: "Illustrer les Na'vi et la faune elle-même (D-2) : essai d'un modèle local qui suit mieux une description (FLUX.1-schnell, Apache 2.0, RTX 5090) sur ikran, toruk, thanator, direhorse, tulkun et une silhouette na'vi ; garder seulement ce qui ressemble à la créature décrite dans la fiche ; Sylvain choisit sur une planche d'essais avant tout remplacement"
-    status: doing
+    status: done
     estimate: 1
     visible: true
     after: [ L17 ]
+    delivered: { date: 2026-11-19, sha: 325923772e0e530fb9bb2a3e7b213629340ed96e }
     created: 2026-11-19
     notes:
       - { date: 2026-11-19, text: "Sylvain 19-11 : piste « fan-art généré fidèle » retenue (contre photos Commons) — bestiaire qui RESSEMBLE aux films (site pour une passionnée) : FLUX en local guidé par une description anatomique de chaque créature d'après les fiches et Pandorapedia (texte), planche d'essais choisie par Sylvain avant remplacement ; lien vers la page Pandorapedia officielle sur chaque fiche ; image = œuvre de fan, mentionnée comme telle dans À propos" }
@@ -666,6 +667,7 @@ lots:
     started: 2026-11-19
     review: { date: 2026-11-20, verdict: "conforme : 0 bloquant ; 2 mineurs — CLAUDE.md:43 dit encore « pas de captures des films / tout le bestiaire sans image », D-3 sans champ lots (revue r2 du 20-11, 2713ecb..9bab0ab)", commit: 9bab0abfb536117e733f9f1e95071acc7f01f68e }
     ux: { date: 2026-11-20, verdict: "conforme : captures pleine page 1440 et 390 (v2) validées par Sylvain le 20-11 (« Oui, en ligne ») — 10 images des films créditées, 4 au visuel Eywa" }
+    finished: 2026-11-20
   - id: L64
     title: "Tour du site D-3, suite du bestiaire (L63) : remplacer, section par section, les illustrations qui ne ressemblent pas à leur sujet des films par une image des films créditée (© 20th Century Studios), d'après le relevé ~/projects/developpeur/tmp/l63-d3/rapport-tour-du-site.md ; corriger CLAUDE.md:43 (bestiaire illustré) ; capture pleine page validée par Sylvain avant toute mise en ligne"
     status: todo
