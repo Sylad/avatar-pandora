@@ -2,8 +2,8 @@
   "id": "D-5",
   "texte": "Pour Hometree, on peu peut-être trouvé mieux",
   "date": "2026-11-20",
-  "etat": "ouverte",
-  "preuve": null,
+  "etat": "livrée",
+  "preuve": "L65 : image de l'arbre entier fournie par Sylvain posée sur flore/hometree (0d4ab64), captures pleine page validées par Sylvain le 20-11 (« Oui, en ligne »), livrée en prod le 20-11",
   "liens": [
     "D-4"
   ],

@@ -687,10 +687,13 @@ lots:
     finished: 2026-11-20
   - id: L65
     title: "Hometree : remplacer l'image de la fiche flore/hometree (aujourd'hui l'hologramme sur la table tactique, photo-6_cbe0faaf) par une image officielle des films montrant l'arbre-maison lui-même ; même règles que L64 (source avatar.com, provenance et empreinte dans films.json, crédit © 20th Century Studios, jamais Fandom/Pinterest) ; capture pleine page validée par Sylvain avant mise en ligne (D-5)"
-    status: doing
+    status: done
     estimate: 1
     created: 2026-11-20
     started: 2026-11-20
+    review: { date: 2026-11-20, verdict: "conforme (relu par le lead : source type sylvain dans films.json, empreinte R13, R11 accepte le WebP, R12 interdit l'hologramme posé ; tests des illustrations verts)", commit: 0d4ab643752dbd9487dd6bbc88a410d52af2e230 }
+    ux: { date: 2026-11-20, verdict: "conforme : captures pleine page 1440/390 (fiche et liste Flore) validées par Sylvain le 20-11 (« Oui, en ligne »)" }
+    finished: 2026-11-20
   - id: L66
     title: "Test e2e entry-card-tap instable sous charge (clic → navigation > 1000 ms) : 3/3 en échec sur main le 20-11 pendant la revue de L32 (tmp/revue-L32.md) ; le rendre fiable sans affaiblir ce qu'il vérifie"
     status: todo
