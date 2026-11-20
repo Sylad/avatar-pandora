@@ -1,0 +1,163 @@
+---
+/*
+  Lumière au toucher (L32, « Pandora vivant 1 », prototype validé par Sylvain le 10-10) :
+  le fond de l'accueil et du codex s'allume sous le doigt ou la souris — des taches de
+  mousse bioluminescente s'étendent puis s'éteignent en ~3 s (logique : lib/bio-moss.ts).
+
+  • Au repos : quelques taches très faibles, posées une fois (image fixe, aucune animation).
+  • Souris : une tache tous les 70 px parcourus ; clic ou toucher : une tache plus vive.
+    Au doigt, le glissement (défilement) n'allume rien : seul le toucher compte.
+  • Chaque tache est un élément animé par Web Animations sur transform et opacity seulement
+    (animées par le compositeur, sans boucle JavaScript), retiré à son extinction (minuterie). Rien
+    n'écoute le défilement (calque fixe). Pas de canvas : le premier canvas d'une page attend
+    le processus GPU, et bloquait la page 85 s en Chromium sans tête.
+  • Pause de l'ambiance (AtmospherePause) : plus aucune tache, la mousse au repos reste.
+  • Mouvement réduit : rien n'est posé.
+  • Sous le texte (z-index 1, sous <main>) et atténué (opacité du calque) : le texte reste
+    ≥ 4,5:1 au pire pixel (scripts/bio-moss.e2e.test.mjs). À l'accueil (`landing`), le texte
+    est posé sur le fond même, sans carte : la mousse s'efface au centre, sous les phrases.
+*/
+interface Props {
+  /** Accueil : texte centré sans carte, mousse atténuée au centre. */
+  landing?: boolean;
+}
+const { landing = false } = Astro.props;
+---
+
+<div id="eywa-moss" class:list={['eywa-moss', { 'eywa-moss--landing': landing }]} aria-hidden="true"></div>
+
+<script>
+  import { ATMOSPHERE_EVENT, ATMOSPHERE_PAUSED_CLASS } from './cinema/atmosphere-clock';
+  import {
+    MOSS_LIFE_MS, MOSS_MAX, mossKeyframes, mossSprite, seededRandom, shouldSpawn,
+    type MossStep, type Rgb,
+  } from '../lib/bio-moss';
+
+  /** Relevés pour les tests : taches allumées en tout, et temps passé à les poser. */
+  interface MossStats { spawned: number; spawnMs: number }
+  const w = window as Window & { __eywaMossInit?: boolean; __eywaMoss?: MossStats };
+
+  // ClientRouter : ce module ne s'exécute qu'une fois ; le calque est retrouvé à chaque page.
+  if (!w.__eywaMossInit) {
+    w.__eywaMossInit = true;
+    const stats: MossStats = (w.__eywaMoss = { spawned: 0, spawnMs: 0 });
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const COLORS: Rgb[] = [
+      [95, 255, 230], // cyan bio
+      [127, 255, 143], // vert sacré
+      [95, 255, 230],
+      [255, 93, 196], // touche magenta, plus rare
+    ];
+    let sprites: string[] = [];
+    let host: HTMLElement | null = null;
+    let last: MossStep | null = null;
+    const live: HTMLElement[] = [];
+
+    const paused = () => document.documentElement.classList.contains(ATMOSPHERE_PAUSED_CLASS);
+    const radius = () => (window.innerWidth < 768 ? 95 : 130);
+
+    const blot = (sprite: number, cls: string) => {
+      const el = document.createElement('div');
+      el.className = cls;
+      el.style.backgroundImage = sprites[sprite];
+      return el;
+    };
+
+    const remove = (el: HTMLElement) => {
+      el.getAnimations().forEach((a) => a.cancel());
+      el.remove();
+      const i = live.indexOf(el);
+      if (i >= 0) live.splice(i, 1);
+    };
+
+    const spawn = (x: number, y: number, strength: number) => {
+      if (!host || paused()) return;
+      const t0 = performance.now();
+      const R = radius() * (0.8 + Math.random() * 0.4) * (strength > 0.8 ? 1.25 : 1);
+      const el = blot(Math.floor(Math.random() * sprites.length), 'eywa-moss__patch');
+      Object.assign(el.style, { left: `${x - R}px`, top: `${y - R}px`, width: `${2 * R}px`, height: `${2 * R}px` });
+      host.append(el);
+      live.push(el);
+      el.animate(mossKeyframes(strength), { duration: MOSS_LIFE_MS, easing: 'linear' });
+      // Retirée à l'heure dite, même si la page n'a pas rendu d'image entre-temps (onglet caché).
+      window.setTimeout(() => remove(el), MOSS_LIFE_MS + 50);
+      while (live.length > MOSS_MAX) remove(live[0]);
+      stats.spawned++;
+      stats.spawnMs += performance.now() - t0;
+    };
+
+    const clear = () => { while (live.length) remove(live[0]); };
+
+    // Mousse au repos : même dessin à chaque visite, placé en part de la fenêtre.
+    const mount = () => {
+      clear();
+      last = null;
+      host = document.getElementById('eywa-moss');
+      if (!host) return;
+      host.replaceChildren();
+      if (reduced.matches) { host = null; return; }
+      if (!sprites.length) {
+        sprites = COLORS.map((c, i) => `url("data:image/svg+xml,${encodeURIComponent(mossSprite(10 + i, c))}")`);
+      }
+      const rand = seededRandom(32);
+      const n = window.innerWidth < 768 ? 6 : 10;
+      for (let i = 0; i < n; i++) {
+        const R = radius() * (0.6 + rand() * 0.6);
+        const el = blot(i % sprites.length, 'eywa-moss__rest');
+        Object.assign(el.style, {
+          left: `calc(${(rand() * 100).toFixed(1)}% - ${R}px)`,
+          top: `calc(${(rand() * 100).toFixed(1)}% - ${R}px)`,
+          width: `${2 * R}px`,
+          height: `${2 * R}px`,
+          opacity: (0.16 + rand() * 0.12).toFixed(2),
+        });
+        host.append(el);
+      }
+    };
+
+    window.addEventListener('pointermove', (e) => {
+      if (e.pointerType === 'touch') return; // glisser du doigt = défiler
+      const step = { x: e.clientX, y: e.clientY, t: e.timeStamp };
+      if (!shouldSpawn(last, step)) return;
+      last = step;
+      spawn(step.x, step.y, 0.75);
+    }, { passive: true });
+    window.addEventListener('pointerdown', (e) => spawn(e.clientX, e.clientY, 1), { passive: true });
+    window.addEventListener(ATMOSPHERE_EVENT, () => { if (paused()) clear(); });
+    reduced.addEventListener('change', mount);
+    document.addEventListener('astro:page-load', mount);
+    mount();
+  }
+</script>
+
+<style>
+  /* Fixe, sous le contenu (<main> : z-index 2 au codex, 10 à l'accueil), et atténué. */
+  .eywa-moss {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    overflow: hidden;
+    pointer-events: none;
+    opacity: 0.65;
+  }
+  /* Mousse atténuée sous les phrases : sinon, mousse au plus dense dessous, la définition d'Eywa
+     descendait à 4,2:1 au pire pixel (6,5 à 11:1 sans mousse). */
+  .eywa-moss--landing {
+    mask-image: radial-gradient(ellipse 45% 40% at 50% 50%, rgba(0, 0, 0, 0.15) 55%, #000 100%);
+  }
+  @media (max-width: 767px) {
+    .eywa-moss--landing {
+      mask-image: radial-gradient(ellipse 80% 38% at 50% 50%, rgba(0, 0, 0, 0.15) 55%, #000 100%);
+    }
+  }
+  .eywa-moss :global(.eywa-moss__rest),
+  .eywa-moss :global(.eywa-moss__patch) {
+    position: absolute;
+    background-size: 100% 100%;
+  }
+  /* Avant sa première image clé, une tache est invisible (pas d'éclair au point touché). */
+  .eywa-moss :global(.eywa-moss__patch) { opacity: 0; }
+  @media (prefers-reduced-motion: reduce) {
+    .eywa-moss { display: none; }
+  }
+</style>

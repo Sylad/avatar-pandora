@@ -2,6 +2,7 @@
 import BaseLayout from './BaseLayout.astro';
 import Sidebar from '../components/Sidebar.astro';
 import AtmospherePause from '../components/AtmospherePause.astro';
+import BioMoss from '../components/BioMoss.astro';
 import { CodexAmbient } from '../components/cinema/CodexAmbient';
 
 interface Props {
@@ -42,6 +43,8 @@ const ambient = AMBIENTS[current ?? ''] ?? AMBIENTS.pandora;
   />
   <div class="bio-ambient" aria-hidden="true"></div>
   <div class="cursor-glow" aria-hidden="true"></div>
+  <!-- L32 : la mousse s'allume sous le doigt ou la souris. -->
+  <BioMoss />
   <!-- Bande pleine sous 1024 px (revue UX L6) : menu et pause fixes reposent dessus, le texte défile
        dessous au lieu de passer derrière eux. -->
   <div class="eywa-topbar" aria-hidden="true"></div>

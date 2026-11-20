@@ -29,6 +29,10 @@ Codex Avatar/Pandora **cadeau pour Eva** (nièce de Sylvain, 18 ans, fan absolue
 - ❌ **Pas de scrollytelling 700vh forcé** sur la `/` racine. La V1 l'avait, user a détesté ("je devais scroller pour voir le contenu actionnable").
 - ✅ L'option scroll reste valide pour des **pages dédiées immersion** (ex `/cinema` en bonus). Mais jamais sur `/`.
 
+Lumière au toucher (L32) : `components/BioMoss.astro` (accueil + codex) — taches de mousse en éléments animés par Web Animations
+(transform/opacity, pas de canvas : un canvas 2D bloquait la page ~85 s en Chromium sans tête), arrêtées par la pause, absentes en
+mouvement réduit, atténuées sous les phrases de l'accueil ; contrôlé par `scripts/bio-moss.e2e.test.mjs`.
+
 Pattern technique réutilisable : `CinemaCanvas` mode `'time'` + `CycleBackdrop` qui cross-fade les images sur le même clock. Voir `frontend/src/components/cinema/`.
 
 ## Pas de ChatGPT — silence complet

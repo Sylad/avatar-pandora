@@ -3,6 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import EywaLogo from '../components/EywaLogo.astro';
 import AtmospherePause from '../components/AtmospherePause.astro';
 import FollowLinks from '../components/FollowLinks.astro';
+import BioMoss from '../components/BioMoss.astro';
 import { LandingParticles } from '../components/cinema/LandingParticles';
 import { CycleBackdrop } from '../components/cinema/CycleBackdrop';
 ---
@@ -19,11 +20,13 @@ import { CycleBackdrop } from '../components/cinema/CycleBackdrop';
          match the visible image.
       3. Bio-ambient gradient (the 4 radial blobs from CodexLayout
          pattern) for global cohesion with the codex pages.
+      4. BioMoss (L32) : moss lighting up under the finger or the mouse.
     The user sits, breathes, and Pandora transforms around them.
   -->
   <CycleBackdrop client:only="react" />
   <LandingParticles client:only="react" />
   <div class="bio-ambient" aria-hidden="true"></div>
+  <BioMoss landing />
 
   <main id="contenu" tabindex="-1" class="relative z-10 min-h-screen flex flex-col items-center justify-center text-center px-6 py-20 max-[399px]:px-4 max-[399px]:py-8">
     <!-- Titre de la page : le logo (svg role=img, aria-label « Eywa ») donne son nom au h1. -->
