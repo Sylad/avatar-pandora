@@ -1,0 +1,19 @@
+{
+  "id": "D-5",
+  "texte": "Pour Hometree, on peu peut-être trouvé mieux",
+  "date": "2026-11-20",
+  "etat": "ouverte",
+  "preuve": null,
+  "liens": [
+    "D-4"
+  ],
+  "lots": [
+    "L65"
+  ],
+  "precisions": [
+    {
+      "date": "2026-11-20",
+      "texte": "Contexte : après L64, la fiche flore/hometree montre l'hologramme de l'arbre sur la table tactique de la base humaine (photo-6_cbe0faaf.jpeg, avatar.com/movies/avatar), pas l'arbre lui-même."
+    }
+  ]
+}

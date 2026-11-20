@@ -672,7 +672,7 @@ lots:
     finished: 2026-11-20
   - id: L64
     title: "Tour du site D-3, suite du bestiaire (L63) : remplacer, section par section, les illustrations qui ne ressemblent pas à leur sujet des films par une image des films créditée (© 20th Century Studios), d'après le relevé ~/projects/developpeur/tmp/l63-d3/rapport-tour-du-site.md ; corriger CLAUDE.md:43 (bestiaire illustré) ; capture pleine page validée par Sylvain avant toute mise en ligne"
-    status: doing
+    status: done
     estimate: 1
     visible: true
     created: 2026-11-20
@@ -681,7 +681,13 @@ lots:
       - { date: 2026-11-20, text: "Décision de Sylvain le 20-11 : portraits officiels pour TOUS les personnages, humains compris (fin de la règle « jamais un visage d'acteur » de L17), crédités © 20th Century Studios" }
     started: 2026-11-20
     ux: { date: 2026-11-20, verdict: "conforme : captures pleine page des 7 sections et À propos (tmp/l64-validation) validées par Sylvain le 20-11 (« Oui, en ligne »)" }
-    review: { date: 2026-11-20, verdict: "non conforme (documentation) : README.md:115-122 et CLAUDE.md:43 décrivent encore l'ancienne politique d'images — rapport tmp/revue-L64.md", commit: d59dd6f234be2385338d44f569674529681f2347 }
+    review: { date: 2026-11-20, verdict: "conforme après correction c7efc43 (relue par le lead) : README et CLAUDE.md à l'état L64, R13 vérifie l'empreinte sha256 des WebP — rapport r1 tmp/revue-L64.md", commit: c7efc43d779d231fbc217ff7dde9e123eb0a54bc }
+    finished: 2026-11-20
+  - id: L65
+    title: "Hometree : remplacer l'image de la fiche flore/hometree (aujourd'hui l'hologramme sur la table tactique, photo-6_cbe0faaf) par une image officielle des films montrant l'arbre-maison lui-même ; même règles que L64 (source avatar.com, provenance et empreinte dans films.json, crédit © 20th Century Studios, jamais Fandom/Pinterest) ; capture pleine page validée par Sylvain avant mise en ligne (D-5)"
+    status: todo
+    estimate: 1
+    created: 2026-11-20
 acknowledged:
   - { sha: cef464dffb920ea7b161b1b0e06fe54d3efbdcc4, subject: "plan: verdicts UX de Sylvain enregistrés, trois bloquants de la revue des Personnages clos", date: 2026-10-10, reason: entretien du plan et régénération des Nouveautés }
   - { sha: 4bc75e983dc5bff0366190611a9c578d4ed071c8, subject: "plan: prototype Pandora vivant clos, cinq idées retenues par Sylvain posées après les images", date: 2026-10-10, reason: entretien du plan et régénération des Nouveautés (fichier désormais déclaré dérivé) }
