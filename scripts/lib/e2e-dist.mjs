@@ -39,9 +39,15 @@ export async function setupBrowser(t, { scrollbars = false } = {}) {
     t.skip('playwright-core non installé');
     return null;
   }
+  // Chromium sans tête lancé SANS DISPLAY ni WAYLAND_DISPLAY (L32) : sous WSL2, ces variables (WSLg)
+  // font parfois attendre le processus GPU 70 à 105 s avant la première image (mesuré : 1 lancement
+  // sur 3 environ avec, 0 sur 20 sans) ; les tests qui attendent une image dépassaient leurs 30 s.
+  const env = { ...process.env };
+  delete env.DISPLAY;
+  delete env.WAYLAND_DISPLAY;
   let browser;
   try {
-    browser = await chromium.launch(scrollbars ? { ignoreDefaultArgs: ['--hide-scrollbars'] } : {});
+    browser = await chromium.launch({ env, ...(scrollbars ? { ignoreDefaultArgs: ['--hide-scrollbars'] } : {}) });
   } catch (e) {
     t.skip(`Chromium indisponible (${String(e.message).split('\n')[0]})`);
     return null;

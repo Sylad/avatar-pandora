@@ -54,6 +54,21 @@ const lightGrid = (page, box, step = 60) => page.evaluate(({ box, step }) => {
   }
 }, { box, step });
 
+// Fige chaque tache à pleine intensité (500 ms : étendue à 70 %, intensité maximale). Une animation
+// encore en attente de sa première image (machine chargée) n'a pas d'heure : la mettre en pause sans
+// heure la figerait à 0 ms, tache invisible. `commit` inscrit l'état dans le style et retire
+// l'animation (la mesure de contraste coupe les animations).
+const freezeMoss = (page, { commit = false } = {}) => page.evaluate((commit) => {
+  const host = document.getElementById('eywa-moss');
+  const moss = document.getAnimations().filter((a) => host.contains(a.effect?.target));
+  for (const a of moss) {
+    a.pause();
+    a.currentTime = 500;
+    if (commit) { a.commitStyles(); a.cancel(); }
+  }
+  return moss.length;
+}, commit);
+
 async function open(env, path, [width, height], options = {}) {
   const context = await env.browser.newContext({ viewport: { width, height }, hasTouch: width < 500, ...options });
   const page = await context.newPage();
@@ -117,7 +132,7 @@ test('la mousse allumée se voit : le fond s’éclaire sous le pointeur (1440 p
   const before = await page.screenshot({ clip });
   await lightGrid(page, { x: 60, y: 200, width: 220, height: 400 }, 110);
   await page.waitForTimeout(450);
-  await page.evaluate(() => document.getAnimations().forEach((a) => a.pause()));
+  assert.ok((await freezeMoss(page)) >= 4, 'taches allumées à figer');
   const after = await page.screenshot({ clip, animations: 'allow' });
   const gain = await meanDiff(page, before, after);
   t.diagnostic(`éclaircissement moyen sous la mousse allumée : +${gain.toFixed(1)} / 255`);
@@ -231,11 +246,8 @@ test('texte ≥ 4,5:1 au pire pixel avec la mousse allumée dessous (1440/390 px
     // Pleine intensité (180 → 900 ms), puis tout est figé : particules et fond (requestAnimationFrame),
     // taches à leur état courant (sinon la mesure, qui coupe les animations, les éteint).
     await page.waitForTimeout(450);
-    await page.evaluate(() => {
-      window.requestAnimationFrame = () => 0;
-      const host = document.getElementById('eywa-moss');
-      document.getAnimations().filter((a) => host.contains(a.effect?.target)).forEach((a) => { a.commitStyles(); a.cancel(); });
-    });
+    await page.evaluate(() => { window.requestAnimationFrame = () => 0; });
+    assert.ok((await freezeMoss(page, { commit: true })) >= 4, `${path} ${label} : taches allumées à figer`);
     await page.waitForTimeout(300);
     const show = (v) => page.evaluate((v) => { document.getElementById('eywa-moss').style.visibility = v; }, v);
     await show('hidden');
