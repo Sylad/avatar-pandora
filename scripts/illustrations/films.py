@@ -37,8 +37,11 @@ Champs d'une entrée (la traçabilité est contrôlée par scripts/illustrations
   La page Pandorapedia de la source est écrite dans le champ `pandorapedia` de la fiche si elle n'en a pas.
   retenue : false pour une image refusée (avec "raison") : l'entrée garde sa traçabilité mais n'est
             jamais posée ; la fiche garde le visuel par défaut (akula, nantang, hexapede le 20-11).
+  sha256  : {"bandeau": …, "carte": …} empreinte des deux WebP servis, réécrite par ce script à chaque
+            génération ; R13 de scripts/illustrations.test.mjs la compare aux fichiers, si bien qu'un WebP
+            remplacé sans passer par films.json fait échouer les tests.
 """
-import json, re, sys
+import hashlib, json, re, sys
 from pathlib import Path
 from PIL import Image, ImageChops, ImageDraw, ImageFilter, ImageEnhance, ImageFont
 
@@ -163,7 +166,8 @@ def main():
         seul = {a for a in sys.argv[sys.argv.index("--seul") + 1:] if not a.startswith("--")}
     planche = sys.argv[sys.argv.index("--planche") + 1] if "--planche" in sys.argv else None
     vignettes = []
-    for e in json.loads((ICI / "films.json").read_text()):
+    entrees = json.loads((ICI / "films.json").read_text())
+    for e in entrees:
         if seul and e["fiche"] not in seul:
             continue
         if e.get("retenue") is False:
@@ -174,7 +178,9 @@ def main():
         dest.mkdir(parents=True, exist_ok=True)
         for quoi, (suffixe, w, h, q) in TAILLES.items():
             out = taille(img, e, quoi, w, h)
-            out.save(dest / f"{fiche}{suffixe}.webp", "WEBP", quality=q, method=6)
+            fichier = dest / f"{fiche}{suffixe}.webp"
+            out.save(fichier, "WEBP", quality=q, method=6)
+            e.setdefault("sha256", {})[quoi] = hashlib.sha256(fichier.read_bytes()).hexdigest()
             if quoi == "carte":
                 vignettes.append((e["fiche"], out))
         champs = {"cover": f"/illustrations/{section}/{fiche}.webp", "coverAlt": e["alt"], "coverCredit": e["credit"]}
@@ -182,6 +188,7 @@ def main():
             champs["pandorapedia"] = e["source"]["page"]
         renseigne(FRONT / "src/content" / section / f"{fiche}.md", champs)
         print(e["fiche"])
+    (ICI / "films.json").write_text(json.dumps(entrees, indent=2, ensure_ascii=False) + "\n")
     if planche and vignettes:
         cols = 4
         lignes = (len(vignettes) + cols - 1) // cols

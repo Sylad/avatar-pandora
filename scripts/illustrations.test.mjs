@@ -5,6 +5,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
+import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { coverCardSrc, coverImageSrc, isIllustration, ILLUSTRATION_SIZES } from '../frontend/src/lib/cover.ts';
@@ -164,6 +165,12 @@ test('R13 — L64 : chaque fiche illustrée montre une image officielle des film
     assert.equal(e.coverCredit, CREDIT, `${fiche} : crédit`);
     // Une image de Pandorapedia renvoie à sa page (champ `pandorapedia` de la fiche, posé par films.py).
     if (film.source.type === 'pandorapedia') assert.ok(e.pandorapedia, `${fiche} : lien Pandorapedia`);
+    // Le WebP servi est bien celui que films.py a tiré de cette source : un fichier remplacé
+    // sans mise à jour de films.json (empreinte posée par films.py) échoue ici.
+    for (const [quoi, suffixe] of [['bandeau', ''], ['carte', '-carte']]) {
+      const webp = readFileSync(join(PUBLIC, 'illustrations', `${fiche}${suffixe}.webp`));
+      assert.equal(createHash('sha256').update(webp).digest('hex'), film.sha256?.[quoi], `${fiche}${suffixe}.webp : empreinte différente de films.json (refaire avec films.py)`);
+    }
   }
   // Les illustrations générées remplacées restent tracées mais ne sont plus posées.
   const posees = SOURCES.filter(branchee).map((x) => x.fiche).sort();

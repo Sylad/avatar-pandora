@@ -18,6 +18,10 @@
     },
     "carte": {
       "cadre_x": 0
+    },
+    "sha256": {
+      "bandeau": "dd937114bdaedba638f08943e1eb924baeff0805acc1821051475f39d606d8e5",
+      "carte": "2eac9170d84061e8086b85f108bd93dcee493f4b9c33a3b822a21f40b14804f9"
     }
   },
   {
@@ -40,6 +44,10 @@
         972
       ],
       "cadre": 0.3
+    },
+    "sha256": {
+      "bandeau": "b75de4013f3969b9c9df2cbe9747e2dcb6dc05d4378b197edf0666603dfe07a2",
+      "carte": "3aee901ab18c37a890680759be4a81e9e153e02241f5d845636f2d7b44d2f1a6"
     }
   },
   {
@@ -70,6 +78,10 @@
         1000,
         645
       ]
+    },
+    "sha256": {
+      "bandeau": "4e896bd3559282640b5c8b5d11ab8b99bad53b57bc90c7ca6f6a7299ae7ee4be",
+      "carte": "6df58bdddf9572d25d0f62fa6ea84faddb1606042fccd558e4bbf371d522deff"
     }
   },
   {
@@ -88,6 +100,10 @@
     },
     "carte": {
       "cadre_x": 0.75
+    },
+    "sha256": {
+      "bandeau": "1332a1cfae9ea2bddf45e904997805623b56b8bedaeb1f74f2b9c3cc27773811",
+      "carte": "ed7bc63624e2f3e5e8969a59709aecb99680c53f233cf1d2e1b94e9c716b90ce"
     }
   },
   {
@@ -120,6 +136,10 @@
         1080
       ],
       "mode": "contenir"
+    },
+    "sha256": {
+      "bandeau": "db15ed7cd72e97c78e2ad5e2ffef39b85e1cb432b160b891cf4873f6dda85f09",
+      "carte": "87facd33336b35ea3cb5acdab1c057ac5c5a9728d7014f910dc2a224d90376c4"
     }
   },
   {
@@ -140,6 +160,10 @@
     },
     "carte": {
       "mode": "contenir"
+    },
+    "sha256": {
+      "bandeau": "a5a67a6aaabd5526898215021e5f14b33dbfdc76a9a30f06d536493ea1788b4a",
+      "carte": "36f913a0c873b934ae95f87121525f7ab0e89fb1ef21affd7cf50acf35b8d3d2"
     }
   },
   {
@@ -160,6 +184,10 @@
     },
     "carte": {
       "mode": "contenir"
+    },
+    "sha256": {
+      "bandeau": "f378e929e066d4c2b130627e73de8f1600576feacea133370e43cb123998f08a",
+      "carte": "2d07018ca1e22896bb33993d642f7fd297b48fae75dbe1537a0e2c5a0ab61d41"
     }
   },
   {
@@ -176,6 +204,10 @@
     },
     "carte": {
       "cadre_x": 0.4
+    },
+    "sha256": {
+      "bandeau": "be70dcce3f50c2619eeaf0f74dddad6d431e8c0be82252231433c5092d86d14c",
+      "carte": "ee8cf29bc8ddaf1c2a9ff56fc54d02ba534a7c969e61e61a440d9d2657148a97"
     }
   },
   {
@@ -192,6 +224,10 @@
     },
     "carte": {
       "cadre_x": 0.5
+    },
+    "sha256": {
+      "bandeau": "3d805d0711388c103262f461382517ae20457de1ae9e1577028fafb94e677b88",
+      "carte": "bbbf16e167dfc2239515e3270980065b7c1716ce2991900d9a7fcf4f51c8c9c7"
     }
   },
   {
@@ -208,6 +244,10 @@
     },
     "carte": {
       "cadre_x": 0.3
+    },
+    "sha256": {
+      "bandeau": "8c427465769d14e397f2b9f9f3b5be318a42847bd2cfed1ddc0c95f8ee58c12b",
+      "carte": "b375aadb80ce80a1626a8d3e28aee6fe92f8546e338220df68b318056fe77b02"
     }
   },
   {
@@ -251,7 +291,11 @@
       "film": "Avatar : la voie de l'eau (2022)"
     },
     "credit": "© 20th Century Studios",
-    "alt": "Prédateur marin gris-bleu au corps cuirassé, gueule hérissée de dents grande ouverte, qui nage en eau profonde"
+    "alt": "Prédateur marin gris-bleu au corps cuirassé, gueule hérissée de dents grande ouverte, qui nage en eau profonde",
+    "sha256": {
+      "bandeau": "90ea16d4dbca10871f823034627192d743e210edb0e9b3d141b10f78f2c8d48a",
+      "carte": "f3ebdfb18f910b0b1efe9d958bdfe83d77309ba547829f25bca1b1dac6de5916"
+    }
   },
   {
     "fiche": "bestiaire/hexapede",
@@ -300,6 +344,10 @@
     },
     "carte": {
       "mode": "contenir"
+    },
+    "sha256": {
+      "bandeau": "a54cfb0b499e901c36e3b6ba08e4c56c4a5e7d6922a70a75791d8357fa5130ca",
+      "carte": "201b93cd6c832fbbf178a50998f6beda9b29bf106b14d4b337695cdbcacf225d"
     }
   },
   {
@@ -349,6 +397,10 @@
     },
     "carte": {
       "mode": "contenir"
+    },
+    "sha256": {
+      "bandeau": "59356cd6b434e400704afe47083418f6a7d2fa94cccd46dd37305debbf7f1674",
+      "carte": "e5d9a53b587ce4f36bb418179491166ca498558db7762dcda359be32144387f6"
     }
   },
   {
@@ -361,7 +413,11 @@
       "film": "Avatar (2009)"
     },
     "credit": "© 20th Century Studios",
-    "alt": "La lune vue de l'espace, océans bleus, continents verts et nuages blancs sur fond noir"
+    "alt": "La lune vue de l'espace, océans bleus, continents verts et nuages blancs sur fond noir",
+    "sha256": {
+      "bandeau": "0f99623a392d01bd6767bb1ca2b7a23d8c1e5c67e55b465a3d29f829e99ea77a",
+      "carte": "ee5eb6dd4a2a3b070561cfb4c64297bdc2ba68b3b4c7e95dfb8b3efda9c28327"
+    }
   },
   {
     "fiche": "pandora/hallelujah-mountains",
@@ -373,7 +429,11 @@
       "film": "Avatar (2009)"
     },
     "credit": "© 20th Century Studios",
-    "alt": "Pics de roche couverts de jungle qui flottent dans la brume au-dessus de la forêt"
+    "alt": "Pics de roche couverts de jungle qui flottent dans la brume au-dessus de la forêt",
+    "sha256": {
+      "bandeau": "dd3d4b2a92396e6de0992f314cb1d70ceddf68f17ada5c712b4f3e4956bd6358",
+      "carte": "3d2e934c84e60ff2a9d13a9a85e1e76b2967108a9018eba6b3abf36c22d5b670"
+    }
   },
   {
     "fiche": "pandora/eywa",
@@ -385,7 +445,11 @@
       "film": "Avatar (2009)"
     },
     "credit": "© 20th Century Studios",
-    "alt": "Neytiri et Jake, reliés par leur natte aux filaments lumineux violets de l'Arbre des Voix, écoutent la mémoire des ancêtres"
+    "alt": "Neytiri et Jake, reliés par leur natte aux filaments lumineux violets de l'Arbre des Voix, écoutent la mémoire des ancêtres",
+    "sha256": {
+      "bandeau": "97b33bc41091a15a859059551aeb836558df58309b693678e01a98015f3db858",
+      "carte": "614212cb1f8d94deb510694683caa5e6114a938368a177065c04f251d7a6f7f0"
+    }
   },
   {
     "fiche": "pandora/sites-sacres",
@@ -397,7 +461,11 @@
       "film": "Avatar (2009)"
     },
     "credit": "© 20th Century Studios",
-    "alt": "Jeunes chasseurs Na'vi au pied d'une falaise d'Iknimaya, face à un banshee qui les guette au premier plan"
+    "alt": "Jeunes chasseurs Na'vi au pied d'une falaise d'Iknimaya, face à un banshee qui les guette au premier plan",
+    "sha256": {
+      "bandeau": "a80be9271794a03f1bf2d510e941dcf583bfd784c36b996072dbd5e0ea92ebe6",
+      "carte": "b5aac502f3eb837271a423664c78d225ded0d1ffc4697cb5f02b2310d0c91c3c"
+    }
   },
   {
     "fiche": "pandora/biomes",
@@ -409,7 +477,11 @@
       "film": "Avatar (2009)"
     },
     "credit": "© 20th Century Studios",
-    "alt": "Sous-bois de la forêt tropicale des Omatikaya, plantes en bulbes pâles et feuillages sombres dans la brume"
+    "alt": "Sous-bois de la forêt tropicale des Omatikaya, plantes en bulbes pâles et feuillages sombres dans la brume",
+    "sha256": {
+      "bandeau": "693c7348742ac160f4210411772594d270919e0ef1a1024e0897d938bc034e18",
+      "carte": "3a011a8b4cc8949ca568e69283ff913ec69685165056e97cab4f8ce4b21a3100"
+    }
   },
   {
     "fiche": "clans/omatikaya",
@@ -421,7 +493,11 @@
       "film": "Avatar (2009)"
     },
     "credit": "© 20th Century Studios",
-    "alt": "Neytiri, arc en main, devant des guerriers et guerrières Na'vi du clan sous un grand banshee perché"
+    "alt": "Neytiri, arc en main, devant des guerriers et guerrières Na'vi du clan sous un grand banshee perché",
+    "sha256": {
+      "bandeau": "df40c7d7c2c33e6ced6229dfc24a9dd7fed76e2dc188dbcbf0a1ca2b4cb0f773",
+      "carte": "a8cf25c149f5848eedb0cafa8f446ba7c74576fb053434e9670c362eb4489bf1"
+    }
   },
   {
     "fiche": "clans/metkayina",
@@ -433,7 +509,11 @@
       "film": "Avatar : la voie de l'eau (2022)"
     },
     "credit": "© 20th Century Studios",
-    "alt": "Huttes tressées du village sur l'eau, accrochées aux racines arquées au-dessus d'un lagon turquoise"
+    "alt": "Huttes tressées du village sur l'eau, accrochées aux racines arquées au-dessus d'un lagon turquoise",
+    "sha256": {
+      "bandeau": "9771ba5ccd76124e6cc715df4a65a5c7bc18a3082154c82187884d4285329efb",
+      "carte": "ce68bbbafe818f7d9c5cc4ef9e65cac34c0678e7ae748453df209cefc8c4e4ab"
+    }
   },
   {
     "fiche": "clans/ash-people",
@@ -445,7 +525,11 @@
       "film": "Avatar : de feu et de cendres (2025)"
     },
     "credit": "© 20th Century Studios",
-    "alt": "Guerriers Na'vi à la peau grise marquée de rouge, arcs en main, dans une plaine de cendres"
+    "alt": "Guerriers Na'vi à la peau grise marquée de rouge, arcs en main, dans une plaine de cendres",
+    "sha256": {
+      "bandeau": "7ca102a65b065cc71e7c5f855940d8e9a558644dc8431a8e62c37649715e38c9",
+      "carte": "1156f0512058dd375c35a23c315e45dd0cddb1fca10b5f3f96f3ab8969098ad1"
+    }
   },
   {
     "fiche": "clans/olangi",
@@ -457,7 +541,11 @@
       "film": "hors des films : illustration officielle de la fiche Pandorapedia du clan"
     },
     "credit": "© 20th Century Studios",
-    "alt": "Guerrière Na'vi lance levée sur un cheval à six pattes, dans une charge au milieu des herbes hautes"
+    "alt": "Guerrière Na'vi lance levée sur un cheval à six pattes, dans une charge au milieu des herbes hautes",
+    "sha256": {
+      "bandeau": "517caa3246f01a0ce1df7f0b28357afd2105f0165a5ab9160cef2fb1ade487a1",
+      "carte": "55eb45160b746853d7dcc8f20ca625fabdfd661af5615ff711cae3862c8ebb7f"
+    }
   },
   {
     "fiche": "clans/tawkami",
@@ -469,7 +557,11 @@
       "film": "hors des films : illustration officielle de la fiche Pandorapedia du clan"
     },
     "credit": "© 20th Century Studios",
-    "alt": "Botaniste Na'vi parée de perles qui cueille une plante en grappes bleues dans une jungle au pied d'une cascade"
+    "alt": "Botaniste Na'vi parée de perles qui cueille une plante en grappes bleues dans une jungle au pied d'une cascade",
+    "sha256": {
+      "bandeau": "6adaefbf92f1843455cf7239c1139ac976c2851251e3b2b6eb70b8906296271e",
+      "carte": "dbfb6b5336062184d3352972bda66cb581c90a570b1899e996c70073200da5d9"
+    }
   },
   {
     "fiche": "flore/arbre-des-ames",
@@ -481,7 +573,11 @@
       "film": "Avatar (2009)"
     },
     "credit": "© 20th Century Studios",
-    "alt": "Arbre immense aux longs rideaux de filaments pâles, le clan rassemblé à ses pieds sur un tapis de racines"
+    "alt": "Arbre immense aux longs rideaux de filaments pâles, le clan rassemblé à ses pieds sur un tapis de racines",
+    "sha256": {
+      "bandeau": "b538eb2d5e3f4069b317d5e13e0a4ea170d83ac4a7c70dbadf2b2eb06d25ce6f",
+      "carte": "3e21d780ebfaaac03be89063dd3cece902b4fa16c3017d2a6e277da1e36988ec"
+    }
   },
   {
     "fiche": "flore/hometree",
@@ -493,7 +589,11 @@
       "film": "Avatar (2009)"
     },
     "credit": "© 20th Century Studios",
-    "alt": "Hologramme de l'arbre-maison des Omatikaya sur la table tactique de la base humaine, devant le colonel et ses officiers"
+    "alt": "Hologramme de l'arbre-maison des Omatikaya sur la table tactique de la base humaine, devant le colonel et ses officiers",
+    "sha256": {
+      "bandeau": "4400546cf6d6d8404809862ee6f00a346604eb17a0deea5473403e7a430ab32d",
+      "carte": "7d84d8e5de73ea37062731ce245db90a4a0ad490c00d73afd86d8297f659f842"
+    }
   },
   {
     "fiche": "flore/woodsprites",
@@ -505,7 +605,11 @@
       "film": "Avatar (2009)"
     },
     "credit": "© 20th Century Studios",
-    "alt": "Graines lumineuses en ombrelles blanches flottant dans la nuit violette de la forêt"
+    "alt": "Graines lumineuses en ombrelles blanches flottant dans la nuit violette de la forêt",
+    "sha256": {
+      "bandeau": "71f10a6f1c78cdb5aea406b19a8f29bc979b0823565742952c3e2f8c0cfe62e1",
+      "carte": "bd7f54c8f0ee117d3bf9dcc1b1a2891604fc1ccfa92f1a46f0a46ba7b26f4c86"
+    }
   },
   {
     "fiche": "flore/plantes-helico",
@@ -525,7 +629,11 @@
     "carte": {
       "mode": "contenir"
     },
-    "serrer": true
+    "serrer": true,
+    "sha256": {
+      "bandeau": "677e52f757eee27c5b10f615f406a1fc62e79d59f4249526c86bc72f4dffcdc9",
+      "carte": "047b2d2e89148d655d10520ba4d96fc1211ffededa30c9ebde1b3c1a85c048ad"
+    }
   },
   {
     "fiche": "flore/unobtainium",
@@ -537,7 +645,11 @@
       "film": "Avatar (2009)"
     },
     "credit": "© 20th Century Studios",
-    "alt": "Fragment de minerai gris argenté en lévitation au-dessus d'un socle métallique cerclé de lumière bleue"
+    "alt": "Fragment de minerai gris argenté en lévitation au-dessus d'un socle métallique cerclé de lumière bleue",
+    "sha256": {
+      "bandeau": "0ffdd304ac51cac01ad4b2050c8370e43fa5d8f96a6f1155239e155ff38238ae",
+      "carte": "e775b12e9f35733c46e20b1b7ec50b0f2acd876059047994c6dd9f014b957968"
+    }
   },
   {
     "fiche": "films/avatar-2009",
@@ -549,7 +661,11 @@
       "film": "Avatar (2009)"
     },
     "credit": "© 20th Century Studios",
-    "alt": "Neytiri et Jake côte à côte, visages bleus tournés vers le danger, devant une chute d'eau"
+    "alt": "Neytiri et Jake côte à côte, visages bleus tournés vers le danger, devant une chute d'eau",
+    "sha256": {
+      "bandeau": "63916ccf212d25418143457fc24c9c29442e9bd74d351daeaacac725c64d25f3",
+      "carte": "7dacb5b42beeca988a6ad339ca0c38a2c45fd498e8f673783b4cad9100466cd6"
+    }
   },
   {
     "fiche": "films/voie-de-leau",
@@ -561,7 +677,11 @@
       "film": "Avatar : la voie de l'eau (2022)"
     },
     "credit": "© 20th Century Studios",
-    "alt": "Jake debout sur un poisson volant aux ailes orangées qui rase la mer sous un ciel nuageux"
+    "alt": "Jake debout sur un poisson volant aux ailes orangées qui rase la mer sous un ciel nuageux",
+    "sha256": {
+      "bandeau": "06e68efa4570a26dd4579084dab6540c4eea129c78fdc567f29152fed4325d33",
+      "carte": "08658d9443f431cb975e2654b381512f968599bfa96097fd0f6dd0f3d9c51ac2"
+    }
   },
   {
     "fiche": "films/fire-and-ash",
@@ -573,7 +693,11 @@
       "film": "Avatar : de feu et de cendres (2025)"
     },
     "credit": "© 20th Century Studios",
-    "alt": "Varang, coiffe de plumes rouges et visage peint, tend la main au-dessus des flammes"
+    "alt": "Varang, coiffe de plumes rouges et visage peint, tend la main au-dessus des flammes",
+    "sha256": {
+      "bandeau": "7fc7560db70b3764ef14bd2a9d6d1947350ea1bfed9a8c153b72bdc64898982e",
+      "carte": "33811b512ea4992c5722fbb6a822805ff03abee4dc96f4a076b02456f5fb5a49"
+    }
   },
   {
     "fiche": "engins/amp-suit",
@@ -594,7 +718,11 @@
     "carte": {
       "mode": "contenir"
     },
-    "serrer": true
+    "serrer": true,
+    "sha256": {
+      "bandeau": "29c80ea68905884f08cbf8a1431383db02eb82425e335cab21553f4e0d9642f5",
+      "carte": "4527ffb9dfa42d3130476b03ce3f7ef58f8b63755c0ac3a4d9be50c4d0841edd"
+    }
   },
   {
     "fiche": "engins/crabsuit",
@@ -606,7 +734,11 @@
       "film": "Avatar : la voie de l'eau (2022)"
     },
     "credit": "© 20th Century Studios",
-    "alt": "Engin à bulle vitrée posé sur quatre pattes articulées et deux bras pinces, sur une piste de sable"
+    "alt": "Engin à bulle vitrée posé sur quatre pattes articulées et deux bras pinces, sur une piste de sable",
+    "sha256": {
+      "bandeau": "0aceedd8ac49eaeaeb149b33d72af810545f20657be259432d4b43f52c16bd4b",
+      "carte": "8b90cc8cdee92f1ed86f79cea40eafef3fb113b9fb0c9eeebea609c2651cce2b"
+    }
   },
   {
     "fiche": "engins/dragon-assault-ship",
@@ -627,7 +759,11 @@
     "carte": {
       "mode": "contenir"
     },
-    "serrer": true
+    "serrer": true,
+    "sha256": {
+      "bandeau": "0b68756c406270755206d375d17f253755347df22ccd4be2936a8b990ea19040",
+      "carte": "ab54b3dc83d6ec9582855dc7728b82c7efd57212f30088e30af53d5b1b1476e2"
+    }
   },
   {
     "fiche": "engins/picador",
@@ -648,7 +784,11 @@
     "carte": {
       "mode": "contenir"
     },
-    "serrer": true
+    "serrer": true,
+    "sha256": {
+      "bandeau": "4a3541e94701737c4787ad97af15446e34047ed119387242196ae26243a85c3e",
+      "carte": "7f4b237a4ff3f18673e6cc0a6b310d7e966f6034046e76367fbe399421fd4484"
+    }
   },
   {
     "fiche": "engins/samson-tiltrotor",
@@ -669,7 +809,11 @@
     "carte": {
       "mode": "contenir"
     },
-    "serrer": true
+    "serrer": true,
+    "sha256": {
+      "bandeau": "672e93ea4bdeaff1db2b6da054efa9b737ec0ad0c1ecab11f52f8d3ecce33544",
+      "carte": "1b9408522c99b101fcc7162a775faf9eb1912daae026d913e11a00874c3f7b40"
+    }
   },
   {
     "fiche": "engins/scorpion-gunship",
@@ -690,7 +834,11 @@
     "carte": {
       "mode": "contenir"
     },
-    "serrer": true
+    "serrer": true,
+    "sha256": {
+      "bandeau": "df7f25f5d7edd46029481d1aa6aa77b7f99eff1af6fadf0bd1ccfb4d35e9ca27",
+      "carte": "fd3e24ec0f6fa407783fb4a252eee004bd542346b4c1b1f6b240ef88d1baed5b"
+    }
   },
   {
     "fiche": "engins/sea-dragon",
@@ -711,7 +859,11 @@
     "carte": {
       "mode": "contenir"
     },
-    "serrer": true
+    "serrer": true,
+    "sha256": {
+      "bandeau": "4a562dfa9234fdea281b581d49fa6143e1b02928275b8c9c1fffa39502ad8073",
+      "carte": "8944cece7e96cc465bdd7b382311484f8f446eb7f99cbd6966a71de97f93a2da"
+    }
   },
   {
     "fiche": "engins/venture-star",
@@ -732,7 +884,11 @@
     "carte": {
       "mode": "contenir"
     },
-    "serrer": true
+    "serrer": true,
+    "sha256": {
+      "bandeau": "2873fd5314570bcf310e6c20ddab214758bd25478cca931e521a2b9a31ac9912",
+      "carte": "a2ef2399dac418b942749d5891df908d3a7d05cab5cc4a7542a0e1d9e87d55d2"
+    }
   },
   {
     "fiche": "personnages/aonung",
@@ -748,6 +904,10 @@
     "alt": "Portrait officiel d'un jeune Na'vi du récif à la peau vert d'eau, cheveux tressés et collier de dent",
     "bandeau": {
       "cadre": 0.1
+    },
+    "sha256": {
+      "bandeau": "07c515967d9ff97519e15a4bca01ef775dd1cdfbfffefd255259bc3c04ebafba",
+      "carte": "137801d3a6bca45fcb91ada467d6dfba4c2a43dec42b1697bba2dbb7b536cbb5"
     }
   },
   {
@@ -764,6 +924,10 @@
     "alt": "Portrait officiel du chef Na'vi au regard sévère, coiffe de cuir au front et cape de plumes rouges",
     "bandeau": {
       "cadre": 0.1
+    },
+    "sha256": {
+      "bandeau": "7f64e9d324d24c19d95e54f2bfc93d4a25a53526b28c8d340ec09b5aedde6303",
+      "carte": "e433a464e824997371ce624c1c4d74046a76ed2a980b39e189ed48580cb4310b"
     }
   },
   {
@@ -780,6 +944,10 @@
     "alt": "Portrait officiel de l'avatar de la botaniste, sourire en coin, en débardeur bordeaux et colliers de perles",
     "bandeau": {
       "cadre": 0.1
+    },
+    "sha256": {
+      "bandeau": "1838e04d8b34e54271db64b9e0faebf4e383b4d587a978b924d8f11df664aa65",
+      "carte": "6d7144f6d48dc7697c006d23bf5adf8b41056854cdedec3e3723d6cec9149fe5"
     }
   },
   {
@@ -796,6 +964,10 @@
     "alt": "Portrait officiel de l'ancien marine dans son corps Na'vi, longues dreadlocks et collier vert",
     "bandeau": {
       "cadre": 0.1
+    },
+    "sha256": {
+      "bandeau": "ecad4dbd73e4318e262351f8a3aa6a2d44454c694d31cbb97702381397f3fda7",
+      "carte": "2c9cd98bf528a0ee9999b10160dc5739932692b26a2cc0ac8b8719dbd11c2fa7"
     }
   },
   {
@@ -812,6 +984,10 @@
     "alt": "Portrait officiel d'une adolescente Na'vi aux cheveux courts en bataille, regard curieux, collier de coquillages",
     "bandeau": {
       "cadre": 0.1
+    },
+    "sha256": {
+      "bandeau": "df785d84b0d6810607037924b775b213e7325b6a0e24e5766d95333eaec7f16e",
+      "carte": "77e5a52b83a8ada2048dde1ade247767526fbc3df58efc5b74c61a4fbe2009b8"
     }
   },
   {
@@ -828,6 +1004,10 @@
     "alt": "Portrait officiel d'un adolescent Na'vi aux tresses fines, avec un collier tressé rouge et un brassard",
     "bandeau": {
       "cadre": 0.1
+    },
+    "sha256": {
+      "bandeau": "06a0ba65a8281dc276c9263803279a100239d388fc90ffe93361dfcb0a71d8ec",
+      "carte": "6fa2aca16ac257df190b4cc16372320145228a8054905641690640e5fbf95f26"
     }
   },
   {
@@ -844,6 +1024,10 @@
     "alt": "Portrait officiel de la chamane Na'vi, longues tresses, bandeau perlé et étole rouge sur les épaules",
     "bandeau": {
       "cadre": 0.1
+    },
+    "sha256": {
+      "bandeau": "e4924c5b03e12d8139638041a954b8db33b7207289ddea9fc279e983208d78cc",
+      "carte": "fc31878170525623807b9b751b357c7ec8aea290ba0038fe5a5c1b63d3095ddb"
     }
   },
   {
@@ -860,6 +1044,10 @@
     "alt": "Portrait officiel d'un jeune guerrier Na'vi aux tresses, bandeau doré sur le front et collier de perles",
     "bandeau": {
       "cadre": 0.1
+    },
+    "sha256": {
+      "bandeau": "992b658cb73d9d0de80e3065b29fc58bfe93c66596527fe3514b94cdad0c0c32",
+      "carte": "9b9951d56975005aac421567eac4ae5c8a26cb5ead0ecd888b18e3e2c2149fbe"
     }
   },
   {
@@ -876,6 +1064,10 @@
     "alt": "Portrait officiel d'une guerrière Na'vi aux longues tresses, colliers de perles colorées, regard de côté",
     "bandeau": {
       "cadre": 0.1
+    },
+    "sha256": {
+      "bandeau": "014eb9edb3dbca54d9356ff6faf764c4d953862d153c3041101c75a6843e2537",
+      "carte": "503133dbb29617e66ed0ed6ba532bb4430f7cf6fb9b862a6884becc8d74da5ec"
     }
   },
   {
@@ -892,6 +1084,10 @@
     "alt": "Portrait officiel de l'avatar du scientifique, cheveux courts, gilet de terrain beige sur la peau bleue",
     "bandeau": {
       "cadre": 0.1
+    },
+    "sha256": {
+      "bandeau": "4ec6067be745b7fc356de286334e7bd29b772b9513ec7e613b88ee7c0d7ce4f5",
+      "carte": "f373625ca22b6233d9d6280a5c030d684ad0139964c4252801329b0989bc15ac"
     }
   },
   {
@@ -904,7 +1100,11 @@
       "film": "Avatar : la voie de l'eau (2022)"
     },
     "credit": "© 20th Century Studios",
-    "alt": "Silhouette d'un grand cétacé à la nageoire tendue sous la surface, un nageur Na'vi minuscule à ses côtés dans les rayons du soleil"
+    "alt": "Silhouette d'un grand cétacé à la nageoire tendue sous la surface, un nageur Na'vi minuscule à ses côtés dans les rayons du soleil",
+    "sha256": {
+      "bandeau": "5e0ac52242024a5e0348b73ade33b380bcebbb02c80cce2f1f7d82a6afb1c221",
+      "carte": "0d2f14ad0e4a40cf6e0f51086ef1d52560c40bb92eb8ddbb6b4da5a9a70e6486"
+    }
   },
   {
     "fiche": "personnages/peylak",
@@ -920,6 +1120,10 @@
     "alt": "Portrait officiel d'un chef Na'vi en grande cape rouge-orangé brodée, chargé de bijoux et de lanières",
     "bandeau": {
       "cadre": 0.1
+    },
+    "sha256": {
+      "bandeau": "8635ecb798ee0771587eaea145a818a758437eb77c1ed32dcb0f1f45359f9cfa",
+      "carte": "62b8289ebcefcc9d241317fe7e089baacd29e7a9fcf05d453c7b1e4d4d17243d"
     }
   },
   {
@@ -936,6 +1140,10 @@
     "alt": "Portrait officiel d'un soldat Na'vi au crâne rasé, avec un gilet tactique vert marqué « Proj Phnx »",
     "bandeau": {
       "cadre": 0.1
+    },
+    "sha256": {
+      "bandeau": "3cdde466ba68a6e8d0d35342b3423ecaae5573d02de9b050a110e4d9dfef75ac",
+      "carte": "a070074620adcd0ae45eb369b5b170497a61762ea95c12fb21d2be7385972eea"
     }
   },
   {
@@ -952,6 +1160,10 @@
     "alt": "Deux soldats Na'vi en tenue militaire : une femme tatouée en débardeur et un homme avec une casquette camouflage",
     "bandeau": {
       "cadre": 0.1
+    },
+    "sha256": {
+      "bandeau": "5ce59a1daa81791993eee7f92d4b987f13f4a02a4782d36120d612fa52294b6d",
+      "carte": "735c7e3f4265a1fd99295d2f9e02cb5f4ce9ba1621471543cdd47aff8ec72915"
     }
   },
   {
@@ -968,6 +1180,10 @@
     "alt": "Portrait officiel d'un jeune Na'vi du récif aux cheveux noirs dressés, collier de dents et baudrier tressé",
     "bandeau": {
       "cadre": 0.1
+    },
+    "sha256": {
+      "bandeau": "1afca2dc195c0f56f05692bda7efecc69c525717c1b9fa74414a5ea40b7c01c7",
+      "carte": "7b491cfcab608118c601f313e989bd2383de58080a1bddcdb319148cd226d084"
     }
   },
   {
@@ -984,6 +1200,10 @@
     "alt": "Portrait officiel d'un cadre en chemise et cravate rayée, un club de golf posé sur l'épaule",
     "bandeau": {
       "cadre": 0.1
+    },
+    "sha256": {
+      "bandeau": "b8a59212859c6c6e65b014a91cd6fce3330c14dfffa0d31f9dce7971931e2a3a",
+      "carte": "07fcba93bfc970f42b1d8593dd76b53e648921b40be90baccb16f4990ddb03ac"
     }
   },
   {
@@ -1000,6 +1220,10 @@
     "alt": "Portrait officiel d'un jeune humain aux dreadlocks blondes, masque respiratoire transparent et étole verte",
     "bandeau": {
       "cadre": 0.1
+    },
+    "sha256": {
+      "bandeau": "a5a032b8a6d085ade931927ab04690d7da865c80bb584359b76ed154651e011f",
+      "carte": "3e57bb0c127d0b62324611464653edea96586c945029f2ef0705992ec07f784e"
     }
   },
   {
@@ -1012,7 +1236,11 @@
       "film": "Avatar : la voie de l'eau (2022)"
     },
     "credit": "© 20th Century Studios",
-    "alt": "Le chef et la chamane du récif côte à côte, peaux vert d'eau tatouées, parures de coquillages et cape orange"
+    "alt": "Le chef et la chamane du récif côte à côte, peaux vert d'eau tatouées, parures de coquillages et cape orange",
+    "sha256": {
+      "bandeau": "c2964fa457183b0e00a81647fc283ea72c4b320d3fc18f8437743fff487ca063",
+      "carte": "114598d66e0eb48feff30cd0cdbe2336743dd0faab626a3120183c15552c0158"
+    }
   },
   {
     "fiche": "personnages/trudy-chacon",
@@ -1028,6 +1256,10 @@
     "alt": "Portrait officiel d'une pilote en combinaison de vol verte, cheveux noirs en queue de cheval, regard baissé",
     "bandeau": {
       "cadre": 0.1
+    },
+    "sha256": {
+      "bandeau": "525940669ee40bb0e468b09d52160ff719244d8c91228f860fad362e00699c0b",
+      "carte": "0b91de723876b2027933430e206b82a097bb5793d4c0daa6807752b3a728c273"
     }
   },
   {
@@ -1044,6 +1276,10 @@
     "alt": "Portrait officiel d'une jeune Na'vi du récif aux longs cheveux noirs ondulés, parure de coquillages argentés",
     "bandeau": {
       "cadre": 0.1
+    },
+    "sha256": {
+      "bandeau": "f94592b67d2d01497700f6a69a1653e45a018b5a9c255c63e41fbd0a036a2ecb",
+      "carte": "0c158f6ef8b9cf2dd916fc9fb58f3c8c9dfff77ef4f4306be93da3a5fdfb3d8a"
     }
   },
   {
@@ -1062,6 +1298,10 @@
     },
     "carte": {
       "mode": "contenir"
+    },
+    "sha256": {
+      "bandeau": "a82a2885cdef4e4d939be3a4d527a6ec33a0b2caa59891c3e5aacd04bd9473b3",
+      "carte": "161769d1f54d1c3d3306f7e43731c38817fc1468d61e0d781de7fa37fa4fc248"
     }
   },
   {
@@ -1078,6 +1318,10 @@
     "alt": "Portrait officiel d'une fillette Na'vi souriante, bras croisés, avec des cheveux courts tressés et de grands yeux dorés",
     "bandeau": {
       "cadre": 0.1
+    },
+    "sha256": {
+      "bandeau": "1368468a6fa66e38ccc1441325b913e7e3a092e82b68ff1f00ab2b61cb822b6b",
+      "carte": "6871df46c37258f3429fb58dbcb3f29ffd3dceedf898e106650170589d76a8a1"
     }
   },
   {
@@ -1107,6 +1351,10 @@
         1200,
         405
       ]
+    },
+    "sha256": {
+      "bandeau": "f2d984523be895c46faee96f89f990f8754a22475411260b824618272997e8d8",
+      "carte": "9c2714a151621d235b651f981f851a87bc0258c2b1be6f10064594b63e30d131"
     }
   }
 ]
