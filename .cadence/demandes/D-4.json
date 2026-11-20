@@ -9,5 +9,11 @@
   ],
   "lots": [
     "L64"
+  ],
+  "precisions": [
+    {
+      "date": "2026-11-20",
+      "texte": "Portraits officiels des personnages : « Tous, humains compris » (remplace la règle « jamais un visage d'acteur » de L17)"
+    }
   ]
 }
