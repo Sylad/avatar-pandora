@@ -203,14 +203,22 @@ test('R10 — bestiaire : une image n’y est posée que si films.json en trace 
   assert.doesNotMatch(readFileSync(join(FRONT, 'src/pages/bestiaire.astro'), 'utf8'), /cover="/);
 });
 
-test('R12 — images refusées par Sylvain le 20-11 : traçabilité gardée, raison notée, jamais posées (L64 : remplacées par l’image officielle de Pandorapedia)', () => {
-  assert.deepEqual(REFUSEES.map((f) => f.fiche).sort(), ['bestiaire/akula', 'bestiaire/hexapede', 'bestiaire/nantang']);
+test('R12 — images refusées ou remplacées le 20-11 : traçabilité gardée, raison notée, jamais posées (L64 : image officielle de Pandorapedia ; L65 : Hometree de Sylvain)', () => {
+  // L65 (D-5) : l'hologramme de Hometree, remplacé par l'image de l'arbre entier fournie par Sylvain.
+  const REMPLACEES = {
+    'bestiaire/akula': ['modèle 3D sur grille, refusé par Sylvain le 20-11', 'pandorapedia'],
+    'bestiaire/hexapede': ['modèle 3D sur grille, refusé par Sylvain le 20-11', 'pandorapedia'],
+    'bestiaire/nantang': ['modèle 3D sur grille, refusé par Sylvain le 20-11', 'pandorapedia'],
+    'flore/hometree': ["hologramme de l'arbre, remplacé par l'image de l'arbre entier fournie par Sylvain le 20-11", 'sylvain'],
+  };
+  assert.deepEqual(REFUSEES.map((f) => f.fiche).sort(), Object.keys(REMPLACEES));
   for (const f of REFUSEES) {
-    assert.equal(f.raison, 'modèle 3D sur grille, refusé par Sylvain le 20-11', `${f.fiche} : raison`);
+    const [raison, type] = REMPLACEES[f.fiche];
+    assert.equal(f.raison, raison, `${f.fiche} : raison`);
     const e = entries.find((x) => `${x.section}/${x.slug}` === f.fiche);
-    assert.ok(e.pandorapedia, `${f.fiche} : le lien Pandorapedia reste`);
+    if (type === 'pandorapedia') assert.ok(e.pandorapedia, `${f.fiche} : le lien Pandorapedia reste`);
     const retenue = FILMS.find((x) => x.fiche === f.fiche);
-    assert.equal(retenue?.source.type, 'pandorapedia', `${f.fiche} : image officielle retenue à la place`);
+    assert.equal(retenue?.source.type, type, `${f.fiche} : image retenue à la place`);
     assert.notEqual(retenue.source.fichier, f.source.fichier, `${f.fiche} : jamais le plan refusé`);
     assert.equal(e.coverAlt, retenue.alt, `${f.fiche} : l’image posée est la retenue`);
   }
@@ -231,7 +239,7 @@ test('R11 — films.json : chaque image du film a une source exacte, un crédit 
     const s = f.source;
     assert.ok(['sylvain', 'pandorapedia', 'video', 'film'].includes(s.type), `${f.fiche} : type de source ${s.type}`);
     assert.ok(s.fichier && !s.fichier.startsWith('/') && !s.fichier.includes('..'), `${f.fiche} : fichier source relatif au dossier des références`);
-    if (s.type === 'sylvain') assert.match(s.fichier, /^[a-z-]+\/sylvain_[a-z0-9_]+\.png$/, `${f.fiche} : fichier de Sylvain`);
+    if (s.type === 'sylvain') assert.match(s.fichier, /^[a-z-]+\/sylvain_[a-z0-9_]+\.(png|webp)$/, `${f.fiche} : fichier de Sylvain`);
     if (s.type === 'pandorapedia') {
       assert.match(s.image, /^https:\/\/lumiere-a\.akamaihd\.net\/v1\/images\/[\w.-]+$/, `${f.fiche} : URL de l’image officielle`);
       assert.ok(s.image.endsWith(s.fichier.split('/').pop()), `${f.fiche} : le fichier est l’image de l’URL`);

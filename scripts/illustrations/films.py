@@ -13,7 +13,8 @@ Pour chaque entrée de films.json :
 et écrit `cover`, `coverAlt` et `coverCredit` dans le front matter de la fiche.
 
 Champs d'une entrée (la traçabilité est contrôlée par scripts/illustrations.test.mjs) :
-  source  : {"type": "sylvain", "fichier": …}          image du film fournie par Sylvain
+  source  : {"type": "sylvain", "fichier": …}          image du film fournie par Sylvain (PNG ou WebP ;
+            "fourni" : nom du fichier tel que Sylvain l'a donné, ex. Hometree en L65)
             {"type": "pandorapedia", "image": URL, "page": URL, "fichier": …}  image officielle
             {"type": "video", "fichier": …, "temps": secondes}                 plan de la vidéo fournie
             {"type": "film", "image": URL, "page": URL avatar.com/movies/…, "fichier": …}
@@ -36,7 +37,8 @@ Champs d'une entrée (la traçabilité est contrôlée par scripts/illustrations
   vidéo refusé le 20-11, image officielle de Pandorapedia retenue en L64).
   La page Pandorapedia de la source est écrite dans le champ `pandorapedia` de la fiche si elle n'en a pas.
   retenue : false pour une image refusée (avec "raison") : l'entrée garde sa traçabilité mais n'est
-            jamais posée ; la fiche garde le visuel par défaut (akula, nantang, hexapede le 20-11).
+            jamais posée ; la fiche garde le visuel par défaut (akula, nantang, hexapede le 20-11), ou
+            l'entrée retenue qui la remplace (Hometree en L65 : hologramme remplacé par l'image de Sylvain).
   sha256  : {"bandeau": …, "carte": …} empreinte des deux WebP servis, réécrite par ce script à chaque
             génération ; R13 de scripts/illustrations.test.mjs la compare aux fichiers, si bien qu'un WebP
             remplacé sans passer par films.json fait échouer les tests.

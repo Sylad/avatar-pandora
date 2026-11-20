@@ -3,7 +3,7 @@ title: "Hometree (Kelutral) — l'arbre-mère"
 summary: "300 mètres de haut, abrite plusieurs centaines de Na'vi, racine connectée au réseau Eywa. Détruit par la RDA en 2154, mais d'autres demeurent."
 order: 1
 cover: "/illustrations/flore/hometree.webp"
-coverAlt: "Hologramme de l'arbre-maison des Omatikaya sur la table tactique de la base humaine, devant le colonel et ses officiers"
+coverAlt: "L'arbre-maison entier dans la brume bleue, immense houppier étalé en parasol au-dessus d'un tronc noueux aux racines en contreforts, forêt de grands arbres en fond"
 coverCredit: "© 20th Century Studios"
 ---
 

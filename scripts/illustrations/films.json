@@ -581,6 +581,8 @@
   },
   {
     "fiche": "flore/hometree",
+    "retenue": false,
+    "raison": "hologramme de l'arbre, remplacé par l'image de l'arbre entier fournie par Sylvain le 20-11",
     "source": {
       "type": "film",
       "fichier": "_l64-films/photo-6_cbe0faaf.jpeg",
@@ -590,10 +592,27 @@
     },
     "credit": "© 20th Century Studios",
     "alt": "Hologramme de l'arbre-maison des Omatikaya sur la table tactique de la base humaine, devant le colonel et ses officiers",
-    "recherche": "L65 (D-5, 20-11-2026) : aucune image officielle ne montre mieux l'arbre lui-même, image gardée. Pandorapedia n'a pas de page Hometree (hometree, kelutral, home-tree… en 404 ; « Hometree » est cité sans lien dans the-omatikaya-rainforest). Écartées : a_avatarpandorapedia_omatikaya_16x9_1098_13 (le clan au premier plan, l'arbre seulement en fond, déjà sur clans/omatikaya), a_avatarpandorapedia_omatikayaforest_16x9 (sous-bois sans l'arbre, déjà sur pandora/biomes), avatar_404_bkgrd_16-9 (saule lumineux de nuit, pas l'arbre-maison), avatarfooter_1600 (silhouettes dans la forêt de nuit). Les galeries de La voie de l'eau et De feu et de cendres (49 images) ne montrent pas l'arbre des Omatikaya.",
+    "recherche": "L65 (D-5, 20-11-2026) : aucune image officielle ne montre mieux l'arbre lui-même, image gardée. Pandorapedia n'a pas de page Hometree (hometree, kelutral, home-tree… en 404 ; « Hometree » est cité sans lien dans the-omatikaya-rainforest). Écartées : a_avatarpandorapedia_omatikaya_16x9_1098_13 (le clan au premier plan, l'arbre seulement en fond, déjà sur clans/omatikaya), a_avatarpandorapedia_omatikayaforest_16x9 (sous-bois sans l'arbre, déjà sur pandora/biomes), avatar_404_bkgrd_16-9 (saule lumineux de nuit, pas l'arbre-maison), avatarfooter_1600 (silhouettes dans la forêt de nuit). Les galeries de La voie de l'eau et De feu et de cendres (49 images) ne montrent pas l'arbre des Omatikaya. Image fournie par Sylvain le 20-11-2026 (l'arbre-maison entier dans la brume bleue, hometree-sylvain.webp, 1080×703) : posée à la place de l'hologramme."
+  },
+  {
+    "fiche": "flore/hometree",
+    "source": {
+      "type": "sylvain",
+      "fichier": "hometree/sylvain_hometree.webp",
+      "fourni": "l65-hometree/hometree-sylvain.webp",
+      "film": "Avatar (2009)"
+    },
+    "credit": "© 20th Century Studios",
+    "alt": "L'arbre-maison entier dans la brume bleue, immense houppier étalé en parasol au-dessus d'un tronc noueux aux racines en contreforts, forêt de grands arbres en fond",
+    "bandeau": {
+      "mode": "contenir"
+    },
+    "carte": {
+      "mode": "contenir"
+    },
     "sha256": {
-      "bandeau": "4400546cf6d6d8404809862ee6f00a346604eb17a0deea5473403e7a430ab32d",
-      "carte": "7d84d8e5de73ea37062731ce245db90a4a0ad490c00d73afd86d8297f659f842"
+      "bandeau": "95fb2c9d5da9eb572a30d65e3f0f6a9b8d2a0672c5be6c65e64cbb15b9f27d96",
+      "carte": "65391b4f15a219b0506addd3763d10fea21f1fc298aaaea1671b1867c5fbf430"
     }
   },
   {
