@@ -8,10 +8,11 @@
 ## Bestiaire en images des films (L63, D-2 et D-3)
 
 - Écrans : `/bestiaire/` (cartes 640×480, ligne « Images des créatures : © 20th Century Studios » sous la liste) et les 14 fiches `/bestiaire/<créature>/` (bandeau 1344×576, légende `figcaption.entry-cover-caption` avec le crédit puis le lien « Fiche officielle sur Pandorapedia »). La visionneuse affiche « description — crédit » (`data-credit` sur l'image). La page À propos explique d'où viennent les images.
-- Source : images des films (images fournies par Sylvain, images officielles de Pandorapedia, plans de la vidéo de comparaison). Chaque image a son entrée dans `scripts/illustrations/films.json` (source exacte, crédit, alt, cadrage). Les images sources restent hors du dépôt, dans `~/projects/developpeur/tmp/l63-refs/`. Pour refaire les WebP et le front matter : `python -I scripts/illustrations/films.py <dossier-refs> [--seul bestiaire/x]`, avec Pillow et opencv-python-headless dans un venv jetable.
+- Source : images des films (images fournies par Sylvain, images officielles de Pandorapedia ; les plans de la vidéo de comparaison ont été refusés le 20-11). Chaque image a son entrée dans `scripts/illustrations/films.json` (source exacte, crédit, alt, cadrage). Les images sources restent hors du dépôt, dans `~/projects/developpeur/tmp/l63-refs/`. Pour refaire les WebP et le front matter : `python -I scripts/illustrations/films.py <dossier-refs> [--seul bestiaire/x]`, avec Pillow et opencv-python-headless dans un venv jetable.
 - Schéma : `coverCredit` n'accepte que « © 20th Century Studios » et exige `cover`.
 - Décisions :
   - 19-11, décision de Sylvain : images des films avec crédit discret, site gardé en noindex ;
   - plus d'image générée pour une créature : les entrées SDXL du bestiaire restent dans `illustrations.json` en `branchee: false` ;
-  - `glow-snake` n'a aucune bonne image et garde `CoverFallback`.
-- Tests : `scripts/illustrations.test.mjs` contrôle la source et le crédit tracés (R10 et R11), le crédit en légende et dans la visionneuse, ainsi que la liste du bestiaire (R7).
+  - `glow-snake` n'a aucune bonne image et garde `CoverFallback` ;
+  - 20-11, décision de Sylvain sur la planche : `akula`, `nantang` et `hexapede` (modèles 3D sur grille tirés de la vidéo de comparaison, pas des plans du film) reprennent `CoverFallback`. Leurs entrées restent dans `films.json` avec `"retenue": false` et leur raison ; `films.py` les saute.
+- Tests : `scripts/illustrations.test.mjs` contrôle la source et le crédit tracés (R10 et R11), le crédit en légende et dans la visionneuse, ainsi que la liste du bestiaire (R7) ; R12 contrôle les images refusées (raison notée, rien de servi).

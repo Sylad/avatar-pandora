@@ -101,6 +101,8 @@
   },
   {
     "fiche": "bestiaire/akula",
+    "retenue": false,
+    "raison": "modèle 3D sur grille, refusé par Sylvain le 20-11",
     "source": { "type": "video", "fichier": "_video/comparaison-tailles.mp4", "temps": 340, "note": "modèle 3D de la créature, plan sans légende, Na'vi de comparaison hors cadre" },
     "credit": "© 20th Century Studios",
     "alt": "Gros poisson prédateur au corps massif, dos sombre tacheté et ventre clair, vu de profil",
@@ -109,6 +111,8 @@
   },
   {
     "fiche": "bestiaire/nantang",
+    "retenue": false,
+    "raison": "modèle 3D sur grille, refusé par Sylvain le 20-11",
     "source": { "type": "video", "fichier": "_video/comparaison-tailles.mp4", "temps": 50, "note": "modèle 3D de la créature, légende et Na'vi de comparaison hors cadre" },
     "credit": "© 20th Century Studios",
     "alt": "Carnassier sombre et efflanqué à la peau luisante, tête basse, qui avance de profil",
@@ -117,6 +121,8 @@
   },
   {
     "fiche": "bestiaire/hexapede",
+    "retenue": false,
+    "raison": "modèle 3D sur grille, refusé par Sylvain le 20-11",
     "source": { "type": "video", "fichier": "_video/comparaison-tailles.mp4", "temps": 59, "note": "modèle 3D de la créature, légende et Na'vi de comparaison hors cadre" },
     "credit": "© 20th Century Studios",
     "alt": "Herbivore gracile à six pattes, robe violette rayée de blanc et crête en éventail sur la tête",

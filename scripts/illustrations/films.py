@@ -24,6 +24,8 @@ Champs d'une entrée (la traçabilité est contrôlée par scripts/illustrations
                                 détourée, ou celui du réglage de la taille).
   fond    : couleur posée sous une image détourée (PNG transparent).
   masquer : rectangles adoucis (flou fondu) — ex. le nageur que Sylvain a flouté sur le tulkun.
+  retenue : false pour une image refusée (avec "raison") : l'entrée garde sa traçabilité mais n'est
+            jamais posée ; la fiche garde le visuel par défaut (akula, nantang, hexapede le 20-11).
 """
 import json, re, sys
 from pathlib import Path
@@ -114,6 +116,8 @@ def main():
     vignettes = []
     for e in json.loads((ICI / "films.json").read_text()):
         if seul and e["fiche"] not in seul:
+            continue
+        if e.get("retenue") is False:
             continue
         section, fiche = e["fiche"].split("/")
         img = adoucit(charge(refs, e), e.get("masquer", []))

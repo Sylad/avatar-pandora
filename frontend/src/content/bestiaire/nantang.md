@@ -3,9 +3,6 @@ title: "Nantang — le loup-vipère"
 summary: "Prédateur de meute, six pattes, écailles noires, communication ultrasonique. Le premier danger des nuits forestières."
 pandorapedia: "https://www.avatar.com/pandorapedia/viperwolf"
 order: 4
-cover: "/illustrations/bestiaire/nantang.webp"
-coverAlt: "Carnassier sombre et efflanqué à la peau luisante, tête basse, qui avance de profil"
-coverCredit: "© 20th Century Studios"
 ---
 
 Pandora se présente rarement sous ses pires aspects dès le premier regard. La grande forêt séduit avant de menacer — lumière bioluminescente, silhouettes végétales somptueuses, sons qui semblent plus musicaux que dangereux. C'est dans cet interstice entre la beauté et la menace que le nantang prospère le mieux. Discret, nocturne, collectif, il constitue l'initiation violente de quiconque s'aventure seul après la tombée du jour.

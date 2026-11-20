@@ -15,7 +15,10 @@ const REPO = fileURLToPath(new URL('../', import.meta.url));
 const SOURCES = JSON.parse(readFileSync(join(REPO, 'scripts/illustrations/illustrations.json'), 'utf8'));
 const GUIDEES = SOURCES.filter((e) => e.ip_adapter);
 /** L63 (décision du 19-11-2026) : images des films du bestiaire, source et crédit tracés. */
-const FILMS = JSON.parse(readFileSync(join(REPO, 'scripts/illustrations/films.json'), 'utf8'));
+const FILMS_TOUS = JSON.parse(readFileSync(join(REPO, 'scripts/illustrations/films.json'), 'utf8'));
+/** Images posées ; les refusées (`"retenue": false`, avec leur raison) gardent leur traçabilité mais ne sont jamais servies. */
+const FILMS = FILMS_TOUS.filter((f) => f.retenue !== false);
+const REFUSEES = FILMS_TOUS.filter((f) => f.retenue === false);
 const CREDIT = '© 20th Century Studios';
 /** Entrée gardée pour être refaite mais posée sur aucune fiche (`"branchee": false`, bestiaire depuis le 19-11-2026). */
 const branchee = (e) => e.branchee !== false;
@@ -133,12 +136,12 @@ test('R6 — la page À propos dit d’où viennent les images : générées hor
   for (const re of [/œuvres de fan/, /IP-Adapter/, /aucune image des films/]) assert.doesNotMatch(about, re);
 });
 
-test('R9 — fiches sans image : Spider et les créatures sans image des films (glow snake), rien d’autre', () => {
+test('R9 — fiches sans image : Spider et les créatures sans image des films retenue (glow snake, akula, nantang, hexapede), rien d’autre', () => {
   const sans = entries.filter((e) => !isIllustration(e.cover)).map((e) => `${e.section}/${e.slug}`).sort();
   const bestiaire = entries.filter((e) => e.section === 'bestiaire').map((e) => `${e.section}/${e.slug}`);
   assert.equal(bestiaire.length, 14);
   const sansFilm = bestiaire.filter((f) => !FILMS.some((x) => x.fiche === f));
-  assert.deepEqual(sansFilm, ['bestiaire/glow-snake']);
+  assert.deepEqual(sansFilm.sort(), ['bestiaire/akula', 'bestiaire/glow-snake', 'bestiaire/hexapede', 'bestiaire/nantang']);
   assert.deepEqual(sans, ['personnages/spider', ...sansFilm].sort());
 });
 
@@ -165,10 +168,26 @@ test('R10 — bestiaire : une image n’y est posée que si films.json en trace 
   assert.doesNotMatch(readFileSync(join(FRONT, 'src/pages/bestiaire.astro'), 'utf8'), /cover="/);
 });
 
+test('R12 — images refusées par Sylvain le 20-11 : traçabilité gardée, raison notée, rien de servi', () => {
+  assert.deepEqual(REFUSEES.map((f) => f.fiche).sort(), ['bestiaire/akula', 'bestiaire/hexapede', 'bestiaire/nantang']);
+  const publics = readdirSync(join(PUBLIC, 'illustrations'), { recursive: true }).map(String);
+  for (const f of REFUSEES) {
+    assert.equal(f.raison, 'modèle 3D sur grille, refusé par Sylvain le 20-11', `${f.fiche} : raison`);
+    const e = entries.find((x) => `${x.section}/${x.slug}` === f.fiche);
+    assert.equal(e.cover, undefined, `${f.fiche} : aucune image posée`);
+    assert.equal(e.coverCredit, undefined, `${f.fiche} : aucun crédit sans image`);
+    assert.ok(e.pandorapedia, `${f.fiche} : le lien Pandorapedia reste`);
+    const fiche = f.fiche.split('/')[1];
+    assert.deepEqual(publics.filter((x) => x.endsWith(`/${fiche}.webp`) || x.endsWith(`/${fiche}-carte.webp`)), [], `${f.fiche} : WebP servi`);
+  }
+  // films.py ne refait jamais une image refusée.
+  assert.match(readFileSync(join(REPO, 'scripts/illustrations/films.py'), 'utf8'), /e\.get\("retenue"\) is False/);
+});
+
 test('R11 — films.json : chaque image du film a une source exacte, un crédit et une fiche réelle', () => {
   assert.ok(FILMS.length >= 1);
   const vues = new Set();
-  for (const f of FILMS) {
+  for (const f of FILMS_TOUS) {
     assert.ok(!vues.has(f.fiche), `${f.fiche} en double`); vues.add(f.fiche);
     assert.match(f.fiche, /^bestiaire\/[a-z0-9-]+$/, `${f.fiche} : seul le bestiaire prend des images des films`);
     assert.ok(entries.some((e) => `${e.section}/${e.slug}` === f.fiche), `${f.fiche} : fiche absente`);
@@ -187,7 +206,7 @@ test('R11 — films.json : chaque image du film a une source exacte, un crédit 
   }
   // Aucune image source versionnée : seules les deux tailles WebP sont servies.
   const suivis = execFileSync('git', ['ls-files'], { cwd: REPO, encoding: 'utf8' }).split('\n');
-  const noms = FILMS.map((f) => f.source.fichier.split('/').pop());
+  const noms = FILMS_TOUS.map((f) => f.source.fichier.split('/').pop());
   assert.deepEqual(suivis.filter((x) => noms.some((n) => x.endsWith(n))), []);
 });
 
@@ -269,10 +288,15 @@ test('R7 — site construit : la carte charge la taille carte, la fiche décrit 
   assert.equal(cap, `${FILMS.find((f) => f.fiche === 'bestiaire/ikran').alt} — ${CREDIT}`);
   await page.keyboard.press('Escape');
 
-  // Créature sans image des films : visuel par défaut, aucun crédit.
-  await page.goto(`${env.base}/bestiaire/glow-snake/`, { waitUntil: 'load' });
-  assert.equal(await page.locator('main .cover-fallback').count(), 1);
-  assert.equal(await page.getByText(CREDIT).count(), 0);
+  // Créatures sans image des films retenue : visuel par défaut, aucun crédit, le lien Pandorapedia reste.
+  for (const fiche of ['bestiaire/glow-snake', ...REFUSEES.map((f) => f.fiche)]) {
+    await page.goto(`${env.base}/${fiche}/`, { waitUntil: 'load' });
+    assert.equal(await page.locator('main .cover-fallback').count(), 1, `${fiche} : visuel par défaut`);
+    assert.equal(await page.getByText(CREDIT).count(), 0, `${fiche} : aucun crédit`);
+    assert.equal(await page.locator('main img[src*="/illustrations/bestiaire/"]').count(), 0, `${fiche} : aucune image`);
+    const e = entries.find((x) => `${x.section}/${x.slug}` === fiche);
+    if (e.pandorapedia) assert.equal(await page.locator(`main a[href="${e.pandorapedia}"]`).count() >= 1, true, `${fiche} : lien Pandorapedia`);
+  }
 
   // Liste du bestiaire : cartes en taille carte pour les images des films, visuel par défaut sinon, et le crédit sous la liste.
   await page.goto(`${env.base}/bestiaire/`, { waitUntil: 'load' });
@@ -285,6 +309,7 @@ test('R7 — site construit : la carte charge la taille carte, la fiche décrit 
     if (FILMS.some((f) => f.fiche === fiche)) assert.equal(c.src, `/${'illustrations'}/${fiche}-carte.webp`, fiche);
     else assert.ok(c.fallback && !c.src, `${fiche} : visuel par défaut`);
   }
+  assert.equal(liste.filter((c) => c.fallback).length, 4, '4 créatures au visuel par défaut');
   const cassees = await page.$$eval('.entry-card img', async (imgs) => {
     await Promise.all(imgs.map((i) => { i.loading = 'eager'; return i.decode().catch(() => {}); }));
     return imgs.filter((i) => !i.naturalWidth).map((i) => i.getAttribute('src'));
