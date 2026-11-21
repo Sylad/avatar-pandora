@@ -136,9 +136,17 @@ const sections = [
     }
   }
 
+  /* Bureau : barre collante posée sur l'ambiance (particules WebGL, halo du curseur, mousse).
+     Transparente jusqu'à L67, une particule claire passait derrière un libellé et le faisait tomber
+     jusqu'à 1,0:1 (WCAG 1.4.3). Voile de nuit à 88 % : la plus claire des particules ressort au plus
+     à rgb(37,41,49) sous le texte (≥ 7:1 pour les libellés atténués) ; le pollen reste deviné à
+     travers, et un reflet cyan très bas descend le long du bord lumineux. Mesuré par
+     scripts/codex-menu-contrast.e2e.test.mjs. */
   @media (min-width: 64rem) {
     .eywa-sidebar {
-      background: transparent;
+      background:
+        linear-gradient(to left, rgba(95, 255, 230, 0.035), transparent 45%),
+        rgba(8, 12, 22, 0.88);
       backdrop-filter: none;
     }
   }
@@ -215,6 +223,14 @@ const sections = [
     color: var(--color-eywa-bio-primary);
     background-color: rgba(95, 255, 230, 0.06);
     box-shadow: 0 0 18px -6px rgba(95, 255, 230, 0.50);
+  }
+
+  /* Focus clavier (L67) : même lueur que le survol, plus un anneau net (WCAG 2.4.7). */
+  .eywa-nav-link:focus-visible,
+  .eywa-about__link:focus-visible {
+    color: var(--color-eywa-bio-primary);
+    outline: 2px solid var(--color-eywa-bio-primary);
+    outline-offset: 2px;
   }
 
   .eywa-about__link:hover .eywa-about__icon {
