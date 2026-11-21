@@ -147,11 +147,35 @@ const { landing = false } = Astro.props;
       return true;
     };
 
+    // Animation de chaque tache, gardée à sa création : la retrouver par getAnimations() à chaque
+    // retrait (au-delà de MOSS_MAX taches) coûtait plus que tout le reste de la pose (profil D-6).
+    const anims = new WeakMap<HTMLElement, Animation>();
     const remove = (wrap: HTMLElement) => {
-      wrap.getAnimations({ subtree: true }).forEach((a) => a.cancel());
+      anims.get(wrap)?.cancel();
       wrap.remove();
       const i = live.indexOf(wrap);
       if (i >= 0) live.splice(i, 1);
+    };
+
+    // Taches mesurées mais pas encore posées. Lire la mise en page (getBoundingClientRect) juste
+    // après avoir ajouté la tache précédente forçait un recalcul de style et de mise en page à
+    // chaque pose ; lectures d'abord, écritures ensemble dans une microtâche (même tour d'événement,
+    // rien n'attend une image). Le temps de cette pose compte dans spawnMs comme celui de la mesure.
+    let pending: { wrap: HTMLElement; el: HTMLElement; strength: number; life: number }[] = [];
+    const flush = () => {
+      const t0 = performance.now();
+      const batch = pending;
+      pending = [];
+      if (!host) return;
+      for (const { wrap, el, strength, life } of batch) {
+        host.append(wrap);
+        live.push(wrap);
+        anims.set(wrap, el.animate(mossKeyframes(strength), { duration: life, easing: 'linear' }));
+        // Retirée à l'heure dite, même si la page n'a pas rendu d'image entre-temps (onglet caché).
+        window.setTimeout(() => remove(wrap), life + 50);
+      }
+      while (live.length > MOSS_MAX) remove(live[0]);
+      stats.spawnMs += performance.now() - t0;
     };
 
     const spawn = (clientX: number, clientY: number, strength: number, life: number) => {
@@ -159,23 +183,21 @@ const { landing = false } = Astro.props;
       const t0 = performance.now();
       const o = host.getBoundingClientRect();
       // Toucher au téléphone : tache plus large que la colonne de texte, pour qu'elle déborde dans
-      // les marges et entre les paragraphes autour du doigt (revue UX L32, M1).
-      const base = life > MOSS_LIFE_MS ? (phone() ? 220 : 170) : phone() ? 95 : 130;
+      // les marges et entre les paragraphes autour du doigt (revue UX L32, M1). 240 (et non 220) depuis
+      // le fondu doux du masque (D-6), qui efface un peu plus de mousse autour des lignes : à 220, la
+      // plus petite tache ne laissait que +2,1/255 de lumière autour du doigt sur une fiche (seuil 2,5).
+      const base = life > MOSS_LIFE_MS ? (phone() ? 240 : 170) : phone() ? 95 : 130;
       const R = base * (0.85 + Math.random() * 0.3);
       const cell = { x: clientX - o.left - R, y: clientY - o.top - R, w: 2 * R, h: 2 * R };
       const set = life > MOSS_LIFE_MS ? tapSprites : sprites;
       const { wrap, el } = blot(set[Math.floor(Math.random() * set.length)], 'eywa-moss__patch', cell);
-      host.append(wrap);
-      live.push(wrap);
-      el.animate(mossKeyframes(strength), { duration: life, easing: 'linear' });
-      // Retirée à l'heure dite, même si la page n'a pas rendu d'image entre-temps (onglet caché).
-      window.setTimeout(() => remove(wrap), life + 50);
-      while (live.length > MOSS_MAX) remove(live[0]);
+      if (!pending.length) queueMicrotask(flush);
+      pending.push({ wrap, el, strength, life });
       stats.spawned++;
       stats.spawnMs += performance.now() - t0;
     };
 
-    const clear = () => { while (live.length) remove(live[0]); };
+    const clear = () => { pending = []; while (live.length) remove(live[0]); };
 
     // Hauteur du calque = page entière ; masques de la mousse au repos recalculés.
     // `freeOnly` (chargement de la page) : seules les taches qui ne touchent rien de protégé sont

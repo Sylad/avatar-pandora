@@ -88,15 +88,18 @@ test('masque : noir plein sous les boîtes protégées qui touchent la tache, bo
   assert.equal(shieldMask(cell, [{ x: 0, y: 0, w: 50, h: 50 }]), null, 'boîte loin de la tache');
   const svg = shieldMask(cell, [{ x: 150, y: 250, w: 100, h: 20 }, { x: 900, y: 900, w: 10, h: 10 }]);
   assert.match(svg, /^<svg xmlns="http:\/\/www\.w3\.org\/2000\/svg" width="300\.0" height="300\.0"/);
-  assert.match(svg, /<rect width="100%" height="100%" fill="#fff"\/><g fill="#000">/);
-  // Dernière couche (dessinée au-dessus) : noir plein, boîte agrandie de SHIELD_PAD_PX.
-  const layers = [...svg.matchAll(/<g opacity="([\d.]+)">(.*?)<\/g>/g)];
-  assert.equal(layers.length, SHIELD_FEATHER.length + 1);
-  const [, op, inner] = layers.at(-1);
-  assert.equal(Number(op), 1);
-  const rects = [...inner.matchAll(/<rect x="([\d.-]+)" y="([\d.-]+)" width="([\d.]+)" height="([\d.]+)"/g)];
+  assert.match(svg, /<rect width="100%" height="100%" fill="#fff"\/><g fill="#000" stroke="#000" stroke-linejoin="round">/);
+  // Boîtes écrites une fois : seule la boîte qui touche la tache, à sa place dans la tache.
+  const defs = svg.match(/<defs><g id="b">(.*?)<\/g><\/defs>/)[1];
+  const rects = [...defs.matchAll(/<rect x="([\d.-]+)" y="([\d.-]+)" width="([\d.]+)" height="([\d.]+)"\/>/g)];
   assert.equal(rects.length, 1, 'seule la boîte qui touche la tache');
-  assert.deepEqual(rects[0].slice(1).map(Number), [50 - SHIELD_PAD_PX, 50 - SHIELD_PAD_PX, 100 + 2 * SHIELD_PAD_PX, 20 + 2 * SHIELD_PAD_PX]);
+  assert.deepEqual(rects[0].slice(1).map(Number), [50, 50, 100, 20]);
+  // Couronnes : la boîte reprise avec un trait arrondi de 2·d (agrandie de d, coins de rayon d).
+  // Dernière couche : noir plein, boîte agrandie de SHIELD_PAD_PX.
+  const layers = [...svg.matchAll(/<use href="#b" stroke-width="([\d.]+)" opacity="([\d.]+)"\/>/g)];
+  assert.equal(layers.length, SHIELD_FEATHER.length + 1);
+  assert.deepEqual(layers.at(-1).slice(1).map(Number), [2 * SHIELD_PAD_PX, 1]);
+  assert.deepEqual(layers.slice(0, -1).map((l) => Number(l[1]) / 2), SHIELD_FEATHER.map(([d]) => Number(d.toFixed(1))));
   // Le fondu est hors de la marge pleine, et sans filtre (rastérisé sur le fil principal).
   assert.ok(SHIELD_PAD_PX >= 4 && SHIELD_FEATHER.every(([d, o]) => d > SHIELD_PAD_PX && o < 1));
   assert.doesNotMatch(svg, /filter|feGaussianBlur/);
@@ -121,5 +124,5 @@ test('masque : fondu doux de 10 à 16 px, sans marche visible, union des boîtes
   // Couronnes en `opacity` de groupe (union) : deux lignes qui se recouvrent ne font pas un noir plus dense.
   const svg = shieldMask({ x: 0, y: 0, w: 200, h: 200 }, [{ x: 20, y: 50, w: 100, h: 20 }, { x: 20, y: 72, w: 100, h: 20 }]);
   assert.doesNotMatch(svg, /fill-opacity/);
-  assert.equal([...svg.matchAll(/<g opacity=/g)].length, SHIELD_FEATHER.length + 1);
+  assert.equal([...svg.matchAll(/<use [^>]*opacity=/g)].length, SHIELD_FEATHER.length + 1);
 });

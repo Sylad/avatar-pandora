@@ -169,18 +169,20 @@ export function isTap(down: MossStep, up: MossStep): boolean {
 /**
  * Masque (SVG, blanc = mousse visible) d'une tache posée dans `cell` : noir sous chaque boîte
  * protégée qui la touche, agrandie de SHIELD_PAD_PX et fondue. null si rien ne la touche.
+ * Les boîtes ne sont écrites qu'une fois (<defs>) : chaque couronne les reprend (<use>) avec un
+ * trait arrondi d'épaisseur 2·d, qui agrandit chaque boîte de d, coins arrondis de rayon d. Écrire
+ * les boîtes dans chacune des 9 couronnes triplait le coût de pose d'une tache (porte rouge, D-6).
  */
 export function shieldMask(cell: Box, shields: Box[]): string | null {
   const outer = Math.max(SHIELD_PAD_PX, ...SHIELD_FEATHER.map(([d]) => d));
   const hit = shields.filter((s) => intersects(inflate(s, outer), cell));
   if (!hit.length) return null;
   const f = (n: number) => n.toFixed(1);
-  const layer = (d: number, op: number) => `<g opacity="${op.toFixed(3)}">${hit.map((s) => {
-    const r = inflate(s, d);
-    return `<rect x="${f(r.x - cell.x)}" y="${f(r.y - cell.y)}" width="${f(r.w)}" height="${f(r.h)}" rx="${f(d)}"/>`;
-  }).join('')}</g>`;
+  const boxes = hit.map((s) => `<rect x="${f(s.x - cell.x)}" y="${f(s.y - cell.y)}" width="${f(s.w)}" height="${f(s.h)}"/>`).join('');
+  const layer = (d: number, op: number) => `<use href="#b" stroke-width="${f(2 * d)}" opacity="${op.toFixed(3)}"/>`;
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${f(cell.w)}" height="${f(cell.h)}" viewBox="0 0 ${f(cell.w)} ${f(cell.h)}">`
-    + `<rect width="100%" height="100%" fill="#fff"/><g fill="#000">`
+    + `<defs><g id="b">${boxes}</g></defs>`
+    + '<rect width="100%" height="100%" fill="#fff"/><g fill="#000" stroke="#000" stroke-linejoin="round">'
     + SHIELD_FEATHER.map(([d, op]) => layer(d, op)).join('') + layer(SHIELD_PAD_PX, 1)
     + '</g></svg>';
 }
