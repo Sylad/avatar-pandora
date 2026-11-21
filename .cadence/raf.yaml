@@ -711,6 +711,7 @@ lots:
     status: done
     estimate: 1
     visible: true
+    delivered: { date: 2026-11-21, sha: 175a1df26e3152d0ce65c154d85cd09b965a3e6e }
     created: 2026-11-21
     started: 2026-11-21
     ux: { date: 2026-11-21, verdict: "conforme (tmp/ux-L67.md) : pire libellé 7,13:1 mesuré (6,87:1 au pire théorique, prod 1,00:1) aux 5 formats et 4 états ; focus cyan 2 px 150/150 ; mise en page identique à la prod. Goût à montrer à Sylvain : pollen presque effacé derrière la barre au bureau (voile 0,88 ; 0,80 garderait 5,2:1)" }
