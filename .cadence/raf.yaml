@@ -359,6 +359,7 @@ lots:
     after: [ L17 ]
     created: 2026-10-10
     started: 2026-11-20
+    ux: { date: 2026-11-21, verdict: "non conforme (tmp/ux-L32.md) : BLOQUANT mousse sous le menu translucide du codex, liens à 1,91:1 (WCAG 1.4.3) ; MAJEUR au téléphone l'effet se voit à peine sous le doigt ; mineurs : un glissement allume une tache, branche mini-blue/L32 à rebaser (17 commits de retard), Nouveauté fausse sur « fiches nettes » ; README:23 à compléter (revue de code)" }
   - id: L33
     title: "Pandora vivant 2 — cartes qui s'éveillent : chaque carte du codex dort dans la pénombre et s'éveille au survol, au toucher ou au clavier (liseré qui pulse, image qui s'éclaire, spores qui montent), d'après le prototype validé le 10-10 ; prefers-reduced-motion respecté"
     public: Les fiches du codex s'éveillent
