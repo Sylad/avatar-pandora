@@ -3,7 +3,9 @@
   "texte": "ok pour le fondu doux, corrige les aplats",
   "date": "2026-11-21",
   "origine": "session du lead : captures de L32 après correction (fiche Omatikaya, 1440 après survol, 390 après un toucher) — rectangles sombres nets derrière le titre, le sous-titre et chaque paragraphe (masque de la mousse autour du texte), et pavé sombre rectangulaire derrière la colonne du menu et le haut de la fiche jusqu'à ~760 px à 1440. Proposition du lead : fondu doux d'une dizaine de pixels sur les bords du masque.",
-  "etat": "ouverte",
-  "preuve": "",
-  "lots": ["L32"]
+  "etat": "livrée",
+  "preuve": "L32 livré 8d2b723 le 2026-11-21 (cadence deliver : GET / → 200 avec meta version 8d2b723) ; fondu doux du masque 6b509d5, aplats corrigés, captures pleine page 1440/390 validées par Sylvain le 21-11 (« Oui, en ligne »)",
+  "lots": [
+    "L32"
+  ]
 }
