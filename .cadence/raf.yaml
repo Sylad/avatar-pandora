@@ -689,6 +689,7 @@ lots:
     title: "Hometree : remplacer l'image de la fiche flore/hometree (aujourd'hui l'hologramme sur la table tactique, photo-6_cbe0faaf) par une image officielle des films montrant l'arbre-maison lui-même ; même règles que L64 (source avatar.com, provenance et empreinte dans films.json, crédit © 20th Century Studios, jamais Fandom/Pinterest) ; capture pleine page validée par Sylvain avant mise en ligne (D-5)"
     status: done
     estimate: 1
+    delivered: { date: 2026-11-21, sha: ec283e5cb9211ee773fe51dc2250a7f60c8bf3ab }
     created: 2026-11-20
     started: 2026-11-20
     review: { date: 2026-11-20, verdict: "conforme (relu par le lead : source type sylvain dans films.json, empreinte R13, R11 accepte le WebP, R12 interdit l'hologramme posé ; tests des illustrations verts)", commit: 0d4ab643752dbd9487dd6bbc88a410d52af2e230 }
