@@ -82,8 +82,18 @@ const { landing = false } = Astro.props;
       const t0 = performance.now();
       const o = host.getBoundingClientRect();
       const out: Box[] = [];
-      const add = (r: DOMRect) => {
-        if (r.width > 0 && r.height > 0) out.push({ x: r.left - o.left, y: r.top - o.top, w: r.width, h: r.height });
+      const add = (r: DOMRect, line = 0) => {
+        if (r.width <= 0 || r.height <= 0) return;
+        // Ligne de texte : toute la hauteur de l'interligne, sinon le fondu laissait une couture claire
+        // entre deux lignes d'un même paragraphe (D-6).
+        const grow = Math.max(0, line - r.height) / 2;
+        out.push({ x: r.left - o.left, y: r.top - o.top - grow, w: r.width, h: r.height + 2 * grow });
+      };
+      const lineHeights = new Map<Element, number>();
+      const lineHeight = (el: Element) => {
+        let v = lineHeights.get(el);
+        if (v === undefined) lineHeights.set(el, (v = parseFloat(getComputedStyle(el).lineHeight) || 0)); // « normal » : 0
+        return v;
       };
       const range = document.createRange();
       const seen = new Map<Element, boolean>();
@@ -100,7 +110,8 @@ const { landing = false } = Astro.props;
           const n = walker.currentNode;
           if (!n.textContent?.trim() || !n.parentElement || !visible(n.parentElement, seen)) continue;
           range.selectNodeContents(n);
-          for (const r of range.getClientRects()) add(r);
+          const line = lineHeight(n.parentElement);
+          for (const r of range.getClientRects()) add(r, line);
         }
         for (const el of root.querySelectorAll(BOXES)) if (visible(el, seen)) add(el.getBoundingClientRect());
         // Lien ou contrôle dessiné (bordure ou fond) : sa boîte entière (WCAG 1.4.11).

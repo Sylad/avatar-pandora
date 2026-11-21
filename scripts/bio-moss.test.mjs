@@ -3,7 +3,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
   MOSS_LIFE_MS, MOSS_SPREAD_MS, MOSS_STEP_MS, MOSS_STEP_PX, MOSS_TAP_LIFE_MS, MOSS_TAP_MS, MOSS_TAP_PX,
-  SHIELD_FEATHER, SHIELD_PAD_PX, isTap, mossKeyframes, mossLevel, mossSprite, seededRandom, shieldMask, shouldSpawn,
+  SHIELD_FADE_PX, SHIELD_FEATHER, SHIELD_PAD_PX, isTap, mossKeyframes, mossLevel, mossSprite, seededRandom, shieldMask, shouldSpawn,
 } from '../frontend/src/lib/bio-moss.ts';
 
 test('une tache s’étend puis s’éteint en ~3 s', () => {
@@ -90,7 +90,7 @@ test('masque : noir plein sous les boîtes protégées qui touchent la tache, bo
   assert.match(svg, /^<svg xmlns="http:\/\/www\.w3\.org\/2000\/svg" width="300\.0" height="300\.0"/);
   assert.match(svg, /<rect width="100%" height="100%" fill="#fff"\/><g fill="#000">/);
   // Dernière couche (dessinée au-dessus) : noir plein, boîte agrandie de SHIELD_PAD_PX.
-  const layers = [...svg.matchAll(/<g fill-opacity="([\d.]+)">(.*?)<\/g>/g)];
+  const layers = [...svg.matchAll(/<g opacity="([\d.]+)">(.*?)<\/g>/g)];
   assert.equal(layers.length, SHIELD_FEATHER.length + 1);
   const [, op, inner] = layers.at(-1);
   assert.equal(Number(op), 1);
@@ -100,4 +100,26 @@ test('masque : noir plein sous les boîtes protégées qui touchent la tache, bo
   // Le fondu est hors de la marge pleine, et sans filtre (rastérisé sur le fil principal).
   assert.ok(SHIELD_PAD_PX >= 4 && SHIELD_FEATHER.every(([d, o]) => d > SHIELD_PAD_PX && o < 1));
   assert.doesNotMatch(svg, /filter|feGaussianBlur/);
+});
+
+// D-6 : le fondu à deux paliers (2 px) laissait des aplats à bord net. Éclat de la mousse gardé à
+// chaque distance du bord de la boîte = produit des transparences des couronnes qui la couvrent.
+test('masque : fondu doux de 10 à 16 px, sans marche visible, union des boîtes sans surcharge', () => {
+  const keep = (r) => SHIELD_FEATHER.reduce((k, [d, o]) => (r <= d ? k * (1 - o) : k), 1);
+  assert.ok(SHIELD_FADE_PX >= 10 && SHIELD_FADE_PX <= 16, `largeur du fondu : ${SHIELD_FADE_PX} px`);
+  assert.ok(keep(SHIELD_PAD_PX + 0.5) < 0.06, 'presque noir au sortir de la marge pleine');
+  assert.ok(keep(SHIELD_PAD_PX + SHIELD_FADE_PX + 0.01) === 1, 'mousse entière au-delà du fondu');
+  let prev = 0, worst = 0;
+  for (let r = SHIELD_PAD_PX; r <= SHIELD_PAD_PX + SHIELD_FADE_PX + 1; r += 0.25) {
+    const k = keep(r);
+    assert.ok(k >= prev - 1e-9, `fondu monotone (${r} px)`);
+    worst = Math.max(worst, k - prev);
+    prev = k;
+  }
+  // Plus grande marche entre deux couronnes voisines : ≤ 20 % de l'éclat (deux paliers : 40 % puis 60 %).
+  assert.ok(worst <= 0.2, `marche de ${(worst * 100).toFixed(0)} % au bord du masque`);
+  // Couronnes en `opacity` de groupe (union) : deux lignes qui se recouvrent ne font pas un noir plus dense.
+  const svg = shieldMask({ x: 0, y: 0, w: 200, h: 200 }, [{ x: 20, y: 50, w: 100, h: 20 }, { x: 20, y: 72, w: 100, h: 20 }]);
+  assert.doesNotMatch(svg, /fill-opacity/);
+  assert.equal([...svg.matchAll(/<g opacity=/g)].length, SHIELD_FEATHER.length + 1);
 });

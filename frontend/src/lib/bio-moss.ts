@@ -121,12 +121,34 @@ export function mossSprite(seed: number, [r, g, b]: Rgb, { spread = false } = {}
 export interface Box { x: number; y: number; w: number; h: number }
 
 /**
- * Marge noire pleine autour d'une ligne de texte ou d'un contrôle, puis fondu du bord en deux
- * paliers (px). Pas de flou SVG : rastérisé sur le fil principal, il retardait chaque page
- * (feGaussianBlur sur ~30 masques : test R7 d'illustrations 5,6 s → 47 s).
+ * Marge noire pleine autour d'une ligne de texte ou d'un contrôle (SHIELD_PAD_PX), puis fondu doux
+ * du noir vers la mousse sur SHIELD_FADE_PX (D-6 : les deux paliers de 2 px laissaient des aplats à
+ * bord net). Pas de flou SVG : rastérisé sur le fil principal, il retardait chaque page
+ * (feGaussianBlur sur ~30 masques : test R7 d'illustrations 5,6 s → 47 s). Le fondu est fait de
+ * SHIELD_FADE_STEPS couronnes de 1,5 px, chacune un groupe à `opacity` (l'union de ses boîtes, sans
+ * assombrir là où deux lignes se recouvrent), dont le produit suit une courbe en S.
  */
 export const SHIELD_PAD_PX = 5;
-export const SHIELD_FEATHER: readonly [number, number][] = [[9, 0.35], [7, 0.6]];
+export const SHIELD_FADE_PX = 12;
+export const SHIELD_FADE_STEPS = 8;
+
+/**
+ * Couronnes du fondu, de l'intérieur vers l'extérieur : [distance au bord de la boîte (px), opacité
+ * du noir]. Entre les couronnes j-1 et j, la mousse garde la part smoothstep((j - ½) / n) de son
+ * éclat (produit des transparences des couronnes j..n) ; au-delà de la dernière, toute.
+ */
+export const SHIELD_FEATHER: readonly [number, number][] = (() => {
+  const n = SHIELD_FADE_STEPS;
+  const keep = (j: number) => {
+    if (j > n) return 1;
+    const t = (j - 0.5) / n;
+    return t * t * (3 - 2 * t);
+  };
+  return Array.from({ length: n }, (_, i) => {
+    const j = i + 1;
+    return [SHIELD_PAD_PX + (j * SHIELD_FADE_PX) / n, 1 - keep(j) / keep(j + 1)] as [number, number];
+  });
+})();
 
 /** Toucher : une tache par toucher bref et presque immobile ; un glissement (défilement) n'allume rien. */
 export const MOSS_TAP_PX = 12;
@@ -153,7 +175,7 @@ export function shieldMask(cell: Box, shields: Box[]): string | null {
   const hit = shields.filter((s) => intersects(inflate(s, outer), cell));
   if (!hit.length) return null;
   const f = (n: number) => n.toFixed(1);
-  const layer = (d: number, op: number) => `<g fill-opacity="${op}">${hit.map((s) => {
+  const layer = (d: number, op: number) => `<g opacity="${op.toFixed(3)}">${hit.map((s) => {
     const r = inflate(s, d);
     return `<rect x="${f(r.x - cell.x)}" y="${f(r.y - cell.y)}" width="${f(r.w)}" height="${f(r.h)}" rx="${f(d)}"/>`;
   }).join('')}</g>`;
