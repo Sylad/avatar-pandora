@@ -708,10 +708,11 @@ lots:
     created: 2026-11-20
   - id: L67
     title: "Menu du codex : les particules du fond passent sous la barre latérale transparente et font tomber les liens jusqu'à 1,0:1 (WCAG 1.4.3), déjà en prod — 10 libellés sur 13 sous 4,5:1 sans mousse (tmp/ux-L32-r2.md, hors lot b)"
-    status: todo
+    status: doing
     estimate: 1
     visible: true
     created: 2026-11-21
+    started: 2026-11-21
 acknowledged:
   - { sha: cef464dffb920ea7b161b1b0e06fe54d3efbdcc4, subject: "plan: verdicts UX de Sylvain enregistrés, trois bloquants de la revue des Personnages clos", date: 2026-10-10, reason: entretien du plan et régénération des Nouveautés }
   - { sha: 4bc75e983dc5bff0366190611a9c578d4ed071c8, subject: "plan: prototype Pandora vivant clos, cinq idées retenues par Sylvain posées après les images", date: 2026-10-10, reason: entretien du plan et régénération des Nouveautés (fichier désormais déclaré dérivé) }
