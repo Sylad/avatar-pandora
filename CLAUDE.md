@@ -31,7 +31,10 @@ Codex Avatar/Pandora **cadeau pour Eva** (nièce de Sylvain, 18 ans, fan absolue
 
 Lumière au toucher (L32) : `components/BioMoss.astro` (accueil + codex) — taches de mousse en éléments animés par Web Animations
 (transform/opacity, pas de canvas : un canvas 2D bloquait la page ~85 s en Chromium sans tête), arrêtées par la pause, absentes en
-mouvement réduit, atténuées sous les phrases de l'accueil ; contrôlé par `scripts/bio-moss.e2e.test.mjs`.
+mouvement réduit. Le calque couvre le document, AU-DESSUS du fond des cartes, et chaque tache porte un masque (`shieldMask`,
+`mask-mode: luminance`) qui l'efface sous chaque ligne de texte, image, contrôle et sous la bande du menu ≥ 1024 px : jamais rien de
+lisible sur la mousse (revue UX L32, le menu tombait à 1,91:1). Toucher = allumé au lever du doigt, sans glissement. Contrôlé par
+`scripts/bio-moss.e2e.test.mjs` (contraste au pire pixel avec et sans mousse, menu compris ; visibilité autour du doigt à 390 px).
 
 Pattern technique réutilisable : `CinemaCanvas` mode `'time'` + `CycleBackdrop` qui cross-fade les images sur le même clock. Voir `frontend/src/components/cinema/`.
 

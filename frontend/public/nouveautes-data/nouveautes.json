@@ -1,7 +1,22 @@
 {
   "project": "avatar-pandora",
-  "generated": "2026-11-20 15:58",
+  "generated": "2026-11-21 12:30",
   "entries": [
+    {
+      "slug": "2026-11-21-pandora-s-allume-sous-tes-pas",
+      "title": "Pandora s'allume sous tes pas",
+      "date": "2026-11-21",
+      "lots": [
+        "L32"
+      ],
+      "captures": [
+        "captures/L32-fiche-390.png"
+      ],
+      "alts": [
+        "La fiche des Omatikaya sur téléphone, juste après un toucher sur le premier paragraphe : de la mousse lumineuse verte brille autour, entre le sous-titre et le paragraphe et dans les marges, sans passer sous les lignes de texte"
+      ],
+      "html": "<p>Comme la mousse de la forêt sous les pieds de Jake, le fond de l'accueil et du codex s'allume maintenant autour de ton doigt ou de ta souris.</p>\n<p>Un passage de la souris fait naître une tache de mousse lumineuse qui s'étend, puis s'éteint en trois secondes. Un toucher ou un clic en fait naître une plus grande, qui s'éteint en un peu plus de quatre secondes. Au repos, quelques taches très faibles restent visibles.</p>\n<p>La mousse s'allume autour des mots, jamais dessous : les phrases, les images, les boutons et le menu du codex restent nets. Faire défiler la page du doigt n'allume rien.</p>\n<p>Le bouton de pause de l'ambiance l'arrête avec le reste. Si ton appareil demande de réduire les animations, rien ne s'allume.</p>"
+    },
     {
       "slug": "2026-11-20-chaque-fiche-montre-son-sujet-tel-qu-il-est-dans-les-films",
       "title": "Chaque fiche montre son sujet tel qu'il est dans les films",

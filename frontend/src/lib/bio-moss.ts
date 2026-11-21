@@ -87,21 +87,70 @@ export type Rgb = [number, number, number];
 /**
  * Une tache de mousse en SVG (256 × 256) : halo doux + semis de points lumineux, plus
  * denses et plus vifs au centre. Même graine, même tache.
+ *
+ * `spread` (toucher, revue UX L32 M1) : points semés sur tout le disque et halo plus vif, pour
+ * que la tache se voie autour du doigt — dans les marges et entre les paragraphes — quand le
+ * texte, protégé, en efface le centre.
  */
-export function mossSprite(seed: number, [r, g, b]: Rgb): string {
+export function mossSprite(seed: number, [r, g, b]: Rgb, { spread = false } = {}): string {
   const rand = seededRandom(seed);
   const core = `rgb(${Math.min(255, r + 60)},${g},${Math.min(255, b + 20)})`;
   const col = `rgb(${r},${g},${b})`;
   const dots: string[] = [];
-  for (let i = 0; i < 90; i++) {
-    const d = 118 * Math.sqrt(rand()) * (0.4 + 0.6 * rand());
+  const count = spread ? 150 : 90;
+  for (let i = 0; i < count; i++) {
+    const d = spread ? 122 * Math.sqrt(rand()) : 118 * Math.sqrt(rand()) * (0.4 + 0.6 * rand());
     const a = rand() * Math.PI * 2;
     const s = 1.2 + rand() * 3.2;
-    const k = 0.55 + 0.45 * (1 - d / 128);
+    const k = spread ? 0.75 + 0.25 * rand() : 0.55 + 0.45 * (1 - d / 128);
     dots.push(`<circle cx="${(128 + Math.cos(a) * d).toFixed(1)}" cy="${(128 + Math.sin(a) * d).toFixed(1)}" r="${(s * 2).toFixed(1)}" fill="url(#d)" opacity="${k.toFixed(2)}"/>`);
   }
+  const [h0, h1] = spread ? ['.45', '.25'] : ['.3', '.12'];
   return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">'
-    + `<defs><radialGradient id="h"><stop offset="0" stop-color="${col}" stop-opacity=".3"/><stop offset=".45" stop-color="${col}" stop-opacity=".12"/><stop offset="1" stop-color="${col}" stop-opacity="0"/></radialGradient>`
+    + `<defs><radialGradient id="h"><stop offset="0" stop-color="${col}" stop-opacity="${h0}"/><stop offset=".55" stop-color="${col}" stop-opacity="${h1}"/><stop offset="1" stop-color="${col}" stop-opacity="0"/></radialGradient>`
     + `<radialGradient id="d"><stop offset="0" stop-color="${core}"/><stop offset=".4" stop-color="${col}" stop-opacity=".45"/><stop offset="1" stop-color="${col}" stop-opacity="0"/></radialGradient></defs>`
     + `<circle cx="128" cy="128" r="128" fill="url(#h)"/>${dots.join('')}</svg>`;
+}
+
+/* ── Ni texte ni menu sous la mousse (revue UX L32 : B1, M1, m1) ─────────────────────────────
+   La mousse passe au-dessus du fond des cartes (sinon, au téléphone, la fiche opaque la cachait
+   sous le doigt), mais un masque l'efface sous chaque ligne de texte, image, contrôle et sous le
+   menu du codex : rien de lisible n'est jamais posé sur elle. */
+
+/** Boîte en pixels, dans le repère du calque de mousse (document entier). */
+export interface Box { x: number; y: number; w: number; h: number }
+
+/** Marge autour d'une ligne de texte ou d'un contrôle, puis fondu du bord du masque (px). */
+export const SHIELD_PAD_PX = 7;
+export const SHIELD_BLUR_PX = 2.5;
+
+/** Toucher : une tache par toucher bref et presque immobile ; un glissement (défilement) n'allume rien. */
+export const MOSS_TAP_PX = 12;
+export const MOSS_TAP_MS = 700;
+/** Toucher et clic : tache plus grande et plus longue que celle de la souris qui passe. */
+export const MOSS_TAP_LIFE_MS = 4200;
+
+export const intersects = (a: Box, b: Box) =>
+  a.x < b.x + b.w && b.x < a.x + a.w && a.y < b.y + b.h && b.y < a.y + a.h;
+
+export const inflate = (b: Box, d: number): Box => ({ x: b.x - d, y: b.y - d, w: b.w + 2 * d, h: b.h + 2 * d });
+
+/** Un doigt posé puis levé au même endroit, assez vite : un toucher (pas un défilement). */
+export function isTap(down: MossStep, up: MossStep): boolean {
+  return up.t - down.t <= MOSS_TAP_MS && Math.hypot(up.x - down.x, up.y - down.y) < MOSS_TAP_PX;
+}
+
+/**
+ * Masque (SVG, blanc = mousse visible) d'une tache posée dans `cell` : noir sous chaque boîte
+ * protégée qui la touche, agrandie de SHIELD_PAD_PX et fondue. null si rien ne la touche.
+ */
+export function shieldMask(cell: Box, shields: Box[]): string | null {
+  const hit = shields.map((s) => inflate(s, SHIELD_PAD_PX)).filter((s) => intersects(s, cell));
+  if (!hit.length) return null;
+  const f = (n: number) => n.toFixed(1);
+  const rects = hit.map((s) =>
+    `<rect x="${f(s.x - cell.x)}" y="${f(s.y - cell.y)}" width="${f(s.w)}" height="${f(s.h)}" rx="6"/>`);
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${f(cell.w)}" height="${f(cell.h)}" viewBox="0 0 ${f(cell.w)} ${f(cell.h)}">`
+    + `<filter id="b" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="${SHIELD_BLUR_PX}"/></filter>`
+    + `<rect width="100%" height="100%" fill="#fff"/><g fill="#000" filter="url(#b)">${rects.join('')}</g></svg>`;
 }

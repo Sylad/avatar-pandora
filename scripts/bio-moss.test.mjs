@@ -2,8 +2,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  MOSS_LIFE_MS, MOSS_SPREAD_MS, MOSS_STEP_MS, MOSS_STEP_PX, mossKeyframes, mossLevel, mossSprite, seededRandom,
-  shouldSpawn,
+  MOSS_LIFE_MS, MOSS_SPREAD_MS, MOSS_STEP_MS, MOSS_STEP_PX, MOSS_TAP_LIFE_MS, MOSS_TAP_MS, MOSS_TAP_PX,
+  SHIELD_BLUR_PX, SHIELD_PAD_PX, isTap, mossKeyframes, mossLevel, mossSprite, seededRandom, shieldMask, shouldSpawn,
 } from '../frontend/src/lib/bio-moss.ts';
 
 test('une tache s’étend puis s’éteint en ~3 s', () => {
@@ -61,4 +61,39 @@ test('tache SVG : même graine, même dessin ; couleurs du site, aucune ressourc
   assert.match(a, /rgb\(95,255,230\)/);
   assert.equal((a.match(/<circle /g) ?? []).length, 91);
   assert.doesNotMatch(a, /href|<image|<script/);
+});
+
+test('tache du toucher : points sur tout le disque, même graine même dessin', () => {
+  const a = mossSprite(20, [95, 255, 230], { spread: true });
+  assert.equal(a, mossSprite(20, [95, 255, 230], { spread: true }));
+  assert.equal((a.match(/<circle /g) ?? []).length, 151);
+  // Au moins un tiers des points dans l'anneau extérieur (rayon > 80 sur 128) : visibles autour du doigt.
+  const far = [...a.matchAll(/cx="([\d.]+)" cy="([\d.]+)"/g)].filter(([, x, y]) => Math.hypot(x - 128, y - 128) > 80);
+  assert.ok(far.length >= 50, `${far.length} points loin du centre`);
+});
+
+// Revue UX L32 (m1) : un glissement du doigt (défilement) allumait une tache.
+test('toucher : bref et immobile seulement ; tache plus longue que celle de la souris', () => {
+  const down = { x: 100, y: 100, t: 0 };
+  assert.equal(isTap(down, { x: 103, y: 104, t: 120 }), true);
+  assert.equal(isTap(down, { x: 100, y: 100 + MOSS_TAP_PX, t: 120 }), false, 'glissé');
+  assert.equal(isTap(down, { x: 100, y: 100, t: MOSS_TAP_MS + 1 }), false, 'appui long');
+  assert.ok(MOSS_TAP_LIFE_MS > MOSS_LIFE_MS && MOSS_TAP_LIFE_MS <= 5000);
+});
+
+// Revue UX L32 (B1) : la mousse passait sous le menu du codex. Masque noir sous chaque boîte protégée.
+test('masque : noir sous les boîtes protégées qui touchent la tache, agrandies et fondues ; rien sinon', () => {
+  const cell = { x: 100, y: 200, w: 300, h: 300 };
+  assert.equal(shieldMask(cell, []), null);
+  assert.equal(shieldMask(cell, [{ x: 0, y: 0, w: 50, h: 50 }]), null, 'boîte loin de la tache');
+  const svg = shieldMask(cell, [{ x: 150, y: 250, w: 100, h: 20 }, { x: 900, y: 900, w: 10, h: 10 }]);
+  assert.match(svg, /^<svg xmlns="http:\/\/www\.w3\.org\/2000\/svg" width="300\.0" height="300\.0"/);
+  assert.match(svg, /<rect width="100%" height="100%" fill="#fff"\/>/);
+  const rects = [...svg.matchAll(/<rect x="([\d.-]+)" y="([\d.-]+)" width="([\d.]+)" height="([\d.]+)"/g)];
+  assert.equal(rects.length, 1, 'seule la boîte qui touche la tache');
+  const [, x, y, w, h] = rects[0].map(Number);
+  assert.deepEqual([x, y, w, h], [50 - SHIELD_PAD_PX, 50 - SHIELD_PAD_PX, 100 + 2 * SHIELD_PAD_PX, 20 + 2 * SHIELD_PAD_PX]);
+  // Le fondu ne laisse pas passer la mousse sur le bord du texte : marge ≥ 2,5 écarts-types.
+  assert.ok(SHIELD_PAD_PX >= 2.5 * SHIELD_BLUR_PX);
+  assert.match(svg, new RegExp(`stdDeviation="${SHIELD_BLUR_PX}"`));
 });

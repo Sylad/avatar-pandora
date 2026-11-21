@@ -2,23 +2,26 @@
 /*
   Lumière au toucher (L32, « Pandora vivant 1 », prototype validé par Sylvain le 10-10) :
   le fond de l'accueil et du codex s'allume sous le doigt ou la souris — des taches de
-  mousse bioluminescente s'étendent puis s'éteignent en ~3 s (logique : lib/bio-moss.ts).
+  mousse bioluminescente s'étendent puis s'éteignent (logique : lib/bio-moss.ts).
 
   • Au repos : quelques taches très faibles, posées une fois (image fixe, aucune animation).
-  • Souris : une tache tous les 70 px parcourus ; clic ou toucher : une tache plus vive.
-    Au doigt, le glissement (défilement) n'allume rien : seul le toucher compte.
-  • Chaque tache est un élément animé par Web Animations sur transform et opacity seulement
-    (animées par le compositeur, sans boucle JavaScript), retiré à son extinction (minuterie). Rien
-    n'écoute le défilement (calque fixe). Pas de canvas : le premier canvas d'une page attend
-    le processus GPU, et bloquait la page 85 s en Chromium sans tête.
+  • Souris : une tache tous les 70 px parcourus (3 s) ; clic ou toucher : une tache plus grande,
+    plus vive et plus longue (4,2 s). Au doigt, seul un toucher bref et immobile allume : un
+    glissement (défilement) n'allume rien (pointerup, revue UX L32 m1).
+  • Ni texte ni menu sur la mousse (revue UX L32, B1 et M1) : le calque est AU-DESSUS du fond des
+    cartes (sinon, au téléphone, la fiche opaque la cachait sous le doigt), mais chaque tache porte
+    un masque qui l'efface sous chaque ligne de texte, image, contrôle et sous le menu du codex
+    (bande entière de la barre latérale ≥ 1024 px). Barre du haut, tiroir, menu et pause fixes
+    restent au-dessus d'elle. Contrôlé par scripts/bio-moss.e2e.test.mjs (contraste au pire pixel).
+  • Le calque couvre le document (repère de la page) : les masques, calculés une fois par mise en
+    page, restent justes au défilement ; rien n'écoute le défilement.
+  • Chaque tache est animée par Web Animations sur transform et opacity seulement, retirée à son
+    extinction (minuterie). Pas de canvas : il bloquait la page 85 s en Chromium sans tête.
   • Pause de l'ambiance (AtmospherePause) : plus aucune tache, la mousse au repos reste.
   • Mouvement réduit : rien n'est posé.
-  • Sous le texte (z-index 1, sous <main>) et atténué (opacité du calque) : le texte reste
-    ≥ 4,5:1 au pire pixel (scripts/bio-moss.e2e.test.mjs). À l'accueil (`landing`), le texte
-    est posé sur le fond même, sans carte : la mousse s'efface au centre, sous les phrases.
 */
 interface Props {
-  /** Accueil : texte centré sans carte, mousse atténuée au centre. */
+  /** Accueil : <main> est en z-index 10 (au codex : 2). */
   landing?: boolean;
 }
 const { landing = false } = Astro.props;
@@ -29,18 +32,18 @@ const { landing = false } = Astro.props;
 <script>
   import { ATMOSPHERE_EVENT, ATMOSPHERE_PAUSED_CLASS } from './cinema/atmosphere-clock';
   import {
-    MOSS_LIFE_MS, MOSS_MAX, mossKeyframes, mossSprite, seededRandom, shouldSpawn,
-    type MossStep, type Rgb,
+    MOSS_LIFE_MS, MOSS_MAX, MOSS_TAP_LIFE_MS, isTap, mossKeyframes, mossSprite, seededRandom, shieldMask,
+    shouldSpawn, type Box, type MossStep, type Rgb,
   } from '../lib/bio-moss';
 
-  /** Relevés pour les tests : taches allumées en tout, et temps passé à les poser. */
-  interface MossStats { spawned: number; spawnMs: number }
+  /** Relevés pour les tests : taches allumées en tout, temps passé à les poser, boîtes protégées. */
+  interface MossStats { spawned: number; spawnMs: number; shields: number }
   const w = window as Window & { __eywaMossInit?: boolean; __eywaMoss?: MossStats };
 
   // ClientRouter : ce module ne s'exécute qu'une fois ; le calque est retrouvé à chaque page.
   if (!w.__eywaMossInit) {
     w.__eywaMossInit = true;
-    const stats: MossStats = (w.__eywaMoss = { spawned: 0, spawnMs: 0 });
+    const stats: MossStats = (w.__eywaMoss = { spawned: 0, spawnMs: 0, shields: 0 });
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
     const COLORS: Rgb[] = [
       [95, 255, 230], // cyan bio
@@ -48,39 +51,102 @@ const { landing = false } = Astro.props;
       [95, 255, 230],
       [255, 93, 196], // touche magenta, plus rare
     ];
+    // Contenu à protéger : texte des racines, boîtes des éléments (images, contrôles…).
+    const TEXT_ROOTS = 'main, .eywa-sidebar';
+    const BOXES = 'img, picture, video, svg, canvas, iframe, button, input, select, textarea, [role="button"], [data-moss-shield]';
     let sprites: string[] = [];
+    let tapSprites: string[] = [];
     let host: HTMLElement | null = null;
     let last: MossStep | null = null;
+    let touch: (MossStep & { id: number }) | null = null;
+    let shields: Box[] | null = null;
+    let rest: { fx: number; fy: number; R: number; el: HTMLElement }[] = [];
+    let relayout = 0;
     const live: HTMLElement[] = [];
 
     const paused = () => document.documentElement.classList.contains(ATMOSPHERE_PAUSED_CLASS);
-    const radius = () => (window.innerWidth < 768 ? 95 : 130);
+    const phone = () => window.innerWidth < 768;
 
-    const blot = (sprite: number, cls: string) => {
+    // ── Boîtes protégées, dans le repère du calque (document entier) ──
+    const visible = (el: Element) => {
+      const s = getComputedStyle(el);
+      return s.visibility !== 'hidden' && Number(s.opacity) > 0;
+    };
+    const opaqueColor = (c: string) => !/^rgba\(.*,\s*0\)$|^transparent$/.test(c);
+    const collect = (): Box[] => {
+      if (!host) return [];
+      const o = host.getBoundingClientRect();
+      const out: Box[] = [];
+      const add = (r: DOMRect) => {
+        if (r.width > 0 && r.height > 0) out.push({ x: r.left - o.left, y: r.top - o.top, w: r.width, h: r.height });
+      };
+      const range = document.createRange();
+      for (const root of document.querySelectorAll<HTMLElement>(TEXT_ROOTS)) {
+        // Barre latérale du bureau (collante, translucide) : toute sa bande, du haut au bas de la page.
+        if (root.matches('.eywa-sidebar')) {
+          if (getComputedStyle(root).position !== 'sticky') continue; // tiroir : au-dessus du calque
+          const r = root.getBoundingClientRect();
+          out.push({ x: r.left - o.left, y: 0, w: r.width, h: host.offsetHeight });
+          continue;
+        }
+        const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+        while (walker.nextNode()) {
+          const n = walker.currentNode;
+          if (!n.textContent?.trim() || !n.parentElement || !visible(n.parentElement)) continue;
+          range.selectNodeContents(n);
+          for (const r of range.getClientRects()) add(r);
+        }
+        for (const el of root.querySelectorAll(BOXES)) if (visible(el)) add(el.getBoundingClientRect());
+        // Lien ou contrôle dessiné (bordure ou fond) : sa boîte entière (WCAG 1.4.11).
+        for (const el of root.querySelectorAll('a')) {
+          const s = getComputedStyle(el);
+          if (parseFloat(s.borderTopWidth) > 0 || opaqueColor(s.backgroundColor)) add(el.getBoundingClientRect());
+        }
+      }
+      stats.shields = out.length;
+      return out;
+    };
+    const getShields = () => (shields ??= collect());
+
+    const blot = (sprite: string, cls: string, cell: Box) => {
+      const wrap = document.createElement('div');
+      wrap.className = 'eywa-moss__cell';
+      Object.assign(wrap.style, { left: `${cell.x}px`, top: `${cell.y}px`, width: `${cell.w}px`, height: `${cell.h}px` });
+      masked(wrap, cell);
       const el = document.createElement('div');
       el.className = cls;
-      el.style.backgroundImage = sprites[sprite];
-      return el;
+      el.style.backgroundImage = sprite;
+      wrap.append(el);
+      return { wrap, el };
+    };
+    const masked = (wrap: HTMLElement, cell: Box) => {
+      const svg = shieldMask(cell, getShields());
+      wrap.style.maskImage = svg ? `url("data:image/svg+xml,${encodeURIComponent(svg)}")` : '';
     };
 
-    const remove = (el: HTMLElement) => {
-      el.getAnimations().forEach((a) => a.cancel());
-      el.remove();
-      const i = live.indexOf(el);
+    const remove = (wrap: HTMLElement) => {
+      wrap.getAnimations({ subtree: true }).forEach((a) => a.cancel());
+      wrap.remove();
+      const i = live.indexOf(wrap);
       if (i >= 0) live.splice(i, 1);
     };
 
-    const spawn = (x: number, y: number, strength: number) => {
+    const spawn = (clientX: number, clientY: number, strength: number, life: number) => {
       if (!host || paused()) return;
       const t0 = performance.now();
-      const R = radius() * (0.8 + Math.random() * 0.4) * (strength > 0.8 ? 1.25 : 1);
-      const el = blot(Math.floor(Math.random() * sprites.length), 'eywa-moss__patch');
-      Object.assign(el.style, { left: `${x - R}px`, top: `${y - R}px`, width: `${2 * R}px`, height: `${2 * R}px` });
-      host.append(el);
-      live.push(el);
-      el.animate(mossKeyframes(strength), { duration: MOSS_LIFE_MS, easing: 'linear' });
+      const o = host.getBoundingClientRect();
+      // Toucher au téléphone : tache plus large que la colonne de texte, pour qu'elle déborde dans
+      // les marges et entre les paragraphes autour du doigt (revue UX L32, M1).
+      const base = life > MOSS_LIFE_MS ? (phone() ? 220 : 170) : phone() ? 95 : 130;
+      const R = base * (0.85 + Math.random() * 0.3);
+      const cell = { x: clientX - o.left - R, y: clientY - o.top - R, w: 2 * R, h: 2 * R };
+      const set = life > MOSS_LIFE_MS ? tapSprites : sprites;
+      const { wrap, el } = blot(set[Math.floor(Math.random() * set.length)], 'eywa-moss__patch', cell);
+      host.append(wrap);
+      live.push(wrap);
+      el.animate(mossKeyframes(strength), { duration: life, easing: 'linear' });
       // Retirée à l'heure dite, même si la page n'a pas rendu d'image entre-temps (onglet caché).
-      window.setTimeout(() => remove(el), MOSS_LIFE_MS + 50);
+      window.setTimeout(() => remove(wrap), life + 50);
       while (live.length > MOSS_MAX) remove(live[0]);
       stats.spawned++;
       stats.spawnMs += performance.now() - t0;
@@ -88,41 +154,82 @@ const { landing = false } = Astro.props;
 
     const clear = () => { while (live.length) remove(live[0]); };
 
-    // Mousse au repos : même dessin à chaque visite, placé en part de la fenêtre.
+    // Hauteur du calque = page entière ; masques de la mousse au repos recalculés.
+    const layout = () => {
+      if (!host) return;
+      host.style.height = `${Math.max(document.body.offsetHeight, window.innerHeight)}px`;
+      shields = null;
+      const W = host.offsetWidth, H = host.offsetHeight;
+      for (const r of rest) {
+        const cell = { x: r.fx * W - r.R, y: r.fy * H - r.R, w: 2 * r.R, h: 2 * r.R };
+        Object.assign(r.el.style, { left: `${cell.x}px`, top: `${cell.y}px` });
+        masked(r.el, cell);
+      }
+    };
+    const scheduleLayout = () => { clearTimeout(relayout); relayout = window.setTimeout(layout, 120); };
+    const observer = new ResizeObserver(scheduleLayout);
+
+    // Mousse au repos : même dessin à chaque visite, placé en part de la page.
     const mount = () => {
       clear();
       last = null;
+      touch = null;
+      rest = [];
+      observer.disconnect();
       host = document.getElementById('eywa-moss');
       if (!host) return;
       host.replaceChildren();
       if (reduced.matches) { host = null; return; }
       if (!sprites.length) {
-        sprites = COLORS.map((c, i) => `url("data:image/svg+xml,${encodeURIComponent(mossSprite(10 + i, c))}")`);
+        const url = (svg: string) => `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
+        sprites = COLORS.map((c, i) => url(mossSprite(10 + i, c)));
+        tapSprites = COLORS.map((c, i) => url(mossSprite(20 + i, c, { spread: true })));
       }
+      host.style.height = `${Math.max(document.body.offsetHeight, window.innerHeight)}px`;
+      const screens = Math.min(3, host.offsetHeight / window.innerHeight);
       const rand = seededRandom(32);
-      const n = window.innerWidth < 768 ? 6 : 10;
+      const n = Math.round((phone() ? 6 : 10) * screens);
       for (let i = 0; i < n; i++) {
-        const R = radius() * (0.6 + rand() * 0.6);
-        const el = blot(i % sprites.length, 'eywa-moss__rest');
-        Object.assign(el.style, {
-          left: `calc(${(rand() * 100).toFixed(1)}% - ${R}px)`,
-          top: `calc(${(rand() * 100).toFixed(1)}% - ${R}px)`,
-          width: `${2 * R}px`,
-          height: `${2 * R}px`,
-          opacity: (0.16 + rand() * 0.12).toFixed(2),
-        });
-        host.append(el);
+        const R = (phone() ? 95 : 130) * (0.6 + rand() * 0.6);
+        const r = { fx: rand(), fy: rand(), R };
+        const { wrap } = blot(sprites[i % sprites.length], 'eywa-moss__rest', { x: 0, y: 0, w: 2 * R, h: 2 * R });
+        (wrap.firstElementChild as HTMLElement).style.opacity = (0.16 + rand() * 0.12).toFixed(2);
+        host.append(wrap);
+        rest.push({ ...r, el: wrap });
       }
+      layout();
+      observer.observe(document.body);
     };
 
     window.addEventListener('pointermove', (e) => {
       if (e.pointerType === 'touch') return; // glisser du doigt = défiler
       const step = { x: e.clientX, y: e.clientY, t: e.timeStamp };
+      // Premier mouvement vu : position notée seulement. Chromium envoie un faux pointermove quand la
+      // page bouge sous un pointeur immobile (chargement) : il allumait une tache sans geste.
+      if (!last) { last = step; return; }
       if (!shouldSpawn(last, step)) return;
       last = step;
-      spawn(step.x, step.y, 0.75);
+      spawn(step.x, step.y, 0.75, MOSS_LIFE_MS);
     }, { passive: true });
-    window.addEventListener('pointerdown', (e) => spawn(e.clientX, e.clientY, 1), { passive: true });
+    window.addEventListener('pointerdown', (e) => {
+      if (e.pointerType === 'touch') {
+        touch = { id: e.pointerId, x: e.clientX, y: e.clientY, t: e.timeStamp };
+        return;
+      }
+      spawn(e.clientX, e.clientY, 1, MOSS_TAP_LIFE_MS);
+    }, { passive: true });
+    // Toucher : allumé au lever du doigt, seulement s'il n'a ni glissé ni duré (sinon : défilement).
+    window.addEventListener('pointerup', (e) => {
+      if (e.pointerType !== 'touch' || !touch || touch.id !== e.pointerId) return;
+      const down = touch;
+      touch = null;
+      if (isTap(down, { x: e.clientX, y: e.clientY, t: e.timeStamp })) spawn(down.x, down.y, 1, MOSS_TAP_LIFE_MS);
+    }, { passive: true });
+    window.addEventListener('pointercancel', () => { touch = null; }, { passive: true });
+    window.addEventListener('resize', scheduleLayout, { passive: true });
+    // Image ou police chargée : la mise en page a pu bouger.
+    document.addEventListener('load', scheduleLayout, { capture: true, passive: true });
+    document.fonts?.addEventListener?.('loadingdone', scheduleLayout);
     window.addEventListener(ATMOSPHERE_EVENT, () => { if (paused()) clear(); });
     reduced.addEventListener('change', mount);
     document.addEventListener('astro:page-load', mount);
@@ -131,28 +238,33 @@ const { landing = false } = Astro.props;
 </script>
 
 <style>
-  /* Fixe, sous le contenu (<main> : z-index 2 au codex, 10 à l'accueil), et atténué. */
+  /* Page entière (repère du document, hauteur posée par le script), AU-DESSUS du fond du contenu
+     (<main> : z-index 2 au codex, 10 à l'accueil) mais masquée sous tout ce qui se lit ; sous la
+     barre du haut (39), le voile et le tiroir (40, 50), le menu (60) et la pause (70). Un peu
+     atténuée (0,65 tant qu'elle passait sous le texte ; masquée, elle peut être plus vive). */
   .eywa-moss {
-    position: fixed;
-    inset: 0;
-    z-index: 1;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 3;
     overflow: hidden;
     pointer-events: none;
-    opacity: 0.65;
+    opacity: 0.85;
   }
-  /* Mousse atténuée sous les phrases : sinon, mousse au plus dense dessous, la définition d'Eywa
-     descendait à 4,2:1 au pire pixel (6,5 à 11:1 sans mousse). */
-  .eywa-moss--landing {
-    mask-image: radial-gradient(ellipse 45% 40% at 50% 50%, rgba(0, 0, 0, 0.15) 55%, #000 100%);
-  }
-  @media (max-width: 767px) {
-    .eywa-moss--landing {
-      mask-image: radial-gradient(ellipse 80% 38% at 50% 50%, rgba(0, 0, 0, 0.15) 55%, #000 100%);
-    }
+  .eywa-moss--landing { z-index: 11; }
+  .eywa-moss :global(.eywa-moss__cell) {
+    position: absolute;
+    /* Masque en luminance (blanc = mousse visible, noir = effacée) : une image SVG serait lue en
+       alpha par défaut, et le noir opaque laisserait la mousse sur le texte. */
+    mask-mode: luminance;
+    mask-size: 100% 100%;
+    mask-repeat: no-repeat;
   }
   .eywa-moss :global(.eywa-moss__rest),
   .eywa-moss :global(.eywa-moss__patch) {
     position: absolute;
+    inset: 0;
     background-size: 100% 100%;
   }
   /* Avant sa première image clé, une tache est invisible (pas d'éclair au point touché). */

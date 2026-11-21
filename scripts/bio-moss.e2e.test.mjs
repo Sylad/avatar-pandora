@@ -1,7 +1,9 @@
 // L32 — Pandora vivant 1, lumière au toucher : le fond de l'accueil et du codex s'allume sous le
-// doigt ou la souris (taches de mousse qui s'étendent puis s'éteignent en ~3 s), visible au repos,
+// doigt ou la souris (taches de mousse qui s'étendent puis s'éteignent en 3 à 4,2 s), visible au repos,
 // arrêté par la pause de l'ambiance, absent en mouvement réduit, sans travail au défilement, sans
-// retarder la page, et sous un texte qui reste ≥ 4,5:1 au pire pixel. Lit frontend/dist ; skip sans Chromium.
+// retarder la page. Revue UX L32 : jamais sous un texte ni sous le menu (≥ 4,5:1 au pire pixel, menu
+// du codex compris), visible autour du doigt au téléphone, rien allumé par un glissement du doigt.
+// Lit frontend/dist ; skip sans Chromium.
 // EYWA_E2E_SHOTS=<dossier> enregistre des captures (repos et mousse allumée) à 1440 et 390 px.
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -83,7 +85,7 @@ async function open(env, path, [width, height], options = {}) {
 for (const path of PAGES) {
   for (const vp of VIEWPORTS) {
     const [width, height] = vp;
-    test(`${path} @${width}px : la mousse s'allume au toucher puis s'éteint en ~3 s, visible au repos`, { timeout: 300_000 }, async (t) => {
+    test(`${path} @${width}px : la mousse s'allume au toucher puis s'éteint (3 s, 4,2 s au toucher), visible au repos`, { timeout: 300_000 }, async (t) => {
       const env = await setupBrowser(t);
       if (!env) return;
       const { context, page } = await open(env, path, vp);
@@ -111,8 +113,11 @@ for (const path of PAGES) {
       assert.equal(lit.running, lit.patches, 'chaque tache s’anime');
       if (SHOTS) await page.screenshot({ path: join(SHOTS, `moss${path.replace(/\W+/g, '-')}allumee-${width}.png`) });
 
-      // Éteinte ~3 s après la dernière tache : plus aucun élément ni animation.
-      await page.waitForTimeout(3000);
+      // Éteinte 3 s (souris) ou 4,2 s (toucher, clic) après la dernière tache : plus rien.
+      await page.waitForTimeout(width < 500 ? 4250 : 3050);
+      // Retrait à la minuterie : sous charge (Chromium sans tête rend à ~1 image/s), elle peut
+      // partir un peu après l'heure.
+      await page.waitForFunction(() => !document.querySelector('#eywa-moss .eywa-moss__patch'), null, { timeout: 3000 }).catch(() => {});
       const after = await stats(page);
       assert.equal(after.patches, 0, 'toutes les taches sont éteintes et retirées');
       assert.equal(after.running, 0, 'plus aucune animation au repos');
@@ -121,16 +126,17 @@ for (const path of PAGES) {
   }
 }
 
-test('la mousse allumée se voit : le fond s’éclaire sous le pointeur (1440 px, marge du codex)', { timeout: 300_000 }, async (t) => {
+test('la mousse allumée se voit : le fond s’éclaire sous le pointeur (1440 px, marge droite du codex)', { timeout: 300_000 }, async (t) => {
   const env = await setupBrowser(t);
   if (!env) return;
   const { context, page } = await open(env, '/clans/omatikaya/', [1440, 900]);
   // Particules arrêtées (pause), puis reprise de la mousse seule : la différence vient d'elle.
   await page.evaluate(() => { window.__eywaAtmo.setPaused(true); document.documentElement.classList.remove('eywa-atmo-paused'); });
   await page.waitForTimeout(400);
-  const clip = { x: 0, y: 150, width: 340, height: 500 };
+  // Marge à droite de la fiche (la bande du menu, à gauche, est protégée : revue UX L32, B1).
+  const clip = { x: 1300, y: 150, width: 140, height: 500 };
   const before = await page.screenshot({ clip });
-  await lightGrid(page, { x: 60, y: 200, width: 220, height: 400 }, 110);
+  await lightGrid(page, { x: 1330, y: 200, width: 80, height: 400 }, 100);
   await page.waitForTimeout(450);
   assert.ok((await freezeMoss(page)) >= 4, 'taches allumées à figer');
   const after = await page.screenshot({ clip, animations: 'allow' });
@@ -222,44 +228,122 @@ test('défilement : la mousse ne travaille pas ; coût mesuré ; la page n’att
   await context.close();
 });
 
+// Textes mesurés sur la mousse allumée au plus dense. `all` : chaque élément (les liens du menu).
 const CONTRAST = [
   { path: '/', sel: '.landing-tagline', label: 'phrase d’accueil' },
   { path: '/', sel: '.landing-eywa-def', label: 'définition d’Eywa' },
+  { path: '/', sel: '#contenu a[href="/pandora/intro/"]', label: 'bouton Explorer le codex' },
+  { path: '/', sel: '#contenu .landing-follow__link', label: 'lien Nouveautés', all: true },
   { path: '/clans/omatikaya/', sel: 'article .font-body p', label: 'paragraphe de fiche' },
+  { path: '/clans/omatikaya/', sel: '.eywa-sidebar nav a', label: 'menu du codex', all: true, widths: [1440] },
+  { path: '/clans/omatikaya/', sel: '.eywa-sidebar .eywa-about__link', label: 'liens du bas du menu', all: true, widths: [1440] },
   { path: '/clans/', sel: '.entry-card__summary', label: 'résumé de carte' },
 ];
 
 // Même image figée mesurée sans puis avec la mousse : sous charge, une scène claire du fond de
 // l'accueil peut à elle seule descendre sous 4,5:1 (fond hors de ce lot) ; la mousse, elle, ne doit
-// jamais faire passer un texte sous 4,5:1.
-test('texte ≥ 4,5:1 au pire pixel avec la mousse allumée dessous (1440/390 px)', { timeout: 600_000 }, async (t) => {
+// jamais faire passer un texte sous 4,5:1. Revue UX L32 (B1) : le menu du codex tombait à 1,91:1.
+test('texte et menu ≥ 4,5:1 au pire pixel avec la mousse allumée au plus dense (1440/390 px)', { timeout: 900_000 }, async (t) => {
   const env = await setupBrowser(t);
   if (!env) return;
   const failures = [];
-  for (const { path, sel, label } of CONTRAST) for (const vp of VIEWPORTS) {
+  for (const { path, sel, label, all, widths } of CONTRAST) for (const vp of VIEWPORTS) {
+    if (widths && !widths.includes(vp[0])) continue;
     const { context, page } = await open(env, path, vp, { deviceScaleFactor: 2 });
-    const el = page.locator(sel).first();
-    await el.scrollIntoViewIfNeeded();
+    const first = page.locator(sel).first();
+    await first.scrollIntoViewIfNeeded();
     await page.waitForTimeout(200);
-    const box = await el.boundingBox();
-    await lightGrid(page, box, 40);
-    // Pleine intensité (180 → 900 ms), puis tout est figé : particules et fond (requestAnimationFrame),
+    const n = all ? await page.locator(sel).count() : 1;
+    // Toute la zone mesurée allumée (pointeur souris : pleine intensité, sans délai de toucher).
+    const boxes = [];
+    for (let i = 0; i < n; i++) boxes.push(await page.locator(sel).nth(i).boundingBox());
+    const area = {
+      x: Math.min(...boxes.map((b) => b.x)), y: Math.min(...boxes.map((b) => b.y)),
+      width: Math.max(...boxes.map((b) => b.x + b.width)) - Math.min(...boxes.map((b) => b.x)),
+      height: Math.max(...boxes.map((b) => b.y + b.height)) - Math.min(...boxes.map((b) => b.y)),
+    };
+    await lightGrid(page, area, 40);
+    // Pleine intensité, puis tout est figé : particules et fond (requestAnimationFrame),
     // taches à leur état courant (sinon la mesure, qui coupe les animations, les éteint).
     await page.waitForTimeout(450);
     await page.evaluate(() => { window.requestAnimationFrame = () => 0; });
     assert.ok((await freezeMoss(page, { commit: true })) >= 4, `${path} ${label} : taches allumées à figer`);
     await page.waitForTimeout(300);
     const show = (v) => page.evaluate((v) => { document.getElementById('eywa-moss').style.visibility = v; }, v);
-    await show('hidden');
-    const base = await worstPixelContrast(page, sel);
-    await show('visible');
-    const { worst, glyphs } = await worstPixelContrast(page, sel);
-    const where = `${path} ${label} @${vp[0]}px`;
-    t.diagnostic(`${where} : ${worst.toFixed(2)}:1 avec la mousse, ${base.worst.toFixed(2)}:1 sans (${glyphs} px)`);
-    assert.ok(glyphs > 20, `${where} : glyphes non détectés`);
-    if (worst < 4.5 && base.worst >= 4.5) failures.push(`${where} : ${worst.toFixed(2)}:1 avec la mousse (${base.worst.toFixed(2)}:1 sans)`);
-    if (base.worst < 4.5) t.diagnostic(`${where} : déjà sous 4,5:1 sans la mousse (fond animé, hors L32)`);
+    for (let i = 0; i < n; i++) {
+      const one = all ? `${sel} >> nth=${i}` : sel;
+      await show('hidden');
+      const base = await worstPixelContrast(page, one);
+      await show('visible');
+      const { worst, glyphs } = await worstPixelContrast(page, one);
+      const where = `${path} ${label}${all ? ` n°${i + 1}` : ''} @${vp[0]}px`;
+      t.diagnostic(`${where} : ${worst.toFixed(2)}:1 avec la mousse, ${base.worst.toFixed(2)}:1 sans (${glyphs} px)`);
+      assert.ok(glyphs > 20, `${where} : glyphes non détectés`);
+      if (worst < 4.5 && base.worst >= 4.5) failures.push(`${where} : ${worst.toFixed(2)}:1 avec la mousse (${base.worst.toFixed(2)}:1 sans)`);
+      // La mousse ne retire pas plus d'un demi-point au pire pixel (même image figée).
+      if (base.worst - worst > 0.5) failures.push(`${where} : ${base.worst.toFixed(2)} → ${worst.toFixed(2)}:1 sous la mousse`);
+      if (base.worst < 4.5) t.diagnostic(`${where} : déjà sous 4,5:1 sans la mousse (fond animé, hors L32)`);
+    }
     await context.close();
   }
   assert.deepEqual(failures, []);
+});
+
+// Revue UX L32 (M1) : au téléphone, un toucher au milieu de la page (sur le texte de l'accueil, sur
+// la fiche opaque du codex) ne laissait presque rien de visible. Mesure : éclaircissement moyen de la
+// bande de l'écran autour du doigt (toute la largeur, 160 px au-dessus et au-dessous), fond arrêté,
+// tache figée à pleine intensité.
+const TAPS = [
+  { path: '/', at: '.landing-tagline', label: 'accueil, sur la phrase' },
+  { path: '/clans/omatikaya/', at: 'article .font-body p', label: 'fiche du codex, sur un paragraphe' },
+];
+for (const { path, at, label } of TAPS) {
+  test(`toucher au téléphone (390 px) : la mousse se voit autour du doigt — ${label}`, { timeout: 300_000 }, async (t) => {
+    const env = await setupBrowser(t);
+    if (!env) return;
+    const { context, page } = await open(env, path, [390, 844]);
+    await page.locator(at).first().scrollIntoViewIfNeeded();
+    await page.evaluate(() => { window.__eywaAtmo.setPaused(true); document.documentElement.classList.remove('eywa-atmo-paused'); });
+    await page.evaluate(() => { window.requestAnimationFrame = () => 0; });
+    await page.waitForTimeout(400);
+    const box = await page.locator(at).first().boundingBox();
+    const [x, y] = [Math.round(box.x + box.width / 2), Math.round(box.y + Math.min(box.height, 200) / 2)];
+    const clip = { x: 0, y: Math.max(0, y - 160), width: 390, height: 320 };
+    const before = await page.screenshot({ clip, animations: 'disabled' });
+    // Toucher sur window (un vrai toucher sur un lien changerait de page).
+    await page.evaluate(({ x, y }) => {
+      const o = { clientX: x, clientY: y, pointerType: 'touch', pointerId: 7, isPrimary: true };
+      window.dispatchEvent(new PointerEvent('pointerdown', o));
+      window.dispatchEvent(new PointerEvent('pointerup', o));
+    }, { x, y });
+    await page.waitForTimeout(450);
+    assert.ok((await freezeMoss(page)) >= 1, 'le toucher a allumé une tache');
+    const after = await page.screenshot({ clip, animations: 'allow' });
+    const gain = await meanDiff(page, before, after);
+    t.diagnostic(`${path} : éclaircissement moyen autour du doigt +${gain.toFixed(2)} / 255`);
+    assert.ok(gain > 2.5, `mousse à peine visible autour du doigt (+${gain.toFixed(2)})`);
+    if (SHOTS) await page.screenshot({ path: join(SHOTS, `moss${path.replace(/\W+/g, '-')}toucher-390.png`), animations: 'allow' });
+    await context.close();
+  });
+}
+
+// Revue UX L32 (m1) : un glissement du doigt (défilement) allumait une tache au pointerdown.
+test('doigt qui glisse (défilement) : rien ne s’allume ; toucher bref et immobile : une tache', { timeout: 300_000 }, async (t) => {
+  const env = await setupBrowser(t);
+  if (!env) return;
+  const { context, page } = await open(env, '/clans/omatikaya/', [390, 844]);
+  const fire = (steps) => page.evaluate((steps) => {
+    for (const [type, x, y] of steps) {
+      window.dispatchEvent(new PointerEvent(type, { clientX: x, clientY: y, pointerType: 'touch', pointerId: 3, isPrimary: true }));
+    }
+  }, steps);
+  const spawned = () => page.evaluate(() => window.__eywaMoss.spawned);
+  const s0 = await spawned();
+  // Glissement que le navigateur prend pour un défilement (pointercancel), puis glissement levé loin.
+  await fire([['pointerdown', 200, 600], ['pointermove', 200, 560], ['pointermove', 200, 480], ['pointercancel', 200, 480]]);
+  await fire([['pointerdown', 200, 600], ['pointermove', 200, 520], ['pointerup', 200, 420]]);
+  assert.equal(await spawned(), s0, 'un glissement du doigt a allumé de la mousse');
+  await fire([['pointerdown', 200, 600], ['pointerup', 202, 601]]);
+  assert.equal(await spawned(), s0 + 1, 'un toucher bref allume une tache');
+  await context.close();
 });
