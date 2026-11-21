@@ -120,9 +120,13 @@ export function mossSprite(seed: number, [r, g, b]: Rgb, { spread = false } = {}
 /** Boîte en pixels, dans le repère du calque de mousse (document entier). */
 export interface Box { x: number; y: number; w: number; h: number }
 
-/** Marge autour d'une ligne de texte ou d'un contrôle, puis fondu du bord du masque (px). */
-export const SHIELD_PAD_PX = 7;
-export const SHIELD_BLUR_PX = 2.5;
+/**
+ * Marge noire pleine autour d'une ligne de texte ou d'un contrôle, puis fondu du bord en deux
+ * paliers (px). Pas de flou SVG : rastérisé sur le fil principal, il retardait chaque page
+ * (feGaussianBlur sur ~30 masques : test R7 d'illustrations 5,6 s → 47 s).
+ */
+export const SHIELD_PAD_PX = 5;
+export const SHIELD_FEATHER: readonly [number, number][] = [[9, 0.35], [7, 0.6]];
 
 /** Toucher : une tache par toucher bref et presque immobile ; un glissement (défilement) n'allume rien. */
 export const MOSS_TAP_PX = 12;
@@ -145,12 +149,16 @@ export function isTap(down: MossStep, up: MossStep): boolean {
  * protégée qui la touche, agrandie de SHIELD_PAD_PX et fondue. null si rien ne la touche.
  */
 export function shieldMask(cell: Box, shields: Box[]): string | null {
-  const hit = shields.map((s) => inflate(s, SHIELD_PAD_PX)).filter((s) => intersects(s, cell));
+  const outer = Math.max(SHIELD_PAD_PX, ...SHIELD_FEATHER.map(([d]) => d));
+  const hit = shields.filter((s) => intersects(inflate(s, outer), cell));
   if (!hit.length) return null;
   const f = (n: number) => n.toFixed(1);
-  const rects = hit.map((s) =>
-    `<rect x="${f(s.x - cell.x)}" y="${f(s.y - cell.y)}" width="${f(s.w)}" height="${f(s.h)}" rx="6"/>`);
+  const layer = (d: number, op: number) => `<g fill-opacity="${op}">${hit.map((s) => {
+    const r = inflate(s, d);
+    return `<rect x="${f(r.x - cell.x)}" y="${f(r.y - cell.y)}" width="${f(r.w)}" height="${f(r.h)}" rx="${f(d)}"/>`;
+  }).join('')}</g>`;
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${f(cell.w)}" height="${f(cell.h)}" viewBox="0 0 ${f(cell.w)} ${f(cell.h)}">`
-    + `<filter id="b" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="${SHIELD_BLUR_PX}"/></filter>`
-    + `<rect width="100%" height="100%" fill="#fff"/><g fill="#000" filter="url(#b)">${rects.join('')}</g></svg>`;
+    + `<rect width="100%" height="100%" fill="#fff"/><g fill="#000">`
+    + SHIELD_FEATHER.map(([d, op]) => layer(d, op)).join('') + layer(SHIELD_PAD_PX, 1)
+    + '</g></svg>';
 }

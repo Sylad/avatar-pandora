@@ -37,13 +37,13 @@ const { landing = false } = Astro.props;
   } from '../lib/bio-moss';
 
   /** Relevés pour les tests : taches allumées en tout, temps passé à les poser, boîtes protégées. */
-  interface MossStats { spawned: number; spawnMs: number; shields: number }
+  interface MossStats { spawned: number; spawnMs: number; shields: number; collectMs: number; layoutMs: number }
   const w = window as Window & { __eywaMossInit?: boolean; __eywaMoss?: MossStats };
 
   // ClientRouter : ce module ne s'exécute qu'une fois ; le calque est retrouvé à chaque page.
   if (!w.__eywaMossInit) {
     w.__eywaMossInit = true;
-    const stats: MossStats = (w.__eywaMoss = { spawned: 0, spawnMs: 0, shields: 0 });
+    const stats: MossStats = (w.__eywaMoss = { spawned: 0, spawnMs: 0, shields: 0, collectMs: 0, layoutMs: 0 });
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
     const COLORS: Rgb[] = [
       [95, 255, 230], // cyan bio
@@ -68,19 +68,25 @@ const { landing = false } = Astro.props;
     const phone = () => window.innerWidth < 768;
 
     // ── Boîtes protégées, dans le repère du calque (document entier) ──
-    const visible = (el: Element) => {
-      const s = getComputedStyle(el);
-      return s.visibility !== 'hidden' && Number(s.opacity) > 0;
+    const visible = (el: Element, seen: Map<Element, boolean>) => {
+      let v = seen.get(el);
+      if (v === undefined) {
+        const s = getComputedStyle(el);
+        seen.set(el, (v = s.visibility !== 'hidden' && Number(s.opacity) > 0));
+      }
+      return v;
     };
     const opaqueColor = (c: string) => !/^rgba\(.*,\s*0\)$|^transparent$/.test(c);
     const collect = (): Box[] => {
       if (!host) return [];
+      const t0 = performance.now();
       const o = host.getBoundingClientRect();
       const out: Box[] = [];
       const add = (r: DOMRect) => {
         if (r.width > 0 && r.height > 0) out.push({ x: r.left - o.left, y: r.top - o.top, w: r.width, h: r.height });
       };
       const range = document.createRange();
+      const seen = new Map<Element, boolean>();
       for (const root of document.querySelectorAll<HTMLElement>(TEXT_ROOTS)) {
         // Barre latérale du bureau (collante, translucide) : toute sa bande, du haut au bas de la page.
         if (root.matches('.eywa-sidebar')) {
@@ -92,11 +98,11 @@ const { landing = false } = Astro.props;
         const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
         while (walker.nextNode()) {
           const n = walker.currentNode;
-          if (!n.textContent?.trim() || !n.parentElement || !visible(n.parentElement)) continue;
+          if (!n.textContent?.trim() || !n.parentElement || !visible(n.parentElement, seen)) continue;
           range.selectNodeContents(n);
           for (const r of range.getClientRects()) add(r);
         }
-        for (const el of root.querySelectorAll(BOXES)) if (visible(el)) add(el.getBoundingClientRect());
+        for (const el of root.querySelectorAll(BOXES)) if (visible(el, seen)) add(el.getBoundingClientRect());
         // Lien ou contrôle dessiné (bordure ou fond) : sa boîte entière (WCAG 1.4.11).
         for (const el of root.querySelectorAll('a')) {
           const s = getComputedStyle(el);
@@ -104,24 +110,30 @@ const { landing = false } = Astro.props;
         }
       }
       stats.shields = out.length;
+      stats.collectMs += performance.now() - t0;
       return out;
     };
     const getShields = () => (shields ??= collect());
 
-    const blot = (sprite: string, cls: string, cell: Box) => {
+    const blot = (sprite: string, cls: string, cell: Box, mask = true) => {
       const wrap = document.createElement('div');
       wrap.className = 'eywa-moss__cell';
       Object.assign(wrap.style, { left: `${cell.x}px`, top: `${cell.y}px`, width: `${cell.w}px`, height: `${cell.h}px` });
-      masked(wrap, cell);
+      if (mask) masked(wrap, cell);
       const el = document.createElement('div');
       el.className = cls;
       el.style.backgroundImage = sprite;
       wrap.append(el);
       return { wrap, el };
     };
-    const masked = (wrap: HTMLElement, cell: Box) => {
+    /** Pose le masque de la tache ; `freeOnly` : seulement si elle n'en a pas besoin. Vrai si posé. */
+    const masked = (wrap: HTMLElement, cell: Box, freeOnly = false) => {
       const svg = shieldMask(cell, getShields());
-      wrap.style.maskImage = svg ? `url("data:image/svg+xml,${encodeURIComponent(svg)}")` : '';
+      if (svg && freeOnly) return false;
+      const url = svg ? `url("data:image/svg+xml,${encodeURIComponent(svg)}")` : '';
+      // Même masque : ne pas le réaffecter (chaque nouvelle image de masque est rastérisée).
+      if (wrap.dataset.mask !== url) { wrap.dataset.mask = url; wrap.style.maskImage = url; }
+      return true;
     };
 
     const remove = (wrap: HTMLElement) => {
@@ -155,18 +167,27 @@ const { landing = false } = Astro.props;
     const clear = () => { while (live.length) remove(live[0]); };
 
     // Hauteur du calque = page entière ; masques de la mousse au repos recalculés.
-    const layout = () => {
+    // `freeOnly` (chargement de la page) : seules les taches qui ne touchent rien de protégé sont
+    // posées tout de suite ; celles qui demandent un masque attendent un moment libre (rastériser
+    // ~20 masques coûtait ~200 ms de fil principal à chaque page, test R7 d'illustrations 5,6 → 17 s).
+    const layout = (freeOnly = false) => {
       if (!host) return;
+      const t0 = performance.now();
       host.style.height = `${Math.max(document.body.offsetHeight, window.innerHeight)}px`;
       shields = null;
       const W = host.offsetWidth, H = host.offsetHeight;
       for (const r of rest) {
         const cell = { x: r.fx * W - r.R, y: r.fy * H - r.R, w: 2 * r.R, h: 2 * r.R };
+        if (!masked(r.el, cell, freeOnly)) { r.el.hidden = true; continue; } // jamais visible sans son masque
         Object.assign(r.el.style, { left: `${cell.x}px`, top: `${cell.y}px` });
-        masked(r.el, cell);
+        r.el.hidden = false;
       }
+      stats.layoutMs += performance.now() - t0;
     };
-    const scheduleLayout = () => { clearTimeout(relayout); relayout = window.setTimeout(layout, 120); };
+    // Hors du chemin du chargement : la mousse au repos attend un moment libre du fil principal.
+    const idle = (fn: () => void) =>
+      ('requestIdleCallback' in window ? window.requestIdleCallback(fn, { timeout: 500 }) : window.setTimeout(fn, 200));
+    const scheduleLayout = () => { clearTimeout(relayout); relayout = window.setTimeout(() => idle(() => layout()), 250); };
     const observer = new ResizeObserver(scheduleLayout);
 
     // Mousse au repos : même dessin à chaque visite, placé en part de la page.
@@ -175,6 +196,7 @@ const { landing = false } = Astro.props;
       last = null;
       touch = null;
       rest = [];
+      shields = null; // nouvelle page
       observer.disconnect();
       host = document.getElementById('eywa-moss');
       if (!host) return;
@@ -186,18 +208,20 @@ const { landing = false } = Astro.props;
         tapSprites = COLORS.map((c, i) => url(mossSprite(20 + i, c, { spread: true })));
       }
       host.style.height = `${Math.max(document.body.offsetHeight, window.innerHeight)}px`;
-      const screens = Math.min(3, host.offsetHeight / window.innerHeight);
+      const screens = Math.min(2, host.offsetHeight / window.innerHeight);
       const rand = seededRandom(32);
       const n = Math.round((phone() ? 6 : 10) * screens);
       for (let i = 0; i < n; i++) {
         const R = (phone() ? 95 : 130) * (0.6 + rand() * 0.6);
         const r = { fx: rand(), fy: rand(), R };
-        const { wrap } = blot(sprites[i % sprites.length], 'eywa-moss__rest', { x: 0, y: 0, w: 2 * R, h: 2 * R });
+        const { wrap } = blot(sprites[i % sprites.length], 'eywa-moss__rest', { x: 0, y: 0, w: 2 * R, h: 2 * R }, false);
+        wrap.hidden = true;
         (wrap.firstElementChild as HTMLElement).style.opacity = (0.16 + rand() * 0.12).toFixed(2);
         host.append(wrap);
         rest.push({ ...r, el: wrap });
       }
-      layout();
+      layout(true);
+      idle(() => layout());
       observer.observe(document.body);
     };
 
