@@ -357,6 +357,7 @@ lots:
     estimate: 0.5
     visible: true
     after: [ L17 ]
+    delivered: { date: 2026-11-21, sha: 8d2b72338bbc3b78b2763e687a8b8505d05c3469 }
     created: 2026-10-10
     started: 2026-11-20
     ux: { date: 2026-11-21, verdict: "conforme (r2 tmp/ux-L32-r2.md : B1, M1, m1 de r1 corrigés ; aplats sombres corrigés par le fondu doux D-6, captures pleine page 1440/390 validées par Sylvain le 21-11 « Oui, en ligne » — tmp/L32-d6/ ; menu du codex sous 4,5:1 = lot à part, antérieur)" }
