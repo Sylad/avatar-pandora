@@ -53,6 +53,8 @@ fondu d'entrée et de sortie ; au grand écran la bande de vol reste au-dessus d
 transform/opacity ; battement asymétrique (abattée rapide, relevée repliée, ailes arrière en retard, montée et descente d'amplitude
 douces vers le plané), logique pure et mesures dans `lib/ikran.ts`. Pause : ikrans figés, aucun nouveau ; mouvement réduit : aucun.
 Contrôlé par `scripts/ikran.test.mjs` et `scripts/ikran-sky.e2e.test.mjs`.
+Ailes et queue sont des `<div>` (une couche HTML par partie), jamais des `<g>` SVG animés, et le calque n'a pas de masque : avec
+l'un ou l'autre, sous la charge de la porte, les transitions des cartes du Bestiaire (test L33, 900 ms) n'avaient plus fini à temps.
 
 Pattern technique réutilisable : `CinemaCanvas` mode `'time'` + `CycleBackdrop` qui cross-fade les images sur le même clock. Voir `frontend/src/components/cinema/`.
 

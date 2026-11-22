@@ -17,16 +17,24 @@
  *  - quelques battements puis un plané, avec une montée et une descente d'amplitude douces.
  */
 
-/** Dessin de l'ikran (viewBox 200×200, tête vers la droite). Classes : voir IkranSky.astro. */
-export const IKRAN_SVG = `<svg viewBox="0 0 200 200" aria-hidden="true" focusable="false">
-  <g class="ikran__wing ikran__wing--rear-up"><path class="ikran__skin" d="M90 97C88 82 80 70 66 60C69 70 65 77 58 81C66 89 73 95 78 98Z"/><path class="ikran__stripe ikran__stripe--orange" d="M84 95C81 84 75 75 68 68"/></g>
-  <g class="ikran__wing ikran__wing--rear-down"><path class="ikran__skin" d="M90 103C88 118 80 130 66 140C69 130 65 123 58 119C66 111 73 105 78 102Z"/><path class="ikran__stripe ikran__stripe--orange" d="M84 105C81 116 75 125 68 132"/></g>
-  <g class="ikran__tail"><path class="ikran__tail-line" d="M56 100C42 99 28 101 14 100"/><path class="ikran__body" d="M18 100L7 93L0 100L7 107Z"/></g>
-  <g class="ikran__wing ikran__wing--front-up"><path class="ikran__skin" d="M124 96C134 70 130 38 112 5C104 20 94 27 82 30C88 42 84 54 72 60C82 72 88 86 92 97Z"/><path class="ikran__stripe" d="M119 94C121 70 119 44 111 16"/><path class="ikran__stripe ikran__stripe--orange" d="M104 95C103 78 96 60 86 45"/></g>
-  <g class="ikran__wing ikran__wing--front-down"><path class="ikran__skin" d="M124 104C134 130 130 162 112 195C104 180 94 173 82 170C88 158 84 146 72 140C82 128 88 114 92 103Z"/><path class="ikran__stripe" d="M119 106C121 130 119 156 111 184"/><path class="ikran__stripe ikran__stripe--orange" d="M104 105C103 122 96 140 86 155"/></g>
-  <path class="ikran__body" d="M54 100C72 93 110 92 140 95C152 92 167 94 186 99.5C167 106 152 108 140 105C110 108 72 107 54 100Z"/>
-  <path class="ikran__body" d="M162 97L141 89L150 98ZM162 103L141 111L150 102Z"/>
-</svg>`;
+const part = (cls: string, paths: string) =>
+  `<div class="${cls}"><svg viewBox="0 0 200 200" aria-hidden="true" focusable="false">${paths}</svg></div>`;
+
+/**
+ * Dessin de l'ikran (viewBox 200×200, tête vers la droite), une couche HTML par partie mobile.
+ * Chaque aile et la queue sont des <div> (pas des <g> SVG) : leurs transformations tournent alors
+ * sur le compositeur. Animées sur des groupes SVG, elles faisaient recalculer et repeindre l'ikran
+ * à chaque image sur le fil principal, et les transitions des cartes du Bestiaire (L33) n'avaient
+ * plus fini dans leur délai. Classes : voir IkranSky.astro.
+ */
+export const IKRAN_SVG = [
+  part('ikran__wing ikran__wing--rear-up', '<path class="ikran__skin" d="M90 97C88 82 80 70 66 60C69 70 65 77 58 81C66 89 73 95 78 98Z"/><path class="ikran__stripe ikran__stripe--orange" d="M84 95C81 84 75 75 68 68"/>'),
+  part('ikran__wing ikran__wing--rear-down', '<path class="ikran__skin" d="M90 103C88 118 80 130 66 140C69 130 65 123 58 119C66 111 73 105 78 102Z"/><path class="ikran__stripe ikran__stripe--orange" d="M84 105C81 116 75 125 68 132"/>'),
+  part('ikran__tail', '<path class="ikran__tail-line" d="M56 100C42 99 28 101 14 100"/><path class="ikran__body" d="M18 100L7 93L0 100L7 107Z"/>'),
+  part('ikran__wing ikran__wing--front-up', '<path class="ikran__skin" d="M124 96C134 70 130 38 112 5C104 20 94 27 82 30C88 42 84 54 72 60C82 72 88 86 92 97Z"/><path class="ikran__stripe" d="M119 94C121 70 119 44 111 16"/><path class="ikran__stripe ikran__stripe--orange" d="M104 95C103 78 96 60 86 45"/>'),
+  part('ikran__wing ikran__wing--front-down', '<path class="ikran__skin" d="M124 104C134 130 130 162 112 195C104 180 94 173 82 170C88 158 84 146 72 140C82 128 88 114 92 103Z"/><path class="ikran__stripe" d="M119 106C121 130 119 156 111 184"/><path class="ikran__stripe ikran__stripe--orange" d="M104 105C103 122 96 140 86 155"/>'),
+  part('ikran__trunk', '<path class="ikran__body" d="M54 100C72 93 110 92 140 95C152 92 167 94 186 99.5C167 106 152 108 140 105C110 108 72 107 54 100Z"/><path class="ikran__body" d="M162 97L141 89L150 98ZM162 103L141 111L150 102Z"/>'),
+].join('');
 
 /** Épaules et base de la queue, en unités du viewBox (origines des transformations). */
 export const IKRAN_PIVOTS = { front: [108, 100], rear: [84, 100], tail: [56, 100] } as const;

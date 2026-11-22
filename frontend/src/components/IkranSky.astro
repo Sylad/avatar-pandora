@@ -7,7 +7,7 @@
   • Calque posé DANS le bandeau (SectionHero), entre l'image et le voile : l'ikran prend la lumière
     du voile comme l'image, et le texte reste au-dessus de lui. `pointer-events: none` : le calque
     ne prend aucun clic ; c'est le bandeau qui écoute le toucher.
-  • Fondu à l'entrée et à la sortie (opacité), bords du calque en fondu (masque).
+  • Fondu à l'entrée et à la sortie (opacité de chaque ikran ; pas de masque sur le calque).
   • Web Animations sur transform et opacity seulement ; chaque ikran est retiré à la fin de sa
     traversée. Rien ne tourne hors de l'écran ni dans un onglet caché (pas de nouveau passage).
   • Pause de l'ambiance (AtmospherePause) : les ikrans en vol se figent, aucun nouveau ne part,
@@ -98,7 +98,7 @@
       // Chaque ikran bat des ailes à son rythme : départ à un endroit tiré au hasard de la salve.
       const offset = -Math.random() * FLAP.duration;
       for (const [sel, frames] of WINGS) {
-        const g = node.querySelector<SVGGElement>(sel);
+        const g = node.querySelector<HTMLElement>(sel);
         if (g) anims.push(g.animate(frames as Keyframe[], { duration: FLAP.duration, iterations: Infinity, delay: offset, easing: 'linear' }));
       }
       const bird = { node, anims };
@@ -194,15 +194,19 @@
     inset: 0;
     overflow: hidden;
     pointer-events: none;
-    /* Bords en fondu : l'ikran sort du ciel, pas d'un cadre. */
-    mask-image: linear-gradient(90deg, transparent 0, #000 6%, #000 94%, transparent 100%);
+    /* Pas de masque de fondu sur le calque : il faisait recomposer toute la surface masquée à chaque
+       image. Le fondu d'entrée et de sortie est dans l'opacité de chaque ikran (flightKeyframes). */
   }
   .ikran-sky :global(.ikran) {
     position: absolute;
     left: 0;
     top: 0;
     opacity: 0;
-    will-change: transform, opacity;
+  }
+  /* Une couche par partie (lib/ikran.ts) : ailes et queue animées sur le compositeur. */
+  .ikran-sky :global(.ikran > div) {
+    position: absolute;
+    inset: 0;
   }
   .ikran-sky :global(.ikran svg) {
     display: block;
@@ -210,14 +214,12 @@
     height: 100%;
     overflow: visible;
   }
-  /* Épaules et base de la queue (lib/ikran.ts, IKRAN_PIVOTS), en unités du viewBox. */
-  .ikran-sky :global(.ikran__wing),
-  .ikran-sky :global(.ikran__tail) { transform-box: view-box; }
+  /* Épaules et base de la queue (lib/ikran.ts, IKRAN_PIVOTS : 108, 84 et 56 sur 200 ; y = 100). */
   .ikran-sky :global(.ikran__wing--front-up),
-  .ikran-sky :global(.ikran__wing--front-down) { transform-origin: 108px 100px; }
+  .ikran-sky :global(.ikran__wing--front-down) { transform-origin: 54% 50%; }
   .ikran-sky :global(.ikran__wing--rear-up),
-  .ikran-sky :global(.ikran__wing--rear-down) { transform-origin: 84px 100px; }
-  .ikran-sky :global(.ikran__tail) { transform-origin: 56px 100px; }
+  .ikran-sky :global(.ikran__wing--rear-down) { transform-origin: 42% 50%; }
+  .ikran-sky :global(.ikran__tail) { transform-origin: 28% 50%; }
   /* Liseré bioluminescent : sans lui, la silhouette sombre se perdait sur un ciel nuit ou spatial
      (bandeau Pandora, visuel par défaut du Bestiaire). */
   .ikran-sky :global(.ikran__skin) { fill: #10233a; stroke: rgba(95, 255, 230, 0.4); stroke-width: 1.3; stroke-linejoin: round; }
