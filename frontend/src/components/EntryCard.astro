@@ -15,6 +15,34 @@ const { href, title, summary, cover } = Astro.props;
 // fiche porte la description de l'image.
 const imgSrc = coverCardSrc(cover);
 const size = isIllustration(cover) ? ILLUSTRATION_SIZES.carte : undefined;
+
+// Spores de la carte éveillée (L33, prototype « Pandora vivant » du 10-10) :
+// positions, tailles, couleurs et rythmes tirés d'un générateur à graine (l'adresse
+// de la fiche), pour un rendu identique d'un build à l'autre et sans script.
+const SPORE_COLORS = ['#5fffe6', '#7fff8f', '#aa82ff', '#ff5dc4'];
+const SPORE_COUNT = 12;
+let seed = 2166136261;
+for (const ch of href) seed = Math.imul(seed ^ ch.charCodeAt(0), 16777619) >>> 0;
+const rand = () => {
+  seed = (seed + 0x6d2b79f5) >>> 0;
+  let t = seed;
+  t = Math.imul(t ^ (t >>> 15), t | 1);
+  t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+  return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+};
+const spores = Array.from({ length: SPORE_COUNT }, (_, i) => {
+  const d = 2.4 + rand() * 2.2;
+  return [
+    `--x:${(4 + rand() * 92).toFixed(1)}%`,
+    `--s:${(3 + rand() * 5).toFixed(1)}px`,
+    `--c:${SPORE_COLORS[i % SPORE_COLORS.length]}`,
+    `--d:${d.toFixed(2)}s`,
+    `--delay:${(-rand() * d).toFixed(2)}s`,
+    `--dx:${Math.round((rand() - 0.5) * 50)}px`,
+    // Hauteur figée en mouvement réduit : les spores restent visibles, immobiles.
+    `--y:${Math.round(20 + rand() * 60)}%`,
+  ].join(';');
+});
 ---
 <a href={href} class="entry-card group">
   {imgSrc ? (
@@ -26,10 +54,16 @@ const size = isIllustration(cover) ? ILLUSTRATION_SIZES.carte : undefined;
            loading="lazy"
            decoding="async"
            class="entry-card__img" />
+      <span class="entry-card__spores" aria-hidden="true">
+        {spores.map((style) => <span class="entry-card__spore" style={style}></span>)}
+      </span>
     </div>
   ) : (
     <div class="entry-card__media">
-      <CoverFallback size={96} />
+      <div class="entry-card__fallback"><CoverFallback size={96} /></div>
+      <span class="entry-card__spores" aria-hidden="true">
+        {spores.map((style) => <span class="entry-card__spore" style={style}></span>)}
+      </span>
     </div>
   )}
   <div class="entry-card__body">
@@ -40,10 +74,14 @@ const size = isIllustration(cover) ? ILLUSTRATION_SIZES.carte : undefined;
 
 <style>
   /*
-    "Pandora floor" hover effect : the card has a faint always-on cyan
-    glow (it's bioluminescent at rest). On hover, a radial light blooms
-    outward as if a footstep activated the moss — the image brightens,
-    the title cyans, the border ignites.
+    Cartes qui s'éveillent (L33, « Pandora vivant 2 », prototype validé par Sylvain le 10-10).
+    Au repos, la carte DORT : image dans la pénombre (luminosité 0,55, saturation 0,7), liseré
+    à peine allumé. Elle S'ÉVEILLE au survol (souris), au clavier (:focus-visible) et au toucher
+    (.is-awake, posée par le script au contact du doigt) : liseré qui pulse, image qui s'éclaire,
+    lueur qui monte du bas de l'image, titre cyan, spores qui montent.
+    Le texte (titre, résumé) garde le même contraste dans les deux états : seul l'image dort.
+    Mouvement réduit : aucune animation ni transition, l'état éveillé reste lisible (liseré,
+    image éclairée, titre cyan, spores immobiles). Pause de l'ambiance : tout se fige.
   */
   .entry-card {
     position: relative;
@@ -56,46 +94,138 @@ const size = isIllustration(cover) ? ILLUSTRATION_SIZES.carte : undefined;
       0 0 0 1px rgba(95, 255, 230, 0.04) inset,
       0 0 18px -8px rgba(95, 255, 230, 0.20);
     transition:
-      border-color 400ms ease,
-      box-shadow 400ms ease,
-      transform 400ms ease;
+      border-color 450ms ease,
+      box-shadow 450ms ease,
+      transform 450ms ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .entry-card:focus-visible {
+    outline: 2px solid var(--color-eywa-bio-primary);
+    outline-offset: 4px;
   }
 
-  /* Pseudo-element holding the radial-bloom that lights up on hover. */
-  .entry-card::before {
+  /* Media area — 4:3 */
+  .entry-card__media {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    background: var(--color-eywa-bg);
+    overflow: hidden;
+  }
+
+  /* L'image dort dans la pénombre. */
+  .entry-card__img,
+  .entry-card__fallback {
+    display: block;
+    width: 100%;
+    height: 100%;
+    filter: brightness(0.55) saturate(0.7);
+    transform: scale(1);
+    transition: filter 700ms ease, transform 1200ms ease;
+  }
+  .entry-card__img { object-fit: cover; }
+  .entry-card__fallback { position: absolute; inset: 0; }
+
+  /* Lueur qui monte du bas de l'image à l'éveil. */
+  .entry-card__media::after {
     content: '';
     position: absolute;
     inset: 0;
-    border-radius: 6px;
     pointer-events: none;
-    background: radial-gradient(ellipse 80% 60% at 50% 50%,
-      rgba(95, 255, 230, 0.18),
-      rgba(127, 255, 143, 0.08) 40%,
-      transparent 70%);
+    background: radial-gradient(ellipse 75% 60% at 50% 100%,
+      rgba(95, 255, 230, 0.32),
+      rgba(127, 255, 143, 0.10) 45%,
+      transparent 72%);
     opacity: 0;
-    transition: opacity 500ms ease;
-    z-index: 1;
+    transition: opacity 600ms ease;
   }
 
-  .entry-card:hover {
-    border-color: rgba(95, 255, 230, 0.55);
+  .entry-card__spores {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+  .entry-card__spore {
+    position: absolute;
+    bottom: -8px;
+    left: var(--x);
+    width: var(--s);
+    height: var(--s);
+    border-radius: 50%;
+    background: radial-gradient(circle, #fff 0, var(--c) 40%, transparent 72%);
+    box-shadow: 0 0 8px var(--c);
+    opacity: 0;
+  }
+
+  /* ---- Éveil : clavier et toucher partout, survol seulement avec une vraie souris ---- */
+  .entry-card:is(:focus-visible, .is-awake) {
+    border-color: rgba(95, 255, 230, 0.7);
     box-shadow:
-      0 0 0 1px rgba(95, 255, 230, 0.10) inset,
-      0 0 32px -4px rgba(95, 255, 230, 0.40),
-      0 0 60px -12px rgba(127, 255, 143, 0.25);
-    transform: translateY(-2px);
+      0 0 0 1px rgba(95, 255, 230, 0.14) inset,
+      0 0 36px -4px rgba(95, 255, 230, 0.5),
+      0 0 70px -12px rgba(127, 255, 143, 0.3);
+    transform: translateY(-3px);
+    animation: entry-card-rim 2.6s ease-in-out infinite;
+  }
+  .entry-card:is(:focus-visible, .is-awake) .entry-card__img,
+  .entry-card:is(:focus-visible, .is-awake) .entry-card__fallback {
+    filter: brightness(1.08) saturate(1.25);
+    transform: scale(1.06);
+  }
+  .entry-card:is(:focus-visible, .is-awake) .entry-card__media::after { opacity: 1; }
+  .entry-card:is(:focus-visible, .is-awake) .entry-card__title {
+    color: var(--color-eywa-bio-primary);
+    text-shadow: 0 0 16px rgba(95, 255, 230, 0.6);
+  }
+  .entry-card:is(:focus-visible, .is-awake) .entry-card__spore {
+    animation: entry-card-spore var(--d) linear var(--delay) infinite;
   }
 
-  .entry-card:hover::before {
-    opacity: 1;
+  /* Un appareil tactile garde un « survol collé » après le toucher : le survol n'éveille
+     qu'avec un pointeur qui survole vraiment. */
+  @media (hover: hover) {
+    .entry-card:hover {
+      border-color: rgba(95, 255, 230, 0.7);
+      box-shadow:
+        0 0 0 1px rgba(95, 255, 230, 0.14) inset,
+        0 0 36px -4px rgba(95, 255, 230, 0.5),
+        0 0 70px -12px rgba(127, 255, 143, 0.3);
+      transform: translateY(-3px);
+      animation: entry-card-rim 2.6s ease-in-out infinite;
+    }
+    .entry-card:hover .entry-card__img,
+    .entry-card:hover .entry-card__fallback {
+      filter: brightness(1.08) saturate(1.25);
+      transform: scale(1.06);
+    }
+    .entry-card:hover .entry-card__media::after { opacity: 1; }
+    .entry-card:hover .entry-card__title {
+      color: var(--color-eywa-bio-primary);
+      text-shadow: 0 0 16px rgba(95, 255, 230, 0.6);
+    }
+    .entry-card:hover .entry-card__spore {
+      animation: entry-card-spore var(--d) linear var(--delay) infinite;
+    }
+  }
+
+  @keyframes entry-card-rim {
+    50% {
+      box-shadow:
+        0 0 0 1px rgba(95, 255, 230, 0.2) inset,
+        0 0 46px 0 rgba(95, 255, 230, 0.62),
+        0 0 90px -10px rgba(127, 255, 143, 0.38);
+    }
+  }
+  @keyframes entry-card-spore {
+    0% { transform: translate(0, 0) scale(0.6); opacity: 0; }
+    15% { opacity: 1; }
+    70% { opacity: 0.85; }
+    100% { transform: translate(var(--dx), -230px) scale(1); opacity: 0; }
   }
 
   /*
-    Tap → bloom : on tactile devices (no hover), JS adds .is-blooming on the
-    tap for 200 ms (stronger glow + scale) while the ClientRouter already
-    loads the entry — the feedback never delays the navigation (L30,
-    Nielsen 1). Mirrors the "Pandora floor lights up under footstep"
-    metaphor for fingertip taps.
+    Tap → bloom (L30) : au toucher, le script pose .is-blooming 200 ms (éclat plus fort)
+    pendant que le ClientRouter charge déjà la fiche — l'éclat ne retarde jamais la
+    navigation (Nielsen 1). Placé APRÈS l'éveil : son animation remplace le pouls du liseré.
   */
   .entry-card.is-blooming {
     border-color: rgba(95, 255, 230, 0.75);
@@ -105,82 +235,27 @@ const size = isIllustration(cover) ? ILLUSTRATION_SIZES.carte : undefined;
       0 0 90px -10px rgba(127, 255, 143, 0.45);
     animation: entry-card-bloom 200ms ease-out;
   }
-  .entry-card.is-blooming::before {
-    opacity: 1;
-    background: radial-gradient(ellipse 90% 70% at 50% 50%,
-      rgba(95, 255, 230, 0.42),
-      rgba(127, 255, 143, 0.20) 40%,
-      transparent 75%);
-  }
-  .entry-card.is-blooming .entry-card__img {
-    opacity: 1;
+  .entry-card.is-blooming .entry-card__img,
+  .entry-card.is-blooming .entry-card__fallback {
     transform: scale(1.08);
     filter: saturate(1.20) brightness(1.12);
   }
+  .entry-card.is-blooming .entry-card__media::after { opacity: 1; }
   .entry-card.is-blooming .entry-card__title {
     color: var(--color-eywa-bio-primary);
     text-shadow: 0 0 18px rgba(95, 255, 230, 0.65);
   }
 
   @keyframes entry-card-bloom {
-    0% {
-      transform: translateY(0) scale(1);
-    }
-    25% {
-      transform: translateY(-3px) scale(1.015);
-    }
-    100% {
-      transform: translateY(-2px) scale(1.01);
-    }
+    0% { transform: translateY(0) scale(1); }
+    25% { transform: translateY(-3px) scale(1.015); }
+    100% { transform: translateY(-2px) scale(1.01); }
   }
 
-  /*
-    Devices without hover (touch) never see the .entry-card:hover styles
-    triggered as a "stuck hover" after tap. We restore the rest state
-    explicitly. The .is-blooming animation takes over on tap.
-  */
-  @media (hover: none) {
-    .entry-card:hover {
-      border-color: rgba(95, 255, 230, 0.15);
-      box-shadow:
-        0 0 0 1px rgba(95, 255, 230, 0.04) inset,
-        0 0 18px -8px rgba(95, 255, 230, 0.20);
-      transform: none;
-    }
-    .entry-card:hover::before {
-      opacity: 0;
-    }
-    .entry-card:hover .entry-card__img {
-      opacity: 0.78;
-      transform: none;
-      filter: none;
-    }
-    .entry-card:hover .entry-card__title {
-      color: var(--color-eywa-text);
-      text-shadow: none;
-    }
-  }
-
-  /* Media area — taller 4:3 for more dominant Pandora imagery */
-  .entry-card__media {
-    position: relative;
-    aspect-ratio: 4 / 3;
-    background: var(--color-eywa-bg);
-    overflow: hidden;
-  }
-
-  .entry-card__img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    opacity: 0.78;
-    transition: opacity 600ms ease, transform 700ms ease, filter 600ms ease;
-  }
-
-  .entry-card:hover .entry-card__img {
-    opacity: 1;
-    transform: scale(1.06);
-    filter: saturate(1.15) brightness(1.08);
+  /* Pause de l'ambiance (WCAG 2.2.2) : le liseré et les spores se figent. */
+  :global(:root.eywa-atmo-paused) .entry-card,
+  :global(:root.eywa-atmo-paused) .entry-card__spore {
+    animation-play-state: paused !important;
   }
 
   /* Body */
@@ -202,11 +277,6 @@ const size = isIllustration(cover) ? ILLUSTRATION_SIZES.carte : undefined;
     transition: color 400ms ease, text-shadow 400ms ease;
   }
 
-  .entry-card:hover .entry-card__title {
-    color: var(--color-eywa-bio-primary);
-    text-shadow: 0 0 14px rgba(95, 255, 230, 0.45);
-  }
-
   .entry-card__summary {
     font-family: var(--font-body);
     /*
@@ -224,18 +294,35 @@ const size = isIllustration(cover) ? ILLUSTRATION_SIZES.carte : undefined;
     overflow: hidden;
   }
 
+  /* Mouvement réduit : rien ne bouge, l'éveil reste lisible et les spores sont posées. */
   @media (prefers-reduced-motion: reduce) {
     .entry-card,
     .entry-card__img,
+    .entry-card__fallback,
     .entry-card__title,
-    .entry-card::before {
-      transition: none;
+    .entry-card__media::after {
+      transition: none !important;
     }
-    .entry-card:hover {
-      transform: none;
-    }
+    .entry-card,
+    .entry-card__spore,
     .entry-card.is-blooming {
-      animation: none;
+      animation: none !important;
+    }
+    .entry-card:is(:hover, :focus-visible, .is-awake, .is-blooming) {
+      transform: none !important;
+    }
+    .entry-card:is(:hover, :focus-visible, .is-awake, .is-blooming) :is(.entry-card__img, .entry-card__fallback) {
+      transform: none !important;
+    }
+    .entry-card:is(:focus-visible, .is-awake) .entry-card__spore {
+      opacity: 0.8;
+      bottom: var(--y);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) and (hover: hover) {
+    .entry-card:hover .entry-card__spore {
+      opacity: 0.8;
+      bottom: var(--y);
     }
   }
 </style>
@@ -280,5 +367,44 @@ const size = isIllustration(cover) ? ILLUSTRATION_SIZES.carte : undefined;
       // Capture phase so the bloom is painted before the router swaps the page.
       true
     );
+
+    /*
+      Éveil au toucher (L33) : un doigt ou un stylet posé sur une carte l'éveille
+      (.is-awake : liseré qui pulse, image éclairée, spores), une seule à la fois ;
+      elle se rendort AWAKE_MS après que le doigt s'est levé ou que le défilement a
+      repris la main (pointercancel). Rien n'est intercepté : le toucher navigue
+      comme avant. La souris éveille par :hover, le clavier par :focus-visible (CSS).
+    */
+    const AWAKE_MS = 1400;
+    let awake = null;
+    let sleepTimer = 0;
+    const sleep = () => {
+      window.clearTimeout(sleepTimer);
+      if (awake) awake.classList.remove('is-awake');
+      awake = null;
+    };
+    document.addEventListener(
+      'pointerdown',
+      (e) => {
+        if (e.pointerType === 'mouse') return;
+        const card =
+          e.target instanceof Element ? e.target.closest('a.entry-card') : null;
+        if (!card) return;
+        if (awake !== card) sleep();
+        window.clearTimeout(sleepTimer);
+        awake = card;
+        card.classList.add('is-awake');
+      },
+      { passive: true }
+    );
+    const later = () => {
+      if (!awake) return;
+      window.clearTimeout(sleepTimer);
+      sleepTimer = window.setTimeout(sleep, AWAKE_MS);
+    };
+    document.addEventListener('pointerup', later, { passive: true });
+    document.addEventListener('pointercancel', later, { passive: true });
+    // La page change sous le ClientRouter : la carte éveillée n'existe plus.
+    document.addEventListener('astro:before-swap', sleep);
   })();
 </script>
