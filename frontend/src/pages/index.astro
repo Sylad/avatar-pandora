@@ -66,8 +66,9 @@ import { CycleBackdrop } from '../components/cinema/CycleBackdrop';
     -->
     <FollowLinks class="mt-4 max-[399px]:mt-3" />
   </main>
-  <AtmospherePause />
+  <!-- Ciel avant la pause : ordre du focus = ordre visuel (revue UX L35 r1). -->
   <SkySwitch />
+  <AtmospherePause />
 </BaseLayout>
 
 <script is:inline>

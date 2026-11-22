@@ -155,16 +155,32 @@ const { codex = false } = Astro.props;
     box-shadow: 0 0 22px -4px rgba(95, 255, 230, 0.65);
   }
   .sky-icon { width: 1.15rem; height: 1.15rem; display: none; }
+  /* Soleil au repos : traits fins, perçus à 2,7:1 sous l'opacité 0,78 (revue UX L35 r1) → trait plus
+     épais et rond pleinement opaque dans ce mode. */
+  .sky-switch__btn[data-mode='jour'] { opacity: 1; }
+  .sky-icon--jour { stroke-width: 2.2; }
   .sky-switch__btn:not([data-mode]) .sky-icon--auto,
   .sky-switch__btn[data-mode='auto'] .sky-icon--auto,
   .sky-switch__btn[data-mode='jour'] .sky-icon--jour,
   .sky-switch__btn[data-mode='nuit'] .sky-icon--nuit { display: block; }
 
+  /*
+    Panneau en position fixe, calé sur la FENÊTRE et non sur le rond (revue UX L35 r1, WCAG 1.4.10 et
+    1.4.4) : ancré sur le rond par `right: 0` avec une largeur minimale, il sortait par la gauche à
+    320 px et à texte 200 %. Bord droit à 0,5–1 rem de la fenêtre, largeur et hauteur bornées par la
+    fenêtre (défilement interne en dernier recours) ; position verticale juste au-delà du rond.
+  */
   .sky-switch__panel {
-    position: absolute;
-    right: 0;
-    bottom: calc(100% + 0.5rem);
-    min-width: 13.5rem;
+    --gap: 0.5rem;
+    position: fixed;
+    right: 1rem;
+    bottom: 4rem; /* rond à 1 rem du bas, 2,5 rem de haut, 0,5 rem d'écart */
+    width: max-content;
+    min-width: min(13.5rem, calc(100vw - 2 * var(--gap)));
+    max-width: calc(100vw - 2 * var(--gap));
+    max-height: calc(100dvh - 4rem - var(--gap));
+    overflow-y: auto;
+    box-sizing: border-box;
     padding: 0.85rem 1rem 0.75rem;
     border-radius: 10px;
     border: 1px solid rgba(95, 255, 230, 0.35);
@@ -172,6 +188,7 @@ const { codex = false } = Astro.props;
     box-shadow: 0 10px 30px -12px rgba(0, 0, 0, 0.8), 0 0 22px -10px rgba(95, 255, 230, 0.5);
     color: var(--color-eywa-text, #e8e6dd);
     text-align: left;
+    overflow-wrap: anywhere;
   }
   .sky-switch__panel[hidden] { display: none; }
   .sky-switch__title {
@@ -196,6 +213,7 @@ const { codex = false } = Astro.props;
   }
   .sky-switch__choice:hover { background: rgba(95, 255, 230, 0.08); }
   .sky-switch__choice input {
+    flex: none; /* ne rétrécit pas quand le libellé passe à la ligne (texte 200 %) */
     width: 1.1rem;
     height: 1.1rem;
     margin: 0;
@@ -211,20 +229,33 @@ const { codex = false } = Astro.props;
     color: rgba(232, 230, 221, 0.8);
   }
 
+  /* Texte de la phrase d'heure : passe à la ligne plutôt que d'élargir le panneau. */
+  .sky-switch__choice span, .sky-switch__now { min-width: 0; }
+
+  /* Codex au grand écran (revue UX L35 r1) : le ciel AU-DESSUS de la pause, dans la marge droite.
+     Côte à côte, le rond du ciel recouvrait le texte de la 3e carte dans la première vue. */
+  @media (min-width: 64rem) {
+    .sky-switch--codex { right: 1rem; bottom: 4rem; }
+    .sky-switch--codex .sky-switch__panel { bottom: 7rem; max-height: calc(100dvh - 7rem - var(--gap)); }
+  }
   /* Téléphone (accueil) : la pause est en haut à droite ; le ciel à sa gauche, panneau dessous. */
   @media (max-width: 480px) {
     .sky-switch { top: 0.5rem; bottom: auto; right: 3.5rem; }
-    .sky-switch__panel { top: calc(100% + 0.5rem); bottom: auto; }
+    .sky-switch__panel { top: 3.5rem; bottom: auto; right: var(--gap); max-height: calc(100dvh - 3.5rem - var(--gap)); }
   }
   /* Codex sous 1024 px : dans la bande du haut, à gauche de la pause (4,1 rem + 3 rem). */
   @media (max-width: 63.99rem) {
     .sky-switch--codex { top: 0.975rem; bottom: auto; right: 7.1rem; }
-    .sky-switch--codex .sky-switch__panel { top: calc(100% + 0.5rem); bottom: auto; }
+    .sky-switch--codex .sky-switch__panel { top: 3.975rem; bottom: auto; right: var(--gap); max-height: calc(100dvh - 3.975rem - var(--gap)); }
   }
   /* Mouvement réduit : la pause n'est pas rendue, le ciel prend sa place. */
   @media (prefers-reduced-motion: reduce) {
     .sky-switch { right: 1rem; }
     @media (max-width: 480px) { .sky-switch { right: 0.5rem; } }
     @media (max-width: 63.99rem) { .sky-switch--codex { right: 4.1rem; } }
+    @media (min-width: 64rem) {
+      .sky-switch--codex { bottom: 1rem; }
+      .sky-switch--codex .sky-switch__panel { bottom: 4rem; max-height: calc(100dvh - 4rem - var(--gap)); }
+    }
   }
 </style>

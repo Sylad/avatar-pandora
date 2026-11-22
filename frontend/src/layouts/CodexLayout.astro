@@ -51,8 +51,9 @@ const ambient = AMBIENTS[current ?? ''] ?? AMBIENTS.pandora;
   <!-- Bande pleine sous 1024 px (revue UX L6) : menu et pause fixes reposent dessus, le texte défile
        dessous au lieu de passer derrière eux. -->
   <div class="eywa-topbar" aria-hidden="true"></div>
-  <AtmospherePause codex />
+  <!-- Ciel avant la pause : ordre du focus = ordre visuel (revue UX L35 r1). -->
   <SkySwitch codex />
+  <AtmospherePause codex />
 
   <!--
     Burger mobile : visible <lg, fixe top-right, glow cyan bioluminescent.
