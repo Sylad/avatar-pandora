@@ -383,6 +383,7 @@ lots:
     estimate: 0.5
     visible: true
     after: [ L17 ]
+    delivered: { date: 2026-11-22, sha: 608f099787f6b28fc71fd8bd2659390ddfc3bb1c }
     created: 2026-10-10
     started: 2026-11-22
     ux: { date: 2026-11-22, verdict: "conforme — revue UX courte (tmp/ux-avatar-L34.md) : silhouette = prototype du 10-10, reduced-motion sans traversée, pause conforme 2.2.2 ; mineurs m1 ikran coupé net au bord à opacité 0,94 (fondu à caler sur sa taille, à corriger), m2 passe derrière le titre au téléphone, m3 appel non découvrable ni au clavier (décoratif)" }
