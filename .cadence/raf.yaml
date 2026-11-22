@@ -379,14 +379,15 @@ lots:
   - id: L34
     title: "Pandora vivant 3 — ikrans dans le ciel : silhouettes d'ikrans (4 ailes, longue queue, dessin SVG, jamais un dragon européen) qui traversent les bandeaux Pandora et Bestiaire de temps en temps, un toucher en appelle un ; d'après le prototype validé le 10-10 ; à améliorer : battement d'ailes moins raide"
     public: Des ikrans traversent le ciel
-    status: doing
+    status: done
     estimate: 0.5
     visible: true
     after: [ L17 ]
     created: 2026-10-10
     started: 2026-11-22
     ux: { date: 2026-11-22, verdict: "conforme — revue UX courte (tmp/ux-avatar-L34.md) : silhouette = prototype du 10-10, reduced-motion sans traversée, pause conforme 2.2.2 ; mineurs m1 ikran coupé net au bord à opacité 0,94 (fondu à caler sur sa taille, à corriger), m2 passe derrière le titre au téléphone, m3 appel non découvrable ni au clavier (décoratif)" }
-    review: { date: 2026-11-22, verdict: "conforme r0 (0 bloquant, 0 majeur, 3 mineurs : fondu calé sur le trajet, minuterie du couple non annulée, suivi du doigt dupliqué) — tmp/revue-avatar-L34.md", commit: 1b4121eb42142e9f06d10c3ca8b7ef4992fcc746 }
+    review: { date: 2026-11-22, verdict: "conforme r1 — 3 mineurs corrigés (fondu sur la position, 0,30 à mi-entrée à 390 px ; minuterie du couple annulée ; tapTracker partagé et testé), 37/37 tests ciblés (f72e699)", commit: f72e6990baf1828b5fb8083f4966908e4f037d7d }
+    finished: 2026-11-22
   - id: L35
     title: "Pandora vivant 4 — jour et nuit : l'ambiance suit l'heure du visiteur, la forêt s'illumine à mesure que la nuit tombe (filtres + points bioluminescents), réglage manuel possible ; d'après le prototype validé le 10-10"
     public: Le jour et la nuit sur Pandora
