@@ -398,6 +398,8 @@ lots:
     after: [ L17 ]
     created: 2026-10-10
     started: 2026-11-22
+    notes:
+      - { date: 2026-11-22, text: "22-11 revue UX r1 (tmp/ux-avatar-L35.md) NON CONFORME : bloquant panneau Jour et nuit hors écran à 320 px et texte 200 % (right:0 + min-width 13.5rem) ; mineurs : ordre du focus rond du ciel/pause, ronds fixes qui masquent du texte à 1440 sur /pandora, icône soleil perçue 2,7:1. Reste conforme (contraste, aucun éclair de jour, mouvement réduit)." }
   - id: L36
     title: "Pandora vivant 5 — eau vivante : les pages des Metkayina et de l'océan ondoient sous le doigt (anneau qui déforme l'image, plancton lumineux qui s'écarte), d'après le prototype validé le 10-10 ; ondulation à rendre plus visible (WebGL si besoin)"
     public: L'eau ondule sous le doigt
