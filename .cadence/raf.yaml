@@ -392,11 +392,12 @@ lots:
   - id: L35
     title: "Pandora vivant 4 — jour et nuit : l'ambiance suit l'heure du visiteur, la forêt s'illumine à mesure que la nuit tombe (filtres + points bioluminescents), réglage manuel possible ; d'après le prototype validé le 10-10"
     public: Le jour et la nuit sur Pandora
-    status: todo
+    status: doing
     estimate: 0.5
     visible: true
     after: [ L17 ]
     created: 2026-10-10
+    started: 2026-11-22
   - id: L36
     title: "Pandora vivant 5 — eau vivante : les pages des Metkayina et de l'océan ondoient sous le doigt (anneau qui déforme l'image, plancton lumineux qui s'écarte), d'après le prototype validé le 10-10 ; ondulation à rendre plus visible (WebGL si besoin)"
     public: L'eau ondule sous le doigt
