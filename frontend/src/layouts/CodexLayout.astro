@@ -51,9 +51,6 @@ const ambient = AMBIENTS[current ?? ''] ?? AMBIENTS.pandora;
   <!-- Bande pleine sous 1024 px (revue UX L6) : menu et pause fixes reposent dessus, le texte défile
        dessous au lieu de passer derrière eux. -->
   <div class="eywa-topbar" aria-hidden="true"></div>
-  <!-- Ciel avant la pause : ordre du focus = ordre visuel (revue UX L35 r1). -->
-  <SkySwitch codex />
-  <AtmospherePause codex />
 
   <!--
     Burger mobile : visible <lg, fixe top-right, glow cyan bioluminescent.
@@ -85,6 +82,11 @@ const ambient = AMBIENTS[current ?? ''] ?? AMBIENTS.pandora;
       <slot />
     </main>
   </div>
+  <!-- Ronds fixes de l'ambiance APRÈS la navigation et le contenu dans l'ordre du focus (revue UX L35
+       r2, WCAG 2.4.3 : ils étaient les 2e et 3e arrêts du Tab, avant le menu) ; ciel avant la pause,
+       comme à l'écran (r1). Leur place à l'écran ne dépend que de leur position fixe. -->
+  <SkySwitch codex />
+  <AtmospherePause codex />
 </BaseLayout>
 
 <script is:inline>

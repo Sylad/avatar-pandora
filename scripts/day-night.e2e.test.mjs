@@ -21,13 +21,22 @@ const at = (hhmm) => new Date(`2026-11-22T${hhmm}:00+01:00`);
 
 async function open(env, path, { width = 1440, height = 900, time, mode, reducedMotion = 'no-preference', touch = false } = {}) {
   const context = await env.browser.newContext({ viewport: { width, height }, timezoneId: TZ, reducedMotion, hasTouch: touch, isMobile: touch });
-  // Ciel relevé au tout premier DOMContentLoaded : avant la première image.
+  // Ciel relevé dès que le <body> existe (revue de code L35 r2) : un MutationObserver est servi à la
+  // première vérification des microtâches après l'insertion du <body> par l'analyseur — avant tout
+  // script du corps et avant la première image. Relevé au DOMContentLoaded, un script déplacé en fin
+  // de <body> (éclair de jour la nuit) passait encore.
   await context.addInitScript(([k, m]) => {
     if (m && !sessionStorage.getItem('sky-set')) { localStorage.setItem(k, m); sessionStorage.setItem('sky-set', '1'); }
-    document.addEventListener('DOMContentLoaded', () => {
+    const grab = () => {
       const r = document.documentElement;
-      window.__skyAtDcl = { mode: r.dataset.skyMode, lit: 'skyLit' in r.dataset, n: r.style.getPropertyValue('--sky-n') };
-    }, { once: true });
+      return { mode: r.dataset.skyMode, lit: 'skyLit' in r.dataset, n: r.style.getPropertyValue('--sky-n') };
+    };
+    const mo = new MutationObserver(() => {
+      if (!document.body) return;
+      mo.disconnect();
+      window.__skyAtBody = grab();
+    });
+    mo.observe(document, { childList: true, subtree: true });
   }, [KEY, mode ?? null]);
   const page = await context.newPage();
   if (time) await page.clock.setFixedTime(time);
@@ -48,7 +57,7 @@ const sky = (page) => page.evaluate(() => {
     n: v('n'),
     shade: shade ? Number(getComputedStyle(shade).opacity) : null,
     spots: spots ? { opacity: Number(getComputedStyle(spots).opacity), visible: getComputedStyle(spots).visibility === 'visible' } : null,
-    dcl: window.__skyAtDcl,
+    atBody: window.__skyAtBody,
   };
 });
 
@@ -70,10 +79,23 @@ test('jour et nuit (L35)', { timeout: 600_000 }, async (t) => {
     assert.ok(nuit.shade > 0.6, `forêt non assombrie la nuit : ${nuit.shade}`);
     const soir = seen['19:30 /flore/'];
     assert.ok(soir.n > 0.3 && soir.n < 0.7, `19 h 30 : n = ${soir.n}`);
-    // Avant la première image : déjà la nuit au DOMContentLoaded.
-    assert.deepEqual(nuit.dcl, { mode: 'auto', lit: true, n: '1.000' });
+    // Avant la première image : déjà la nuit quand le <body> apparaît.
+    assert.deepEqual(nuit.atBody, { mode: 'auto', lit: true, n: '1.000' });
     const accueil = seen['23:00 /'];
     assert.ok(accueil.lit && accueil.spots.visible && accueil.spots.opacity === 1, `accueil la nuit : ${JSON.stringify(accueil)}`);
+  });
+
+  await t.test('le script de démarrage du ciel est dans le <head> de chaque page servie, avant toute feuille de style et le <body>', async () => {
+    const bad = [];
+    for (const path of ['/', '/flore/', '/pandora/', '/bestiaire/akula/', '/about/', '/nouveautes/', '/404.html']) {
+      const html = await (await fetch(`${env.base}${path}`)).text();
+      const head = html.slice(0, html.search(/<body[\s>]/i));
+      const boot = head.indexOf('__eywaSky');
+      if (boot < 0) { bad.push(`${path} : script du ciel absent du <head>`); continue; }
+      const css = head.search(/<link[^>]+rel="?stylesheet|<style[\s>]/i);
+      if (css >= 0 && css < boot) bad.push(`${path} : feuille de style avant le script du ciel`);
+    }
+    assert.deepEqual(bad, []);
   });
 
   await t.test('réglage au clavier : Nuit à midi, mémorisé de page en page et au rechargement, puis retour à « selon ton heure »', async () => {

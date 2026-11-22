@@ -16,9 +16,7 @@
  */
 
 export type SkyMode = 'auto' | 'jour' | 'nuit';
-export const SKY_MODES: readonly SkyMode[] = ['auto', 'jour', 'nuit'];
 export const SKY_STORAGE_KEY = 'eywa.sky-v1';
-export const SKY_EVENT = 'eywa:sky';
 /** Degré de nuit des réglages manuels : plein jour, nuit noire. */
 export const MANUAL_NIGHT: Record<Exclude<SkyMode, 'auto'>, number> = { jour: 0, nuit: 1 };
 

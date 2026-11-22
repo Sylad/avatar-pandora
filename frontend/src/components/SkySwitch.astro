@@ -50,7 +50,7 @@ const { codex = false } = Astro.props;
 </div>
 
 <script>
-  import { SKY_EVENT, SKY_STORAGE_KEY, nightOf, nowLabel, parseMode, type SkyMode } from '../lib/day-night';
+  import { SKY_STORAGE_KEY, nightOf, nowLabel, parseMode, type SkyMode } from '../lib/day-night';
 
   const NAMES: Record<SkyMode, string> = { auto: 'selon ton heure', jour: 'jour', nuit: 'nuit' };
   const w = window as Window & { __eywaSky?: { apply: () => void }; __eywaSkySwitchInit?: boolean };
@@ -104,7 +104,6 @@ const { codex = false } = Astro.props;
       try { localStorage.setItem(SKY_STORAGE_KEY, mode); } catch { /* vaut pour la page seulement */ }
       w.__eywaSky?.apply();
       render();
-      window.dispatchEvent(new CustomEvent(SKY_EVENT, { detail: { mode } }));
     });
     document.addEventListener('keydown', (ev) => {
       const e = els();
@@ -181,7 +180,7 @@ const { codex = false } = Astro.props;
     max-height: calc(100dvh - 4rem - var(--gap));
     overflow-y: auto;
     box-sizing: border-box;
-    padding: 0.85rem 1rem 0.75rem;
+    padding: 12px 16px 10px; /* en px : marge fixe, le texte agrandi garde la place (revue UX L35 r2) */
     border-radius: 10px;
     border: 1px solid rgba(95, 255, 230, 0.35);
     background: rgba(8, 12, 22, 0.97);
@@ -204,7 +203,9 @@ const { codex = false } = Astro.props;
     display: flex;
     align-items: center;
     gap: 0.6rem;
-    min-height: 2.75rem; /* cible ≥ 44 px (WCAG 2.5.8 largement) */
+    /* Cible ≥ 44 px (WCAG 2.5.8 largement), en px et non en rem : à texte 200 %, 2,75 rem montaient à
+       88 px par choix et la phrase d'heure sortait de la fenêtre à 320 px (revue UX L35 r2). */
+    min-height: 44px;
     padding: 0 0.35rem;
     border-radius: 6px;
     font-family: var(--font-body);

@@ -60,7 +60,7 @@ l'un ou l'autre, sous la charge de la porte, les transitions des cartes du Besti
 
 Jour et nuit (L35) : l'ambiance suit l'heure LOCALE du visiteur (`lib/day-night.ts` : jour 8 h–17 h, la nuit tombe 17 h–22 h,
 nuit noire 22 h–5 h, aube 5 h–8 h), ou le choix « Selon ton heure / Jour / Nuit » du rond `components/SkySwitch.astro` (à gauche de la
-pause, au-dessus d'elle sur le codex dès 1024 px pour ne masquer aucun texte ; avant elle dans le DOM, ordre du focus ;
+pause, au-dessus d'elle sur le codex dès 1024 px pour ne masquer aucun texte ; avant elle dans le DOM, ordre du focus ; sur le codex, tous deux après la navigation et le contenu dans le DOM (WCAG 2.4.3) ; panneau qui tient sans défilement à 320 px texte 200 % (cibles en px) ;
 panneau en `position: fixed` borné par la fenêtre, jamais ancré sur le rond : il sortait à 320 px et à texte 200 % ;
 gardé dans localStorage `eywa.sky-v1`). `skyBoot` (même fichier, AUTONOME : sérialisé par `String()` dans le `<head>` de
 BaseLayout) pose avant la première image `data-sky-mode`, `data-sky-lit` et les variables `--sky-*` sur `<html>`, et se rejoue après
