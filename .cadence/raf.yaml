@@ -392,7 +392,7 @@ lots:
   - id: L35
     title: "Pandora vivant 4 — jour et nuit : l'ambiance suit l'heure du visiteur, la forêt s'illumine à mesure que la nuit tombe (filtres + points bioluminescents), réglage manuel possible ; d'après le prototype validé le 10-10"
     public: Le jour et la nuit sur Pandora
-    status: doing
+    status: done
     estimate: 0.5
     visible: true
     after: [ L17 ]
@@ -400,6 +400,9 @@ lots:
     started: 2026-11-22
     notes:
       - { date: 2026-11-22, text: "22-11 revue UX r1 (tmp/ux-avatar-L35.md) NON CONFORME : bloquant panneau Jour et nuit hors écran à 320 px et texte 200 % (right:0 + min-width 13.5rem) ; mineurs : ordre du focus rond du ciel/pause, ronds fixes qui masquent du texte à 1440 sur /pandora, icône soleil perçue 2,7:1. Reste conforme (contraste, aucun éclair de jour, mouvement réduit)." }
+    ux: { date: 2026-11-22, verdict: "conforme — revue UX r2 (tmp/ux-avatar-L35-r2.md) : bloquant r1 corrigé et mesuré (panneau entier 320/390/1440 × 100/200 %, zoom réel 1440), focus ciel avant pause, aucun texte sous les ronds, soleil 5,3:1 ; les 2 mineurs r2 (phrase d'heure à 320/200 %, ronds avant la navigation sur le codex) corrigés en f1f3529 avec tests rouges avant / verts après" }
+    review: { date: 2026-11-22, verdict: "conforme — revue de code (tmp/revue-avatar-L35.md) : aucun bloquant ; majeur README et mineurs (test au DCL, code mort eywa:sky/SKY_MODES) corrigés en f1f3529, relu par le lead ; suite 338/338", commit: f1f35297f057f5e522048f2748c08c97b6b55ade }
+    finished: 2026-11-22
   - id: L36
     title: "Pandora vivant 5 — eau vivante : les pages des Metkayina et de l'océan ondoient sous le doigt (anneau qui déforme l'image, plancton lumineux qui s'écarte), d'après le prototype validé le 10-10 ; ondulation à rendre plus visible (WebGL si besoin)"
     public: L'eau ondule sous le doigt
