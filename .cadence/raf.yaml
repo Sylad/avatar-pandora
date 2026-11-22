@@ -370,6 +370,7 @@ lots:
     estimate: 0.5
     visible: true
     after: [ L17 ]
+    delivered: { date: 2026-11-22, sha: c4bec4feb1a3b824b09af8ed24167b3a7b4b2127 }
     created: 2026-10-10
     started: 2026-11-22
     ux: { date: 2026-11-22, verdict: "conforme — tmp/ux-avatar-L33.md : prototype du 10-10 suivi, contrastes ≥ 6,95:1 au pire, éveil survol/clavier/toucher, reduced-motion sans animation, 7 pages du codex sans régression ; fluidité non vérifiée (Chrome de mini-blue)" }
