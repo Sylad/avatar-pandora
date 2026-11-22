@@ -396,6 +396,7 @@ lots:
     estimate: 0.5
     visible: true
     after: [ L17 ]
+    delivered: { date: 2026-11-22, sha: 05c2b215ad5a3b98485c6e1bfe8c29d9847dbf2f }
     created: 2026-10-10
     started: 2026-11-22
     notes:
