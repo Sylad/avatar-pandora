@@ -366,11 +366,14 @@ lots:
   - id: L33
     title: "Pandora vivant 2 — cartes qui s'éveillent : chaque carte du codex dort dans la pénombre et s'éveille au survol, au toucher ou au clavier (liseré qui pulse, image qui s'éclaire, spores qui montent), d'après le prototype validé le 10-10 ; prefers-reduced-motion respecté"
     public: Les fiches du codex s'éveillent
-    status: todo
+    status: doing
     estimate: 0.5
     visible: true
     after: [ L17 ]
     created: 2026-10-10
+    started: 2026-11-22
+    ux: { date: 2026-11-22, verdict: "conforme — tmp/ux-avatar-L33.md : prototype du 10-10 suivi, contrastes ≥ 6,95:1 au pire, éveil survol/clavier/toucher, reduced-motion sans animation, 7 pages du codex sans régression ; fluidité non vérifiée (Chrome de mini-blue)" }
+    review: { date: 2026-11-22, verdict: "non conforme — tmp/revue-avatar-L33.md : M1 pouls du liseré animé sur box-shadow (EntryCard.astro:167, :193), à porter sur l'opacity d'un pseudo-élément ; M2 README l.25 périmé ; m1 bloc d'éveil dupliqué (EntryCard.astro:160-182 et 185-206)", commit: 91f2d6d2d798b4c7d9b2aa542238ce52990a8ef8 }
   - id: L34
     title: "Pandora vivant 3 — ikrans dans le ciel : silhouettes d'ikrans (4 ailes, longue queue, dessin SVG, jamais un dragon européen) qui traversent les bandeaux Pandora et Bestiaire de temps en temps, un toucher en appelle un ; d'après le prototype validé le 10-10 ; à améliorer : battement d'ailes moins raide"
     public: Des ikrans traversent le ciel
