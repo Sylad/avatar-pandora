@@ -38,10 +38,12 @@ groupe, pas de flou SVG, trop lent) ; une ligne de texte couvre tout son interli
 agrandie à la hauteur du document : sinon le canvas fixe des particules et le menu collant s'arrêtent à 900 px (faux « pavé »). Toucher = allumé au lever du doigt, sans glissement. Contrôlé par
 `scripts/bio-moss.e2e.test.mjs` (contraste au pire pixel avec et sans mousse, menu compris ; visibilité autour du doigt à 390 px).
 
-Cartes qui s'éveillent (L33) : `components/EntryCard.astro` — au repos l'image dort (brightness 0,55), éveil par `:hover` (seulement
-`hover: hover`), `:focus-visible` et `.is-awake` (posée au `pointerdown` tactile, une carte à la fois, rendormie 1,4 s après le lever du
+Cartes qui s'éveillent (L33) : `components/EntryCard.astro` — au repos l'image dort (brightness 0,55), éveil par `:hover`, `:focus-visible` et `.is-awake` (posée au `pointerdown` tactile, une carte à la fois, rendormie 1,4 s après le lever du
 doigt, sans intercepter la navigation) : liseré qui pulse, image éclairée, spores en CSS tirées au build d'une graine (l'adresse). Le texte
-ne change pas de contraste. Mouvement réduit : rien ne bouge, spores posées ; pause de l'ambiance : tout se fige.
+ne change pas de contraste. Un seul sélecteur d'éveil `:is(:focus-visible, .is-awake, :hover:not(.is-touched))` : le script pose
+`.is-touched` sur la carte touchée (survol collé des écrans tactiles), une vraie souris l'ôte. Le pouls du liseré est un fondu
+enchaîné de deux calques de lueur (`::before`, `::after`) en `opacity` seule — jamais animer `box-shadow` (revue L33). Mouvement
+réduit : rien ne bouge, spores posées ; pause de l'ambiance : tout se fige.
 Contrôlé par `scripts/entry-card-awake.e2e.test.mjs`.
 
 Pattern technique réutilisable : `CinemaCanvas` mode `'time'` + `CycleBackdrop` qui cross-fade les images sur le même clock. Voir `frontend/src/components/cinema/`.

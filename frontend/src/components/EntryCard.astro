@@ -87,7 +87,8 @@ const spores = Array.from({ length: SPORE_COUNT }, (_, i) => {
     position: relative;
     display: block;
     border-radius: 6px;
-    overflow: hidden;
+    /* Pas d'overflow: hidden ici : il couperait la lueur des calques ::before/::after.
+       L'image est coupée par .entry-card__media, les coins arrondis par le média et le corps. */
     background: rgba(232, 230, 221, 0.02);
     border: 1px solid rgba(95, 255, 230, 0.15);
     box-shadow:
@@ -110,6 +111,7 @@ const spores = Array.from({ length: SPORE_COUNT }, (_, i) => {
     aspect-ratio: 4 / 3;
     background: var(--color-eywa-bg);
     overflow: hidden;
+    border-radius: 5px 5px 0 0;
   }
 
   /* L'image dort dans la pénombre. */
@@ -156,64 +158,67 @@ const spores = Array.from({ length: SPORE_COUNT }, (_, i) => {
     opacity: 0;
   }
 
-  /* ---- Éveil : clavier et toucher partout, survol seulement avec une vraie souris ---- */
-  .entry-card:is(:focus-visible, .is-awake) {
+  /*
+    ---- Éveil : UN seul sélecteur pour le survol, le clavier et le toucher ----
+    `:hover:not(.is-touched)` : un appareil tactile garde un « survol collé » après le toucher ;
+    le script pose .is-touched sur la carte touchée (et l'ôte dès qu'une vraie souris la survole),
+    si bien que seul un pointeur qui survole vraiment éveille la carte par :hover.
+  */
+  .entry-card:is(:focus-visible, .is-awake, :hover:not(.is-touched)) {
     border-color: rgba(95, 255, 230, 0.7);
-    box-shadow:
-      0 0 0 1px rgba(95, 255, 230, 0.14) inset,
-      0 0 36px -4px rgba(95, 255, 230, 0.5),
-      0 0 70px -12px rgba(127, 255, 143, 0.3);
+    box-shadow: 0 0 0 1px rgba(95, 255, 230, 0.14) inset;
     transform: translateY(-3px);
-    animation: entry-card-rim 2.6s ease-in-out infinite;
   }
-  .entry-card:is(:focus-visible, .is-awake) .entry-card__img,
-  .entry-card:is(:focus-visible, .is-awake) .entry-card__fallback {
+  .entry-card:is(:focus-visible, .is-awake, :hover:not(.is-touched)) :is(.entry-card__img, .entry-card__fallback) {
     filter: brightness(1.08) saturate(1.25);
     transform: scale(1.06);
   }
-  .entry-card:is(:focus-visible, .is-awake) .entry-card__media::after { opacity: 1; }
-  .entry-card:is(:focus-visible, .is-awake) .entry-card__title {
+  .entry-card:is(:focus-visible, .is-awake, :hover:not(.is-touched)) .entry-card__media::after { opacity: 1; }
+  .entry-card:is(:focus-visible, .is-awake, :hover:not(.is-touched)) .entry-card__title {
     color: var(--color-eywa-bio-primary);
     text-shadow: 0 0 16px rgba(95, 255, 230, 0.6);
   }
-  .entry-card:is(:focus-visible, .is-awake) .entry-card__spore {
+  .entry-card:is(:focus-visible, .is-awake, :hover:not(.is-touched)) .entry-card__spore {
     animation: entry-card-spore var(--d) linear var(--delay) infinite;
   }
 
-  /* Un appareil tactile garde un « survol collé » après le toucher : le survol n'éveille
-     qu'avec un pointeur qui survole vraiment. */
-  @media (hover: hover) {
-    .entry-card:hover {
-      border-color: rgba(95, 255, 230, 0.7);
-      box-shadow:
-        0 0 0 1px rgba(95, 255, 230, 0.14) inset,
-        0 0 36px -4px rgba(95, 255, 230, 0.5),
-        0 0 70px -12px rgba(127, 255, 143, 0.3);
-      transform: translateY(-3px);
-      animation: entry-card-rim 2.6s ease-in-out infinite;
-    }
-    .entry-card:hover .entry-card__img,
-    .entry-card:hover .entry-card__fallback {
-      filter: brightness(1.08) saturate(1.25);
-      transform: scale(1.06);
-    }
-    .entry-card:hover .entry-card__media::after { opacity: 1; }
-    .entry-card:hover .entry-card__title {
-      color: var(--color-eywa-bio-primary);
-      text-shadow: 0 0 16px rgba(95, 255, 230, 0.6);
-    }
-    .entry-card:hover .entry-card__spore {
-      animation: entry-card-spore var(--d) linear var(--delay) infinite;
-    }
+  /*
+    Pouls du liseré : deux calques de lueur, figés, en fondu enchaîné sur la seule `opacity`
+    (le compositeur l'anime sans repeindre). ::before porte la lueur de base de l'éveil,
+    ::after la lueur la plus forte du pouls ; décalés d'une demi-période, leurs opacités font
+    toujours 1, comme l'ancien box-shadow animé de la base au pic (prototype du 10-10).
+  */
+  .entry-card::before,
+  .entry-card::after {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 450ms ease;
+  }
+  .entry-card::before {
+    box-shadow:
+      0 0 36px -4px rgba(95, 255, 230, 0.5),
+      0 0 70px -12px rgba(127, 255, 143, 0.3);
+  }
+  .entry-card::after {
+    box-shadow:
+      0 0 46px 0 rgba(95, 255, 230, 0.62),
+      0 0 90px -10px rgba(127, 255, 143, 0.38);
+  }
+  .entry-card:is(:focus-visible, .is-awake, :hover:not(.is-touched))::before {
+    opacity: 1;
+    animation: entry-card-rim 2.6s ease-in-out -1.3s infinite;
+  }
+  .entry-card:is(:focus-visible, .is-awake, :hover:not(.is-touched))::after {
+    animation: entry-card-rim 2.6s ease-in-out infinite;
   }
 
   @keyframes entry-card-rim {
-    50% {
-      box-shadow:
-        0 0 0 1px rgba(95, 255, 230, 0.2) inset,
-        0 0 46px 0 rgba(95, 255, 230, 0.62),
-        0 0 90px -10px rgba(127, 255, 143, 0.38);
-    }
+    0%, 100% { opacity: 0; }
+    50% { opacity: 1; }
   }
   @keyframes entry-card-spore {
     0% { transform: translate(0, 0) scale(0.6); opacity: 0; }
@@ -241,6 +246,12 @@ const spores = Array.from({ length: SPORE_COUNT }, (_, i) => {
     filter: saturate(1.20) brightness(1.12);
   }
   .entry-card.is-blooming .entry-card__media::after { opacity: 1; }
+  .entry-card.is-blooming::before,
+  .entry-card.is-blooming::after {
+    animation: none;
+    opacity: 0;
+    transition: none;
+  }
   .entry-card.is-blooming .entry-card__title {
     color: var(--color-eywa-bio-primary);
     text-shadow: 0 0 18px rgba(95, 255, 230, 0.65);
@@ -254,6 +265,8 @@ const spores = Array.from({ length: SPORE_COUNT }, (_, i) => {
 
   /* Pause de l'ambiance (WCAG 2.2.2) : le liseré et les spores se figent. */
   :global(:root.eywa-atmo-paused) .entry-card,
+  :global(:root.eywa-atmo-paused) .entry-card::before,
+  :global(:root.eywa-atmo-paused) .entry-card::after,
   :global(:root.eywa-atmo-paused) .entry-card__spore {
     animation-play-state: paused !important;
   }
@@ -263,6 +276,7 @@ const spores = Array.from({ length: SPORE_COUNT }, (_, i) => {
     position: relative;
     z-index: 2;
     padding: 1.25rem;
+    border-radius: 0 0 5px 5px;
     /* Voile sombre sous le texte (L27, WCAG 1.4.3) : les particules WebGL passent
        derrière la carte, le résumé ne doit pas les voir (même principe que L2). */
     background: rgba(10, 10, 31, 0.88);
@@ -297,6 +311,8 @@ const spores = Array.from({ length: SPORE_COUNT }, (_, i) => {
   /* Mouvement réduit : rien ne bouge, l'éveil reste lisible et les spores sont posées. */
   @media (prefers-reduced-motion: reduce) {
     .entry-card,
+    .entry-card::before,
+    .entry-card::after,
     .entry-card__img,
     .entry-card__fallback,
     .entry-card__title,
@@ -304,6 +320,8 @@ const spores = Array.from({ length: SPORE_COUNT }, (_, i) => {
       transition: none !important;
     }
     .entry-card,
+    .entry-card::before,
+    .entry-card::after,
     .entry-card__spore,
     .entry-card.is-blooming {
       animation: none !important;
@@ -314,13 +332,7 @@ const spores = Array.from({ length: SPORE_COUNT }, (_, i) => {
     .entry-card:is(:hover, :focus-visible, .is-awake, .is-blooming) :is(.entry-card__img, .entry-card__fallback) {
       transform: none !important;
     }
-    .entry-card:is(:focus-visible, .is-awake) .entry-card__spore {
-      opacity: 0.8;
-      bottom: var(--y);
-    }
-  }
-  @media (prefers-reduced-motion: reduce) and (hover: hover) {
-    .entry-card:hover .entry-card__spore {
+    .entry-card:is(:focus-visible, .is-awake, :hover:not(.is-touched)) .entry-card__spore {
       opacity: 0.8;
       bottom: var(--y);
     }
@@ -390,6 +402,7 @@ const spores = Array.from({ length: SPORE_COUNT }, (_, i) => {
         const card =
           e.target instanceof Element ? e.target.closest('a.entry-card') : null;
         if (!card) return;
+        card.classList.add('is-touched');
         if (awake !== card) sleep();
         window.clearTimeout(sleepTimer);
         awake = card;
@@ -402,6 +415,17 @@ const spores = Array.from({ length: SPORE_COUNT }, (_, i) => {
       window.clearTimeout(sleepTimer);
       sleepTimer = window.setTimeout(sleep, AWAKE_MS);
     };
+    // Une vraie souris rend au survol CSS la carte touchée auparavant (écran tactile + souris).
+    document.addEventListener(
+      'pointerover',
+      (e) => {
+        if (e.pointerType !== 'mouse') return;
+        const card =
+          e.target instanceof Element ? e.target.closest('a.entry-card.is-touched') : null;
+        if (card) card.classList.remove('is-touched');
+      },
+      { passive: true }
+    );
     document.addEventListener('pointerup', later, { passive: true });
     document.addEventListener('pointercancel', later, { passive: true });
     // La page change sous le ClientRouter : la carte éveillée n'existe plus.

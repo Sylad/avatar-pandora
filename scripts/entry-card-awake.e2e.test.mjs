@@ -7,6 +7,8 @@
 //  - prefers-reduced-motion : aucune animation ni déplacement, état éveillé lisible (image
 //    éclairée, titre cyan, spores visibles et immobiles) ;
 //  - pause de l'ambiance (WCAG 2.2.2) : le pouls et les spores se figent ;
+//  - les animations qui tournent sans fin n'animent que transform et opacity (rien qui repeigne
+//    la carte à chaque image : revue de code L33, le pouls animait box-shadow) ;
 //  - le titre se lit (≥ 4,5:1 au pire pixel) endormi comme éveillé, à 1440 et 390 px.
 // Lit frontend/dist (lancer le build avant) ; skip sans playwright-core/Chromium.
 import test from 'node:test';
@@ -33,10 +35,20 @@ function state(page, index) {
     const bright = Number((getComputedStyle(media).filter.match(/brightness\(([\d.]+)\)/) || [])[1] ?? 1);
     const spores = [...card.querySelectorAll('.entry-card__spore')].map((s) => getComputedStyle(s));
     const cs = getComputedStyle(card);
+    // Le pouls du liseré : fondu enchaîné de deux calques de lueur (::before, ::after).
+    const rims = ['::before', '::after'].map((p) => getComputedStyle(card, p));
+    // Propriétés animées par les animations SANS FIN de la carte et de ses descendants (les
+    // transitions, qui s'arrêtent d'elles-mêmes, ne comptent pas).
+    const endless = card.getAnimations({ subtree: true })
+      .filter((a) => a.effect.getComputedTiming().iterations === Infinity);
+    const animated = [...new Set(endless.flatMap((a) =>
+      a.effect.getKeyframes().flatMap((k) => Object.keys(k)
+        .filter((p) => !['offset', 'computedOffset', 'easing', 'composite'].includes(p)))))];
     return {
       bright,
-      rim: cs.animationName,
-      rimState: cs.animationPlayState,
+      rim: rims.every((r) => r.animationName === 'entry-card-rim') ? 'entry-card-rim' : rims.map((r) => r.animationName).join(','),
+      rimState: rims.every((r) => r.animationPlayState === 'paused') ? 'paused' : 'running',
+      animated,
       transform: cs.transform,
       transition: cs.transitionDuration,
       spores: spores.length,
@@ -62,7 +74,8 @@ test('cartes du codex : endormies au repos, éveillées au survol, au clavier et
     const asleep = await state(page, 0);
     assert.ok(asleep.spores >= 8, `spores absentes de la carte (${asleep.spores})`);
     assert.ok(asleep.bright <= 0.6, `image non endormie au repos : brightness ${asleep.bright}`);
-    assert.equal(asleep.rim, 'none', 'le liseré pulse déjà au repos');
+    assert.equal(asleep.rim, 'none,none', 'le liseré pulse déjà au repos');
+    assert.deepEqual(asleep.animated, [], 'une animation tourne sur une carte endormie');
     assert.equal(asleep.sporeAnim, 0, 'des spores montent au repos');
     assert.notEqual(asleep.title, CYAN, 'titre déjà éveillé au repos');
 
@@ -73,11 +86,13 @@ test('cartes du codex : endormies au repos, éveillées au survol, au clavier et
     const lit = await state(page, 0);
     assert.ok(lit.bright >= 1, `image non éclairée au survol : brightness ${lit.bright}`);
     assert.equal(lit.rim, 'entry-card-rim', 'le liseré ne pulse pas au survol');
+    assert.deepEqual(lit.animated.filter((p) => !['opacity', 'transform'].includes(p)), [],
+      `animation qui repeint à chaque image : ${lit.animated.join(', ')}`);
     assert.equal(lit.sporeAnim, lit.spores, 'les spores ne montent pas au survol');
     assert.equal(lit.title, CYAN, 'titre non éveillé au survol');
     // Les autres cartes dorment toujours.
     const other = await state(page, 1);
-    assert.equal(other.rim, 'none', 'une carte non survolée s’est éveillée');
+    assert.equal(other.rim, 'none,none', 'une carte non survolée s’est éveillée');
     await context.close();
   });
 
@@ -96,6 +111,7 @@ test('cartes du codex : endormies au repos, éveillées au survol, au clavier et
     assert.match(s.outline, /^solid [2-9]/, `focus clavier peu visible : ${s.outline}`);
     assert.ok(s.bright >= 1, `image non éclairée au clavier : brightness ${s.bright}`);
     assert.equal(s.rim, 'entry-card-rim', 'le liseré ne pulse pas au clavier');
+    assert.deepEqual(s.animated.filter((p) => !['opacity', 'transform'].includes(p)), []);
     assert.equal(s.sporeAnim, s.spores, 'les spores ne montent pas au clavier');
     await context.close();
   });
@@ -111,12 +127,15 @@ test('cartes du codex : endormies au repos, éveillées au survol, au clavier et
     assert.ok(first.awake, 'carte non éveillée au toucher');
     assert.ok(first.bright >= 1, `image non éclairée au toucher : brightness ${first.bright}`);
     assert.equal(first.rim, 'entry-card-rim');
+    assert.deepEqual(first.animated.filter((p) => !['opacity', 'transform'].includes(p)), []);
     assert.equal(first.sporeAnim, first.spores);
     await down(1);
     assert.equal((await state(page, 0)).awake, false, 'deux cartes éveillées à la fois');
     assert.ok((await state(page, 1)).awake);
     await cards.nth(1).dispatchEvent('pointerup', { pointerType: 'touch', bubbles: true });
     await page.waitForFunction(() => !document.querySelector('a.entry-card.is-awake'), null, { timeout: 4000 });
+    await page.waitForTimeout(1400); // fin des transitions du rendormissement (1 200 ms)
+    assert.deepEqual((await state(page, 1)).animated, [], 'la carte rendormie anime encore');
     await context.close();
   });
 
@@ -127,7 +146,7 @@ test('cartes du codex : endormies au repos, éveillées au survol, au clavier et
     await card.hover();
     await nextFrames(page);
     const s = await state(page, 0);
-    assert.equal(s.rim, 'none', 'le liseré pulse en mouvement réduit');
+    assert.equal(s.rim, 'none,none', 'le liseré pulse en mouvement réduit');
     assert.equal(s.sporeAnim, 0, 'des spores bougent en mouvement réduit');
     assert.equal(s.transform, 'none', `la carte se déplace en mouvement réduit (${s.transform})`);
     assert.match(s.transition, /^0s/, `transition en mouvement réduit (${s.transition})`);
