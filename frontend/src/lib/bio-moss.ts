@@ -186,3 +186,37 @@ export function shieldMask(cell: Box, shields: Box[]): string | null {
     + SHIELD_FEATHER.map(([d, op]) => layer(d, op)).join('') + layer(SHIELD_PAD_PX, 1)
     + '</g></svg>';
 }
+
+/** Ce que le suivi du doigt lit d'un évènement de pointeur. */
+export interface TapPointer {
+  pointerType: string;
+  pointerId: number;
+  clientX: number;
+  clientY: number;
+  timeStamp: number;
+}
+
+/**
+ * Suivi du doigt partagé (mousse, ikrans) : un doigt posé puis levé au même endroit, assez vite
+ * (`isTap`), appelle `onTap` au point posé ; un glissement ou une annulation n'appelle rien.
+ * `down` rend true quand l'évènement est un toucher (l'appelant ignore alors la souris).
+ */
+export function tapTracker(onTap: (x: number, y: number) => void) {
+  let touch: (MossStep & { id: number }) | null = null;
+  return {
+    down(e: TapPointer): boolean {
+      if (e.pointerType !== 'touch') return false;
+      touch = { id: e.pointerId, x: e.clientX, y: e.clientY, t: e.timeStamp };
+      return true;
+    },
+    up(e: TapPointer): void {
+      if (e.pointerType !== 'touch' || !touch || touch.id !== e.pointerId) return;
+      const down = touch;
+      touch = null;
+      if (isTap(down, { x: e.clientX, y: e.clientY, t: e.timeStamp })) onTap(down.x, down.y);
+    },
+    cancel(): void {
+      touch = null;
+    },
+  };
+}

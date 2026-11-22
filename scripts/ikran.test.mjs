@@ -4,7 +4,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  DOWNSTROKE, FLAP_DEFAULT, FLIGHT_FADE, IKRAN_SVG, MAX_IKRANS, MAX_WITH_TAPS, PASS_MAX_MS, PASS_MIN_MS,
+  DOWNSTROKE, FLAP_DEFAULT, FLIGHT_FADE_SIZES, IKRAN_SVG, MAX_IKRANS, MAX_WITH_TAPS, PASS_MAX_MS, PASS_MIN_MS,
   REAR_GAIN, REAR_LAG, cycleMs, flapEnvelope, flapKeyframes, flightKeyframes, ikranSize, ikranSpeed, nextPassDelay,
   skyBand, swayOf, tailAngle, wingPose,
 } from '../frontend/src/lib/ikran.ts';
@@ -99,9 +99,34 @@ test('traversée : entre et sort hors champ, en fondu, transform et opacity seul
     assert.equal(x(frames[0]), dir > 0 ? -120 : 1000);
     assert.equal(x(frames.at(-1)), dir > 0 ? 1000 : -120);
     for (const f of frames) assert.deepEqual(Object.keys(f).sort(), ['offset', 'opacity', 'transform']);
-    // Fondu sur FLIGHT_FADE du trajet à chaque bout, pleine opacité au milieu.
-    const mid = frames.filter((f) => f.offset >= FLIGHT_FADE && f.offset <= 1 - FLIGHT_FADE);
-    assert.ok(mid.every((f) => f.opacity === 0.9));
+    // Pleine opacité seulement une fois l'ikran entré de FLIGHT_FADE_SIZES tailles.
+    const mid = frames.filter((f) => {
+      const p = x(f);
+      return Math.min(p + 120, 1000 - p) >= FLIGHT_FADE_SIZES * 120;
+    });
+    assert.ok(mid.length > 0 && mid.every((f) => f.opacity === 0.9));
+  }
+});
+
+test('traversée : jamais presque opaque en partie hors du cadre, au téléphone comme au grand écran', () => {
+  // 390 px : bandeau ≈ 358 px, ikran de 81 px (revue L34 : 45 % dehors à 0,90). 1440 px : 988 / 145.
+  for (const [width, size] of [[358, 81], [988, 145], [320, 60], [1000, 120]]) {
+    for (const dir of [1, -1]) {
+      const op = 0.9;
+      const { frames } = flightKeyframes({ width, size, y: 80, dir, speed: 0.1, opacity: op, sway: 6 });
+      const x = (f) => Number(f.transform.match(/translate3d\(([-\d.]+)px/)[1]);
+      const offsets = frames.map((f) => f.offset);
+      assert.deepEqual(offsets, [...offsets].sort((a, b) => a - b), 'images clés dans l’ordre');
+      assert.equal(new Set(offsets).size, offsets.length, 'deux images clés au même instant');
+      for (const f of frames) {
+        const out = Math.max(0, -x(f)) + Math.max(0, x(f) + size - width); // px de la boîte hors du cadre
+        if (out > 0) assert.ok(f.opacity < 0.9 * op, `${width}px dir ${dir} : ${out.toFixed(0)} px dehors à ${f.opacity}`);
+        if (out >= size / 2) assert.ok(f.opacity <= 0.35 * op, `${width}px dir ${dir} : à moitié dehors à ${f.opacity}`);
+      }
+      // Le fondu est échantillonné : plusieurs images clés entre 0 et la pleine opacité.
+      const ramp = frames.filter((f) => f.opacity > 0 && f.opacity < op && f.offset < 0.5);
+      assert.ok(ramp.length >= 5, `fondu en ${ramp.length} points seulement`);
+    }
   }
 });
 

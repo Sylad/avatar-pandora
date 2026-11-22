@@ -3,7 +3,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
   MOSS_LIFE_MS, MOSS_SPREAD_MS, MOSS_STEP_MS, MOSS_STEP_PX, MOSS_TAP_LIFE_MS, MOSS_TAP_MS, MOSS_TAP_PX,
-  SHIELD_FADE_PX, SHIELD_FEATHER, SHIELD_PAD_PX, isTap, mossKeyframes, mossLevel, mossSprite, seededRandom, shieldMask, shouldSpawn,
+  SHIELD_FADE_PX, SHIELD_FEATHER, SHIELD_PAD_PX, isTap, tapTracker, mossKeyframes, mossLevel, mossSprite, seededRandom, shieldMask, shouldSpawn,
 } from '../frontend/src/lib/bio-moss.ts';
 
 test('une tache s’étend puis s’éteint en ~3 s', () => {
@@ -125,4 +125,23 @@ test('masque : fondu doux de 10 à 16 px, sans marche visible, union des boîtes
   const svg = shieldMask({ x: 0, y: 0, w: 200, h: 200 }, [{ x: 20, y: 50, w: 100, h: 20 }, { x: 20, y: 72, w: 100, h: 20 }]);
   assert.doesNotMatch(svg, /fill-opacity/);
   assert.equal([...svg.matchAll(/<use [^>]*opacity=/g)].length, SHIELD_FEATHER.length + 1);
+});
+
+test('suivi du doigt partagé : un toucher bref appelle, un glissement, un autre doigt ou une annulation non', () => {
+  const calls = [];
+  const tap = tapTracker((x, y) => calls.push([x, y]));
+  const ev = (pointerType, pointerId, clientX, clientY, timeStamp) => ({ pointerType, pointerId, clientX, clientY, timeStamp });
+  assert.equal(tap.down(ev('mouse', 1, 5, 5, 0)), false, 'la souris reste à l’appelant');
+  assert.equal(tap.down(ev('touch', 2, 10, 20, 0)), true);
+  tap.up(ev('touch', 2, 13, 22, 200));
+  assert.deepEqual(calls, [[10, 20]], 'appel au point posé');
+  tap.down(ev('touch', 3, 10, 20, 0));
+  tap.up(ev('touch', 3, 10, 80, 150)); // glissement : défilement
+  tap.down(ev('touch', 4, 10, 20, 0));
+  tap.up(ev('touch', 5, 10, 20, 100)); // autre doigt
+  tap.cancel();
+  tap.up(ev('touch', 4, 10, 20, 120)); // annulé avant le lever
+  tap.down(ev('touch', 6, 10, 20, 0));
+  tap.up(ev('touch', 6, 10, 20, 5000)); // trop long
+  assert.equal(calls.length, 1);
 });

@@ -32,8 +32,8 @@ const { landing = false } = Astro.props;
 <script>
   import { ATMOSPHERE_EVENT, ATMOSPHERE_PAUSED_CLASS } from './cinema/atmosphere-clock';
   import {
-    MOSS_LIFE_MS, MOSS_MAX, MOSS_TAP_LIFE_MS, isTap, mossKeyframes, mossSprite, seededRandom, shieldMask,
-    shouldSpawn, type Box, type MossStep, type Rgb,
+    MOSS_LIFE_MS, MOSS_MAX, MOSS_TAP_LIFE_MS, mossKeyframes, mossSprite, seededRandom, shieldMask,
+    shouldSpawn, tapTracker, type Box, type MossStep, type Rgb,
   } from '../lib/bio-moss';
 
   /** Relevés pour les tests : taches allumées en tout, temps passé à les poser, boîtes protégées. */
@@ -58,7 +58,6 @@ const { landing = false } = Astro.props;
     let tapSprites: string[] = [];
     let host: HTMLElement | null = null;
     let last: MossStep | null = null;
-    let touch: (MossStep & { id: number }) | null = null;
     let shields: Box[] | null = null;
     let rest: { fx: number; fy: number; R: number; el: HTMLElement }[] = [];
     let relayout = 0;
@@ -227,7 +226,7 @@ const { landing = false } = Astro.props;
     const mount = () => {
       clear();
       last = null;
-      touch = null;
+      tap.cancel();
       rest = [];
       shields = null; // nouvelle page
       observer.disconnect();
@@ -268,21 +267,13 @@ const { landing = false } = Astro.props;
       last = step;
       spawn(step.x, step.y, 0.75, MOSS_LIFE_MS);
     }, { passive: true });
-    window.addEventListener('pointerdown', (e) => {
-      if (e.pointerType === 'touch') {
-        touch = { id: e.pointerId, x: e.clientX, y: e.clientY, t: e.timeStamp };
-        return;
-      }
-      spawn(e.clientX, e.clientY, 1, MOSS_TAP_LIFE_MS);
-    }, { passive: true });
     // Toucher : allumé au lever du doigt, seulement s'il n'a ni glissé ni duré (sinon : défilement).
-    window.addEventListener('pointerup', (e) => {
-      if (e.pointerType !== 'touch' || !touch || touch.id !== e.pointerId) return;
-      const down = touch;
-      touch = null;
-      if (isTap(down, { x: e.clientX, y: e.clientY, t: e.timeStamp })) spawn(down.x, down.y, 1, MOSS_TAP_LIFE_MS);
+    const tap = tapTracker((x, y) => spawn(x, y, 1, MOSS_TAP_LIFE_MS));
+    window.addEventListener('pointerdown', (e) => {
+      if (!tap.down(e)) spawn(e.clientX, e.clientY, 1, MOSS_TAP_LIFE_MS);
     }, { passive: true });
-    window.addEventListener('pointercancel', () => { touch = null; }, { passive: true });
+    window.addEventListener('pointerup', tap.up, { passive: true });
+    window.addEventListener('pointercancel', tap.cancel, { passive: true });
     window.addEventListener('resize', scheduleLayout, { passive: true });
     // Image ou police chargée : la mise en page a pu bouger.
     document.addEventListener('load', scheduleLayout, { capture: true, passive: true });

@@ -166,8 +166,21 @@ export interface Flight {
   phase?: number;
 }
 
-/** Part du trajet consacrée au fondu d'entrée et de sortie. */
-export const FLIGHT_FADE = 0.1;
+/**
+ * Longueur du fondu d'entrée et de sortie, en tailles d'ikran : calée sur la position, pas sur une
+ * part du trajet. L'ikran commence à paraître quand sa boîte touche le bord, et n'atteint sa pleine
+ * opacité qu'une fois entré (sur un téléphone, 10 % du trajet le laissaient presque opaque à moitié
+ * hors du cadre).
+ */
+export const FLIGHT_FADE_SIZES = 1.3;
+/** Jamais plus de cette part du trajet par fondu (bannière à peine plus large que l'ikran). */
+export const FLIGHT_FADE_MAX = 0.45;
+/** Images clés par fondu : un smoothstep lisse, pas deux ou trois points reliés en ligne droite. */
+const FADE_SAMPLES = 8;
+
+/** Part du trajet couverte par chaque fondu. */
+export const flightFadeU = (width: number, size: number) =>
+  Math.min(FLIGHT_FADE_MAX, (FLIGHT_FADE_SIZES * size) / (width + size));
 
 /**
  * Traversée complète : l'ikran entre hors champ d'un côté, sort de l'autre, en fondu aux deux
@@ -179,15 +192,22 @@ export function flightKeyframes(f: Flight, steps = 24) {
   const duration = Math.abs(to - from) / f.speed;
   const ph = f.phase ?? 0;
   const waves = Math.max(0.6, duration / 7000);
-  const frames = Array.from({ length: steps + 1 }, (_, i) => {
-    const u = i / steps;
+  const fu = flightFadeU(f.width, f.size);
+  // Pas réguliers, plus des images clés serrées dans chaque fondu.
+  const us = new Set<number>();
+  for (let i = 0; i <= steps; i++) us.add(f3(i / steps));
+  for (let k = 0; k <= FADE_SAMPLES; k++) {
+    us.add(f3((fu * k) / FADE_SAMPLES));
+    us.add(f3(1 - (fu * k) / FADE_SAMPLES));
+  }
+  const frames = [...us].sort((p, q) => p - q).map((u) => {
     const a = 2 * Math.PI * waves * u + ph;
     const x = from + (to - from) * u;
     const y = f.y - f.size / 2 + Math.sin(a) * f.sway;
     const tilt = -Math.cos(a) * 4 * f.dir;
-    const fade = smoothstep(u / FLIGHT_FADE) * smoothstep((1 - u) / FLIGHT_FADE);
+    const fade = smoothstep(u / fu) * smoothstep((1 - u) / fu);
     return {
-      offset: f3(u),
+      offset: u,
       opacity: f3(f.opacity * fade),
       transform: `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0) rotate(${f3(tilt)}deg) scaleX(${f.dir})`,
     };

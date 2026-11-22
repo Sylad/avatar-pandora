@@ -20,7 +20,7 @@
 
 <script>
   import { ATMOSPHERE_EVENT, ATMOSPHERE_PAUSED_CLASS } from './cinema/atmosphere-clock';
-  import { isTap, type MossStep } from '../lib/bio-moss';
+  import { tapTracker } from '../lib/bio-moss';
   import {
     FIRST_PASS_MS, IKRAN_SVG, MAX_IKRANS, MAX_WITH_TAPS, flapKeyframes, flightKeyframes, ikranSize, ikranSpeed,
     nextPassDelay, skyBand, swayOf,
@@ -49,7 +49,7 @@
     let hero: HTMLElement | null = null;
     let inView = false;
     let timer = 0;
-    let touch: (MossStep & { id: number }) | null = null;
+    let mate = 0; // second ikran d’un couple, annulé avec le reste au changement de page
     const birds: Bird[] = [];
     const io = new IntersectionObserver((entries) => {
       for (const e of entries) inView = e.isIntersecting;
@@ -113,7 +113,11 @@
       const first = launch();
       // Parfois un second, un peu derrière et plus loin : un couple d'ikrans.
       if (first && Math.random() < 0.35) {
-        window.setTimeout(() => launch({ dir: first.dir, y: first.y + 24, depth: Math.max(0, first.depth - 0.25) }), 600 + Math.random() * 900);
+        clearTimeout(mate);
+        mate = window.setTimeout(() => {
+          mate = 0;
+          launch({ dir: first.dir, y: first.y + 24, depth: Math.max(0, first.depth - 0.25) });
+        }, 600 + Math.random() * 900);
       }
     };
 
@@ -130,7 +134,8 @@
 
     const clear = () => {
       clearTimeout(timer);
-      timer = 0;
+      clearTimeout(mate);
+      timer = mate = 0;
       while (birds.length) remove(birds[0]);
     };
 
@@ -141,17 +146,12 @@
       launch({ dir: clientX - r.left < r.width / 2 ? 1 : -1, y: clientY - r.top, depth: 0.6 + Math.random() * 0.4, tapped: true });
     };
 
+    const tap = tapTracker(callAt);
     const onDown = (e: PointerEvent) => {
-      if (e.pointerType === 'touch') { touch = { id: e.pointerId, x: e.clientX, y: e.clientY, t: e.timeStamp }; return; }
-      if (e.button === 0) callAt(e.clientX, e.clientY);
+      if (!tap.down(e) && e.button === 0) callAt(e.clientX, e.clientY);
     };
-    const onUp = (e: PointerEvent) => {
-      if (e.pointerType !== 'touch' || !touch || touch.id !== e.pointerId) return;
-      const down = touch;
-      touch = null;
-      if (isTap(down, { x: e.clientX, y: e.clientY, t: e.timeStamp })) callAt(down.x, down.y);
-    };
-    const onCancel = () => { touch = null; };
+    const onUp = tap.up;
+    const onCancel = tap.cancel;
 
     const unmount = () => {
       clear();
