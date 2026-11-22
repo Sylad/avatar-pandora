@@ -58,6 +58,18 @@ Contrôlé par `scripts/ikran.test.mjs` et `scripts/ikran-sky.e2e.test.mjs`.
 Ailes et queue sont des `<div>` (une couche HTML par partie), jamais des `<g>` SVG animés, et le calque n'a pas de masque : avec
 l'un ou l'autre, sous la charge de la porte, les transitions des cartes du Bestiaire (test L33, 900 ms) n'avaient plus fini à temps.
 
+Jour et nuit (L35) : l'ambiance suit l'heure LOCALE du visiteur (`lib/day-night.ts` : jour 8 h–17 h, la nuit tombe 17 h–22 h,
+nuit noire 22 h–5 h, aube 5 h–8 h), ou le choix « Selon ton heure / Jour / Nuit » du rond `components/SkySwitch.astro` (à gauche de la
+pause, gardé dans localStorage `eywa.sky-v1`). `skyBoot` (même fichier, AUTONOME : sérialisé par `String()` dans le `<head>` de
+BaseLayout) pose avant la première image `data-sky-mode`, `data-sky-lit` et les variables `--sky-*` sur `<html>`, et se rejoue après
+chaque navigation (le ClientRouter remplace les attributs de `<html>`). Formules du prototype du 10-10 : voile noir 0,66 n, teinte
+bleu nuit, crépuscule, copie de l'image en lueur cyan (même travelling que l'image) et points bioluminescents (`SkySpots.astro`,
+4 groupes qui palpitent en opacité, pas une animation par point) — dans le bandeau (`SectionHero`, sous le voile de lecture) et au pied
+de l'accueil ; halos et pollen du fond à 60 % de jour. De jour, lueur et points ne sont pas composés (`visibility: hidden`). Pause :
+tout se fige ; mouvement réduit : rien ne palpite, le réglage reste. Au téléphone, voile du bandeau renforcé (sur-titre et accroche
+tombaient à 3,8:1 de jour). Contrôlé par `scripts/day-night.test.mjs` et `scripts/day-night.e2e.test.mjs` (heure simulée,
+contraste au pire pixel de jour, au crépuscule et de nuit).
+
 Pattern technique réutilisable : `CinemaCanvas` mode `'time'` + `CycleBackdrop` qui cross-fade les images sur le même clock. Voir `frontend/src/components/cinema/`.
 
 ## Pas de ChatGPT — silence complet

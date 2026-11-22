@@ -1,0 +1,230 @@
+---
+/*
+  Jour et nuit (L35, « Pandora vivant 4 ») : le réglage du ciel. Rond jumeau du bouton de pause
+  (AtmospherePause), juste à sa gauche ; il ouvre un petit panneau à trois choix — « Selon ton
+  heure » (par défaut), « Jour », « Nuit » — et dit l'heure du visiteur et la phase du ciel.
+  Le choix vaut pour tout le site (localStorage `eywa.sky-v1`, lib/day-night.ts) ; le ciel lui-même
+  est posé sur <html> par le script de démarrage de BaseLayout (skyBoot).
+
+  • Boutons radio natifs (flèches au clavier) dans un groupe nommé ; Échap ou un clic ailleurs
+    referme, le focus revient au rond (WCAG 2.1.1, 2.4.3).
+  • Reste visible en mouvement réduit (c'est un réglage, pas une animation), contrairement à la pause.
+  • L'icône du rond suit le choix (soleil, lune, demi-cercle « auto ») ; son nom aussi.
+*/
+interface Props {
+  /** Page du codex : sous 1024 px, dans la bande du haut, à gauche de la pause. */
+  codex?: boolean;
+}
+const { codex = false } = Astro.props;
+---
+
+<div class:list={['sky-switch', { 'sky-switch--codex': codex }]} data-sky-switch>
+  <button
+    type="button"
+    class="sky-switch__btn"
+    id="eywa-sky-toggle"
+    aria-expanded="false"
+    aria-controls="eywa-sky-panel"
+    aria-label="Jour et nuit : selon ton heure"
+    title="Jour et nuit"
+  >
+    <svg class="sky-icon sky-icon--auto" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <circle cx="12" cy="12" r="7.5" /><path d="M12 4.5a7.5 7.5 0 0 1 0 15z" fill="currentColor" stroke="none" />
+    </svg>
+    <svg class="sky-icon sky-icon--jour" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+      <circle cx="12" cy="12" r="4" /><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6" />
+    </svg>
+    <svg class="sky-icon sky-icon--nuit" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M19.5 14.5A8 8 0 0 1 9.5 4.5a8 8 0 1 0 10 10z" />
+    </svg>
+  </button>
+  <div class="sky-switch__panel" id="eywa-sky-panel" role="group" aria-labelledby="eywa-sky-title" hidden>
+    <p class="sky-switch__title" id="eywa-sky-title">Jour et nuit</p>
+    <div class="sky-switch__choices">
+      <label class="sky-switch__choice"><input type="radio" name="eywa-sky" value="auto" /> <span>Selon ton heure</span></label>
+      <label class="sky-switch__choice"><input type="radio" name="eywa-sky" value="jour" /> <span>Jour</span></label>
+      <label class="sky-switch__choice"><input type="radio" name="eywa-sky" value="nuit" /> <span>Nuit</span></label>
+    </div>
+    <p class="sky-switch__now" data-sky-now></p>
+  </div>
+</div>
+
+<script>
+  import { SKY_EVENT, SKY_STORAGE_KEY, nightOf, nowLabel, parseMode, type SkyMode } from '../lib/day-night';
+
+  const NAMES: Record<SkyMode, string> = { auto: 'selon ton heure', jour: 'jour', nuit: 'nuit' };
+  const w = window as Window & { __eywaSky?: { apply: () => void }; __eywaSkySwitchInit?: boolean };
+
+  const readMode = (): SkyMode => {
+    try { return parseMode(localStorage.getItem(SKY_STORAGE_KEY)); } catch { return 'auto'; }
+  };
+  const els = () => {
+    const btn = document.getElementById('eywa-sky-toggle');
+    const panel = document.getElementById('eywa-sky-panel');
+    return btn && panel ? { btn, panel } : null;
+  };
+
+  const render = () => {
+    const e = els();
+    if (!e) return;
+    const mode = readMode();
+    const now = new Date();
+    e.btn.dataset.mode = mode;
+    e.btn.setAttribute('aria-label', `Jour et nuit : ${NAMES[mode]}`);
+    for (const r of e.panel.querySelectorAll<HTMLInputElement>('input[name="eywa-sky"]')) r.checked = r.value === mode;
+    const line = e.panel.querySelector('[data-sky-now]');
+    if (line) line.textContent = mode === 'auto' ? `Il est ${nowLabel(now, nightOf(mode, now))}.` : `Ciel fixé : ${NAMES[mode]}.`;
+  };
+
+  const setOpen = (open: boolean, focusBack = false) => {
+    const e = els();
+    if (!e) return;
+    e.panel.hidden = !open;
+    e.btn.setAttribute('aria-expanded', String(open));
+    if (open) {
+      render();
+      e.panel.querySelector<HTMLInputElement>('input:checked')?.focus();
+    } else if (focusBack) e.btn.focus();
+  };
+
+  // ClientRouter : écouteurs posés une seule fois sur document, éléments retrouvés à chaque événement.
+  if (!w.__eywaSkySwitchInit) {
+    w.__eywaSkySwitchInit = true;
+    document.addEventListener('click', (ev) => {
+      const t = ev.target instanceof Element ? ev.target : null;
+      const e = els();
+      if (!t || !e) return;
+      if (t.closest('#eywa-sky-toggle')) { setOpen(e.panel.hidden); return; }
+      if (!e.panel.hidden && !t.closest('[data-sky-switch]')) setOpen(false);
+    });
+    document.addEventListener('change', (ev) => {
+      const t = ev.target;
+      if (!(t instanceof HTMLInputElement) || t.name !== 'eywa-sky') return;
+      const mode = parseMode(t.value);
+      try { localStorage.setItem(SKY_STORAGE_KEY, mode); } catch { /* vaut pour la page seulement */ }
+      w.__eywaSky?.apply();
+      render();
+      window.dispatchEvent(new CustomEvent(SKY_EVENT, { detail: { mode } }));
+    });
+    document.addEventListener('keydown', (ev) => {
+      const e = els();
+      if (ev.key === 'Escape' && e && !e.panel.hidden) { ev.preventDefault(); setOpen(false, true); }
+    });
+    document.addEventListener('focusin', (ev) => {
+      const e = els();
+      const t = ev.target instanceof Element ? ev.target : null;
+      if (e && !e.panel.hidden && t && !t.closest('[data-sky-switch]')) setOpen(false);
+    });
+    document.addEventListener('astro:page-load', render);
+    setInterval(render, 60_000);
+  }
+  render();
+</script>
+
+<style>
+  .sky-switch {
+    position: fixed;
+    bottom: 1rem;
+    right: 4rem; /* à gauche de la pause (2,5 rem + 0,5 rem d'écart) */
+    z-index: 70;
+  }
+  .sky-switch__btn {
+    width: 2.5rem;
+    height: 2.5rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border-radius: 999px;
+    border: 1px solid rgba(95, 255, 230, 0.28);
+    background: rgba(8, 12, 22, 0.65);
+    color: rgba(95, 255, 230, 0.75); /* icône ≥ 3:1 (WCAG 1.4.11), comme la pause */
+    cursor: pointer;
+    backdrop-filter: blur(6px);
+    box-shadow: 0 0 14px -6px rgba(95, 255, 230, 0.4), inset 0 0 0 1px rgba(95, 255, 230, 0.08);
+    transition: color 200ms ease, border-color 200ms ease, box-shadow 200ms ease;
+    -webkit-tap-highlight-color: transparent;
+    opacity: 0.78;
+  }
+  .sky-switch__btn:hover,
+  .sky-switch__btn:focus-visible,
+  .sky-switch__btn[aria-expanded='true'] {
+    opacity: 1;
+    color: #5fffe6;
+    border-color: rgba(95, 255, 230, 0.55);
+    box-shadow: 0 0 22px -4px rgba(95, 255, 230, 0.65);
+  }
+  .sky-icon { width: 1.15rem; height: 1.15rem; display: none; }
+  .sky-switch__btn:not([data-mode]) .sky-icon--auto,
+  .sky-switch__btn[data-mode='auto'] .sky-icon--auto,
+  .sky-switch__btn[data-mode='jour'] .sky-icon--jour,
+  .sky-switch__btn[data-mode='nuit'] .sky-icon--nuit { display: block; }
+
+  .sky-switch__panel {
+    position: absolute;
+    right: 0;
+    bottom: calc(100% + 0.5rem);
+    min-width: 13.5rem;
+    padding: 0.85rem 1rem 0.75rem;
+    border-radius: 10px;
+    border: 1px solid rgba(95, 255, 230, 0.35);
+    background: rgba(8, 12, 22, 0.97);
+    box-shadow: 0 10px 30px -12px rgba(0, 0, 0, 0.8), 0 0 22px -10px rgba(95, 255, 230, 0.5);
+    color: var(--color-eywa-text, #e8e6dd);
+    text-align: left;
+  }
+  .sky-switch__panel[hidden] { display: none; }
+  .sky-switch__title {
+    margin: 0 0 0.4rem;
+    font-family: var(--font-display);
+    font-size: 0.75rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-eywa-bio-primary, #5fffe6);
+  }
+  .sky-switch__choices { display: grid; gap: 0.1rem; }
+  .sky-switch__choice {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    min-height: 2.75rem; /* cible ≥ 44 px (WCAG 2.5.8 largement) */
+    padding: 0 0.35rem;
+    border-radius: 6px;
+    font-family: var(--font-body);
+    font-size: 1.1rem;
+    cursor: pointer;
+  }
+  .sky-switch__choice:hover { background: rgba(95, 255, 230, 0.08); }
+  .sky-switch__choice input {
+    width: 1.1rem;
+    height: 1.1rem;
+    margin: 0;
+    accent-color: #5fffe6;
+    cursor: pointer;
+  }
+  .sky-switch__choice input:focus-visible { outline: 2px solid #5fffe6; outline-offset: 3px; }
+  .sky-switch__now {
+    margin: 0.45rem 0 0;
+    font-family: var(--font-body);
+    font-style: italic;
+    font-size: 1rem;
+    color: rgba(232, 230, 221, 0.8);
+  }
+
+  /* Téléphone (accueil) : la pause est en haut à droite ; le ciel à sa gauche, panneau dessous. */
+  @media (max-width: 480px) {
+    .sky-switch { top: 0.5rem; bottom: auto; right: 3.5rem; }
+    .sky-switch__panel { top: calc(100% + 0.5rem); bottom: auto; }
+  }
+  /* Codex sous 1024 px : dans la bande du haut, à gauche de la pause (4,1 rem + 3 rem). */
+  @media (max-width: 63.99rem) {
+    .sky-switch--codex { top: 0.975rem; bottom: auto; right: 7.1rem; }
+    .sky-switch--codex .sky-switch__panel { top: calc(100% + 0.5rem); bottom: auto; }
+  }
+  /* Mouvement réduit : la pause n'est pas rendue, le ciel prend sa place. */
+  @media (prefers-reduced-motion: reduce) {
+    .sky-switch { right: 1rem; }
+    @media (max-width: 480px) { .sky-switch { right: 0.5rem; } }
+    @media (max-width: 63.99rem) { .sky-switch--codex { right: 4.1rem; } }
+  }
+</style>

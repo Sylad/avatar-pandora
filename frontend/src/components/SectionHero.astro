@@ -18,6 +18,7 @@ interface Props {
 import IkranSky from './IkranSky.astro';
 import CoverFallback from './CoverFallback.astro';
 import { coverImageSrc, isIllustration, ILLUSTRATION_SIZES } from '../lib/cover';
+import SkySpots from './SkySpots.astro';
 
 const { roman, label, title, tagline, cover, ikrans = false } = Astro.props;
 
@@ -29,6 +30,19 @@ const size = isIllustration(cover) ? ILLUSTRATION_SIZES.fiche : undefined;
   {imgSrc
     ? <img src={imgSrc} alt="" width={size?.width} height={size?.height} class="section-hero__img" />
     : <CoverFallback mark={false} />}
+  <!--
+    Jour et nuit (L35, prototype du 10-10) : l'heure du visiteur règle ces calques par les variables
+    --sky-* posées sur <html> (lib/day-night.ts). Voile noir (luminosité), teinte bleu nuit, lueur du
+    crépuscule, la forêt elle-même qui s'illumine (copie de l'image en lueur cyan, surtout en bas) et
+    des points bioluminescents. Tous sous le voile de lecture : le texte garde son contraste.
+  -->
+  <div class="sky" aria-hidden="true">
+    <div class="sky__shade"></div>
+    <div class="sky__tint"></div>
+    <div class="sky__dusk"></div>
+    {imgSrc && <img src={imgSrc} alt="" width={size?.width} height={size?.height} class="sky__glow" decoding="async" />}
+    <SkySpots class="sky__spots" />
+  </div>
   {ikrans && <IkranSky />}
   <div class="section-hero__veil"></div>
   <div class="section-hero__content">
@@ -90,6 +104,43 @@ const size = isIllustration(cover) ? ILLUSTRATION_SIZES.fiche : undefined;
       hero-breath 7s ease-in-out infinite alternate;
   }
 
+  /* ---------- Jour et nuit (L35) ---------- */
+  .sky,
+  .sky > :global(*) {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+  .sky__shade {
+    background: #000;
+    opacity: var(--sky-shade, 0);
+  }
+  .sky__tint {
+    background: linear-gradient(180deg, #0b1450 0%, #1a1f6e 55%, #10164a 100%);
+    mix-blend-mode: multiply;
+    opacity: var(--sky-tint, 0);
+  }
+  .sky__dusk {
+    background: linear-gradient(180deg, rgba(255, 140, 60, 0.55), rgba(255, 93, 196, 0.25) 60%, transparent);
+    mix-blend-mode: soft-light;
+    opacity: var(--sky-dusk, 0);
+  }
+  /* La forêt qui s'illumine : même cadrage et même lent travelling que l'image. */
+  .sky__glow {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(1) contrast(2.4) brightness(0.62) sepia(1) hue-rotate(125deg) saturate(5);
+    mix-blend-mode: screen;
+    opacity: var(--sky-glow, 0);
+    -webkit-mask-image: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.25) 22%, #000 55%);
+    mask-image: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.25) 22%, #000 55%);
+    transform-origin: 55% 45%;
+    animation: hero-kenburns 20s ease-in-out infinite alternate;
+  }
+  /* De jour, rien de tout cela n'est dessiné (ni composé). */
+  :global(html:not([data-sky-lit])) .sky__glow { visibility: hidden; }
+
   /*
     Multi-stop veil : bottom-left dark for the title overlay readability,
     overall slight cyan tint for the bioluminescent feel, top-right
@@ -109,6 +160,23 @@ const size = isIllustration(cover) ? ILLUSTRATION_SIZES.fiche : undefined;
         rgba(10, 10, 31, 0.20) 50%,
         transparent 100%);
     animation: hero-veil-pulse 11s ease-in-out infinite alternate;
+  }
+  /* Téléphone (L35) : le texte couvre presque tout le bandeau 16:10, jusque dans le haut clair
+     de l'image ; de jour, le sur-titre et l'accroche tombaient à 3,8:1. Un voile uniforme en plus
+     tient 4,5:1 au pire pixel dans les deux ambiances (scripts/day-night.e2e.test.mjs). */
+  @media (max-width: 767px) {
+    .section-hero__veil {
+      background:
+        linear-gradient(rgba(10, 10, 31, 0.42), rgba(10, 10, 31, 0.42)),
+        linear-gradient(135deg,
+          rgba(10, 10, 31, 0.70) 0%,
+          rgba(10, 10, 31, 0.30) 35%,
+          rgba(10, 10, 31, 0.10) 70%),
+        linear-gradient(to top,
+          rgba(10, 10, 31, 0.85) 0%,
+          rgba(10, 10, 31, 0.20) 50%,
+          transparent 100%);
+    }
   }
 
   @keyframes hero-kenburns {
@@ -137,9 +205,11 @@ const size = isIllustration(cover) ? ILLUSTRATION_SIZES.fiche : undefined;
   /* Accessibility — respect prefers-reduced-motion strictly. */
   @media (prefers-reduced-motion: reduce) {
     .section-hero__img,
-    .section-hero__veil {
+    .section-hero__veil,
+    .sky__glow {
       animation: none;
     }
+    .sky__glow { transform: none; }
     .section-hero__img {
       transform: none;
       filter: saturate(1.05);
@@ -194,7 +264,9 @@ const size = isIllustration(cover) ? ILLUSTRATION_SIZES.fiche : undefined;
     font-family: var(--font-body);
     font-style: italic;
     font-size: 1.125rem;
-    color: rgba(232, 230, 221, 0.85);
+    /* Couleur pleine (L35) : un texte translucide prend la couleur de l'image dessous, de jour
+       comme de nuit ; plein, son contraste se mesure au pire pixel (≈ l'ancien 85 % sur le voile). */
+    color: #d6d4cc;
     text-shadow: 0 2px 6px rgba(10, 10, 31, 0.85);
     max-width: 40rem;
   }

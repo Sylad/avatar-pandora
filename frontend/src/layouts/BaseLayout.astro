@@ -4,6 +4,7 @@ import { ClientRouter } from 'astro:transitions';
 import Lightbox from '../components/Lightbox.astro';
 import AmbientAudio from '../components/AmbientAudio.astro';
 import { BUILD_VERSION } from '../lib/build-version';
+import { skyBoot } from '../lib/day-night';
 import news from '../../public/nouveautes-data/nouveautes.json';
 
 interface Props {
@@ -12,6 +13,10 @@ interface Props {
 }
 
 const { title = 'Eywa', description = 'Codex de Pandora' } = Astro.props;
+
+// Jour et nuit (L35) : le ciel est posé sur <html> AVANT la première image (aucun éclair de jour
+// la nuit), par la fonction autonome skyBoot sérialisée telle quelle.
+const skyBootScript = `(${String(skyBoot)})();`;
 
 // Index léger des Nouveautés pour la pastille (slug + date seulement).
 const newsIndex = JSON.stringify(
@@ -31,6 +36,7 @@ const newsIndex = JSON.stringify(
     <link rel="preload" href="/fonts/cormorant-garamond/CormorantGaramond-wght.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/fonts/orbitron/Orbitron-wght.woff2" as="font" type="font/woff2" crossorigin />
     <title>{title}</title>
+    <script is:inline set:html={skyBootScript}></script>
     <ClientRouter />
   </head>
   <body class="bg-eywa-bg text-eywa-text min-h-screen">

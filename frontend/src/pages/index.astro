@@ -3,6 +3,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import EywaLogo from '../components/EywaLogo.astro';
 import AtmospherePause from '../components/AtmospherePause.astro';
 import FollowLinks from '../components/FollowLinks.astro';
+import SkySwitch from '../components/SkySwitch.astro';
+import SkySpots from '../components/SkySpots.astro';
 import BioMoss from '../components/BioMoss.astro';
 import { LandingParticles } from '../components/cinema/LandingParticles';
 import { CycleBackdrop } from '../components/cinema/CycleBackdrop';
@@ -21,9 +23,13 @@ import { CycleBackdrop } from '../components/cinema/CycleBackdrop';
       3. Bio-ambient gradient (the 4 radial blobs from CodexLayout
          pattern) for global cohesion with the codex pages.
       4. BioMoss (L32) : moss lighting up under the finger or the mouse.
+      5. Day and night (L35) : .sky-wash + intensity of 2 and 3 follow the
+         visitor's hour (or the SkySwitch choice).
     The user sits, breathes, and Pandora transforms around them.
   -->
   <CycleBackdrop client:only="react" />
+  <div class="sky-wash" aria-hidden="true"></div>
+  <SkySpots class="landing-floor" />
   <LandingParticles client:only="react" />
   <div class="bio-ambient" aria-hidden="true"></div>
   <BioMoss landing />
@@ -61,6 +67,7 @@ import { CycleBackdrop } from '../components/cinema/CycleBackdrop';
     <FollowLinks class="mt-4 max-[399px]:mt-3" />
   </main>
   <AtmospherePause />
+  <SkySwitch />
 </BaseLayout>
 
 <script is:inline>
@@ -193,6 +200,17 @@ import { CycleBackdrop } from '../components/cinema/CycleBackdrop';
     main {
       padding-bottom: 1rem;
     }
+  }
+
+  /* Jour et nuit (L35) : la nuit, la forêt invisible du pied de l'accueil s'allume (points
+     bioluminescents sur les 60 % du bas de l'écran), sous le voile de lecture de main. */
+  :global(.landing-floor) {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 60vh;
+    z-index: 1;
   }
 
   /* Bio-ambient gradient — same recipe as CodexLayout but slightly

@@ -173,7 +173,7 @@ export function CinemaCanvas({
   }
 
   return (
-    <div className="fixed inset-0 z-0 pointer-events-none">
+    <div className="sky-particles fixed inset-0 z-0 pointer-events-none">
       <Canvas
         frameloop={paused ? 'demand' : 'always'}
         camera={{ position: [0, 0, 8], fov: 60 }}

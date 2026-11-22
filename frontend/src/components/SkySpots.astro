@@ -1,0 +1,60 @@
+---
+/*
+  Points bioluminescents de la nuit (L35, « Pandora vivant 4 », prototype du 10-10) : posés dans
+  le bandeau des sections (SectionHero) et au pied de l'accueil. Invisibles de jour
+  (--sky-spots = 0, et non composés : html sans data-sky-lit), ils montent avec la nuit.
+  Un pouls d'opacité par GROUPE de points (4 animations, pas une par point) ; figés par la pause
+  de l'ambiance ; immobiles en mouvement réduit.
+*/
+import { SPOT_GROUPS, skySpots } from '../lib/day-night';
+
+interface Props {
+  /** Classe de placement posée par le parent. */
+  class?: string;
+}
+const { class: cls } = Astro.props;
+const spots = skySpots();
+const groups = Array.from({ length: SPOT_GROUPS }, (_, g) => spots.filter((s) => s.group === g));
+---
+<div class:list={['sky-spots', cls]} aria-hidden="true" data-sky-spots>
+  {groups.map((g, i) => (
+    <span class={`sky-spots__g sky-spots__g--${i}`}>
+      {g.map((s) => (
+        <i style={`left:${s.x.toFixed(1)}%;top:${s.y.toFixed(1)}%;--r:${s.r.toFixed(1)}px;--c:${s.rgb}`}></i>
+      ))}
+    </span>
+  ))}
+</div>
+
+<style>
+  .sky-spots {
+    pointer-events: none;
+    opacity: var(--sky-spots, 0);
+  }
+  :global(html:not([data-sky-lit])) .sky-spots { visibility: hidden; }
+  .sky-spots__g {
+    position: absolute;
+    inset: 0;
+    /* Le pouls du prototype (0,55 + 0,45 sin) : opacité seule, un rythme par groupe. */
+    animation: sky-pulse 3.1s ease-in-out infinite alternate;
+  }
+  .sky-spots__g--1 { animation-duration: 4.3s; animation-delay: -1.7s; }
+  .sky-spots__g--2 { animation-duration: 2.6s; animation-delay: -0.9s; }
+  .sky-spots__g--3 { animation-duration: 5.2s; animation-delay: -3.1s; }
+  .sky-spots__g i {
+    position: absolute;
+    width: calc(var(--r) * 2);
+    height: calc(var(--r) * 2);
+    margin: calc(var(--r) * -1) 0 0 calc(var(--r) * -1);
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(var(--c), 1) 0, rgba(var(--c), 0.6) 22%, rgba(var(--c), 0.18) 55%, rgba(var(--c), 0) 100%);
+  }
+  @keyframes sky-pulse {
+    from { opacity: 0.55; }
+    to { opacity: 1; }
+  }
+  :global(:root.eywa-atmo-paused) .sky-spots__g { animation-play-state: paused; }
+  @media (prefers-reduced-motion: reduce) {
+    .sky-spots__g { animation: none; opacity: 0.85; }
+  }
+</style>

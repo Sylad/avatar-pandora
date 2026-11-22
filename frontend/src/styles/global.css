@@ -304,3 +304,37 @@ main#contenu:focus {
   border-radius: 6px;
   padding: 0.5rem 0.75rem;
 }
+
+/*
+  Jour et nuit (L35, « Pandora vivant 4 ») : hors des bandeaux (SectionHero), le ciel règle
+  l'intensité de la bioluminescence du fond — halos et pollen plus discrets en plein jour, pleins
+  la nuit — et pose un voile de lumière : clarté du jour venue d'en haut, braises du crépuscule
+  en bas. Variables --sky-* posées sur <html> par skyBoot (lib/day-night.ts). Le fond reste nuit
+  profonde : le texte clair garde son contraste dans les deux ambiances.
+*/
+.bio-ambient,
+.sky-particles {
+  opacity: calc(0.6 + 0.4 * var(--sky-n, 1));
+}
+.sky-wash {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+.sky-wash::before,
+.sky-wash::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+}
+.sky-wash::before {
+  background:
+    radial-gradient(ellipse 90% 55% at 50% -10%, rgba(150, 215, 255, 0.16), transparent 70%),
+    radial-gradient(ellipse 60% 40% at 85% 0%, rgba(255, 236, 190, 0.08), transparent 70%);
+  opacity: calc(1 - var(--sky-n, 1));
+}
+.sky-wash::after {
+  background: radial-gradient(ellipse 110% 50% at 50% 110%, rgba(255, 140, 60, 0.12), rgba(255, 93, 196, 0.05) 55%, transparent 80%);
+  opacity: var(--sky-dusk, 0);
+}
