@@ -12,11 +12,14 @@ interface Props {
   title: string;
   tagline: string;
   cover?: string;
+  /** Ikrans qui traversent le bandeau de temps en temps (L34) : Pandora et Bestiaire. */
+  ikrans?: boolean;
 }
+import IkranSky from './IkranSky.astro';
 import CoverFallback from './CoverFallback.astro';
 import { coverImageSrc, isIllustration, ILLUSTRATION_SIZES } from '../lib/cover';
 
-const { roman, label, title, tagline, cover } = Astro.props;
+const { roman, label, title, tagline, cover, ikrans = false } = Astro.props;
 
 // Image hébergée par le site, sinon visuel par défaut (proxy Fandom retiré, L16).
 const imgSrc = coverImageSrc(cover);
@@ -26,6 +29,7 @@ const size = isIllustration(cover) ? ILLUSTRATION_SIZES.fiche : undefined;
   {imgSrc
     ? <img src={imgSrc} alt="" width={size?.width} height={size?.height} class="section-hero__img" />
     : <CoverFallback mark={false} />}
+  {ikrans && <IkranSky />}
   <div class="section-hero__veil"></div>
   <div class="section-hero__content">
     <p class="section-hero__roman">{roman} — {label}</p>

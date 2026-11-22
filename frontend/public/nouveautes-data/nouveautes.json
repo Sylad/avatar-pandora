@@ -1,7 +1,22 @@
 {
   "project": "avatar-pandora",
-  "generated": "2026-11-22 10:23",
+  "generated": "2026-11-22 11:50",
   "entries": [
+    {
+      "slug": "2026-11-22-des-ikrans-traversent-le-ciel",
+      "title": "Des ikrans traversent le ciel",
+      "date": "2026-11-22",
+      "lots": [
+        "L34"
+      ],
+      "captures": [
+        "captures/L34-ikrans-1440.png"
+      ],
+      "alts": [
+        "Le bandeau de la section Pandora sur grand écran : devant la lune Pandora vue de l'espace, deux silhouettes sombres d'ikrans aux quatre ailes et à la longue queue fine, bordées d'un liseré cyan, volent en sens contraires au-dessus du titre « La lune jungle »"
+      ],
+      "html": "<p>Lève les yeux en haut des sections Pandora et Bestiaire : de temps en temps, un ikran traverse le bandeau, parfois suivi d'un second. Quatre ailes, une longue queue fine, quelques battements puis un long plané, comme dans le ciel des montagnes flottantes.</p>\n<p>Touche le bandeau ou clique dessus, et un ikran arrive du côté le plus proche, à la hauteur de ton doigt. Le battement d'ailes est plus souple que dans le premier essai : l'abattée est rapide, la relevée plus lente, les ailes se replient un peu en remontant et celles de derrière suivent avec un temps de retard.</p>\n<p>Les ikrans passent derrière le texte, sans jamais gêner la lecture ni prendre un clic. Le bouton de pause de l'ambiance les fige en plein vol, et si ton appareil demande de réduire les animations, aucun ne traverse.</p>"
+    },
     {
       "slug": "2026-11-22-les-fiches-du-codex-s-eveillent",
       "title": "Les fiches du codex s'éveillent",

@@ -46,6 +46,14 @@ enchaîné de deux calques de lueur (`::before`, `::after`) en `opacity` seule �
 réduit : rien ne bouge, spores posées ; pause de l'ambiance : tout se fige.
 Contrôlé par `scripts/entry-card-awake.e2e.test.mjs`.
 
+Ikrans dans le ciel (L34) : `components/IkranSky.astro`, posé par `SectionHero` avec `ikrans` (Pandora et Bestiaire seulement) —
+silhouettes SVG (4 ailes, longue queue ; jamais un dragon européen) qui traversent le bandeau toutes les 7 à 16 s, un toucher bref
+ou un clic sur le bandeau en appelle un (un glissement non). Calque entre l'image et le voile, sous le texte, `pointer-events: none`,
+fondu d'entrée et de sortie ; au grand écran la bande de vol reste au-dessus du texte (au téléphone, derrière lui). Web Animations en
+transform/opacity ; battement asymétrique (abattée rapide, relevée repliée, ailes arrière en retard, montée et descente d'amplitude
+douces vers le plané), logique pure et mesures dans `lib/ikran.ts`. Pause : ikrans figés, aucun nouveau ; mouvement réduit : aucun.
+Contrôlé par `scripts/ikran.test.mjs` et `scripts/ikran-sky.e2e.test.mjs`.
+
 Pattern technique réutilisable : `CinemaCanvas` mode `'time'` + `CycleBackdrop` qui cross-fade les images sur le même clock. Voir `frontend/src/components/cinema/`.
 
 ## Pas de ChatGPT — silence complet
