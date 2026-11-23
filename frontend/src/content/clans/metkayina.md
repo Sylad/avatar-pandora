@@ -5,6 +5,7 @@ order: 2
 cover: "/illustrations/clans/metkayina.webp"
 coverAlt: "Huttes tressées du village sur l'eau, accrochées aux racines arquées au-dessus d'un lagon turquoise"
 coverCredit: "© 20th Century Studios"
+water: true
 pandorapedia: "https://www.avatar.com/pandorapedia/metkayina-village-marui"
 ---
 

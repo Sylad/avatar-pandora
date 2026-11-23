@@ -73,6 +73,17 @@ tombaient à 3,8:1 de jour). Contrôlé par `scripts/day-night.test.mjs`, `scrip
 et `scripts/day-night.e2e.test.mjs` (heure simulée,
 contraste au pire pixel de jour, au crépuscule et de nuit).
 
+Eau vivante (L36) : `components/WaterRipple.astro`, posé par `EntryCover` dans le cadre de l'image des fiches `water: true` (Metkayina,
+La Voie de l'eau, Tulkun, Akula, Payakan ; jamais une créature détourée sur fond uni : rien à réfracter). Canevas WebGL (2, sinon 1)
+transparent hors des anneaux, `pointer-events: none`, au-dessus de l'`<img>` qui reste intacte ; un shader réfracte l'image dans la
+bande de chaque anneau (déplacement radial, liseré sur la crête), le plancton est un nuage de points en lumière ajoutée (couleur
+prémultipliée valide : alpha = composante la plus forte, sinon les points assombrissaient l'image). Logique pure et BORNES du coût dans
+`lib/water.ts` (texture fixe 1024 × 512 par `createImageBitmap`, canevas ≤ 1,5 × et ≤ 1600 px, 8 anneaux, 30/48 points, boucle
+seulement bandeau visible et onglet affiché, contexte rendu au changement de page). Toucher = onde, PAS la visionneuse (elle cachait
+l'eau) : bouton « Agrandir » dans le coin (icône seule sous 640 px, 44 px). Pause : figé, toucher = visionneuse ; mouvement réduit :
+aucun contexte WebGL. Aucun chiffre de fluidité tiré de Chromium sans tête (mesure dans le vrai Chrome de mini-blue). Contrôlé par
+`scripts/water.test.mjs` et `scripts/water-ripple.e2e.test.mjs` (déformation mesurée en pixels autour du doigt).
+
 Pattern technique réutilisable : `CinemaCanvas` mode `'time'` + `CycleBackdrop` qui cross-fade les images sur le même clock. Voir `frontend/src/components/cinema/`.
 
 ## Pas de ChatGPT — silence complet

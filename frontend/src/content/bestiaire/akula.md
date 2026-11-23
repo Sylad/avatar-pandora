@@ -6,6 +6,7 @@ order: 9
 cover: "/illustrations/bestiaire/akula.webp"
 coverAlt: "Prédateur marin gris-bleu au corps cuirassé, gueule hérissée de dents grande ouverte, qui nage en eau profonde"
 coverCredit: "© 20th Century Studios"
+water: true
 ---
 
 Il y a des créatures qui n'ont pas besoin de symboles — elles sont elles-mêmes le symbole. L'*akula* est la peur. Pas la peur irrationnelle, pas la superstition : la peur qui pousse les plongeurs Metkayina à remonter quand la luminosité baisse sous trente mètres, la peur que les mères enseignent à leurs enfants avant même qu'ils apprennent à nager. Un grand-père qui dit « reste dans le récif » n'invente pas une règle arbitraire — il transmet une mémoire de ce qu'attendent les profondeurs.

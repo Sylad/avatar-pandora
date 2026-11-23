@@ -5,6 +5,7 @@ order: 2
 cover: "/illustrations/films/voie-de-leau.webp"
 coverAlt: "Jake debout sur un poisson volant aux ailes orangées qui rase la mer sous un ciel nuageux"
 coverCredit: "© 20th Century Studios"
+water: true
 ---
 
 Treize ans s'écoulent entre *Avatar* et sa suite. La pause n'est pas un retard de production : c'est un choix. Cameron veut filmer sous l'eau en motion-capture — une technique qui n'existe pas encore en 2009. Il la fera inventer.

@@ -18,6 +18,9 @@ const codexEntrySchema = z.object({
   // coverCredit : crédit de l'image quand c'est une image des films (L63, décision du 19-11-2026),
   // affiché en légende discrète sous le bandeau et sous la liste de la section.
   coverCredit: z.literal('© 20th Century Studios').optional(),
+  // water : fiche de l'océan dont le bandeau ondoie sous le doigt (L36, « Eau vivante »). Seulement une
+  // image où l'on voit l'eau (pas une créature détourée sur fond uni : rien à réfracter).
+  water: z.boolean().optional(),
   pandorapedia: z.string().regex(/^https:\/\/www\.avatar\.com\/pandorapedia\/[a-z0-9-]+$/).optional(),
 }).refine((d) => !d.cover?.startsWith('/') || !!d.coverAlt, {
   message: 'cover hébergée sur le site sans coverAlt (texte alternatif français, L17)',

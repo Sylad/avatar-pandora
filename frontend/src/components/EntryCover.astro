@@ -7,9 +7,11 @@
   saut de mise en page). Image officielle des films (toutes les sections, L63 puis L64) :
   légende discrète « © 20th Century Studios » (`coverCredit`, repris par la visionneuse),
   puis le lien vers la fiche Pandorapedia quand il existe. Fiche sans image mais avec
-  page officielle : visuel par défaut, puis le lien seul.
+  page officielle : visuel par défaut, puis le lien seul. Fiche de l’océan (`water`, L36) : le bandeau
+  ondoie sous le doigt (WaterRipple, posé dans le cadre de l’image).
 */
 import CoverFallback from './CoverFallback.astro';
+import WaterRipple from './WaterRipple.astro';
 import { coverImageSrc, isIllustration, ILLUSTRATION_SIZES } from '../lib/cover';
 
 interface Props {
@@ -23,8 +25,10 @@ interface Props {
   coverCredit?: string;
   /** Page officielle avatar.com/pandorapedia de ce qui est illustré (L63). */
   pandorapedia?: string;
+  /** Fiche de l'océan : le bandeau ondoie sous le doigt (L36, components/WaterRipple.astro). */
+  water?: boolean;
 }
-const { cover, coverAlt, coverCredit, title, section, pandorapedia } = Astro.props;
+const { cover, coverAlt, coverCredit, title, section, pandorapedia, water } = Astro.props;
 const src = coverImageSrc(cover);
 const size = isIllustration(cover) ? ILLUSTRATION_SIZES.fiche : undefined;
 ---
@@ -33,6 +37,7 @@ const size = isIllustration(cover) ? ILLUSTRATION_SIZES.fiche : undefined;
     <div class="relative aspect-[21/9] rounded-md overflow-hidden border border-eywa-text-muted/20" data-lightbox>
       <img src={src} alt={coverAlt ?? title} width={size?.width} height={size?.height}
            data-credit={coverCredit} decoding="async" class="w-full h-full object-cover" />
+      {water && <WaterRipple />}
     </div>
     <figcaption class="entry-cover-caption mt-2 text-sm text-eywa-text-muted font-body flex flex-wrap items-center gap-x-2">
       {coverCredit && <span class="entry-cover-credit text-xs">{coverCredit}</span>}

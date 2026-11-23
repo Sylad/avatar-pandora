@@ -1,0 +1,492 @@
+---
+/*
+  Eau vivante (L36, « Pandora vivant 5 », prototype validé par Sylvain le 10-10) : sur les fiches de
+  l'océan (front matter `water: true` : Metkayina, La Voie de l'eau, Tulkun, Akula, Payakan), le bandeau
+  ondoie sous le doigt ou la souris — un anneau qui réfracte l'image s'élargit puis s'éteint, et le
+  plancton lumineux s'en écarte. Sans geste, une goutte tombe de temps en temps. Logique pure : lib/water.ts.
+
+  • Rendu WebGL (WebGL 2, sinon 1) dans un canevas posé SUR l'image, transparent hors des anneaux :
+    l'<img> reste dessous, intacte (texte alternatif, visionneuse, rendu sans WebGL). Ce qui coûte et ses
+    bornes : en tête de lib/water.ts.
+  • Le canevas ne prend aucun clic (`pointer-events: none`) : le bandeau écoute le doigt et la souris.
+    Souris : un anneau léger au passage, un fort à l'appui ; le clic ouvre toujours la visionneuse. Doigt :
+    un toucher fait un anneau fort et N'OUVRE PAS la visionneuse (sinon elle cachait l'eau) ; le bouton
+    « Agrandir », visible dans le coin du bandeau, l'ouvre au doigt comme au clavier.
+  • Pause de l'ambiance (AtmospherePause) : tout se fige sur la dernière image, aucun anneau ni goutte,
+    et le toucher rouvre la visionneuse. Mouvement réduit : aucun rendu, image fixe, toucher = visionneuse.
+  • La boucle ne tourne que bandeau visible et onglet affiché ; le contexte WebGL est rendu au changement
+    de page (ClientRouter).
+*/
+---
+
+<canvas class="water-ripple" data-water-ripple aria-hidden="true"></canvas>
+<button type="button" class="water-zoom" data-water-zoom aria-label="Agrandir l’image">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" />
+  </svg>
+  <span>Agrandir</span>
+</button>
+
+<script>
+  import { ATMOSPHERE_EVENT, ATMOSPHERE_PAUSED_CLASS } from './cinema/atmosphere-clock';
+  import {
+    DROP_EVERY_MS, FIRST_DROP_MS, MAX_RIPPLES, TEXTURE_H, TEXTURE_W, canvasSize, coverUv, dropDue, makePlankton,
+    moteGlow, moteScale, planktonCount, pruneRipples, pushPlankton, pushRipple, rippleLevel, shouldRippleOnMove, stepPlankton,
+    type Mote, type Ripple,
+  } from '../lib/water';
+
+  /** Relevés pour les tests : contexte obtenu, anneaux faits (dont au toucher, gouttes), images dessinées. */
+  interface WaterStats { gl: string | null; ripples: number; touches: number; drops: number; frames: number; live: number }
+  const w = window as Window & { __eywaWaterInit?: boolean; __eywaWater?: WaterStats };
+
+  const VERT = `
+    attribute vec2 a_pos;
+    varying vec2 v_p;
+    void main() { v_p = vec2(a_pos.x * 0.5 + 0.5, 0.5 - a_pos.y * 0.5); gl_Position = vec4(a_pos, 0.0, 1.0); }`;
+  // Anneaux : dans la bande (x de -1 à 1), l'image est déplacée le long du rayon par une onde à trois
+  // demi-crêtes, éclaircie sur la pente qui fait face à la lumière ; liseré net sur la crête et un plus faible
+  // à 72 % du rayon (prototype). Hors des bandes : transparent, l'<img> dessous se voit telle quelle.
+  const FRAG = `
+    precision mediump float;
+    uniform sampler2D u_img;
+    uniform vec2 u_res;
+    uniform vec4 u_uv;
+    uniform vec4 u_rip[${MAX_RIPPLES}];
+    uniform vec2 u_ripk[${MAX_RIPPLES}];
+    uniform int u_n;
+    varying vec2 v_p;
+    void main() {
+      vec2 p = v_p * u_res;
+      vec2 disp = vec2(0.0);
+      float env = 0.0;
+      float light = 0.0;
+      float line = 0.0;
+      for (int i = 0; i < ${MAX_RIPPLES}; i++) {
+        if (i >= u_n) break;
+        vec4 r = u_rip[i];
+        vec2 k = u_ripk[i];
+        vec2 d = p - r.xy;
+        float dist = max(length(d), 0.001);
+        float x = (dist - r.z) / r.w;
+        float e = exp(-x * x * 2.2);
+        float wave = sin(x * 4.712);
+        disp += (d / dist) * k.x * e * wave;
+        light += cos(x * 4.712) * e * k.y;
+        env = max(env, e * k.y);
+        float l1 = (dist - r.z) / 1.4;
+        float l2 = (dist - r.z * 0.72) / 1.0;
+        line += (exp(-l1 * l1) * 0.6 + exp(-l2 * l2) * 0.3) * k.y;
+      }
+      float a = clamp(max(env, line), 0.0, 1.0);
+      if (a < 0.004) discard;
+      vec2 uv = (p - disp) / u_res * u_uv.xy + u_uv.zw;
+      vec3 col = texture2D(u_img, uv).rgb;
+      col *= 1.0 + 0.22 * light;
+      col += vec3(0.67, 1.0, 0.94) * line;
+      gl_FragColor = vec4(min(col, 1.0) * a, a);
+    }`;
+  const PVERT = `
+    attribute vec2 a_xy;
+    attribute vec4 a_c;
+    uniform vec2 u_res;
+    uniform float u_scale;
+    varying vec4 v_c;
+    void main() {
+      v_c = a_c;
+      gl_PointSize = a_c.w * u_scale;
+      gl_Position = vec4(a_xy.x / u_res.x * 2.0 - 1.0, 1.0 - a_xy.y / u_res.y * 2.0, 0.0, 1.0);
+    }`;
+  // Point de plancton : halo radial (même dégradé que les lucioles du prototype).
+  const PFRAG = `
+    precision mediump float;
+    varying vec4 v_c;
+    void main() {
+      float d = length(gl_PointCoord - 0.5) * 2.0;
+      if (d >= 1.0) discard;
+      float g = d < 0.22 ? mix(1.0, 0.6, d / 0.22) : d < 0.55 ? mix(0.6, 0.18, (d - 0.22) / 0.33) : mix(0.18, 0.0, (d - 0.55) / 0.45);
+      // v_c.rgb porte déjà l'éclat ; v_c.a est la taille du point, pas une opacité. Couleur prémultipliée
+      // valide (composantes ≤ alpha) : alpha = composante la plus forte, le point éclaire l'image sans l'assombrir.
+      vec3 c = min(v_c.rgb * g * 1.7, 1.0);
+      gl_FragColor = vec4(c, max(c.r, max(c.g, c.b)));
+    }`;
+  // Cyan, rose, écume (pâle, jamais blanc pur : un point blanc saturé ressemblait à une tache sur l’image).
+  const HUES: [number, number, number][] = [[0.37, 1, 0.9], [1, 0.36, 0.77], [0.62, 0.85, 0.82]];
+
+  if (!w.__eywaWaterInit) {
+    w.__eywaWaterInit = true;
+    const stats: WaterStats = (w.__eywaWater = { gl: null, ripples: 0, touches: 0, drops: 0, frames: 0, live: 0 });
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const paused = () => document.documentElement.classList.contains(ATMOSPHERE_PAUSED_CLASS);
+    const rand = Math.random;
+
+    interface Scene {
+      canvas: HTMLCanvasElement;
+      img: HTMLImageElement;
+      box: HTMLElement;
+      gl: WebGLRenderingContext;
+      prog: WebGLProgram;
+      pprog: WebGLProgram;
+      quad: WebGLBuffer;
+      pbuf: WebGLBuffer;
+      tex: WebGLTexture | null;
+      W: number;
+      H: number;
+      scale: number;
+      ripples: Ripple[];
+      motes: Mote[];
+      pdata: Float32Array;
+    }
+    let scene: Scene | null = null;
+    let inView = false;
+    let raf = 0;
+    let last = 0;
+    let T = 0; // temps de l'eau en ms, pauses exclues
+    let lastInteract = -Infinity;
+    let nextDrop = FIRST_DROP_MS;
+    let lastMove: { x: number; y: number } | null = null;
+    let lastPointer = '';
+    let io: IntersectionObserver | null = null;
+    let ro: ResizeObserver | null = null;
+
+    const active = () => !!scene && !reduced.matches && !paused();
+    const running = () => active() && inView && !document.hidden;
+
+    const compile = (gl: WebGLRenderingContext, vs: string, fs: string) => {
+      const p = gl.createProgram()!;
+      for (const [type, src] of [[gl.VERTEX_SHADER, vs], [gl.FRAGMENT_SHADER, fs]] as const) {
+        const s = gl.createShader(type)!;
+        gl.shaderSource(s, src);
+        gl.compileShader(s);
+        if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s) ?? 'shader');
+        gl.attachShader(p, s);
+      }
+      gl.linkProgram(p);
+      if (!gl.getProgramParameter(p, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(p) ?? 'link');
+      return p;
+    };
+
+    /**
+     * Image ramenée à une texture de taille fixe (puissance de deux : mipmaps aussi en WebGL 1, même coût sur
+     * tout écran). Redimensionnée par createImageBitmap, sans canevas 2D intermédiaire (relecture GPU évitée).
+     */
+    const upload = async (s: Scene) => {
+      if (!s.img.complete || !s.img.naturalWidth || s.tex) return;
+      let src: TexImageSource;
+      try {
+        src = await createImageBitmap(s.img, { resizeWidth: TEXTURE_W, resizeHeight: TEXTURE_H, resizeQuality: 'high' });
+      } catch {
+        const c = document.createElement('canvas');
+        c.width = TEXTURE_W;
+        c.height = TEXTURE_H;
+        c.getContext('2d')!.drawImage(s.img, 0, 0, TEXTURE_W, TEXTURE_H);
+        src = c;
+      }
+      if (scene !== s || s.tex) return;
+      const gl = s.gl;
+      const tex = gl.createTexture();
+      gl.bindTexture(gl.TEXTURE_2D, tex);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, src);
+      gl.generateMipmap(gl.TEXTURE_2D);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+      if ('close' in src) (src as ImageBitmap).close();
+      s.tex = tex;
+    };
+
+    const fit = (s: Scene) => {
+      const W = s.box.clientWidth, H = s.box.clientHeight;
+      if (!W || !H) return;
+      const size = canvasSize(W, H, window.devicePixelRatio);
+      if (s.canvas.width !== size.width || s.canvas.height !== size.height) {
+        s.canvas.width = size.width;
+        s.canvas.height = size.height;
+      }
+      if (s.W && s.motes.length !== planktonCount(W)) s.motes = makePlankton(planktonCount(W), rand);
+      s.W = W;
+      s.H = H;
+      s.scale = size.scale;
+      s.gl.viewport(0, 0, size.width, size.height);
+    };
+
+    const draw = (s: Scene) => {
+      const { gl, W, H } = s;
+      if (!W || !H) return;
+      gl.clearColor(0, 0, 0, 0);
+      gl.clear(gl.COLOR_BUFFER_BIT);
+      const base = Math.min(W, H);
+      // Anneaux.
+      if (s.tex && s.ripples.length) {
+        gl.useProgram(s.prog);
+        gl.disable(gl.BLEND);
+        const rip = new Float32Array(MAX_RIPPLES * 4), ripk = new Float32Array(MAX_RIPPLES * 2);
+        let n = 0;
+        for (const r of s.ripples) {
+          const lv = rippleLevel(T - r.born, r.strong, base);
+          if (!lv) continue;
+          rip.set([r.x, r.y, lv.radius, lv.band], n * 4);
+          ripk.set([lv.amp, lv.alpha], n * 2);
+          n++;
+        }
+        const img = s.img;
+        const cu = coverUv(img.naturalWidth, img.naturalHeight, W, H);
+        gl.uniform2f(gl.getUniformLocation(s.prog, 'u_res'), W, H);
+        gl.uniform4f(gl.getUniformLocation(s.prog, 'u_uv'), cu.scale[0], cu.scale[1], cu.offset[0], cu.offset[1]);
+        gl.uniform4fv(gl.getUniformLocation(s.prog, 'u_rip'), rip);
+        gl.uniform2fv(gl.getUniformLocation(s.prog, 'u_ripk'), ripk);
+        gl.uniform1i(gl.getUniformLocation(s.prog, 'u_n'), n);
+        gl.uniform1i(gl.getUniformLocation(s.prog, 'u_img'), 0);
+        gl.activeTexture(gl.TEXTURE0);
+        gl.bindTexture(gl.TEXTURE_2D, s.tex);
+        gl.bindBuffer(gl.ARRAY_BUFFER, s.quad);
+        const a = gl.getAttribLocation(s.prog, 'a_pos');
+        gl.enableVertexAttribArray(a);
+        gl.vertexAttribPointer(a, 2, gl.FLOAT, false, 0, 0);
+        gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+        gl.disableVertexAttribArray(a);
+      }
+      // Plancton, en lumière ajoutée : a_c = (r, g, b) × éclat, puis diamètre du halo en px CSS.
+      const n6 = s.motes.length * 6;
+      if (s.pdata.length < n6) s.pdata = new Float32Array(n6);
+      const d = s.pdata;
+      s.motes.forEach((m, i) => {
+        const c = HUES[m.hue], g = paused() ? 0.7 : moteGlow(m, T);
+        d.set([m.x * W, m.y * H, c[0] * g, c[1] * g, c[2] * g, m.size * moteScale(W)], i * 6);
+      });
+      gl.useProgram(s.pprog);
+      gl.enable(gl.BLEND);
+      gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+      gl.uniform2f(gl.getUniformLocation(s.pprog, 'u_res'), W, H);
+      gl.uniform1f(gl.getUniformLocation(s.pprog, 'u_scale'), s.scale);
+      gl.bindBuffer(gl.ARRAY_BUFFER, s.pbuf);
+      gl.bufferData(gl.ARRAY_BUFFER, d.subarray(0, n6), gl.DYNAMIC_DRAW);
+      const axy = gl.getAttribLocation(s.pprog, 'a_xy'), ac = gl.getAttribLocation(s.pprog, 'a_c');
+      gl.enableVertexAttribArray(axy);
+      gl.enableVertexAttribArray(ac);
+      gl.vertexAttribPointer(axy, 2, gl.FLOAT, false, 24, 0);
+      gl.vertexAttribPointer(ac, 4, gl.FLOAT, false, 24, 8);
+      gl.drawArrays(gl.POINTS, 0, s.motes.length);
+      gl.disableVertexAttribArray(axy);
+      gl.disableVertexAttribArray(ac);
+      stats.frames++;
+      stats.live = s.ripples.length;
+    };
+
+    const ripple = (x: number, y: number, strong: boolean) => {
+      const s = scene;
+      if (!s || !active()) return false;
+      pushRipple(s.ripples, { x, y, born: T, strong });
+      pushPlankton(s.motes, x, y, strong, s.W, s.H);
+      stats.ripples++;
+      kick();
+      return true;
+    };
+
+    const loop = (now: number) => {
+      raf = 0;
+      const s = scene;
+      if (!s || !running()) return;
+      const dt = Math.min(50, now - last);
+      last = now;
+      T += dt;
+      pruneRipples(s.ripples, T);
+      if (s.W && dropDue(T, lastInteract, nextDrop)) {
+        ripple(s.W * (0.15 + rand() * 0.7), s.H * (0.2 + rand() * 0.6), true);
+        stats.drops++;
+        nextDrop = T + DROP_EVERY_MS;
+      }
+      stepPlankton(s.motes, dt, T, rand);
+      draw(s);
+      raf = requestAnimationFrame(loop);
+    };
+
+    function kick() {
+      if (raf || !running()) return;
+      last = performance.now();
+      raf = requestAnimationFrame(loop);
+    }
+    const halt = () => {
+      cancelAnimationFrame(raf);
+      raf = 0;
+    };
+
+    const local = (e: PointerEvent) => {
+      const r = scene!.box.getBoundingClientRect();
+      return { x: e.clientX - r.left, y: e.clientY - r.top };
+    };
+    const onDown = (e: PointerEvent) => {
+      lastPointer = e.pointerType;
+      if (!scene || (e.pointerType === 'mouse' && e.button !== 0)) return;
+      if ((e.target as Element).closest('[data-water-zoom]')) return;
+      const p = local(e);
+      lastInteract = T;
+      lastMove = p;
+      if (ripple(p.x, p.y, true) && e.pointerType !== 'mouse') stats.touches++;
+    };
+    const onMove = (e: PointerEvent) => {
+      if (!scene) return;
+      // Souris : au passage. Doigt : en glissant (glissement horizontal ; le vertical fait défiler la page).
+      if (e.pointerType !== 'mouse' && !e.buttons) return;
+      const p = local(e);
+      if (!shouldRippleOnMove(lastMove, p)) return;
+      lastInteract = T;
+      lastMove = p;
+      ripple(p.x, p.y, false);
+    };
+    const onLeave = () => { lastMove = null; };
+    // Un toucher sur l'eau fait l'anneau et n'ouvre pas la visionneuse (le bouton « Agrandir » l'ouvre).
+    // Phase de remontée sur le bandeau : avant l'écouteur de la visionneuse, posé sur document.
+    const onClick = (e: MouseEvent) => {
+      if (!e.isTrusted || lastPointer === 'mouse' || lastPointer === '' || !active()) return;
+      if ((e.target as Element).closest('[data-water-zoom]')) return;
+      e.stopPropagation();
+      e.preventDefault();
+    };
+    const zoom = (e: Event) => {
+      const btn = (e.target as Element).closest('[data-water-zoom]');
+      if (!btn || !scene) return;
+      e.stopPropagation();
+      scene.img.click();
+    };
+
+    const unmount = () => {
+      halt();
+      io?.disconnect();
+      ro?.disconnect();
+      io = ro = null;
+      const s = scene;
+      scene = null;
+      inView = false;
+      if (!s) return;
+      s.box.removeEventListener('pointerdown', onDown);
+      s.box.removeEventListener('pointermove', onMove);
+      s.box.removeEventListener('pointerleave', onLeave);
+      s.box.removeEventListener('click', onClick);
+      s.box.removeEventListener('click', zoom, true);
+      // Rendre le contexte tout de suite plutôt qu'au ramasse-miettes (une page sur deux en a un).
+      s.gl.getExtension('WEBGL_lose_context')?.loseContext();
+    };
+
+    const mount = () => {
+      unmount();
+      let canvas = document.querySelector<HTMLCanvasElement>('[data-water-ripple]');
+      // Un canevas dont le contexte a été rendu (loseContext) le garderait perdu : on en pose un neuf.
+      if (canvas?.dataset.used) {
+        const fresh = canvas.cloneNode() as HTMLCanvasElement;
+        delete fresh.dataset.used;
+        fresh.classList.remove('is-live');
+        canvas.replaceWith(fresh);
+        canvas = fresh;
+      }
+      const box = canvas?.parentElement;
+      const img = box?.querySelector<HTMLImageElement>('img');
+      if (!canvas || !box || !img) return;
+      // Le bouton marche sans WebGL et en mouvement réduit : posé d'abord.
+      box.addEventListener('click', zoom, true);
+      if (reduced.matches) return;
+      const opts = { premultipliedAlpha: true, alpha: true, antialias: false, depth: false, stencil: false, powerPreference: 'low-power' as const };
+      const gl = (canvas.getContext('webgl2', opts) ?? canvas.getContext('webgl', opts)) as WebGLRenderingContext | null;
+      stats.gl = gl ? (typeof WebGL2RenderingContext !== 'undefined' && gl instanceof WebGL2RenderingContext ? 'webgl2' : 'webgl') : null;
+      canvas.dataset.used = '1';
+      if (!gl) return; // sans WebGL : image fixe, rien d'autre
+      let prog: WebGLProgram, pprog: WebGLProgram;
+      try {
+        prog = compile(gl, VERT, FRAG);
+        pprog = compile(gl, PVERT, PFRAG);
+      } catch (err) {
+        console.warn('Eau vivante : shader refusé, image fixe', err);
+        stats.gl = null;
+        return;
+      }
+      const quad = gl.createBuffer()!;
+      gl.bindBuffer(gl.ARRAY_BUFFER, quad);
+      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
+      const s: Scene = {
+        canvas, img, box, gl, prog, pprog, quad, pbuf: gl.createBuffer()!, tex: null,
+        W: 0, H: 0, scale: 1, ripples: [], motes: makePlankton(planktonCount(box.clientWidth), rand), pdata: new Float32Array(0),
+      };
+      scene = s;
+      canvas.classList.add('is-live');
+      T = 0;
+      lastInteract = -Infinity;
+      nextDrop = FIRST_DROP_MS;
+      lastMove = null;
+      fit(s);
+      if (img.complete && img.naturalWidth) void upload(s);
+      else img.addEventListener('load', () => { if (scene === s) void upload(s); }, { once: true });
+      canvas.addEventListener('webglcontextlost', (e) => { e.preventDefault(); if (scene === s) { halt(); scene = null; } }, { once: true });
+      box.addEventListener('pointerdown', onDown, { passive: true });
+      box.addEventListener('pointermove', onMove, { passive: true });
+      box.addEventListener('pointerleave', onLeave, { passive: true });
+      box.addEventListener('click', onClick);
+      io = new IntersectionObserver((entries) => {
+        for (const e of entries) inView = e.isIntersecting;
+        if (running()) kick(); else halt();
+      });
+      io.observe(box);
+      ro = new ResizeObserver(() => { if (scene === s) { fit(s); if (!raf) draw(s); } });
+      ro.observe(box);
+      draw(s);
+    };
+
+    const sync = () => {
+      if (running()) kick();
+      else {
+        halt();
+        if (scene) draw(scene); // pause : dernière image figée (plancton à éclat fixe)
+      }
+    };
+    window.addEventListener(ATMOSPHERE_EVENT, sync);
+    document.addEventListener('visibilitychange', sync);
+    reduced.addEventListener('change', () => mount());
+    document.addEventListener('astro:before-swap', unmount);
+    document.addEventListener('astro:page-load', mount);
+    mount();
+  }
+</script>
+
+<style>
+  .water-ripple {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+    pointer-events: none;
+    visibility: hidden;
+  }
+  .water-ripple:global(.is-live) { visibility: visible; }
+  /* Le bandeau : le doigt fait défiler la page à la verticale, et dessine sur l'eau à l'horizontale. */
+  :global([data-lightbox]:has(> .water-ripple)) { touch-action: pan-y; }
+  .water-zoom {
+    position: absolute;
+    right: 0.5rem;
+    bottom: 0.5rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    min-height: 44px;
+    min-width: 44px;
+    padding: 0.35rem 0.8rem;
+    font: 500 0.8rem/1.2 var(--font-display, sans-serif);
+    letter-spacing: 0.06em;
+    color: #e8e6dd;
+    background: rgba(10, 10, 31, 0.86);
+    border: 1px solid rgba(95, 255, 230, 0.7);
+    border-radius: 999px;
+    cursor: zoom-in;
+  }
+  .water-zoom:hover { border-color: #5fffe6; color: #5fffe6; }
+  .water-zoom:focus-visible { outline: 2px solid #5fffe6; outline-offset: 3px; }
+  .water-zoom svg { width: 1rem; height: 1rem; flex: none; }
+  /* Au téléphone, le bandeau ne fait que ~130 px de haut : le bouton n'y garde que son icône (nom accessible
+     inchangé), en rond de 44 px. */
+  @media (max-width: 639px) {
+    .water-zoom { padding: 0; justify-content: center; right: 0.35rem; bottom: 0.35rem; }
+    .water-zoom span { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .water-ripple { display: none; }
+  }
+</style>

@@ -5,6 +5,7 @@ order: 18
 cover: "/illustrations/personnages/payakan.webp"
 coverAlt: "Silhouette d'un grand cétacé à la nageoire tendue sous la surface, un nageur Na'vi minuscule à ses côtés dans les rayons du soleil"
 coverCredit: "© 20th Century Studios"
+water: true
 pandorapedia: "https://www.avatar.com/pandorapedia/payakan"
 ---
 
