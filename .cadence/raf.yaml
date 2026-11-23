@@ -528,10 +528,12 @@ lots:
     finished: 2026-10-30
   - id: L46
     title: "QA : ajouter la section /langue/ à docs/qa/expectations.md (5 liens sortants soulignés « (nouvel onglet) », lexique 13 lignes avec th scope=col, lang art-x-navi ×20) — brouillon dans le rapport de QA de L10 du 30-10"
-    status: doing
+    status: done
     estimate: 0.1
     created: 2026-10-30
     started: 2026-11-23
+    review: { date: 2026-11-23, verdict: "conforme (lead) 57df690 : docs seulement, section /langue/ de docs/qa/expectations.md vérifiée contre la page construite (13 lignes du lexique, 20 lang art-x-navi, 5 liens « (nouvel onglet) », visionneuse cachée non comptée comme image cassée) ; qa-expectations, langue-ux, template-ux 39/39", commit: null }
+    finished: 2026-11-23
   - id: L47
     title: "Vidéos, suite de L11 : descriptions des cartes coupées par line-clamp sans moyen de lire la suite (4/13 à 320 px, 1/13 à 1440 px — WCAG 1.4.10), « (nouvel onglet) » placé dans le h3 (nom du titre pour la navigation par titres) au lieu du lien ; intro de section sur les particules à 1,62:1 à traiter avec L13"
     status: todo
