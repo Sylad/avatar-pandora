@@ -754,6 +754,7 @@ lots:
     status: done
     estimate: 1
     quickwin: true
+    delivered: { date: 2026-11-23, sha: 92b1b02416c523da59c3aca804a18193bca7ef53 }
     created: 2026-11-23
     started: 2026-11-23
     review: { date: 2026-11-23, verdict: "conforme c1170d4 : attentes sur l'horloge de la page (settleAnimations, performance.now, temps de scène __eywaWater.time) au lieu de délais fixes ; seuils d'origine gardés (900 ms des transitions, < 1000 ms fiche, rendormissement 1-4 s) ; porte complète 360/360 sous charge 43-121 contre 7 échecs avant ; défauts recréés détectés (transition 1,5 s, rendormissement 6 s et 0, navigation +1,5 s). Seule modif d'app : exposition du temps de scène dans les stats de test.", commit: c1170d445ba2c14596530953b1efc28e4d96f267 }
