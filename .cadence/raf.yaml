@@ -536,15 +536,17 @@ lots:
     finished: 2026-11-23
   - id: L47
     title: "Vidéos, suite de L11 : descriptions des cartes coupées par line-clamp sans moyen de lire la suite (4/13 à 320 px, 1/13 à 1440 px — WCAG 1.4.10), « (nouvel onglet) » placé dans le h3 (nom du titre pour la navigation par titres) au lieu du lien ; intro de section sur les particules à 1,62:1 à traiter avec L13"
-    status: doing
+    status: done
     estimate: 0.25
     visible: true
     created: 2026-10-31
     notes:
       - { date: 2026-10-31, text: "QA 31-10 (40f3435) : la vignette maxresdefault de muEMyQAJreg renvoie 404 (repli hqdefault avec erreur console) — servir hqdefault d'emblée ; ajouter la section /videos/ à docs/qa/expectations.md" }
+      - { date: 2026-11-23, text: "Mineurs gardés (revue UX r2) : m3 « · EN » à mettre en nowrap ; m4 alternance de position de la description à 768-1024 px." }
     started: 2026-11-23
     review: { date: 2026-11-23, verdict: "conforme (lead, r2) : grilles en rem auto-fill (15rem), rangée de chaîne en flex-wrap avec description à 20em min, carte en flex pleine hauteur, badge aria-hidden + type en sr-only après le titre ; R11 étendu, R13/R14 ajoutés, 376 tests annoncés verts", commit: cbed4fea0c90e379c0f74a39ce1ab12e63d4214e }
-    ux: { date: 2026-11-23, verdict: "non conforme (ux-reviewer, tmp/ux-avatar-L47.md) : bloquant, régression du lot — .channel-link__desc de « Toutes les chaînes » tombe à 12-22 px de large au-dessus de 700 px dès que le texte grandit (overflow-wrap: anywhere hors du bloc ≤ 700 px laisse la piste 1fr se réduire ; « encyclopédique. » coupé même à 100 % à 1024) ; majeur antérieur : pastille de langue rognée par la carte vidéo à 175-200 % (13/13 à 1024-1440) ; mineurs : bas des cartes en escalier à 1440, nom accessible qui commence par le type" }
+    ux: { date: 2026-11-23, verdict: "conforme (ux-reviewer r2) : B1 descriptions ≥ 164 px partout, M1 0 pastille rognée sur 24 combinaisons, m1 bas alignés, m2 nom accessible par le titre ; aucune régression. Notes : m3 séparateur « · » seul en bord de ligne (span nowrap), m4 alternance description à côté / dessous à 768-1024 px ; tmp/ux-avatar-L47-r2.md" }
+    finished: 2026-11-23
   - id: L48
     title: "À propos : anneau de focus visible sur le lien en ligne « Claude Code » (au lieu du 1 px automatique) et regex du test R4 qui ignore ⚔️ (mineurs de la revue UX de L12 ; le soulignement est déjà fait par d747d61)"
     status: done
@@ -762,6 +764,12 @@ lots:
     started: 2026-11-23
     review: { date: 2026-11-23, verdict: "conforme c1170d4 : attentes sur l'horloge de la page (settleAnimations, performance.now, temps de scène __eywaWater.time) au lieu de délais fixes ; seuils d'origine gardés (900 ms des transitions, < 1000 ms fiche, rendormissement 1-4 s) ; porte complète 360/360 sous charge 43-121 contre 7 échecs avant ; défauts recréés détectés (transition 1,5 s, rendormissement 6 s et 0, navigation +1,5 s). Seule modif d'app : exposition du temps de scène dans les stats de test.", commit: c1170d445ba2c14596530953b1efc28e4d96f267 }
     finished: 2026-11-23
+  - id: L69
+    title: "Gabarit : la barre latérale w-80 (20 rem) grandit avec le texte et ne laisse que 224 px de contenu à 1024 px texte 200 % (25 mots cassés) — plafonner sa largeur ou passer au tiroir selon une largeur en em ; WCAG 1.4.4 / 1.4.10 (revue UX r2 de L47)"
+    status: todo
+    estimate: 1
+    visible: true
+    created: 2026-11-23
 acknowledged:
   - { sha: cef464dffb920ea7b161b1b0e06fe54d3efbdcc4, subject: "plan: verdicts UX de Sylvain enregistrés, trois bloquants de la revue des Personnages clos", date: 2026-10-10, reason: entretien du plan et régénération des Nouveautés }
   - { sha: 4bc75e983dc5bff0366190611a9c578d4ed071c8, subject: "plan: prototype Pandora vivant clos, cinq idées retenues par Sylvain posées après les images", date: 2026-10-10, reason: entretien du plan et régénération des Nouveautés (fichier désormais déclaré dérivé) }
