@@ -118,11 +118,17 @@ const { codex = false } = Astro.props;
     .eywa-atmo-toggle { top: 0.5rem; bottom: auto; right: 0.5rem; }
     .eywa-atmo-toggle--beside-audio { right: 3.5rem; }
   }
-  /* Codex sous 1024 px (revue UX L6) : dans la bande du haut, à gauche du bouton menu
-     (2,75 rem + 0,85 rem de marge + 0,5 rem d'écart). En bas, il recouvrait le texte. */
-  @media (max-width: 63.99rem) {
-    .eywa-atmo-toggle--codex { top: 0.975rem; bottom: auto; right: 4.1rem; }
-    .eywa-atmo-toggle--codex.eywa-atmo-toggle--beside-audio { right: 4.1rem; }
+  /* Codex en mode tiroir (sous 1024 px, revue UX L6 ; ou texte agrandi, L69) : dans la bande du
+     haut, à gauche du bouton menu (2,75 rem + 0,85 rem de marge + 0,5 rem d'écart). En bas, il
+     recouvrait le texte. */
+  .eywa-atmo-toggle--codex { top: 0.975rem; bottom: auto; right: 4.1rem; }
+  .eywa-atmo-toggle--codex.eywa-atmo-toggle--beside-audio { right: 4.1rem; }
+  /* Codex en barre latérale (même double condition que CodexLayout, L69) : en bas à droite. */
+  @media (min-width: 64rem) {
+    @container eywa-codex (min-width: 44em) {
+      .eywa-atmo-toggle--codex { top: auto; bottom: 1rem; right: 1rem; }
+      .eywa-atmo-toggle--codex.eywa-atmo-toggle--beside-audio { right: 4rem; }
+    }
   }
   @media (prefers-reduced-motion: reduce) {
     .eywa-atmo-toggle { display: none; }

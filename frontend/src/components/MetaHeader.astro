@@ -48,9 +48,15 @@ const eyebrow = rawEyebrow.replace(/ · /g, '\u00a0·\u00a0');
   /* Sous 1024 px, le sur-titre est à la hauteur du bouton menu fixe (en haut à droite) :
      sa ligne s'arrête avant lui (L20 — « Plan de travail · Eywa » passait 12 px dessous
      à 320 px, dans le halo cyan du bouton). */
-  @media (max-width: 1023.98px) {
-    .meta-eyebrow {
-      padding-right: 3.75rem;
+  .meta-eyebrow {
+    padding-right: 3.75rem;
+  }
+  /* Barre latérale (même double condition que CodexLayout, L69) : pas de bouton menu. */
+  @media (min-width: 64rem) {
+    @container eywa-codex (min-width: 44em) {
+      .meta-eyebrow {
+        padding-right: 0;
+      }
     }
   }
   .meta-title {

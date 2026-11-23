@@ -204,6 +204,13 @@ l'ambiance est en haut à droite de l'accueil (en bas, il recouvrait « Plan de 
 texte agrandi (×1,25, espacement WCAG 1.4.12) fait passer un libellé à la ligne dans son lien, jamais
 déborder la rangée.
 
+**Barre latérale ou tiroir du codex** (L69) : `CodexLayout` est un conteneur (`container: eywa-codex / inline-size`) ; la barre
+latérale n'est posée que si la fenêtre fait au moins 64 rem du réglage initial ET le gabarit au moins 44 em de sa police
+(`@media (min-width: 64rem) { @container eywa-codex (min-width: 44em) { … } }`), sinon tiroir. Une media query seule ne voit
+pas le texte agrandi par la page : à 1024 px texte 200 %, la barre de 20 rem laissait 37 % au contenu. Même double condition
+dans Sidebar, SkySwitch, AtmospherePause, MetaHeader et nouveautes ; jamais de `lg:` Tailwind pour ce qui dépend du mode. Le
+script du tiroir lit le mode sur la page (barre `sticky` ou `fixed`). Contrôlé par `scripts/codex-wide-text.e2e.test.mjs`.
+
 **Plan de travail** (page `/plan-de-travail/`, L20, modèle evatosorus/finance-tracker) : en cours, prévu,
 récemment livré, rendue **au build** depuis `.cadence/raf.yaml` (`src/lib/plan-public.ts`, lu depuis
 `frontend/` : `../.cadence/raf.yaml`, vrai aussi sur Cloudflare Pages dont la commande est

@@ -20,13 +20,14 @@ const sections = [
 ];
 ---
 <!--
-  Mobile (<lg) : drawer slide-in depuis la gauche, contrôlé par data-drawer-open
-  sur <html>. Bouton burger et overlay vivent dans CodexLayout.
-  Desktop (>=lg) : sidebar 320px sticky comme avant.
+  Tiroir : slide-in depuis la gauche, contrôlé par data-drawer-open sur <html>.
+  Bouton burger et overlay vivent dans CodexLayout.
+  Barre latérale : 20 rem, collante. Le mode vient d'une requête de conteneur en em
+  (L69, voir CodexLayout) : texte agrandi à 1024 px → tiroir.
 -->
 <aside
   id="eywa-sidebar"
-  class="eywa-sidebar fixed lg:sticky inset-y-0 left-0 z-50 w-80 shrink-0 lg:top-0 h-screen overflow-y-auto px-6 py-10 flex flex-col -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-out"
+  class="eywa-sidebar fixed inset-y-0 left-0 z-50 w-80 shrink-0 h-screen overflow-y-auto px-6 py-10 flex flex-col -translate-x-full transition-transform duration-300 ease-out"
   aria-label="Navigation du codex"
 >
   <a href="/" class="eywa-sidebar__brand block mb-10 group">
@@ -116,10 +117,20 @@ const sections = [
     translate: 0 0;
   }
 
-  /* Téléphone : le tiroir (20rem) ne dépasse jamais l'écran, même à 320 px. */
-  @media (max-width: 1023.98px) {
-    .eywa-sidebar {
-      max-width: 88vw;
+  /* Tiroir : il (20rem) ne dépasse jamais l'écran, même à 320 px. */
+  .eywa-sidebar {
+    max-width: 88vw;
+  }
+
+  /* Barre latérale (L69 : même double condition que CodexLayout) : collante, dans le flux. */
+  @media (min-width: 64rem) {
+    @container eywa-codex (min-width: 44em) {
+      .eywa-sidebar {
+        position: sticky;
+        top: 0;
+        translate: none;
+        max-width: none;
+      }
     }
   }
 
@@ -127,12 +138,14 @@ const sections = [
      compte 12 liens ; marges haute/basse et sous le logo resserrées pour qu'ils tiennent
      tous dans l'écran sans défiler (À propos passait 9 px sous le bord à 1280×720). */
   @media (min-width: 64rem) and (max-height: 820px) {
-    .eywa-sidebar {
-      padding-top: 1.5rem;
-      padding-bottom: 1.25rem;
-    }
-    .eywa-sidebar__brand {
-      margin-bottom: 1.5rem;
+    @container eywa-codex (min-width: 44em) {
+      .eywa-sidebar {
+        padding-top: 1.5rem;
+        padding-bottom: 1.25rem;
+      }
+      .eywa-sidebar__brand {
+        margin-bottom: 1.5rem;
+      }
     }
   }
 
@@ -143,11 +156,13 @@ const sections = [
      travers, et un reflet cyan très bas descend le long du bord lumineux. Mesuré par
      scripts/codex-menu-contrast.e2e.test.mjs. */
   @media (min-width: 64rem) {
-    .eywa-sidebar {
-      background:
-        linear-gradient(to left, rgba(95, 255, 230, 0.035), transparent 45%),
-        rgba(8, 12, 22, 0.88);
-      backdrop-filter: none;
+    @container eywa-codex (min-width: 44em) {
+      .eywa-sidebar {
+        background:
+          linear-gradient(to left, rgba(95, 255, 230, 0.035), transparent 45%),
+          rgba(8, 12, 22, 0.88);
+        backdrop-filter: none;
+      }
     }
   }
 

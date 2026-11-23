@@ -26,6 +26,11 @@ const AMBIENTS: Record<string, { colorA: string; colorB: string; density: number
 const ambient = AMBIENTS[current ?? ''] ?? AMBIENTS.pandora;
 ---
 <BaseLayout title={title}>
+  <!-- L69 : conteneur du gabarit. Barre latérale ou tiroir se décide sur sa largeur EN EM (texte
+       agrandi compris, même par la seule taille de police de la page), pas seulement en rem du réglage
+       initial comme une media query : à 1024 px texte 200 %, la barre de 20 rem ne laissait que 37 %
+       au contenu (revue UX r2 de L47). -->
+  <div class="eywa-codex">
   <!--
     Layered ambient: WebGL particles (cyan/forest-green pollen at low
     density) + CSS radial gradients + cursor-follow bioluminescent halo.
@@ -53,13 +58,13 @@ const ambient = AMBIENTS[current ?? ''] ?? AMBIENTS.pandora;
   <div class="eywa-topbar" aria-hidden="true"></div>
 
   <!--
-    Burger mobile : visible <lg, fixe top-right, glow cyan bioluminescent.
+    Burger : visible en mode tiroir (L69), fixe top-right, glow cyan bioluminescent.
     Toggle data-drawer-open sur <html> que la Sidebar et l'overlay observent.
   -->
   <button
     id="eywa-burger"
     type="button"
-    class="eywa-burger lg:hidden"
+    class="eywa-burger"
     aria-label="Ouvrir la navigation"
     aria-controls="eywa-sidebar"
     aria-expanded="false"
@@ -74,11 +79,11 @@ const ambient = AMBIENTS[current ?? ''] ?? AMBIENTS.pandora;
   </button>
 
   <!-- Overlay sombre cliquable derrière le drawer mobile -->
-  <div id="eywa-drawer-overlay" class="eywa-drawer-overlay lg:hidden" aria-hidden="true"></div>
+  <div id="eywa-drawer-overlay" class="eywa-drawer-overlay" aria-hidden="true"></div>
 
   <div class="flex relative" data-codex-section={current ?? 'pandora'}>
     <Sidebar current={current} />
-    <main id="contenu" tabindex="-1" class="eywa-codex-main flex-1 min-w-0 px-4 sm:px-6 lg:px-10 py-12 max-w-7xl">
+    <main id="contenu" tabindex="-1" class="eywa-codex-main flex-1 min-w-0 px-4 sm:px-6 py-12 max-w-7xl">
       <slot />
     </main>
   </div>
@@ -87,6 +92,7 @@ const ambient = AMBIENTS[current ?? ''] ?? AMBIENTS.pandora;
        comme à l'écran (r1). Leur place à l'écran ne dépend que de leur position fixe. -->
   <SkySwitch codex />
   <AtmospherePause codex />
+  </div>
 </BaseLayout>
 
 <script is:inline>
@@ -114,7 +120,7 @@ const ambient = AMBIENTS[current ?? ''] ?? AMBIENTS.pandora;
 
   // Mobile drawer : burger toggles data-drawer-open on <html>. Sidebar
   // (CSS translateX) and overlay (CSS opacity/pointer-events) react.
-  // Close on : Escape, overlay tap, internal nav link tap, viewport >= lg.
+  // Close on : Escape, overlay tap, internal nav link tap, passage en barre latérale.
   // ClientRouter : ce script ne s'exécute qu'une fois alors que burger, voile et
   // tiroir sont remplacés à chaque page → écouteurs posés une seule fois sur
   // document, éléments retrouvés à chaque événement (L14 : le menu ne s'ouvrait
@@ -143,25 +149,31 @@ const ambient = AMBIENTS[current ?? ''] ?? AMBIENTS.pandora;
       window.scrollTo(0, savedScrollY);
     };
 
-    // Accessibilité clavier (revue UX L14, WCAG 2.4.3 / 2.4.11) — sous 1024 px :
+    // Accessibilité clavier (revue UX L14, WCAG 2.4.3 / 2.4.11) — en mode tiroir :
     // tiroir fermé = inerte (ses liens hors écran ne prennent plus le focus) ;
     // tiroir ouvert = le reste de la page inerte et Tab bouclé tiroir ↔ bouton menu.
-    const mql = window.matchMedia('(min-width: 64rem)');
+    // Mode lu sur la page (L69) : la barre est collante au bureau, fixe en tiroir. Le choix vient
+    // d'une requête de conteneur en em (texte agrandi compris), qu'aucune media query ne voit.
+    const isDesktop = () => {
+      const sidebar = document.getElementById('eywa-sidebar');
+      return !!sidebar && getComputedStyle(sidebar).position !== 'fixed';
+    };
     const syncInert = () => {
       const sidebar = document.getElementById('eywa-sidebar');
       const burger = document.getElementById('eywa-burger');
       const overlay = document.getElementById('eywa-drawer-overlay');
       if (!sidebar) return;
-      const desktop = mql.matches;
+      const desktop = isDesktop();
       const open = isOpen() && !desktop;
       sidebar.inert = !desktop && !open;
-      const shell = sidebar.parentElement;
-      // Tout ce qui n'est ni le tiroir ni le bouton : le contenu principal et les
-      // autres enfants de <body> (visionneuse, son d'ambiance…).
-      const others = [
-        ...(shell ? [...shell.children].filter((c) => c !== sidebar) : []),
-        ...[...document.body.children].filter((c) => c !== shell && c !== burger && !c.contains(sidebar)),
-      ];
+      // Tout ce qui n'est ni le tiroir ni le bouton : à chaque niveau entre le tiroir et <body>,
+      // les frères (contenu principal, ambiance, ronds fixes, visionneuse, son d'ambiance…).
+      const others = [];
+      for (let node = sidebar; node && node !== document.body; node = node.parentElement) {
+        const parent = node.parentElement;
+        if (!parent) break;
+        others.push(...[...parent.children].filter((c) => c !== node && c !== burger));
+      }
       for (const el of others) {
         // Le voile doit rester cliquable : il referme le tiroir.
         if (el === overlay || el.tagName === 'SCRIPT' || el.tagName === 'STYLE') continue;
@@ -216,14 +228,28 @@ const ambient = AMBIENTS[current ?? ''] ?? AMBIENTS.pandora;
       e.preventDefault();
       next.focus();
     });
-    // Si l'utilisateur passe en >= lg avec drawer ouvert → fermer + clean lock
-    mql.addEventListener?.('change', () => {
-      if (mql.matches && isOpen()) setOpen(false);
+    // Passage d'un mode à l'autre (fenêtre élargie, texte agrandi ou réduit) : la largeur du
+    // contenu change toujours. En barre latérale avec le tiroir ouvert → fermer + clean lock.
+    let wasDesktop = null;
+    const onLayout = () => {
+      const desktop = isDesktop();
+      if (desktop === wasDesktop) return;
+      wasDesktop = desktop;
+      if (desktop && isOpen()) setOpen(false);
       else syncInert();
-    });
+    };
+    const observer = typeof ResizeObserver === 'function' ? new ResizeObserver(onLayout) : null;
+    const observe = () => {
+      if (!observer) return;
+      observer.disconnect();
+      const main = document.getElementById('contenu');
+      if (main) observer.observe(main);
+    };
+    window.addEventListener('resize', onLayout, { passive: true });
     // Nouvelle page (ClientRouter) : tiroir fermé, inertie recalculée sur le nouveau DOM.
-    document.addEventListener('astro:after-swap', syncInert);
-    syncInert();
+    document.addEventListener('astro:after-swap', () => { wasDesktop = null; observe(); onLayout(); });
+    observe();
+    onLayout();
   })();
 
   // Pandora feels more alive when the glow reacts to lore, not to every
@@ -359,14 +385,28 @@ const ambient = AMBIENTS[current ?? ''] ?? AMBIENTS.pandora;
     position: relative;
     z-index: 2;
   }
-  /* Sidebar : sur lg+ position:relative au-dessus de l'ambient.
-     Sur <lg elle est fixed (drawer) et doit passer au-dessus de l'overlay. */
+  /* Sidebar : en barre latérale, collante au-dessus de l'ambient.
+     En tiroir elle est fixed et doit passer au-dessus de l'overlay. */
   :global(aside.eywa-sidebar) {
     z-index: 50;
   }
+
+  /*
+    L69 — barre latérale ou tiroir. Barre latérale seulement si la fenêtre fait au moins 64 rem du
+    réglage initial (l'ancien point de rupture lg, qui suit la police du navigateur) ET si le gabarit
+    fait au moins 44 em de SA police (taille du texte de la page, quelle que soit la façon dont on
+    l'agrandit) : la barre de 20 em laisse alors au moins 55 % au contenu. À 100 %, 1024 px = 58,5 em :
+    rien ne change. À 1024 px texte 200 % (29 em) ou 1280 px texte 200 % (36 em) : tiroir.
+    Même double condition dans Sidebar, SkySwitch, AtmospherePause, MetaHeader et nouveautes.
+  */
+  .eywa-codex {
+    container: eywa-codex / inline-size;
+  }
   @media (min-width: 64rem) {
-    :global(aside.eywa-sidebar) {
-      z-index: 2;
+    @container eywa-codex (min-width: 44em) {
+      :global(aside.eywa-sidebar) {
+        z-index: 2;
+      }
     }
   }
 
@@ -391,7 +431,7 @@ const ambient = AMBIENTS[current ?? ''] ?? AMBIENTS.pandora;
 
   /*
     Burger button — fixed top-right, glow cyan bioluminescent qui matche
-    l'identité Eywa. Visible <lg seulement (Tailwind lg:hidden côté DOM).
+    l'identité Eywa. Visible en mode tiroir seulement (voir L69 plus bas).
     Z-index plus haut que la sidebar pour rester accessible quand drawer
     fermé, et au-dessus de l'overlay quand ouvert.
   */
@@ -406,12 +446,13 @@ const ambient = AMBIENTS[current ?? ''] ?? AMBIENTS.pandora;
     border-bottom: 1px solid rgba(95, 255, 230, 0.12);
     backdrop-filter: blur(6px);
   }
-  @media (min-width: 64rem) {
-    .eywa-topbar { display: none; }
-  }
   /* Le contenu commence sous la bande. */
-  @media (max-width: 63.99rem) {
-    :global(main.eywa-codex-main) { padding-top: 5.5rem; }
+  :global(main.eywa-codex-main) { padding-top: 5.5rem; }
+  @media (min-width: 64rem) {
+    @container eywa-codex (min-width: 44em) {
+      .eywa-topbar { display: none; }
+      :global(main.eywa-codex-main) { padding-top: 3rem; padding-inline: 2.5rem; }
+    }
   }
   .eywa-burger {
     position: fixed;
@@ -436,11 +477,14 @@ const ambient = AMBIENTS[current ?? ''] ?? AMBIENTS.pandora;
     transition: box-shadow 200ms ease, transform 150ms ease;
     -webkit-tap-highlight-color: transparent;
   }
-  /* Le display ci-dessus (style scopé, hors couche) écrasait lg:hidden de Tailwind :
-     le bouton s'affichait au bureau et bloquait le défilement (revue UX L14). */
+  /* Bouton menu et voile : seulement en mode tiroir (L69 : plus de lg:hidden de Tailwind, une
+     media query ne voit pas le texte agrandi par la page). */
   @media (min-width: 64rem) {
-    .eywa-burger {
-      display: none;
+    @container eywa-codex (min-width: 44em) {
+      .eywa-burger,
+      .eywa-drawer-overlay {
+        display: none;
+      }
     }
   }
   .eywa-burger:active {

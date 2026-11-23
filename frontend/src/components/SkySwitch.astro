@@ -235,28 +235,32 @@ const { codex = false } = Astro.props;
 
   /* Codex au grand écran (revue UX L35 r1) : le ciel AU-DESSUS de la pause, dans la marge droite.
      Côte à côte, le rond du ciel recouvrait le texte de la 3e carte dans la première vue. */
-  @media (min-width: 64rem) {
-    .sky-switch--codex { right: 1rem; bottom: 4rem; }
-    .sky-switch--codex .sky-switch__panel { bottom: 7rem; max-height: calc(100dvh - 7rem - var(--gap)); }
-  }
   /* Téléphone (accueil) : la pause est en haut à droite ; le ciel à sa gauche, panneau dessous. */
   @media (max-width: 480px) {
     .sky-switch { top: 0.5rem; bottom: auto; right: 3.5rem; }
     .sky-switch__panel { top: 3.5rem; bottom: auto; right: var(--gap); max-height: calc(100dvh - 3.5rem - var(--gap)); }
   }
-  /* Codex sous 1024 px : dans la bande du haut, à gauche de la pause (4,1 rem + 3 rem). */
-  @media (max-width: 63.99rem) {
-    .sky-switch--codex { top: 0.975rem; bottom: auto; right: 7.1rem; }
-    .sky-switch--codex .sky-switch__panel { top: 3.975rem; bottom: auto; right: var(--gap); max-height: calc(100dvh - 3.975rem - var(--gap)); }
+  /* Codex en mode tiroir (sous 1024 px, ou texte agrandi : L69) : dans la bande du haut, à gauche
+     de la pause (4,1 rem + 3 rem). */
+  .sky-switch--codex { top: 0.975rem; bottom: auto; right: 7.1rem; }
+  .sky-switch--codex .sky-switch__panel { top: 3.975rem; bottom: auto; right: var(--gap); max-height: calc(100dvh - 3.975rem - var(--gap)); }
+  /* Codex en barre latérale (même double condition que CodexLayout, L69). */
+  @media (min-width: 64rem) {
+    @container eywa-codex (min-width: 44em) {
+      .sky-switch--codex { top: auto; right: 1rem; bottom: 4rem; }
+      .sky-switch--codex .sky-switch__panel { top: auto; right: 1rem; bottom: 7rem; max-height: calc(100dvh - 7rem - var(--gap)); }
+    }
   }
   /* Mouvement réduit : la pause n'est pas rendue, le ciel prend sa place. */
   @media (prefers-reduced-motion: reduce) {
     .sky-switch { right: 1rem; }
     @media (max-width: 480px) { .sky-switch { right: 0.5rem; } }
-    @media (max-width: 63.99rem) { .sky-switch--codex { right: 4.1rem; } }
+    .sky-switch--codex { right: 4.1rem; }
     @media (min-width: 64rem) {
-      .sky-switch--codex { bottom: 1rem; }
-      .sky-switch--codex .sky-switch__panel { bottom: 4rem; max-height: calc(100dvh - 4rem - var(--gap)); }
+      @container eywa-codex (min-width: 44em) {
+        .sky-switch--codex { right: 1rem; bottom: 1rem; }
+        .sky-switch--codex .sky-switch__panel { bottom: 4rem; max-height: calc(100dvh - 4rem - var(--gap)); }
+      }
     }
   }
 </style>

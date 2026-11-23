@@ -138,8 +138,11 @@ const pngSize = (rel: string) => {
     .news-entry {
       scroll-margin-top: 5rem;
     }
+    /* Barre latérale (même double condition que CodexLayout, L69) : pas de bande en haut. */
     @media (min-width: 64rem) {
-      .news-entry { scroll-margin-top: 2rem; }
+      @container eywa-codex (min-width: 44em) {
+        .news-entry { scroll-margin-top: 2rem; }
+      }
     }
     .news-entry:focus {
       outline: none;
