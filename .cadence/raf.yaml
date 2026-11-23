@@ -411,6 +411,7 @@ lots:
     estimate: 0.5
     visible: true
     after: [ L17 ]
+    delivered: { date: 2026-11-23, sha: 129e1a152d69ee9d7aceabf4279332ffaabaa120 }
     created: 2026-10-10
     started: 2026-11-23
     review: { date: 2026-11-23, verdict: "conforme (lead) r1 5a5da26 : Agrandir ne dépend plus de la scène (img du bandeau), montage unique par arrivée (mountedCanvas), contextlost → dropScene sans loseContext, contexte rendu si shader refusé, anneau de focus + halo, touch-action pan-y pinch-zoom ; 6 tests e2e rouges sur efeb0c4. Porte rouge du run = machine saturée (5 passages, 5e 360/360).", commit: 5a5da26a15d2899a03570a29f10dd3ab4396d126 }
