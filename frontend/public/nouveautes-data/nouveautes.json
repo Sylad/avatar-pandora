@@ -1,6 +1,6 @@
 {
   "project": "avatar-pandora",
-  "generated": "2026-11-23 17:15",
+  "generated": "2026-11-23 18:05",
   "entries": [
     {
       "slug": "2026-11-23-les-cartes-se-rangent-quand-le-texte-grandit",
@@ -17,7 +17,7 @@
         "Avant : Bestiaire sur un écran de 1440 pixels avec le texte agrandi de trois quarts (175 %) ; trois cartes étroites côte à côte, leurs titres coupés au milieu des mots (« bans / hee », « léono / ptère », « Than / ator »)",
         "Après : même écran, même texte agrandi ; une seule carte par ligne, large, et le titre « Ikran — le banshee de montagne » se lit mot par mot sur deux lignes"
       ],
-      "html": "<p>Si tu agrandis le texte, les cartes du Bestiaire et des autres sections du codex se rangent en moins de colonnes : chaque carte reste assez large pour que ses titres se lisent mot par mot, sans « Than / ator » ni « léono / ptère ». Au téléphone aussi, les titres des cartes et du bandeau tiennent sur leur ligne. Avec le texte à sa taille normale, rien ne bouge.</p>\n<p>Et si ton appareil demande moins d'animations, le menu du codex apparaît et disparaît d'un coup, sans glisser.</p>"
+      "html": "<p>Si tu agrandis le texte, les cartes du Bestiaire et des autres sections du codex se rangent en moins de colonnes : chaque carte reste assez large pour que ses titres se lisent mot par mot, sans « Than / ator » ni « léono / ptère ». Au téléphone aussi, les titres des cartes et du bandeau grandissent avec le texte, et un mot trop long pour sa ligne se coupe entre deux syllabes, avec un trait d'union. Avec le texte à sa taille normale, rien ne bouge.</p>\n<p>Et si ton appareil demande moins d'animations, le menu du codex apparaît et disparaît d'un coup, sans glisser.</p>"
     },
     {
       "slug": "2026-11-23-le-texte-agrandi-garde-la-place",

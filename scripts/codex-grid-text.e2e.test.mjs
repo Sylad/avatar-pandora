@@ -4,11 +4,15 @@
 // en em (.codex-grid), moins de colonnes quand le texte grandit, aucun mot cassé de 390 à 1440 px à 100, 125, 175 et
 // 200 % ; au réglage normal, mêmes colonnes qu'avant à 1024, 1280 et 1440 px. Au passage (m1 de la même revue) :
 // en mouvement réduit, le tiroir du codex, son voile et le bouton menu changent d'état sans transition.
+// Revue UX de L70 (WCAG 1.4.4, F94) : les titres plafonnés en cqi ne grandissaient plus avec le texte. Titres en rem,
+// longs mots coupés à leurs syllabes AVEC un trait (césure, coupures de lib/title-breaks.ts) : une telle coupure est
+// permise, une coupure lettre à lettre sans trait reste un mot cassé ; au réglage normal, aucun titre n'est coupé.
 // Texte agrandi joué comme la revue : taille de police de <html> (×1 = les 109,375 % du site).
 // Lit frontend/dist (lancer `npm run build` avant) ; skip sans playwright-core/Chromium.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { nextFrames, setupBrowser } from './lib/e2e-dist.mjs';
+import { wordBreaks } from './lib/word-breaks.mjs';
 
 const SECTIONS = ['/bestiaire/', '/pandora/', '/clans/', '/flore/', '/personnages/', '/films/', '/engins/'];
 const WIDTHS = [390, 768, 1024, 1280, 1440];
@@ -20,35 +24,24 @@ async function setText(page, factor) {
   await nextFrames(page, 2);
 }
 
-// Colonnes de la grille et mots cassés au milieu dans le contenu (un mot dont les morceaux tiennent sur deux lignes).
+// Colonnes de la grille, et mots cassés ou césurés dans le contenu (lib/word-breaks.mjs).
 async function measure(page) {
-  return page.evaluate(() => {
-    const grid = document.querySelector('#contenu .codex-grid');
-    if (!grid) return null;
-    const cards = [...grid.children].map((c) => c.getBoundingClientRect());
-    const cols = cards.filter((c) => Math.abs(c.top - cards[0].top) < 1).length;
-    const broken = [];
-    const walker = document.createTreeWalker(document.getElementById('contenu'), NodeFilter.SHOW_TEXT);
-    for (let n = walker.nextNode(); n; n = walker.nextNode()) {
-      const host = n.parentElement;
-      if (!host || host.closest('svg, script, style, .sr-only')) continue;
-      const cs = getComputedStyle(host);
-      if (cs.visibility === 'hidden' || cs.display === 'none') continue;
-      for (const m of n.textContent.matchAll(/[^\s\-‐–—\/]+/gu)) {
-        if (m[0].length < 2) continue;
-        const range = document.createRange();
-        range.setStart(n, m.index);
-        range.setEnd(n, m.index + m[0].length);
-        const rects = [...range.getClientRects()].filter((r) => r.width > 0.5);
-        if (rects.some((a) => rects.some((b) => b.top > a.top + a.height / 2))) broken.push(m[0]);
-      }
-    }
+  const grid = await page.evaluate(() => {
+    const el = document.querySelector('#contenu .codex-grid');
+    if (!el) return null;
+    const cards = [...el.children].map((c) => c.getBoundingClientRect());
     const doc = document.documentElement;
-    return { cols, colWidth: cards[0].width, broken, overflow: doc.scrollWidth - doc.clientWidth };
+    return {
+      cols: cards.filter((c) => Math.abs(c.top - cards[0].top) < 1).length,
+      colWidth: cards[0].width,
+      overflow: doc.scrollWidth - doc.clientWidth,
+    };
   });
+  if (!grid) return null;
+  return { ...grid, ...(await wordBreaks(page)) };
 }
 
-test('R1 — sections du codex, 390 à 1440 px, texte 100 à 200 % : aucun mot cassé, aucun défilement horizontal', { timeout: 600_000 }, async (t) => {
+test('R1 — sections du codex, 390 à 1440 px, texte 100 à 200 % : aucun mot cassé sans trait, aucun défilement horizontal', { timeout: 600_000 }, async (t) => {
   const env = await setupBrowser(t);
   if (!env) return;
   const failures = [];
@@ -62,12 +55,53 @@ test('R1 — sections du codex, 390 à 1440 px, texte 100 à 200 % : aucun mot c
         const m = await measure(page);
         if (!m) { failures.push(`${where} : pas de grille .codex-grid`); continue; }
         if (m.broken.length) failures.push(`${where} : ${m.broken.length} mot(s) cassé(s) — ${m.broken.slice(0, 6).join(', ')}`);
+        // Au réglage normal, aucun titre ne se césure : le rendu reste celui d'avant L70.
+        if (factor === 1 && m.hyphenated.length) failures.push(`${where} : césure au réglage normal — ${m.hyphenated.join(', ')}`);
+        if (process.env.EYWA_L70_LOG && m.hyphenated.length) console.log(`${where} : césures ${m.hyphenated.join(', ')}`);
         if (m.overflow > 0) failures.push(`${where} : défilement horizontal de ${m.overflow} px`);
       }
     }
     await page.close();
   }
   assert.deepEqual(failures, [], `${failures.length} défaut(s) :\n${failures.join('\n')}`);
+});
+
+test('R5 — texte 200 % : chaque titre grandit au moins autant que le texte courant (390, 768, 1024, 1440 px)', { timeout: 300_000 }, async (t) => {
+  // Revue UX de L70 (WCAG 1.4.4, échec F94) : plafonnés en cqi, le titre de section restait à 100 % de sa taille et
+  // les titres de carte à 117 % à 390 px texte 200 %, plus petits que le résumé et l'accroche qu'ils annoncent.
+  const env = await setupBrowser(t);
+  if (!env) return;
+  const sizes = (page) => page.evaluate(() => {
+    const px = (el) => parseFloat(getComputedStyle(el).fontSize);
+    return {
+      h1: px(document.querySelector('.section-hero__title')),
+      accroche: px(document.querySelector('.section-hero__tagline')),
+      cartes: [...document.querySelectorAll('#contenu .codex-grid .entry-card__title')].map(px),
+      resumes: [...document.querySelectorAll('#contenu .codex-grid .entry-card__summary')].map(px),
+    };
+  });
+  const failures = [];
+  for (const width of [390, 768, 1024, 1440]) {
+    const page = await env.browser.newPage({ viewport: { width, height: 900 } });
+    for (const path of SECTIONS) {
+      await page.goto(env.base + path, { waitUntil: 'load' });
+      await setText(page, 1);
+      const a = await sizes(page);
+      await setText(page, 2);
+      const b = await sizes(page);
+      const where = `${path} @${width}px`;
+      const text = Math.min(b.accroche / a.accroche, ...b.resumes.map((r, i) => r / a.resumes[i]));
+      if (!(text >= 1.99)) failures.push(`${where} : le texte courant ne double pas (×${text.toFixed(2)})`);
+      if (b.h1 / a.h1 < text - 0.01) failures.push(`${where} : titre de section ×${(b.h1 / a.h1).toFixed(2)} (${b.h1} px), texte ×${text.toFixed(2)}`);
+      if (b.h1 < b.accroche) failures.push(`${where} : titre de section (${b.h1} px) plus petit que son accroche (${b.accroche} px)`);
+      b.cartes.forEach((c, i) => {
+        if (c / a.cartes[i] < text - 0.01) failures.push(`${where} carte ${i + 1} : titre ×${(c / a.cartes[i]).toFixed(2)} (${c} px), texte ×${text.toFixed(2)}`);
+        if (c < b.resumes[i]) failures.push(`${where} carte ${i + 1} : titre (${c} px) plus petit que son résumé (${b.resumes[i]} px)`);
+      });
+    }
+    await page.close();
+  }
+  assert.deepEqual(failures, [], `${failures.length} défaut(s) :\n${failures.slice(0, 20).join('\n')}`);
 });
 
 test('R2 — le texte grandit, les colonnes diminuent : /bestiaire/ à 1280 et 1440 px', { timeout: 120_000 }, async (t) => {

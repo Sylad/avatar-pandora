@@ -7,6 +7,7 @@ interface Props {
 }
 import CoverFallback from './CoverFallback.astro';
 import { coverCardSrc, isIllustration, ILLUSTRATION_SIZES } from '../lib/cover';
+import { titleBreaks } from '../lib/title-breaks';
 
 const { href, title, summary, cover } = Astro.props;
 // Image hébergée par le site ou visuel par défaut (proxy Fandom retiré, L16).
@@ -67,7 +68,7 @@ const spores = Array.from({ length: SPORE_COUNT }, (_, i) => {
     </div>
   )}
   <div class="entry-card__body">
-    <h2 class="entry-card__title">{title}</h2>
+    <h2 class="entry-card__title">{titleBreaks(title)}</h2>
     <p class="entry-card__summary">{summary}</p>
   </div>
 </a>
@@ -280,20 +281,30 @@ const spores = Array.from({ length: SPORE_COUNT }, (_, i) => {
     /* Voile sombre sous le texte (L27, WCAG 1.4.3) : les particules WebGL passent
        derrière la carte, le résumé ne doit pas les voir (même principe que L2). */
     background: rgba(10, 10, 31, 0.88);
-    /* Conteneur du titre (L70) : 10cqi = un dixième de la ligne du titre. */
-    container-type: inline-size;
+    /* Cadre du titre (L70) : la césure ne s'allume que dans une carte trop étroite pour le plus long mot. */
+    container: eywa-card / inline-size;
   }
 
-  /* Taille plafonnée par la largeur de la carte (L70, WCAG 1.4.4) : dans une colonne unique plus étroite que
-     14,5 em (390 px texte 200 %), 10cqi garde le plus long mot d'un titre (« bioluminescente », 9,74 em) sur
-     sa ligne. Dès que la colonne fait 14,5 em (grille .codex-grid), 10cqi ≥ 1,2 rem : 1,125 rem, comme avant. */
+  /* Taille en rem : le titre grandit avec le texte (WCAG 1.4.4 ; revue UX de L70, un plafond en cqi le laissait à
+     117 % à 390 px texte 200 %, plus petit que le résumé). Un mot plus long que la carte (« bioluminescente »,
+     9,74 em du titre = 10,96 em de la carte, dans une colonne unique de 390 px texte 200 %) se coupe à une césure
+     française, avec son trait (la page est en lang="fr") ; « overflow-wrap: anywhere » des h2 (global.css) reste
+     le secours. Césure seulement sous 11 em : dans la grille (colonnes ≥ 14,5 em, 12 em de texte), tous les mots
+     tiennent, et `hyphens: auto` partout aurait coupé des titres au réglage normal (« Palulu-kan » à 1280 px).
+     Hors de ce cas, `hyphens: none` rend inertes les coupures conditionnelles de titleBreaks (lib/title-breaks.ts). */
   .entry-card__title {
     font-family: var(--font-display);
-    font-size: min(1.125rem, 10cqi);
+    font-size: 1.125rem;
+    hyphens: none;
     color: var(--color-eywa-text);
     letter-spacing: 0.04em;
     margin-bottom: 0.5rem;
     transition: color 400ms ease, text-shadow 400ms ease;
+  }
+  @container eywa-card (max-width: 11em) {
+    .entry-card__title {
+      hyphens: auto;
+    }
   }
 
   .entry-card__summary {

@@ -9,6 +9,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { nextFrames, setupBrowser, settleAnimations } from './lib/e2e-dist.mjs';
+import { wordBreaks } from './lib/word-breaks.mjs';
 
 const PAGES = ['/videos/', '/bestiaire/', '/bestiaire/akula/', '/pandora/eywa/', '/nouveautes/'];
 // Taille du texte du site (109,375 % = 17,5 px) multipliée par le facteur.
@@ -22,31 +23,9 @@ async function setText(page, factor) {
   await settleAnimations(page, '#eywa-sidebar');
 }
 
-// Mots cassés au milieu : un mot (sans trait d'union ni tiret) dont les morceaux tiennent sur plus d'une ligne.
+// Mots cassés au milieu (lib/word-breaks.mjs) : une coupure à une césure, avec son trait, n'en est pas une (L70).
 async function brokenWords(page) {
-  return page.evaluate(() => {
-    const out = [];
-    const main = document.getElementById('contenu');
-    const walker = document.createTreeWalker(main, NodeFilter.SHOW_TEXT);
-    for (let n = walker.nextNode(); n; n = walker.nextNode()) {
-      const host = n.parentElement;
-      if (!host || host.closest('svg, script, style, .sr-only')) continue;
-      const cs = getComputedStyle(host);
-      if (cs.visibility === 'hidden' || cs.display === 'none') continue;
-      const text = n.textContent;
-      for (const m of text.matchAll(/[^\s\-‐–—\/]+/gu)) {
-        if (m[0].length < 2) continue;
-        const range = document.createRange();
-        range.setStart(n, m.index);
-        range.setEnd(n, m.index + m[0].length);
-        // Deux morceaux sur des lignes différentes : l'un commence sous le milieu de l'autre.
-        const rects = [...range.getClientRects()].filter((r) => r.width > 0.5);
-        const split = rects.some((a) => rects.some((b) => b.top > a.top + a.height / 2));
-        if (split) out.push(m[0]);
-      }
-    }
-    return out;
-  });
+  return (await wordBreaks(page)).broken;
 }
 
 async function layout(page) {

@@ -19,6 +19,7 @@ import IkranSky from './IkranSky.astro';
 import CoverFallback from './CoverFallback.astro';
 import { coverImageSrc, isIllustration, ILLUSTRATION_SIZES } from '../lib/cover';
 import SkySpots from './SkySpots.astro';
+import { titleBreaks } from '../lib/title-breaks';
 
 const { roman, label, title, tagline, cover, ikrans = false } = Astro.props;
 
@@ -47,7 +48,7 @@ const size = isIllustration(cover) ? ILLUSTRATION_SIZES.fiche : undefined;
   <div class="section-hero__veil"></div>
   <div class="section-hero__content">
     <p class="section-hero__roman">{roman} — {label}</p>
-    <h1 class="section-hero__title">{title}</h1>
+    <h1 class="section-hero__title">{titleBreaks(title)}</h1>
     <p class="section-hero__tagline">{tagline}</p>
   </div>
 </header>
@@ -219,13 +220,15 @@ const size = isIllustration(cover) ? ILLUSTRATION_SIZES.fiche : undefined;
   .section-hero__content {
     position: relative;
     width: 100%;
-    padding: 1.25rem 1.25rem 1.1rem;
-    /* Conteneur du titre (L70) : sa taille suit aussi la largeur du bandeau. */
-    container-type: inline-size;
+    /* Marges latérales bornées par la largeur (L70) : 7cqi ≥ 1,25 rem dès 320 px au réglage normal (rendu inchangé) ;
+       avec le texte agrandi, le titre garde la place de ses syllabes (« seaux » à 390 px texte 200 %). */
+    padding: 1.25rem min(1.25rem, 7cqi) 1.1rem;
+    /* Cadre du titre (L70) : la césure ne s'allume que dans un bandeau trop étroit pour le plus long mot. */
+    container: eywa-hero / inline-size;
   }
   @media (min-width: 768px) {
     .section-hero__content {
-      padding: 2.5rem 2.5rem 2rem;
+      padding: 2.5rem min(2.5rem, 7cqi) 2rem;
     }
   }
 
@@ -239,13 +242,17 @@ const size = isIllustration(cover) ? ILLUSTRATION_SIZES.fiche : undefined;
     text-shadow: 0 2px 6px rgba(10, 10, 31, 0.85);
   }
 
-  /* Taille plafonnée par la largeur du bandeau (L70, WCAG 1.4.4) : à 14cqi, le plus long mot d'un titre de
-     section (« technologie », 6,9 em) tient sur sa ligne même quand le texte agrandi dépasse le bandeau
-     (« Pandora » se cassait à 390 px texte 175 %, à 1440 px texte 175 % avec la barre latérale). Au réglage
-     normal, 14cqi dépasse toujours la taille fixée : rien ne change. */
+  /* Taille en rem : le titre grandit avec le texte (WCAG 1.4.4 ; revue UX de L70, un plafond en cqi le laissait à
+     100 % à 390 px texte 200 %, sous son accroche). Un mot plus large que le bandeau (« technologie »,
+     « Pandora » à 390 px texte 175 %) se coupe à une césure française, avec son trait ; « overflow-wrap:
+     anywhere » des h1 (global.css) reste le secours. Césure seulement quand le bandeau est plus étroit que le plus
+     long mot (« technologie », 6,9 em du titre, soit 12,8 / 19 / 24,2 em du bandeau selon la taille du titre) :
+     au réglage normal, aucun titre de section n'est coupé. Hors de ce cas, `hyphens: none` rend inertes les coupures
+     conditionnelles posées par titleBreaks (lib/title-breaks.ts) pour les mots sans césure dans le dictionnaire. */
   .section-hero__title {
     font-family: var(--font-display);
-    font-size: min(1.85rem, 14cqi);
+    font-size: 1.85rem;
+    hyphens: none;
     line-height: 1.05;
     color: var(--color-eywa-text);
     text-shadow:
@@ -256,13 +263,33 @@ const size = isIllustration(cover) ? ILLUSTRATION_SIZES.fiche : undefined;
 
   @media (min-width: 640px) {
     .section-hero__title {
-      font-size: min(2.75rem, 14cqi);
+      font-size: 2.75rem;
     }
   }
 
   @media (min-width: 768px) {
     .section-hero__title {
-      font-size: min(3.5rem, 14cqi);
+      font-size: 3.5rem;
+    }
+  }
+
+  @container eywa-hero (max-width: 13em) {
+    .section-hero__title {
+      hyphens: auto;
+    }
+  }
+  @media (min-width: 640px) {
+    @container eywa-hero (max-width: 19.5em) {
+      .section-hero__title {
+        hyphens: auto;
+      }
+    }
+  }
+  @media (min-width: 768px) {
+    @container eywa-hero (max-width: 24.5em) {
+      .section-hero__title {
+        hyphens: auto;
+      }
     }
   }
 

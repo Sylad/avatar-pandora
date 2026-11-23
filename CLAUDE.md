@@ -212,8 +212,14 @@ dans Sidebar, SkySwitch, AtmospherePause, MetaHeader et nouveautes ; jamais de `
 script du tiroir lit le mode sur la page (barre `sticky` ou `fixed`). Contrôlé par `scripts/codex-wide-text.e2e.test.mjs`.
 Grille des cartes des 7 sections (L70) : `.codex-grid` de `global.css`, colonnes d'au moins 14,5 em (`auto-fill`, 4 au plus),
 jamais de `md:/xl:grid-cols-*` (points de rupture de la fenêtre, aveugles au texte agrandi : 32 mots cassés à 1440 px texte 175 %).
-Titres des cartes (`min(1,125rem, 10cqi)`) et du bandeau (`min(…, 14cqi)`) plafonnés par leur cadre pour une colonne unique
-étroite. Mouvement réduit : tiroir, voile et bouton menu sans transition. Contrôlé par `scripts/codex-grid-text.e2e.test.mjs`.
+Titres des cartes et du bandeau en rem, JAMAIS plafonnés par leur cadre (cqi, vw) : à 390 px texte 200 %, un plafond en cqi les
+laissait à 100–117 %, plus petits que le texte (WCAG 1.4.4, F94 ; revue UX de L70). Un mot trop long se coupe à ses syllabes,
+avec un trait : `titleBreaks` (`lib/title-breaks.ts`) pose des U+00AD (le dictionnaire de Chromium refuse « peu-ples »,
+« œu-vres » ; un mot qui porte un U+00AD perd ses césures automatiques, d'où toutes les syllabes), actives seulement en
+`hyphens: auto`, posé par container query quand le cadre est plus étroit que le plus long mot (`hyphens: none` sinon : rendu à
+100 % inchangé). Marges latérales du bandeau `min(…, 7cqi)`. Détecteur commun des mots cassés : `scripts/lib/word-breaks.mjs`
+(une coupure à une césure, avec trait, est permise). Mouvement réduit : tiroir, voile et bouton menu sans transition. Contrôlé
+par `scripts/codex-grid-text.e2e.test.mjs` (dont R5 : chaque titre grandit autant que le texte à 200 %) et `title-breaks.test.mjs`.
 
 **Plan de travail** (page `/plan-de-travail/`, L20, modèle evatosorus/finance-tracker) : en cours, prévu,
 récemment livré, rendue **au build** depuis `.cadence/raf.yaml` (`src/lib/plan-public.ts`, lu depuis
