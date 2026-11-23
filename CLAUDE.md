@@ -80,7 +80,7 @@ bande de chaque anneau (déplacement radial, liseré sur la crête), le plancton
 prémultipliée valide : alpha = composante la plus forte, sinon les points assombrissaient l'image). Logique pure et BORNES du coût dans
 `lib/water.ts` (texture fixe 1024 × 512 par `createImageBitmap`, canevas ≤ 1,5 × et ≤ 1600 px, 8 anneaux, 30/48 points, boucle
 seulement bandeau visible et onglet affiché, contexte rendu au changement de page). Toucher = onde, PAS la visionneuse (elle cachait
-l'eau) : bouton « Agrandir » dans le coin (icône seule sous 640 px, 44 px). Pause : figé, toucher = visionneuse ; mouvement réduit :
+l'eau) : bouton « Agrandir » dans le coin (icône seule sous 640 px, 44 px), qui ouvre la visionneuse sans dépendre de la scène (mouvement réduit, sans WebGL, contexte perdu : repli sur l'image fixe) ; anneau de focus bordé d'un halo sombre ; bandeau en `touch-action: pan-y pinch-zoom`. Un seul montage par arrivée (`astro:page-load` et l'appel direct ne refont pas le contexte). Pause : figé, toucher = visionneuse ; mouvement réduit :
 aucun contexte WebGL. Aucun chiffre de fluidité tiré de Chromium sans tête (mesure dans le vrai Chrome de mini-blue). Contrôlé par
 `scripts/water.test.mjs` et `scripts/water-ripple.e2e.test.mjs` (déformation mesurée en pixels autour du doigt).
 

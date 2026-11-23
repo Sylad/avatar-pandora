@@ -147,6 +147,10 @@
     let lastPointer = '';
     let io: IntersectionObserver | null = null;
     let ro: ResizeObserver | null = null;
+    // Bandeau monté (avec ou sans scène : mouvement réduit, sans WebGL, contexte perdu) et son canevas :
+    // un seul montage par arrivée, et le bouton « Agrandir » écouté même sans scène.
+    let mountedBox: HTMLElement | null = null;
+    let mountedCanvas: HTMLCanvasElement | null = null;
 
     const active = () => !!scene && !reduced.matches && !paused();
     const running = () => active() && inView && !document.hidden;
@@ -343,14 +347,18 @@
       e.stopPropagation();
       e.preventDefault();
     };
+    // « Agrandir » ouvre la visionneuse par l'image du bandeau, sans dépendre de la scène : il marche aussi en
+    // mouvement réduit, sans WebGL et après une perte de contexte (au doigt, à la souris et au clavier).
     const zoom = (e: Event) => {
       const btn = (e.target as Element).closest('[data-water-zoom]');
-      if (!btn || !scene) return;
+      const img = btn?.parentElement?.querySelector<HTMLImageElement>('img');
+      if (!btn || !img) return;
       e.stopPropagation();
-      scene.img.click();
+      img.click();
     };
 
-    const unmount = () => {
+    /** Défait la scène (boucle, observateurs, écouteurs de l'eau) ; le bouton « Agrandir » reste écouté. */
+    const dropScene = (releaseContext: boolean) => {
       halt();
       io?.disconnect();
       ro?.disconnect();
@@ -363,14 +371,23 @@
       s.box.removeEventListener('pointermove', onMove);
       s.box.removeEventListener('pointerleave', onLeave);
       s.box.removeEventListener('click', onClick);
-      s.box.removeEventListener('click', zoom, true);
+      s.canvas.classList.remove('is-live');
       // Rendre le contexte tout de suite plutôt qu'au ramasse-miettes (une page sur deux en a un).
-      s.gl.getExtension('WEBGL_lose_context')?.loseContext();
+      if (releaseContext) s.gl.getExtension('WEBGL_lose_context')?.loseContext();
     };
 
-    const mount = () => {
-      unmount();
+    const unmount = () => {
+      dropScene(true);
+      mountedBox?.removeEventListener('click', zoom, true);
+      mountedBox = mountedCanvas = null;
+    };
+
+    // `force` : remonter même si ce bandeau l'est déjà (bascule du mouvement réduit). Sinon un second appel
+    // pour la même arrivée (astro:page-load ET l'appel direct au premier chargement) ne refait rien.
+    const mount = (force = false) => {
       let canvas = document.querySelector<HTMLCanvasElement>('[data-water-ripple]');
+      if (!force && canvas && canvas === mountedCanvas && canvas.isConnected) return;
+      unmount();
       // Un canevas dont le contexte a été rendu (loseContext) le garderait perdu : on en pose un neuf.
       if (canvas?.dataset.used) {
         const fresh = canvas.cloneNode() as HTMLCanvasElement;
@@ -384,6 +401,8 @@
       if (!canvas || !box || !img) return;
       // Le bouton marche sans WebGL et en mouvement réduit : posé d'abord.
       box.addEventListener('click', zoom, true);
+      mountedBox = box;
+      mountedCanvas = canvas;
       if (reduced.matches) return;
       const opts = { premultipliedAlpha: true, alpha: true, antialias: false, depth: false, stencil: false, powerPreference: 'low-power' as const };
       const gl = (canvas.getContext('webgl2', opts) ?? canvas.getContext('webgl', opts)) as WebGLRenderingContext | null;
@@ -397,6 +416,7 @@
       } catch (err) {
         console.warn('Eau vivante : shader refusé, image fixe', err);
         stats.gl = null;
+        gl.getExtension('WEBGL_lose_context')?.loseContext(); // contexte rendu : aucune scène ne le rendra
         return;
       }
       const quad = gl.createBuffer()!;
@@ -415,7 +435,13 @@
       fit(s);
       if (img.complete && img.naturalWidth) void upload(s);
       else img.addEventListener('load', () => { if (scene === s) void upload(s); }, { once: true });
-      canvas.addEventListener('webglcontextlost', (e) => { e.preventDefault(); if (scene === s) { halt(); scene = null; } }, { once: true });
+      // Contexte perdu (GPU réinitialisé, trop de contextes) : repli sur l'image fixe, comme sans WebGL — scène
+      // défaite, toucher = visionneuse, « Agrandir » toujours actif. L'eau revient à la page suivante.
+      canvas.addEventListener('webglcontextlost', () => {
+        if (scene !== s) return;
+        dropScene(false);
+        stats.gl = null;
+      }, { once: true });
       box.addEventListener('pointerdown', onDown, { passive: true });
       box.addEventListener('pointermove', onMove, { passive: true });
       box.addEventListener('pointerleave', onLeave, { passive: true });
@@ -439,9 +465,9 @@
     };
     window.addEventListener(ATMOSPHERE_EVENT, sync);
     document.addEventListener('visibilitychange', sync);
-    reduced.addEventListener('change', () => mount());
+    reduced.addEventListener('change', () => mount(true));
     document.addEventListener('astro:before-swap', unmount);
-    document.addEventListener('astro:page-load', mount);
+    document.addEventListener('astro:page-load', () => mount());
     mount();
   }
 </script>
@@ -458,7 +484,8 @@
   }
   .water-ripple:global(.is-live) { visibility: visible; }
   /* Le bandeau : le doigt fait défiler la page à la verticale, et dessine sur l'eau à l'horizontale. */
-  :global([data-lightbox]:has(> .water-ripple)) { touch-action: pan-y; }
+  /* pinch-zoom : le pincement qui commence sur l'image agrandit toujours la page (WCAG 1.4.4). */
+  :global([data-lightbox]:has(> .water-ripple)) { touch-action: pan-y pinch-zoom; }
   .water-zoom {
     position: absolute;
     right: 0.5rem;
@@ -478,7 +505,9 @@
     cursor: zoom-in;
   }
   .water-zoom:hover { border-color: #5fffe6; color: #5fffe6; }
-  .water-zoom:focus-visible { outline: 2px solid #5fffe6; outline-offset: 3px; }
+  /* Anneau de focus bordé de sombre des deux côtés (halo sous l'anneau, au-delà de lui) : il se détache de
+     toute image, même l'écume blanche (WCAG 1.4.11, 2.4.13). */
+  .water-zoom:focus-visible { outline: 2px solid #5fffe6; outline-offset: 2px; box-shadow: 0 0 0 6px rgba(10, 10, 31, 0.92); }
   .water-zoom svg { width: 1rem; height: 1rem; flex: none; }
   /* Au téléphone, le bandeau ne fait que ~130 px de haut : le bouton n'y garde que son icône (nom accessible
      inchangé), en rond de 44 px. */

@@ -7,7 +7,11 @@
 //  - le tactile comme la souris : un toucher fait l'anneau (et ne cache pas l'eau sous la visionneuse),
 //    la souris en fait au passage ; la visionneuse reste ouvrable (clic, bouton « Agrandir » au doigt et au clavier) ;
 //  - prefers-reduced-motion : aucune ondulation, image fixe ; pause de l'ambiance : plus rien ne bouge ;
-//  - le bouton posé sur l'image reste lisible (texte ≥ 4,5:1, contour ≥ 3:1 sur l'image) et ≥ 44 px.
+//  - le bouton posé sur l'image reste lisible (texte ≥ 4,5:1, contour ≥ 3:1 sur l'image) et ≥ 44 px ; son anneau
+//    de focus se détache (≥ 3:1) au pire pixel de l'image (WCAG 1.4.11, 2.4.13) ;
+//  - « Agrandir » ouvre la visionneuse dans tous les cas : mouvement réduit, sans WebGL, contexte perdu (r1) ;
+//  - un seul contexte WebGL par arrivée sur une fiche (premier chargement comme navigation) ;
+//  - le pincement-zoom reste permis sur le bandeau (WCAG 1.4.4).
 // Aucun chiffre de fluidité n'est tiré d'ici (Chromium sans tête, règle de Sylvain du 21-11). Lit frontend/dist.
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -151,6 +155,78 @@ test('eau vivante sur les fiches de l’océan (L36)', { timeout: 300_000 }, asy
     const shots = [];
     for (let i = 0; i < 2; i++) { shots.push(await page.screenshot({ clip: b })); await page.waitForTimeout(700); }
     assert.ok(shots[0].equals(shots[1]), 'le bandeau bouge en mouvement réduit');
+    // « Agrandir » au doigt, puis au clavier : la visionneuse s'ouvre aussi sans scène WebGL.
+    await page.locator('[data-water-zoom]').tap();
+    assert.equal(await lightboxOpen(page), true, '« Agrandir » au doigt en mouvement réduit');
+    await closeLightbox(page);
+    await page.locator('[data-water-zoom]').focus();
+    await page.keyboard.press('Enter');
+    assert.equal(await lightboxOpen(page), true, '« Agrandir » au clavier en mouvement réduit');
+    await closeLightbox(page);
+    await context.close();
+  });
+
+  await t.test('mouvement réduit à la souris : le clic sur « Agrandir » ouvre la visionneuse', async () => {
+    const { context, page } = await open(env, '/bestiaire/tulkun/', { reducedMotion: 'reduce' });
+    await page.locator('[data-water-zoom]').click();
+    assert.equal(await lightboxOpen(page), true, '« Agrandir » au clic en mouvement réduit');
+    await context.close();
+  });
+
+  await t.test('contexte WebGL perdu : repli sur l’image fixe, « Agrandir » et le toucher ouvrent la visionneuse', async () => {
+    const { context, page } = await open(env, WATER[0], { width: 390, height: 844, touch: true });
+    if (!(await stats(page)).gl) { await context.close(); return; }
+    await page.evaluate(() => {
+      const c = document.querySelector('[data-water-ripple]');
+      (c.getContext('webgl2') ?? c.getContext('webgl')).getExtension('WEBGL_lose_context').loseContext();
+    });
+    await page.waitForFunction(() => window.__eywaWater?.gl === null);
+    assert.equal(await page.evaluate(() => document.querySelector('[data-water-ripple]').classList.contains('is-live')), false,
+      'le canevas perdu reste affiché');
+    await page.locator('[data-water-zoom]').tap();
+    assert.equal(await lightboxOpen(page), true, '« Agrandir » après la perte du contexte');
+    await closeLightbox(page);
+    const n = (await stats(page)).ripples;
+    const b = await banner(page);
+    await page.touchscreen.tap(b.x + b.width / 3, b.y + b.height / 2);
+    await page.waitForTimeout(200);
+    assert.equal((await stats(page)).ripples, n, 'un anneau sans contexte');
+    assert.equal(await lightboxOpen(page), true, 'le toucher n’ouvre pas la visionneuse après la perte du contexte');
+    await context.close();
+  });
+
+  await t.test('un seul contexte WebGL par arrivée (premier chargement et navigation)', async () => {
+    // Compte les getContext demandés pour le canevas de l'eau (webgl2 obtenu = un seul appel par montage).
+    const init = () => {
+      const orig = HTMLCanvasElement.prototype.getContext;
+      window.__waterGetContext = 0;
+      HTMLCanvasElement.prototype.getContext = function (type, ...rest) {
+        if (this.hasAttribute('data-water-ripple') && /webgl/.test(type)) window.__waterGetContext++;
+        return orig.call(this, type, ...rest);
+      };
+    };
+    const { context, page } = await open(env, WATER[0], { init });
+    if (!(await stats(page)).gl) { await context.close(); return; }
+    await nextFrames(page, 3);
+    const gl = (await stats(page)).gl;
+    const perMount = gl === 'webgl2' ? 1 : 2; // repli WebGL 1 : webgl2 refusé puis webgl
+    assert.equal(await page.evaluate(() => window.__waterGetContext), perMount, 'premier chargement');
+    await page.evaluate(() => { window.__waterGetContext = 0; });
+    await page.locator('a[href="/clans/"]').first().click();
+    await page.waitForURL('**/clans/');
+    await page.locator('a[href="/clans/metkayina/"]').first().click();
+    await page.waitForURL('**/clans/metkayina/');
+    await page.waitForFunction(() => !!document.querySelector('[data-water-ripple].is-live'));
+    await nextFrames(page, 3);
+    assert.equal(await page.evaluate(() => window.__waterGetContext), perMount, 'après une navigation');
+    await context.close();
+  });
+
+  await t.test('le pincement-zoom reste permis sur le bandeau (WCAG 1.4.4)', async () => {
+    const { context, page } = await open(env, WATER[0], { width: 390, height: 844, touch: true });
+    const ta = await page.evaluate(() => getComputedStyle(document.querySelector('[data-water-ripple]').parentElement).touchAction);
+    assert.match(ta, /pinch-zoom/, `touch-action du bandeau : ${ta}`);
+    assert.match(ta, /pan-y/, `touch-action du bandeau : ${ta}`);
     await context.close();
   });
 
@@ -230,6 +306,40 @@ test('eau vivante sur les fiches de l’océan (L36)', { timeout: 300_000 }, asy
           return worst;
         }, z);
         assert.ok(ratio >= 3, `${path} ${width} : contour à ${ratio.toFixed(2)}:1`);
+        // Anneau de focus : au clavier, il est bordé des deux côtés par le halo sombre, qui le sépare de
+        // l'image ; au pire pixel de l'image sous le halo, anneau contre halo ≥ 3:1.
+        await page.keyboard.press('Tab');
+        await zoom.focus();
+        const ring = await page.evaluate(() => {
+          const el = document.querySelector('[data-water-zoom]');
+          const cs = getComputedStyle(el);
+          const spread = Number((cs.boxShadow.match(/0px 0px 0px ([\d.]+)px/) ?? [])[1] ?? 0);
+          return {
+            visible: el.matches(':focus-visible'), style: cs.outlineStyle, outline: cs.outlineColor, shadow: cs.boxShadow,
+            reach: parseFloat(cs.outlineOffset) + parseFloat(cs.outlineWidth), spread,
+          };
+        });
+        assert.ok(ring.visible && ring.style === 'solid', `${path} ${width} : pas d’anneau au clavier`);
+        assert.ok(ring.spread >= ring.reach + 2, `${path} ${width} : halo (${ring.spread} px) qui ne déborde pas l’anneau (${ring.reach} px)`);
+        const ringRatio = await page.evaluate(async ({ zb, ring }) => {
+          const parse = (c) => c.match(/[\d.]+/g).map(Number);
+          const lin = (v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; };
+          const L = ([r, g, b]) => 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
+          const over = (fg, bg) => { const a = fg[3] ?? 1; return [0, 1, 2].map((i) => fg[i] * a + bg[i] * (1 - a)); };
+          const C = (a, b) => { const x = L(a), y = L(b); return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05); };
+          const img = document.querySelector('[data-water-zoom]').parentElement.querySelector('img');
+          const ib = img.getBoundingClientRect();
+          const c = document.createElement('canvas'); c.width = Math.round(ib.width); c.height = Math.round(ib.height);
+          const g = c.getContext('2d'); g.drawImage(img, 0, 0, c.width, c.height);
+          const m = ring.spread;
+          const x0 = Math.max(0, Math.round(zb.x - ib.left - m)), y0 = Math.max(0, Math.round(zb.y - ib.top - m));
+          const d = g.getImageData(x0, y0, Math.min(Math.round(zb.width + 2 * m), c.width - x0), Math.min(Math.round(zb.height + 2 * m), c.height - y0)).data;
+          const outline = parse(ring.outline), halo = parse(ring.shadow.match(/rgba?\([^)]*\)/)[0]);
+          let worst = Infinity;
+          for (let i = 0; i < d.length; i += 4) worst = Math.min(worst, C(outline, over(halo, [d[i], d[i + 1], d[i + 2]])));
+          return worst;
+        }, { zb: z, ring });
+        assert.ok(ringRatio >= 3, `${path} ${width} : anneau de focus à ${ringRatio.toFixed(2)}:1 contre son halo`);
         await context.close();
       }
     }
