@@ -407,11 +407,12 @@ lots:
   - id: L36
     title: "Pandora vivant 5 — eau vivante : les pages des Metkayina et de l'océan ondoient sous le doigt (anneau qui déforme l'image, plancton lumineux qui s'écarte), d'après le prototype validé le 10-10 ; ondulation à rendre plus visible (WebGL si besoin)"
     public: L'eau ondule sous le doigt
-    status: todo
+    status: doing
     estimate: 0.5
     visible: true
     after: [ L17 ]
     created: 2026-10-10
+    started: 2026-11-23
   - id: L37
     title: "Plan déplacé vers .cadence/raf.yaml avec raf migrate (cadence L284, L305) : --dry-run d'abord, chaque lecteur du chemin (scripts plan-data, tests, CI, CLAUDE.md, skills) mis à jour ou signalé ; un lecteur non traité (chemin construit à la main) corrigé à la main dans le même lot ; tests, build et raf check verts ; l'avertissement « ancien emplacement » disparaît"
     status: done
