@@ -771,6 +771,7 @@ lots:
     status: done
     estimate: 1
     visible: true
+    delivered: { date: 2026-11-23, sha: 7e9e6c3d05cc77b414059bc677acce17b089361a }
     created: 2026-11-23
     started: 2026-11-23
     review: { date: 2026-11-23, verdict: "conforme (lead) : diff 7e9e6c3 relu — gabarit en conteneur em, isDesktop() lu sur la position calculée de la barre, frères rendus inertes à chaque niveau, fermeture au passage en barre latérale ; porte 379/379", commit: 7e9e6c3d05cc77b414059bc677acce17b089361a }
