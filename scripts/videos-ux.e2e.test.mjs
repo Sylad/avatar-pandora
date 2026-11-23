@@ -68,7 +68,7 @@ test('R5 — les titres de vidéos en anglais sont balisés lang="en" (WCAG 3.1.
     [...document.querySelectorAll('.video-card')].map((c) => ({
       chip: c.querySelector('.video-card__lang').textContent.trim(),
       lang: c.querySelector('.video-card__title [lang]')?.getAttribute('lang') ?? null,
-      hint: c.querySelector('.video-card__title .sr-only')?.closest('[lang]')?.lang ?? null,
+      hint: c.querySelector('.sr-only')?.closest('[lang]')?.lang ?? null,
     })));
   assert.ok(r.some((x) => x.chip === 'EN') && r.some((x) => x.chip === 'FR'), 'les deux langues sont présentes');
   assert.deepEqual(r.filter((x) => x.chip === 'EN' && x.lang !== 'en'), []);
@@ -142,3 +142,86 @@ for (const width of [1440, 390, 320]) {
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), width);
   });
 }
+
+// L47 — « (nouvel onglet) » sur le lien, jamais dans le titre : la navigation par titres lit le titre seul.
+test('R10 — les titres h3 des cartes vidéo ne contiennent que le titre ; chaque lien garde « (nouvel onglet) » (WCAG 2.4.6 / 3.2.5)', { timeout: 60_000 }, async (t) => {
+  const page = await open(t);
+  if (!page) return;
+  const r = await page.evaluate(() =>
+    [...document.querySelectorAll('.video-card')].map((c) => {
+      const h = c.querySelector('h3');
+      return { h: h.textContent, inH: /nouvel onglet/.test(h.textContent), inA: /\(nouvel onglet\)/.test(c.textContent) };
+    }));
+  assert.ok(r.length >= 10, `cartes : ${r.length}`);
+  assert.deepEqual(r.filter((x) => x.inH || !x.inA), []);
+});
+
+// L47 — aucune description coupée (line-clamp, ellipse, débordement caché), au bureau comme à 320 px texte 200 %.
+for (const [width, scale] of [[1440, 100], [390, 100], [320, 100], [320, 200]]) {
+  test(`R11 — @${width}px texte ${scale} % : toutes les descriptions des cartes se lisent en entier (WCAG 1.4.10 / 1.4.4)`, { timeout: 60_000 }, async (t) => {
+    const env = await setupBrowser(t);
+    if (!env) return;
+    const page = await env.browser.newPage({ viewport: { width, height: 900 } });
+    if (scale !== 100) {
+      await page.addInitScript((s) => {
+        document.addEventListener('DOMContentLoaded', () => { document.documentElement.style.fontSize = `${s}%`; }, { once: true });
+      }, scale);
+    }
+    await page.goto(`${env.base}/videos/`, { waitUntil: 'load' });
+    const r = await page.evaluate(() => {
+      const cut = (d) => {
+        const s = getComputedStyle(d);
+        // Une boîte qui cache son trop-plein, ou un clamp, coupe le texte même si elle « tient ».
+        return d.scrollHeight > d.clientHeight + 1 || d.scrollWidth > d.clientWidth + 1
+          || s.webkitLineClamp !== 'none' || s.textOverflow === 'ellipsis';
+      };
+      const descs = [...document.querySelectorAll('.video-card__desc, .channel-card__desc, .channel-link__desc')];
+      const card = [...document.querySelectorAll('.video-card')].filter((c) => c.scrollHeight > c.clientHeight + 1);
+      return {
+        n: descs.length,
+        cut: descs.filter(cut).map((d) => d.textContent.slice(0, 40)),
+        card: card.length,
+        // Rien du contenu ne sort de la fenêtre (une carte qui cache son trop-plein le couperait sans défilement).
+        out: [...document.querySelectorAll('main *')].filter((e) => {
+          const b = e.getBoundingClientRect();
+          return b.width > 0 && (b.right > innerWidth + 1 || b.left < -1);
+        }).map((e) => e.textContent.slice(0, 40)),
+        fs: getComputedStyle(document.documentElement).fontSize,
+      };
+    });
+    assert.ok(r.n >= 20, `descriptions : ${r.n}`);
+    if (scale === 200) assert.ok(parseFloat(r.fs) >= 32, `texte non agrandi : ${r.fs}`);
+    assert.deepEqual(r.cut, []);
+    assert.equal(r.card, 0, 'carte vidéo qui coupe son contenu');
+    assert.deepEqual(r.out, [], 'contenu hors de la fenêtre');
+  });
+}
+
+// L47 / L52 — vignettes : hqdefault d'emblée ; jamais de maxresdefault demandée pour une vidéo qui n'en a pas.
+// YouTube est simulé (réponses fixes) : le test ne dépend pas du réseau.
+test('R12 — vignettes servies en hqdefault, aucune demande de maxresdefault en 404, 0 erreur console', { timeout: 90_000 }, async (t) => {
+  const env = await setupBrowser(t);
+  if (!env) return;
+  const page = await env.browser.newPage({ viewport: { width: 1440, height: 900 } });
+  const PNG = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==', 'base64');
+  const asked = [];
+  await page.route('https://img.youtube.com/**', (route) => {
+    const url = route.request().url();
+    asked.push(url);
+    if (url.includes('/muEMyQAJreg/maxresdefault')) return route.fulfill({ status: 404, body: '' });
+    return route.fulfill({ status: 200, contentType: 'image/png', body: PNG });
+  });
+  const errors = [];
+  page.on('console', (m) => { if (m.type() === 'error') errors.push(m.text()); });
+  page.on('pageerror', (e) => errors.push(String(e)));
+  await page.goto(`${env.base}/videos/`, { waitUntil: 'load' });
+  // Les vignettes sont en chargement paresseux : les amener toutes à l'écran.
+  for (const img of await page.locator('img.video-card__img').all()) await img.scrollIntoViewIfNeeded();
+  await page.waitForFunction(() => [...document.querySelectorAll('img.video-card__img')].every((i) => i.complete));
+  const srcs = await page.evaluate(() => [...document.querySelectorAll('img.video-card__img')].map((i) => i.getAttribute('src')));
+  assert.ok(srcs.length >= 10);
+  assert.deepEqual(srcs.filter((s) => !/\/hqdefault\.jpg$/.test(s)), [], 'src initial hors hqdefault');
+  assert.deepEqual(asked.filter((u) => u.includes('/muEMyQAJreg/maxresdefault')), []);
+  assert.ok(asked.some((u) => u.includes('/muEMyQAJreg/hqdefault')), 'hqdefault de muEMyQAJreg demandée');
+  assert.deepEqual(errors, []);
+});

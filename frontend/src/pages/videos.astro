@@ -100,7 +100,9 @@ const typeLabel: Record<string, string> = {
               <span class="video-card__type">{typeLabel[v.data.type] ?? v.data.type}</span>
             </div>
             <div class="video-card__body">
-              <h3 class="video-card__title"><span lang={v.data.lang === 'EN' ? 'en' : undefined}>{v.data.title}</span><span class="sr-only"> (nouvel onglet)</span></h3>
+              <h3 class="video-card__title"><span lang={v.data.lang === 'EN' ? 'en' : undefined}>{v.data.title}</span></h3>
+              {/* Hors du h3 (L47) : la navigation par titres lit le titre seul ; le lien garde l'indication. */}
+              <span class="sr-only"> (nouvel onglet)</span>
               <div class="video-card__meta">
                 <span class="video-card__channel">{channel?.data.name ?? v.data.channelSlug}</span>
                 <span class="video-card__sep">·</span>
@@ -196,6 +198,8 @@ const typeLabel: Record<string, string> = {
   .channel-card {
     position: relative;
     display: flex;
+    /* Texte à 200 % à 320 px (L47) : le corps passe sous la pastille plutôt que de tenir dans 56 px. */
+    flex-wrap: wrap;
     gap: 1rem;
     padding: 1rem 1.1rem;
     border-radius: 6px;
@@ -240,7 +244,8 @@ const typeLabel: Record<string, string> = {
     flex-direction: column;
     gap: 0.25rem;
     min-width: 0;
-    flex: 1;
+    flex: 1 1 9rem;
+    overflow-wrap: anywhere;
   }
 
   .channel-card__name {
@@ -403,6 +408,8 @@ const typeLabel: Record<string, string> = {
     margin-bottom: 0.35rem;
     transition: color 350ms ease, text-shadow 350ms ease;
     line-height: 1.3;
+    /* La carte cache son trop-plein : à texte 200 % à 320 px, « Encyclopaedia » y était coupé (L47). */
+    overflow-wrap: anywhere;
   }
 
   .video-card:hover .video-card__title {
@@ -444,10 +451,8 @@ const typeLabel: Record<string, string> = {
     font-size: 0.82rem;
     color: var(--color-eywa-text-muted);
     line-height: 1.55;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
+    /* Jamais coupée (L47, WCAG 1.4.10) : toute la description se lit, à 320 px texte 200 % comme au bureau. */
+    overflow-wrap: anywhere;
   }
 
   /* ---------- Channel list (full) ---------- */
@@ -515,18 +520,27 @@ const typeLabel: Record<string, string> = {
   }
 
   .channel-link__desc {
+    overflow-wrap: anywhere;
     font-family: var(--font-body);
     font-size: 0.8rem;
     color: var(--color-eywa-text-muted);
     line-height: 1.4;
   }
 
+  /* Au téléphone, une rangée qui passe à la ligne (L47) : à texte 200 % à 320 px, la pastille de langue
+     ne tient plus à côté du nom ; une grille la poussait hors de la page. */
   @media (max-width: 700px) {
     .channel-link {
-      grid-template-columns: 2.25rem 1fr auto;
+      display: flex;
+      flex-wrap: wrap;
+    }
+    .channel-link__name {
+      flex: 1 1 0;
+      min-width: min(8rem, 100%);
+      overflow-wrap: anywhere;
     }
     .channel-link__desc {
-      grid-column: 1 / -1;
+      flex-basis: 100%;
     }
   }
 

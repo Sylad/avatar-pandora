@@ -33,6 +33,14 @@ de l'accueil (boucle de 75 s, particules WebGL), couverte par ses propres tests 
 - shows: des repères de navigation tous nommés, sans doublon : `aside` aria-label « Navigation du codex », `nav` aria-label « Sections du codex »
 - shows: les trois intros de section (`.vid-section-intro`) portent `.codex-text-veil` (texte posé sur les particules, contraste ≥ 4,5:1 au pire pixel à 390 et 1440 px)
 - never: défilement horizontal à 320 px, barre de défilement comprise (scrollWidth ≤ clientWidth ; le titre « Chaînes recommandées » mesurait 278 px dans une colonne de 270 px le 01-11, corrigé par L50)
+- shows: le titre de l'onglet « Vidéos — Eywa » ; trois `h2` : Chaînes recommandées, Vidéos en vedette, Toutes les chaînes, chacun suivi d'une liste `ul` (mesuré le 23-11 : 5 `.channel-card`, 13 `.video-card`, 10 `.channel-link`)
+- shows: chaque carte vidéo avec sa vignette chargée (`img.video-card__img`, `naturalWidth > 0`, `src` en `hqdefault.jpg` d'emblée), un `h3` qui ne contient QUE le titre de la vidéo (titres anglais dans un `span lang=en`), la chaîne, la pastille de langue et la description
+- shows: la description de chaque carte et de chaque chaîne lisible en entier — ni `line-clamp`, ni ellipse, ni trop-plein caché (`scrollHeight ≤ clientHeight`) — à 1440, 390 et 320 px, et à 320 px avec le texte à 200 % (L47 ; 4 cartes sur 13 coupées à 320 px le 01-11)
+- shows: tous les liens de `main` en `target=_blank` (28 le 23-11) avec le texte caché « (nouvel onglet) », posé dans le lien mais hors du `h3` pour les cartes vidéo
+- never: « nouvel onglet » dans le texte d'un `h3` (la navigation par titres le lisait à chaque vidéo, L47)
+- never: une demande de `maxresdefault.jpg` pour `muEMyQAJreg` (404 chez YouTube, L52) ; une erreur en console au chargement de la page et des 13 vignettes
+- Rejoué sur la page construite par `scripts/videos-ux.e2e.test.mjs` (R10 à R12, YouTube simulé) et `scripts/video-thumb.test.mjs`.
+- Non couvert ici : l'intro « Vidéos en vedette » sur les particules à 1,62:1 au pire pixel, suivie par le lot L13.
 
 ## /clans/
 - shows: un lien « Aller au contenu » premier arrêt de Tab, caché hors focus, qui place le focus sur `main#contenu`
