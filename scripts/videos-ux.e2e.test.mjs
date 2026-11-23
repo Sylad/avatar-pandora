@@ -16,7 +16,8 @@ test('R1 — tout lien qui ouvre un nouvel onglet le dit dans son nom accessible
   if (!page) return;
   const names = await page.evaluate(() =>
     [...document.querySelectorAll('main a[target="_blank"]')].map((a) => ({
-      hint: a.querySelectorAll('.sr-only').length,
+      // Une seule indication par lien (d'autres .sr-only peuvent y vivre : le type d'une carte vidéo, L47).
+      hint: [...a.querySelectorAll('.sr-only')].filter((e) => /nouvel onglet/.test(e.textContent)).length,
       ok: /\(nouvel onglet\)/.test(a.textContent),
       t: a.textContent.trim().slice(0, 40),
     })));
@@ -156,9 +157,16 @@ test('R10 — les titres h3 des cartes vidéo ne contiennent que le titre ; chaq
   assert.deepEqual(r.filter((x) => x.inH || !x.inA), []);
 });
 
-// L47 — aucune description coupée (line-clamp, ellipse, débordement caché), au bureau comme à 320 px texte 200 %.
-for (const [width, scale] of [[1440, 100], [390, 100], [320, 100], [320, 200]]) {
-  test(`R11 — @${width}px texte ${scale} % : toutes les descriptions des cartes se lisent en entier (WCAG 1.4.10 / 1.4.4)`, { timeout: 60_000 }, async (t) => {
+// L47 — aucune description coupée (line-clamp, ellipse, débordement caché), au bureau comme au téléphone,
+// texte à 100, 125 et 200 % : la revue UX de L47 a trouvé, au-dessus de 700 px avec le texte agrandi, la
+// description de « Toutes les chaînes » réduite à 12–22 px et la pastille de langue rognée par la carte vidéo.
+const R11_CASES = [
+  [1440, 100], [1024, 100], [390, 100], [320, 100],
+  [1024, 125], [1280, 125], [1440, 125],
+  [768, 200], [1024, 200], [1280, 200], [1440, 200], [320, 200],
+];
+for (const [width, scale] of R11_CASES) {
+  test(`R11 — @${width}px texte ${scale} % : descriptions lisibles en entier et assez larges, aucune pastille rognée (WCAG 1.4.10 / 1.4.4)`, { timeout: 90_000 }, async (t) => {
     const env = await setupBrowser(t);
     if (!env) return;
     const page = await env.browser.newPage({ viewport: { width, height: 900 } });
@@ -168,19 +176,54 @@ for (const [width, scale] of [[1440, 100], [390, 100], [320, 100], [320, 200]]) 
       }, scale);
     }
     await page.goto(`${env.base}/videos/`, { waitUntil: 'load' });
-    const r = await page.evaluate(() => {
+    await page.evaluate(() => document.fonts.ready);
+    const r = await page.evaluate((scale) => {
       const cut = (d) => {
         const s = getComputedStyle(d);
         // Une boîte qui cache son trop-plein, ou un clamp, coupe le texte même si elle « tient ».
         return d.scrollHeight > d.clientHeight + 1 || d.scrollWidth > d.clientWidth + 1
           || s.webkitLineClamp !== 'none' || s.textOverflow === 'ellipsis';
       };
+      // Morceaux d'un mot (coupure permise après un trait d'union) répartis sur plusieurs lignes.
+      const splitWords = (el) => {
+        const out = [];
+        const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+        for (let n = walker.nextNode(); n; n = walker.nextNode()) {
+          for (const m of n.data.matchAll(/[^\s-]+-?/g)) {
+            const range = document.createRange();
+            range.setStart(n, m.index);
+            range.setEnd(n, m.index + m[0].length);
+            const tops = new Set([...range.getClientRects()].filter((b) => b.width > 0).map((b) => Math.round(b.top)));
+            if (tops.size > 1) out.push(m[0]);
+          }
+        }
+        return out;
+      };
       const descs = [...document.querySelectorAll('.video-card__desc, .channel-card__desc, .channel-link__desc')];
-      const card = [...document.querySelectorAll('.video-card')].filter((c) => c.scrollHeight > c.clientHeight + 1);
+      const card = [...document.querySelectorAll('.video-card')]
+        .filter((c) => c.scrollHeight > c.clientHeight + 1 || c.scrollWidth > c.clientWidth + 1);
+      // Largeur de lecture : au moins 10 em (~20 caractères), ou toute la ligne de la chaîne quand elle est plus étroite.
+      const narrow = [...document.querySelectorAll('.channel-link__desc')].map((d) => {
+        const link = d.closest('.channel-link');
+        const ls = getComputedStyle(link);
+        const inner = link.clientWidth - parseFloat(ls.paddingLeft) - parseFloat(ls.paddingRight);
+        const need = Math.min(10 * parseFloat(getComputedStyle(d).fontSize), inner);
+        return { w: Math.round(d.getBoundingClientRect().width), need: Math.floor(need), t: d.textContent.slice(0, 30) };
+      }).filter((x) => x.w < x.need - 1);
+      // Pastille de langue entière dans sa carte (la carte vidéo cache son trop-plein).
+      const chips = [...document.querySelectorAll('.video-card__lang, .channel-card__lang, .channel-link__lang')].filter((chip) => {
+        const b = chip.getBoundingClientRect();
+        const c = chip.closest('.video-card, .channel-card, .channel-link').getBoundingClientRect();
+        return b.right > c.right + 0.5 || b.left < c.left - 0.5 || chip.scrollWidth > chip.clientWidth + 1;
+      }).map((chip) => chip.closest('a').textContent.trim().slice(0, 30));
       return {
         n: descs.length,
         cut: descs.filter(cut).map((d) => d.textContent.slice(0, 40)),
+        // À 100 %, aucun mot coupé au milieu (« encyclopé/dique. » à 1024 px avant correction).
+        words: scale === 100 ? descs.flatMap(splitWords) : [],
         card: card.length,
+        narrow,
+        chips,
         // Rien du contenu ne sort de la fenêtre (une carte qui cache son trop-plein le couperait sans défilement).
         out: [...document.querySelectorAll('main *')].filter((e) => {
           const b = e.getBoundingClientRect();
@@ -188,14 +231,50 @@ for (const [width, scale] of [[1440, 100], [390, 100], [320, 100], [320, 200]]) 
         }).map((e) => e.textContent.slice(0, 40)),
         fs: getComputedStyle(document.documentElement).fontSize,
       };
-    });
+    }, scale);
     assert.ok(r.n >= 20, `descriptions : ${r.n}`);
-    if (scale === 200) assert.ok(parseFloat(r.fs) >= 32, `texte non agrandi : ${r.fs}`);
+    if (scale !== 100) assert.ok(parseFloat(r.fs) >= 16 * scale / 100, `texte non agrandi : ${r.fs}`);
     assert.deepEqual(r.cut, []);
+    assert.deepEqual(r.words, [], 'mots coupés au milieu');
     assert.equal(r.card, 0, 'carte vidéo qui coupe son contenu');
+    assert.deepEqual(r.narrow, [], 'description de chaîne trop étroite pour se lire');
+    assert.deepEqual(r.chips, [], 'pastille de langue rognée');
     assert.deepEqual(r.out, [], 'contenu hors de la fenêtre');
   });
 }
+
+// L47 (revue UX, m1) — chaque carte vidéo remplit son <li> : les bordures d'une rangée finissent à la même hauteur.
+test('R13 — @1440px : les cartes vidéo d\'une rangée ont la hauteur de leur rangée', { timeout: 60_000 }, async (t) => {
+  const page = await open(t);
+  if (!page) return;
+  const off = await page.evaluate(() =>
+    [...document.querySelectorAll('.video-card')].map((c) => ({
+      d: Math.abs(c.getBoundingClientRect().height - c.parentElement.getBoundingClientRect().height),
+      t: c.querySelector('h3').textContent.slice(0, 30),
+    })).filter((x) => x.d > 1));
+  assert.deepEqual(off, []);
+});
+
+// L47 (revue UX, m2) — le nom accessible d'une carte vidéo commence par son titre, pas par le type (« Officiel… »).
+test('R14 — le nom accessible de chaque carte vidéo commence par le titre de la vidéo (WCAG 2.4.4 / 2.5.3)', { timeout: 60_000 }, async (t) => {
+  const page = await open(t);
+  if (!page) return;
+  const cards = page.locator('main .video-card');
+  const n = await cards.count();
+  assert.ok(n >= 10, `cartes : ${n}`);
+  const bad = [];
+  for (let i = 0; i < n; i++) {
+    const card = cards.nth(i);
+    const title = (await card.locator('h3').textContent()).trim();
+    const snap = await card.ariaSnapshot();
+    // Première ligne du snapshot : « - link "…" », entre apostrophes YAML quand le nom en contient (' doublée).
+    const first = snap.split('\n')[0].replace(/''/g, "'");
+    const name = (first.match(/link "(.*)"/) ?? [])[1] ?? first;
+    const type = (await card.locator('.video-card__type').textContent()).trim();
+    if (!name.startsWith(title) || !name.includes(type)) bad.push({ title, name: name.slice(0, 80) });
+  }
+  assert.deepEqual(bad, [], 'nom qui ne commence pas par le titre, ou type absent du nom');
+});
 
 // L47 / L52 — vignettes : hqdefault d'emblée ; jamais de maxresdefault demandée pour une vidéo qui n'en a pas.
 // YouTube est simulé (réponses fixes) : le test ne dépend pas du réseau.

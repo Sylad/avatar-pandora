@@ -41,7 +41,7 @@ const typeLabel: Record<string, string> = {
       Quelques voix qui valent qu'on s'y arrête — officielles, encyclopédiques, ou techniquement
       les meilleures du genre.
     </p>
-    <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 list-none p-0 m-0">
+    <ul class="channel-grid list-none p-0 m-0">
       {priorityChannels.map((c) => (
         <li class="min-w-0">
         <a
@@ -69,7 +69,7 @@ const typeLabel: Record<string, string> = {
       Sélection — du teaser officiel au cours de linguistique en passant par
       le breakdown VFX. Le clic ouvre YouTube dans un nouvel onglet.
     </p>
-    <ul class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 list-none p-0 m-0">
+    <ul class="video-grid list-none p-0 m-0">
       {videos.map((v) => {
         const channel = channelById.get(v.data.channelSlug);
         const watchUrl = `https://www.youtube.com/watch?v=${v.data.videoId}`;
@@ -97,7 +97,8 @@ const typeLabel: Record<string, string> = {
                   <path d="M8 5v14l11-7z" />
                 </svg>
               </span>
-              <span class="video-card__type">{typeLabel[v.data.type] ?? v.data.type}</span>
+              {/* Badge visuel muet : le type est lu après le titre (L47, revue UX m2), le nom du lien commence par le titre. */}
+              <span class="video-card__type" aria-hidden="true">{typeLabel[v.data.type] ?? v.data.type}</span>
             </div>
             <div class="video-card__body">
               <h3 class="video-card__title"><span lang={v.data.lang === 'EN' ? 'en' : undefined}>{v.data.title}</span></h3>
@@ -107,6 +108,7 @@ const typeLabel: Record<string, string> = {
                 <span class="video-card__channel">{channel?.data.name ?? v.data.channelSlug}</span>
                 <span class="video-card__sep">·</span>
                 <span class="video-card__lang">{v.data.lang}</span>
+                <span class="sr-only">, {typeLabel[v.data.type] ?? v.data.type}</span>
               </div>
               <p class="video-card__desc">{v.data.description}</p>
             </div>
@@ -194,6 +196,14 @@ const typeLabel: Record<string, string> = {
   }
 
   /* ---------- Channel cards (priority) ---------- */
+
+  /* Colonnes en rem (L47) : moins de cartes par rangée quand le texte grandit (à 1024 px texte 200 %,
+     trois colonnes laissaient déborder les descriptions). */
+  .channel-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(15rem, 100%), 1fr));
+    gap: 1rem;
+  }
 
   .channel-card {
     position: relative;
@@ -290,9 +300,20 @@ const typeLabel: Record<string, string> = {
 
   /* ---------- Video cards ---------- */
 
+  /* Colonnes en rem (L47, revue UX M1) : quand le texte grandit, la grille perd des colonnes au lieu de serrer
+     trois cartes de 185 px où la pastille de langue était rognée et les titres coupés toutes les 4 lettres. */
+  .video-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(15rem, 100%), 1fr));
+    gap: 1.25rem;
+  }
+
   .video-card {
     position: relative;
-    display: block;
+    /* La carte remplit son <li> (L47, m1) : les bordures d'une rangée finissent à la même hauteur. */
+    display: flex;
+    flex-direction: column;
+    height: 100%;
     border-radius: 6px;
     overflow: hidden;
     background: rgba(232, 230, 221, 0.02);
@@ -393,6 +414,7 @@ const typeLabel: Record<string, string> = {
   }
 
   .video-card__body {
+    flex: 1 1 auto;
     position: relative;
     z-index: 2;
     padding: 1rem 1.1rem 1.15rem;
@@ -419,6 +441,8 @@ const typeLabel: Record<string, string> = {
 
   .video-card__meta {
     display: flex;
+    /* La pastille passe à la ligne plutôt que de sortir de la carte (qui cache son trop-plein). */
+    flex-wrap: wrap;
     align-items: center;
     gap: 0.5rem;
     font-family: var(--font-body);
@@ -428,6 +452,7 @@ const typeLabel: Record<string, string> = {
   }
 
   .video-card__lang {
+    flex-shrink: 0;
     font-family: var(--font-display);
     font-size: 0.7rem;
     letter-spacing: 0.18em;
@@ -443,6 +468,8 @@ const typeLabel: Record<string, string> = {
   }
 
   .video-card__channel {
+    min-width: 0;
+    overflow-wrap: anywhere;
     color: var(--color-eywa-text);
   }
 
@@ -466,11 +493,15 @@ const typeLabel: Record<string, string> = {
     gap: 0.5rem;
   }
 
+  /* Rangée souple (L47, revue UX B1) : avatar, nom et pastille, puis la description à côté quand elle a au moins
+     20 em, sinon sur sa propre ligne, pleine largeur. Une grille « auto auto 1fr » la laissait tomber à 12 px
+     de large dès que le texte grandissait au-dessus de 700 px. */
   .channel-link {
-    display: grid;
-    grid-template-columns: 2.25rem auto auto 1fr;
+    display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    gap: 0.8rem;
+    column-gap: 0.8rem;
+    row-gap: 0.4rem;
     padding: 0.7rem 0.9rem;
     border-radius: 4px;
     border: 1px solid rgba(95, 255, 230, 0.10);
@@ -485,6 +516,7 @@ const typeLabel: Record<string, string> = {
   }
 
   .channel-link__avatar {
+    flex-shrink: 0;
     width: 2.25rem;
     height: 2.25rem;
     border-radius: 50%;
@@ -500,6 +532,10 @@ const typeLabel: Record<string, string> = {
   }
 
   .channel-link__name {
+    /* Largeur du nom (pastille collée) ; seul sur sa ligne quand il ne tient pas à côté de l'avatar. */
+    flex: 0 1 auto;
+    min-width: 0;
+    overflow-wrap: anywhere;
     font-family: var(--font-display);
     font-size: 0.9rem;
     color: var(--color-eywa-text);
@@ -510,6 +546,7 @@ const typeLabel: Record<string, string> = {
   }
 
   .channel-link__lang {
+    flex-shrink: 0;
     font-family: var(--font-display);
     font-size: 0.7rem;
     letter-spacing: 0.18em;
@@ -520,28 +557,15 @@ const typeLabel: Record<string, string> = {
   }
 
   .channel-link__desc {
-    overflow-wrap: anywhere;
+    /* 20 em de base : à côté du nom s'il reste cette place, sinon seule sur sa ligne (jamais une colonne étroite).
+       break-word et non anywhere : un mot n'est coupé que s'il est plus large que la ligne entière. */
+    flex: 1 1 20em;
+    min-width: min(20em, 100%);
+    overflow-wrap: break-word;
     font-family: var(--font-body);
     font-size: 0.8rem;
     color: var(--color-eywa-text-muted);
     line-height: 1.4;
-  }
-
-  /* Au téléphone, une rangée qui passe à la ligne (L47) : à texte 200 % à 320 px, la pastille de langue
-     ne tient plus à côté du nom ; une grille la poussait hors de la page. */
-  @media (max-width: 700px) {
-    .channel-link {
-      display: flex;
-      flex-wrap: wrap;
-    }
-    .channel-link__name {
-      flex: 1 1 0;
-      min-width: min(8rem, 100%);
-      overflow-wrap: anywhere;
-    }
-    .channel-link__desc {
-      flex-basis: 100%;
-    }
   }
 
   @media (prefers-reduced-motion: reduce) {
