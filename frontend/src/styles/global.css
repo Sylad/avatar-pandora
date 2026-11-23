@@ -133,6 +133,26 @@
     font-size: clamp(1.3rem, 10cqi, 2.25rem);
     line-height: 1.15;
   }
+
+  /*
+    Grille des cartes des sections du codex (L70, WCAG 1.4.4). Avec des colonnes en points de rupture de la
+    fenêtre (md/xl/2xl), le texte agrandi par la page gardait 3 colonnes de 199 px à 1440 px texte 175 % et les
+    titres se cassaient lettre à lettre (32 mots sur /bestiaire/). En em, une colonne fait toujours au moins
+    14,5 fois la taille du texte : quand le texte grandit, il y a moins de colonnes. 14,5 em laisse 12 rem au
+    titre (padding 2 × 1,25 rem), et le plus long mot d'un titre de carte, « bioluminescente », en prend 10,96 ;
+    au réglage normal, mêmes colonnes qu'avant à 1024 (2), 1280 (3) et 1440 px (3) — 14,5 em = 253,75 px, entre
+    234 (4 colonnes à 1440) et 266 (3 colonnes à 1280). Jamais plus de 4 colonnes, comme le 2xl d'avant ; jamais
+    plus large que la grille (min 100 %) : une colonne unique plus étroite que 14,5 em, et c'est le titre de la
+    carte qui suit sa largeur (EntryCard).
+  */
+  .codex-grid {
+    display: grid;
+    gap: 1.25rem;
+    grid-template-columns: repeat(
+      auto-fill,
+      minmax(max(min(14.5em, 100%), calc((100% - 3 * 1.25rem) / 4)), 1fr)
+    );
+  }
 }
 
 /*

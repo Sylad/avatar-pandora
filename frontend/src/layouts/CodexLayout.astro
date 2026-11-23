@@ -545,4 +545,13 @@ const ambient = AMBIENTS[current ?? ''] ?? AMBIENTS.pandora;
     opacity: 1;
     pointer-events: auto;
   }
+  /* Mouvement réduit (L70, revue UX de L69, WCAG 2.3.3) : voile et bouton menu changent d'état sans transition,
+     comme le tiroir (Sidebar). */
+  @media (prefers-reduced-motion: reduce) {
+    .eywa-drawer-overlay,
+    .eywa-burger,
+    .eywa-burger__line {
+      transition: none;
+    }
+  }
 </style>

@@ -280,11 +280,16 @@ const spores = Array.from({ length: SPORE_COUNT }, (_, i) => {
     /* Voile sombre sous le texte (L27, WCAG 1.4.3) : les particules WebGL passent
        derrière la carte, le résumé ne doit pas les voir (même principe que L2). */
     background: rgba(10, 10, 31, 0.88);
+    /* Conteneur du titre (L70) : 10cqi = un dixième de la ligne du titre. */
+    container-type: inline-size;
   }
 
+  /* Taille plafonnée par la largeur de la carte (L70, WCAG 1.4.4) : dans une colonne unique plus étroite que
+     14,5 em (390 px texte 200 %), 10cqi garde le plus long mot d'un titre (« bioluminescente », 9,74 em) sur
+     sa ligne. Dès que la colonne fait 14,5 em (grille .codex-grid), 10cqi ≥ 1,2 rem : 1,125 rem, comme avant. */
   .entry-card__title {
     font-family: var(--font-display);
-    font-size: 1.125rem;
+    font-size: min(1.125rem, 10cqi);
     color: var(--color-eywa-text);
     letter-spacing: 0.04em;
     margin-bottom: 0.5rem;

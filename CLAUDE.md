@@ -210,6 +210,10 @@ latérale n'est posée que si la fenêtre fait au moins 64 rem du réglage initi
 pas le texte agrandi par la page : à 1024 px texte 200 %, la barre de 20 rem laissait 37 % au contenu. Même double condition
 dans Sidebar, SkySwitch, AtmospherePause, MetaHeader et nouveautes ; jamais de `lg:` Tailwind pour ce qui dépend du mode. Le
 script du tiroir lit le mode sur la page (barre `sticky` ou `fixed`). Contrôlé par `scripts/codex-wide-text.e2e.test.mjs`.
+Grille des cartes des 7 sections (L70) : `.codex-grid` de `global.css`, colonnes d'au moins 14,5 em (`auto-fill`, 4 au plus),
+jamais de `md:/xl:grid-cols-*` (points de rupture de la fenêtre, aveugles au texte agrandi : 32 mots cassés à 1440 px texte 175 %).
+Titres des cartes (`min(1,125rem, 10cqi)`) et du bandeau (`min(…, 14cqi)`) plafonnés par leur cadre pour une colonne unique
+étroite. Mouvement réduit : tiroir, voile et bouton menu sans transition. Contrôlé par `scripts/codex-grid-text.e2e.test.mjs`.
 
 **Plan de travail** (page `/plan-de-travail/`, L20, modèle evatosorus/finance-tracker) : en cours, prévu,
 récemment livré, rendue **au build** depuis `.cadence/raf.yaml` (`src/lib/plan-public.ts`, lu depuis

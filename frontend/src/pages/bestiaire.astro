@@ -16,7 +16,7 @@ entries.sort((a, b) => (a.data.order ?? 999) - (b.data.order ?? 999));
     ikrans
     tagline="Ikran, toruk, thanator — créatures sublimes et létales."
   />
-  <section class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-5">
+  <section class="codex-grid">
     {entries.map((entry) => (
       <EntryCard href={`/bestiaire/${entry.id}/`} title={entry.data.title} summary={entry.data.summary} cover={entry.data.cover} />
     ))}

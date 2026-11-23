@@ -220,6 +220,8 @@ const size = isIllustration(cover) ? ILLUSTRATION_SIZES.fiche : undefined;
     position: relative;
     width: 100%;
     padding: 1.25rem 1.25rem 1.1rem;
+    /* Conteneur du titre (L70) : sa taille suit aussi la largeur du bandeau. */
+    container-type: inline-size;
   }
   @media (min-width: 768px) {
     .section-hero__content {
@@ -237,9 +239,13 @@ const size = isIllustration(cover) ? ILLUSTRATION_SIZES.fiche : undefined;
     text-shadow: 0 2px 6px rgba(10, 10, 31, 0.85);
   }
 
+  /* Taille plafonnée par la largeur du bandeau (L70, WCAG 1.4.4) : à 14cqi, le plus long mot d'un titre de
+     section (« technologie », 6,9 em) tient sur sa ligne même quand le texte agrandi dépasse le bandeau
+     (« Pandora » se cassait à 390 px texte 175 %, à 1440 px texte 175 % avec la barre latérale). Au réglage
+     normal, 14cqi dépasse toujours la taille fixée : rien ne change. */
   .section-hero__title {
     font-family: var(--font-display);
-    font-size: 1.85rem;
+    font-size: min(1.85rem, 14cqi);
     line-height: 1.05;
     color: var(--color-eywa-text);
     text-shadow:
@@ -250,13 +256,13 @@ const size = isIllustration(cover) ? ILLUSTRATION_SIZES.fiche : undefined;
 
   @media (min-width: 640px) {
     .section-hero__title {
-      font-size: 2.75rem;
+      font-size: min(2.75rem, 14cqi);
     }
   }
 
   @media (min-width: 768px) {
     .section-hero__title {
-      font-size: 3.5rem;
+      font-size: min(3.5rem, 14cqi);
     }
   }
 
