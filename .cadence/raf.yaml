@@ -787,6 +787,7 @@ lots:
     visible: true
     created: 2026-11-23
     started: 2026-11-23
+    ux: { date: 2026-11-23, verdict: "non conforme (ux-reviewer, tmp/ux-avatar-L70.md) : à 390 px texte/zoom 175–200 %, titres plafonnés en cqi — h1 32,3 px à 200 % (n'a pas grandi), titres de carte 23 px (117 %), plus petits que le texte courant 28 px, rapport titre/texte 0,82 (WCAG 1.4.4, F94) ; reste tenu : 0 mot cassé sur 140 combinaisons, 0 défilement, géométrie 100 % inchangée, mouvement réduit OK" }
 acknowledged:
   - { sha: cef464dffb920ea7b161b1b0e06fe54d3efbdcc4, subject: "plan: verdicts UX de Sylvain enregistrés, trois bloquants de la revue des Personnages clos", date: 2026-10-10, reason: entretien du plan et régénération des Nouveautés }
   - { sha: 4bc75e983dc5bff0366190611a9c578d4ed071c8, subject: "plan: prototype Pandora vivant clos, cinq idées retenues par Sylvain posées après les images", date: 2026-10-10, reason: entretien du plan et régénération des Nouveautés (fichier désormais déclaré dérivé) }
