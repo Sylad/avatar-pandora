@@ -751,11 +751,13 @@ lots:
       - { date: 2026-11-21, text: "21-11 : Sylvain garde le voile à 88 % (« Garder 88 % »), pollen effacé derrière la barre au bureau accepté" }
   - id: L68
     title: "Porte instable sous charge : 3 portes rouges le 23-11 sans changement de code (cartes L33 éclairées en 900 ms, fiche ouverte en moins de 1000 ms, panneau jour/nuit L35, nouveautes-page 180 s) quand Big-Blue est à charge 40-70 (autres runs) ; verte seule ou machine calme. Rendre ces tests probants sous charge sans affaiblir l'exigence (attendre l'état plutôt qu'un délai fixe mesuré au mur, ou mesurer le temps de la page et non celui du runner), et dire lesquels restent dépendants de la charge"
-    status: doing
+    status: done
     estimate: 1
     quickwin: true
     created: 2026-11-23
     started: 2026-11-23
+    review: { date: 2026-11-23, verdict: "conforme c1170d4 : attentes sur l'horloge de la page (settleAnimations, performance.now, temps de scène __eywaWater.time) au lieu de délais fixes ; seuils d'origine gardés (900 ms des transitions, < 1000 ms fiche, rendormissement 1-4 s) ; porte complète 360/360 sous charge 43-121 contre 7 échecs avant ; défauts recréés détectés (transition 1,5 s, rendormissement 6 s et 0, navigation +1,5 s). Seule modif d'app : exposition du temps de scène dans les stats de test.", commit: c1170d445ba2c14596530953b1efc28e4d96f267 }
+    finished: 2026-11-23
 acknowledged:
   - { sha: cef464dffb920ea7b161b1b0e06fe54d3efbdcc4, subject: "plan: verdicts UX de Sylvain enregistrés, trois bloquants de la revue des Personnages clos", date: 2026-10-10, reason: entretien du plan et régénération des Nouveautés }
   - { sha: 4bc75e983dc5bff0366190611a9c578d4ed071c8, subject: "plan: prototype Pandora vivant clos, cinq idées retenues par Sylvain posées après les images", date: 2026-10-10, reason: entretien du plan et régénération des Nouveautés (fichier désormais déclaré dérivé) }
