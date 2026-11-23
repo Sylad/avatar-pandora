@@ -543,6 +543,7 @@ lots:
     notes:
       - { date: 2026-10-31, text: "QA 31-10 (40f3435) : la vignette maxresdefault de muEMyQAJreg renvoie 404 (repli hqdefault avec erreur console) — servir hqdefault d'emblée ; ajouter la section /videos/ à docs/qa/expectations.md" }
     started: 2026-11-23
+    review: { date: 2026-11-23, verdict: "conforme (lead) : 253551e — line-clamp retiré, texte des cartes de chaîne sous la pastille (débordait 467 px pour 320), « (nouvel onglet) » sorti du h3 vers le lien en texte masqué, vignette hqdefault déjà réglée par L52 et figée par R12 ; tests R10-R12, suite 366/366", commit: 253551ed24b6c27741b7d7d3c881f76ab3e42404 }
   - id: L48
     title: "À propos : anneau de focus visible sur le lien en ligne « Claude Code » (au lieu du 1 px automatique) et regex du test R4 qui ignore ⚔️ (mineurs de la revue UX de L12 ; le soulignement est déjà fait par d747d61)"
     status: done
