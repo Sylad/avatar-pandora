@@ -539,6 +539,7 @@ lots:
     status: done
     estimate: 0.25
     visible: true
+    delivered: { date: 2026-11-23, sha: e9ab370abcf8a7a27c023fc47e07b24c93776a5b }
     created: 2026-10-31
     notes:
       - { date: 2026-10-31, text: "QA 31-10 (40f3435) : la vignette maxresdefault de muEMyQAJreg renvoie 404 (repli hqdefault avec erreur console) — servir hqdefault d'emblée ; ajouter la section /videos/ à docs/qa/expectations.md" }
