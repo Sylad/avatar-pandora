@@ -749,6 +749,12 @@ lots:
     finished: 2026-11-21
     notes:
       - { date: 2026-11-21, text: "21-11 : Sylvain garde le voile à 88 % (« Garder 88 % »), pollen effacé derrière la barre au bureau accepté" }
+  - id: L68
+    title: "Porte instable sous charge : 3 portes rouges le 23-11 sans changement de code (cartes L33 éclairées en 900 ms, fiche ouverte en moins de 1000 ms, panneau jour/nuit L35, nouveautes-page 180 s) quand Big-Blue est à charge 40-70 (autres runs) ; verte seule ou machine calme. Rendre ces tests probants sous charge sans affaiblir l'exigence (attendre l'état plutôt qu'un délai fixe mesuré au mur, ou mesurer le temps de la page et non celui du runner), et dire lesquels restent dépendants de la charge"
+    status: todo
+    estimate: 1
+    quickwin: true
+    created: 2026-11-23
 acknowledged:
   - { sha: cef464dffb920ea7b161b1b0e06fe54d3efbdcc4, subject: "plan: verdicts UX de Sylvain enregistrés, trois bloquants de la revue des Personnages clos", date: 2026-10-10, reason: entretien du plan et régénération des Nouveautés }
   - { sha: 4bc75e983dc5bff0366190611a9c578d4ed071c8, subject: "plan: prototype Pandora vivant clos, cinq idées retenues par Sylvain posées après les images", date: 2026-10-10, reason: entretien du plan et régénération des Nouveautés (fichier désormais déclaré dérivé) }
