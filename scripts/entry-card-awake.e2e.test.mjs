@@ -13,7 +13,7 @@
 // Lit frontend/dist (lancer le build avant) ; skip sans playwright-core/Chromium.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { nextFrames, setupBrowser, worstPixelContrast } from './lib/e2e-dist.mjs';
+import { nextFrames, settleAnimations, setupBrowser, worstPixelContrast } from './lib/e2e-dist.mjs';
 
 const PAGE = '/bestiaire/';
 
@@ -64,6 +64,18 @@ function state(page, index) {
 
 const CYAN = 'rgb(95, 255, 230)';
 
+// L68 — l'éveil se lit à la fin de ses transitions, attendue sur l'horloge de la page (settleAnimations), plus après
+// 900 ms fixes au mur du runner : sous charge, la page ne produisait pas d'image et l'image était encore à 0,55.
+// L'exigence de temps reste : l'image s'éclaire (filter) et le titre passe au cyan (color) en 900 ms au plus, durée
+// lue dans la page (délai + durée de chaque transition), indépendante de la charge.
+const AWAKE_MS = 900;
+async function awaken(page, index) {
+  const timings = await settleAnimations(page, 'a.entry-card', index);
+  const slow = timings.filter((x) => ['filter', 'color'].includes(x.prop) && x.end > AWAKE_MS);
+  assert.deepEqual(slow, [], `éveil plus long que ${AWAKE_MS} ms (horloge de la page)`);
+  return state(page, index);
+}
+
 test('cartes du codex : endormies au repos, éveillées au survol, au clavier et au toucher (L33)', { timeout: 300_000 }, async (t) => {
   const env = await setupBrowser(t);
   if (!env) return;
@@ -82,8 +94,8 @@ test('cartes du codex : endormies au repos, éveillées au survol, au clavier et
     const card = page.locator('a.entry-card').first();
     await card.scrollIntoViewIfNeeded();
     await card.hover();
-    await page.waitForTimeout(900); // fin des transitions (700 ms)
-    const lit = await state(page, 0);
+    await nextFrames(page); // :hover posé au rendu d'une image
+    const lit = await awaken(page, 0);
     assert.ok(lit.bright >= 1, `image non éclairée au survol : brightness ${lit.bright}`);
     assert.equal(lit.rim, 'entry-card-rim', 'le liseré ne pulse pas au survol');
     assert.deepEqual(lit.animated.filter((p) => !['opacity', 'transform'].includes(p)), [],
@@ -106,8 +118,8 @@ test('cartes du codex : endormies au repos, éveillées au survol, au clavier et
     }
     assert.ok(reached, 'aucune carte atteinte à la touche Tab');
     const idx = await page.evaluate(() => [...document.querySelectorAll('a.entry-card')].indexOf(document.activeElement));
-    await page.waitForTimeout(900);
-    const s = await state(page, idx);
+    await nextFrames(page);
+    const s = await awaken(page, idx);
     assert.match(s.outline, /^solid [2-9]/, `focus clavier peu visible : ${s.outline}`);
     assert.ok(s.bright >= 1, `image non éclairée au clavier : brightness ${s.bright}`);
     assert.equal(s.rim, 'entry-card-rim', 'le liseré ne pulse pas au clavier');
@@ -122,8 +134,7 @@ test('cartes du codex : endormies au repos, éveillées au survol, au clavier et
     await cards.nth(0).scrollIntoViewIfNeeded();
     const down = (i) => cards.nth(i).dispatchEvent('pointerdown', { pointerType: 'touch', isPrimary: true, bubbles: true });
     await down(0);
-    await page.waitForTimeout(900);
-    const first = await state(page, 0);
+    const first = await awaken(page, 0);
     assert.ok(first.awake, 'carte non éveillée au toucher');
     assert.ok(first.bright >= 1, `image non éclairée au toucher : brightness ${first.bright}`);
     assert.equal(first.rim, 'entry-card-rim');
@@ -132,9 +143,22 @@ test('cartes du codex : endormies au repos, éveillées au survol, au clavier et
     await down(1);
     assert.equal((await state(page, 0)).awake, false, 'deux cartes éveillées à la fois');
     assert.ok((await state(page, 1)).awake);
+    // Rendormissement : instant du lever du doigt et de la fin de l'éveil pris DANS la page (L68), au lieu d'une attente
+    // de 4 s au mur du runner. La carte reste éveillée un moment (1,4 s, L33) puis se rendort, en 4 s au plus.
+    await page.evaluate(() => {
+      const card = document.querySelectorAll('a.entry-card')[1];
+      window.__sleep = new Promise((resolve) => {
+        const mo = new MutationObserver(() => {
+          if (!card.classList.contains('is-awake')) { mo.disconnect(); resolve(performance.now()); }
+        });
+        mo.observe(card, { attributes: true, attributeFilter: ['class'] });
+      });
+      document.addEventListener('pointerup', () => { window.__up = performance.now(); }, { capture: true, once: true });
+    });
     await cards.nth(1).dispatchEvent('pointerup', { pointerType: 'touch', bubbles: true });
-    await page.waitForFunction(() => !document.querySelector('a.entry-card.is-awake'), null, { timeout: 4000 });
-    await page.waitForTimeout(1400); // fin des transitions du rendormissement (1 200 ms)
+    const asleepAfter = await page.evaluate(async () => (await window.__sleep) - window.__up);
+    assert.ok(asleepAfter >= 1000 && asleepAfter <= 4000, `carte rendormie ${Math.round(asleepAfter)} ms après le lever du doigt (attendu entre 1 et 4 s, horloge de la page)`);
+    await settleAnimations(page, 'a.entry-card', 1); // fin des transitions du rendormissement (1 200 ms)
     assert.deepEqual((await state(page, 1)).animated, [], 'la carte rendormie anime encore');
     await context.close();
   });
@@ -177,10 +201,12 @@ test('cartes du codex : endormies au repos, éveillées au survol, au clavier et
       const card = page.locator('a.entry-card').first();
       await card.scrollIntoViewIfNeeded();
       await page.mouse.move(1, 1);
-      await page.waitForTimeout(600);
+      // L68 : fin des transitions attendue dans la page (la capture « animations: disabled » saute à l'état final ;
+      // mesurée en cours de transition, la couleur du texte lue n'était plus celle des glyphes : « glyphes non détectés »).
+      await settleAnimations(page, 'a.entry-card', 0);
       const asleep = await worstPixelContrast(page, sel);
       await card.evaluate((c) => c.classList.add('is-awake'));
-      await page.waitForTimeout(900);
+      await settleAnimations(page, 'a.entry-card', 0);
       const lit = await worstPixelContrast(page, sel);
       for (const [name, r] of [['endormi', asleep], ['éveillé', lit]]) {
         assert.ok(r.glyphs > 20, `${name} : glyphes non détectés`);

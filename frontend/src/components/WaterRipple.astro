@@ -36,7 +36,8 @@
   } from '../lib/water';
 
   /** Relevés pour les tests : contexte obtenu, anneaux faits (dont au toucher, gouttes), images dessinées. */
-  interface WaterStats { gl: string | null; ripples: number; touches: number; drops: number; frames: number; live: number }
+  // `time` : temps de l'eau (T, ms, pauses exclues), lu par les tests pour attendre sur l'horloge de la scène (L68).
+  interface WaterStats { gl: string | null; ripples: number; touches: number; drops: number; frames: number; live: number; time: number }
   const w = window as Window & { __eywaWaterInit?: boolean; __eywaWater?: WaterStats };
 
   const VERT = `
@@ -114,7 +115,7 @@
 
   if (!w.__eywaWaterInit) {
     w.__eywaWaterInit = true;
-    const stats: WaterStats = (w.__eywaWater = { gl: null, ripples: 0, touches: 0, drops: 0, frames: 0, live: 0 });
+    const stats: WaterStats = (w.__eywaWater = { gl: null, ripples: 0, touches: 0, drops: 0, frames: 0, live: 0, time: 0 });
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
     const paused = () => document.documentElement.classList.contains(ATMOSPHERE_PAUSED_CLASS);
     const rand = Math.random;
@@ -294,6 +295,7 @@
       const dt = Math.min(50, now - last);
       last = now;
       T += dt;
+      stats.time = T;
       pruneRipples(s.ripples, T);
       if (s.W && dropDue(T, lastInteract, nextDrop)) {
         ripple(s.W * (0.15 + rand() * 0.7), s.H * (0.2 + rand() * 0.6), true);

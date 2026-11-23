@@ -11,6 +11,8 @@ import assert from 'node:assert/strict';
 import { existsSync, mkdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { DIST, nextFrames, setupBrowser } from './lib/e2e-dist.mjs';
+// L68 — délais des tests relevés (garde-fous, pas exigences : R6 dépassait 240 s à charge ~115 en ouvrant ses 88
+// visionneuses) ; chaque attente fixe après un geste est remplacée par l'état attendu ou par deux images rendues.
 
 const DATA = JSON.parse(readFileSync(new URL('../frontend/public/nouveautes-data/nouveautes.json', import.meta.url), 'utf8'));
 const PAGE = join(DIST, 'nouveautes', 'index.html');
@@ -111,7 +113,7 @@ const worstContrast = (page) => page.evaluate(() => {
   return out;
 });
 
-test('reflow 320/390/1440 px : aucun défilement horizontal, captures dans la largeur, contraste ≥ 4,5:1', { timeout: 120_000 }, async (t) => {
+test('reflow 320/390/1440 px : aucun défilement horizontal, captures dans la largeur, contraste ≥ 4,5:1', { timeout: 300_000 }, async (t) => {
   const env = await setupBrowser(t);
   if (!env) return;
   const shots = process.env.EYWA_E2E_SHOTS;
@@ -137,7 +139,7 @@ test('reflow 320/390/1440 px : aucun défilement horizontal, captures dans la la
   }
 });
 
-test('téléphone 390 px : le tiroir propose « Nouveautés » et y mène', { timeout: 60_000 }, async (t) => {
+test('téléphone 390 px : le tiroir propose « Nouveautés » et y mène', { timeout: 180_000 }, async (t) => {
   const env = await setupBrowser(t);
   if (!env) return;
   const context = await env.browser.newContext({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce' });
@@ -151,7 +153,7 @@ test('téléphone 390 px : le tiroir propose « Nouveautés » et y mène', { ti
   await context.close();
 });
 
-test('bureau 1440 px, au clavier : Tab atteint « Nouveautés » dans la barre latérale, Entrée y mène', { timeout: 60_000 }, async (t) => {
+test('bureau 1440 px, au clavier : Tab atteint « Nouveautés » dans la barre latérale, Entrée y mène', { timeout: 180_000 }, async (t) => {
   const env = await setupBrowser(t);
   if (!env) return;
   const context = await env.browser.newContext({ viewport: { width: 1440, height: 900 } });
@@ -172,7 +174,7 @@ test('bureau 1440 px, au clavier : Tab atteint « Nouveautés » dans la barre l
 // Entrée sur le lien d'une capture ouvre la visionneuse comme le clic, pas le PNG brut
 // (leçon de la revue UX L13 d'evatosorus) — aussi après une navigation par le menu
 // (ClientRouter : la page arrive sans rechargement complet).
-test('visionneuse : Entrée et clic sur une capture l’ouvrent, Échap la ferme, liens du menu non interceptés', { timeout: 60_000 }, async (t) => {
+test('visionneuse : Entrée et clic sur une capture l’ouvrent, Échap la ferme, liens du menu non interceptés', { timeout: 180_000 }, async (t) => {
   const env = await setupBrowser(t);
   if (!env) return;
   const context = await env.browser.newContext({ viewport: { width: 1440, height: 900 } });
@@ -181,7 +183,8 @@ test('visionneuse : Entrée et clic sur une capture l’ouvrent, Échap la ferme
   const check = async (label) => {
     await page.locator('.news-capture').first().focus();
     await page.keyboard.press('Enter');
-    await page.waitForTimeout(200);
+    // L68 : état attendu (visionneuse ouverte, ou page quittée si Entrée suivait le lien) plutôt que 200 ms fixes.
+    await page.waitForFunction(() => location.pathname !== '/nouveautes/' || document.getElementById('eywa-lightbox')?.hasAttribute('open'), null, { timeout: 30_000 }).catch(() => {});
     assert.equal(new URL(page.url()).pathname, '/nouveautes/', `${label} : Entrée a ouvert le PNG brut`);
     assert.ok(await isOpen(), `${label} : visionneuse fermée après Entrée`);
     await page.keyboard.press('Escape');
@@ -207,7 +210,7 @@ test('visionneuse : Entrée et clic sur une capture l’ouvrent, Échap la ferme
 
 // Avant leur chargement, les captures occupent déjà leur place aux bonnes proportions
 // (pas de saut de mise en page à 320 px).
-test('320 px, captures pas encore chargées : la place est réservée aux bonnes proportions', { timeout: 60_000 }, async (t) => {
+test('320 px, captures pas encore chargées : la place est réservée aux bonnes proportions', { timeout: 180_000 }, async (t) => {
   const env = await setupBrowser(t);
   if (!env) return;
   const context = await env.browser.newContext({ viewport: { width: 320, height: 700 } });
@@ -230,7 +233,7 @@ test('320 px, captures pas encore chargées : la place est réservée aux bonnes
 // ×1,18 (374×234 à 390 px). Sous 640 px, une capture plus large que 1,5 écran s'affiche à
 // la hauteur disponible dans un cadre qui défile horizontalement, avec « glisse pour
 // parcourir » et « Fermer » fixe ; les captures de téléphone et le bureau ne changent pas.
-test('visionneuse au téléphone : capture de bureau à la hauteur disponible, défilement horizontal', { timeout: 90_000 }, async (t) => {
+test('visionneuse au téléphone : capture de bureau à la hauteur disponible, défilement horizontal', { timeout: 300_000 }, async (t) => {
   const env = await setupBrowser(t);
   if (!env) return;
   const open = async (page, file) => {
@@ -241,7 +244,7 @@ test('visionneuse au téléphone : capture de bureau à la hauteur disponible, d
       const i = document.querySelector('#eywa-lightbox .eywa-lightbox__img');
       return document.getElementById('eywa-lightbox').hasAttribute('open') && i.complete && i.naturalWidth > 0;
     });
-    await page.waitForTimeout(150);
+    await nextFrames(page); // L68 : mise en page et ResizeObserver de la visionneuse joués (deux images), pas 150 ms fixes
     return page.evaluate(() => {
       const d = document.getElementById('eywa-lightbox');
       const img = d.querySelector('.eywa-lightbox__img').getBoundingClientRect();
@@ -273,7 +276,8 @@ test('visionneuse au téléphone : capture de bureau à la hauteur disponible, d
     await page.focus('#eywa-lightbox .eywa-lightbox__scroller');
     await page.keyboard.press('ArrowRight');
     await page.keyboard.press('ArrowRight');
-    await page.waitForTimeout(300);
+    // L68 : défilement attendu (30 s au plus) plutôt que 300 ms fixes ; sans effet, l'assertion suivante échoue.
+    await page.waitForFunction(() => document.querySelector('#eywa-lightbox .eywa-lightbox__scroller').scrollLeft > 0, null, { timeout: 30_000 }).catch(() => {});
     assert.ok(await page.evaluate(() => document.querySelector('#eywa-lightbox .eywa-lightbox__scroller').scrollLeft > 0), `${width}px : flèche → sans effet`);
     await page.keyboard.press('Escape');
     await page.waitForFunction(() => !document.getElementById('eywa-lightbox').hasAttribute('open'));
@@ -312,10 +316,10 @@ async function openViewer(page, file) {
     const im = document.querySelector('#eywa-lightbox .eywa-lightbox__img');
     return document.getElementById('eywa-lightbox').hasAttribute('open') && im.complete && im.naturalWidth > 0;
   });
-  await page.waitForTimeout(100);
+  await nextFrames(page); // L68 : deux images (ResizeObserver joué), pas 100 ms fixes
 }
 
-test('R8 (L51) — visionneuse : la légende (texte alternatif déclaré, jusqu’à ~200 caractères) tient en entier à l’écran, à 390 et 320 px', { timeout: 180_000 }, async (t) => {
+test('R8 (L51) — visionneuse : la légende (texte alternatif déclaré, jusqu’à ~200 caractères) tient en entier à l’écran, à 390 et 320 px', { timeout: 600_000 }, async (t) => {
   const env = await setupBrowser(t);
   if (!env) return;
   for (const [width, height] of [[390, 844], [320, 568]]) {
@@ -332,7 +336,7 @@ test('R8 (L51) — visionneuse : la légende (texte alternatif déclaré, jusqu�
         const im = document.querySelector('#eywa-lightbox .eywa-lightbox__img');
         return document.getElementById('eywa-lightbox').hasAttribute('open') && im.complete && im.naturalWidth > 0;
       });
-      await page.waitForTimeout(80);
+      await nextFrames(page); // L68 : deux images (mise en page et ResizeObserver joués), pas 80 ms fixes
       const m = await page.evaluate(`(() => {
         const figureClipsCaption = ${FIGURE_CLIPS_CAPTION};
         const d = document.getElementById('eywa-lightbox');
@@ -360,7 +364,7 @@ test('R8 (L51) — visionneuse : la légende (texte alternatif déclaré, jusqu�
 const LONG_CAPTION = 'L27-cartes-clans.png';
 const PHONE_SHOT = 'L13-lien-evitement-390.png';
 
-test('R1 (L53) — visionneuse : la hauteur de la légende est re-mesurée au redimensionnement et au changement d’orientation, elle ne se coupe plus', { timeout: 240_000 }, async (t) => {
+test('R1 (L53) — visionneuse : la hauteur de la légende est re-mesurée au redimensionnement et au changement d’orientation, elle ne se coupe plus', { timeout: 900_000 }, async (t) => {
   const env = await setupBrowser(t);
   if (!env) return;
   const context = await env.browser.newContext({ viewport: { width: 1440, height: 900 } });
@@ -400,7 +404,7 @@ test('R1 (L53) — visionneuse : la hauteur de la légende est re-mesurée au re
 // de ~200 caractères ferait plus de lignes qu'il n'en faut pour effondrer l'image (L53, 2e passe).
 const CAPTION_FLOOR = '() => Math.min(20 * parseFloat(getComputedStyle(document.documentElement).fontSize), 0.96 * innerWidth)';
 
-test('R2 (L53) — visionneuse au bureau : la légende ne dépasse pas la largeur de l’image (sauf sa largeur minimale de 20rem), pour toutes les captures', { timeout: 180_000 }, async (t) => {
+test('R2 (L53) — visionneuse au bureau : la légende ne dépasse pas la largeur de l’image (sauf sa largeur minimale de 20rem), pour toutes les captures', { timeout: 600_000 }, async (t) => {
   const env = await setupBrowser(t);
   if (!env) return;
   for (const [width, height] of [[1440, 900], [1280, 720], [1024, 768]]) {
@@ -418,7 +422,7 @@ test('R2 (L53) — visionneuse au bureau : la légende ne dépasse pas la largeu
         const im = document.querySelector('#eywa-lightbox .eywa-lightbox__img');
         return document.getElementById('eywa-lightbox').hasAttribute('open') && im.complete && im.naturalWidth > 0;
       });
-      await page.waitForTimeout(60);
+      await nextFrames(page); // L68 : deux images (mise en page et ResizeObserver joués), pas 60 ms fixes
       const m = await page.evaluate(`(() => {
         const d = document.getElementById('eywa-lightbox');
         const im = d.querySelector('.eywa-lightbox__img');
@@ -462,7 +466,7 @@ const assertViewerSound = (m, who) => {
   assert.ok(Math.abs(m.varH - m.capH) <= 1, `${who} : --cap-h (${m.varH}px) ≠ hauteur réelle de la légende (${m.capH}px)`);
 };
 
-test('R6 (L53) — visionneuse au bureau : l’image ne s’effondre jamais, la légende reste entière, pour les 22 captures ouvertes à la suite à 1366×768, 1280×600, 1024×500 et 800×481', { timeout: 240_000 }, async (t) => {
+test('R6 (L53) — visionneuse au bureau : l’image ne s’effondre jamais, la légende reste entière, pour les 22 captures ouvertes à la suite à 1366×768, 1280×600, 1024×500 et 800×481', { timeout: 900_000 }, async (t) => {
   const env = await setupBrowser(t);
   if (!env) return;
   for (const [width, height] of [[1366, 768], [1280, 600], [1024, 500], [800, 481]]) {
@@ -480,7 +484,7 @@ test('R6 (L53) — visionneuse au bureau : l’image ne s’effondre jamais, la 
         const im = document.querySelector('#eywa-lightbox .eywa-lightbox__img');
         return document.getElementById('eywa-lightbox').hasAttribute('open') && im.complete && im.naturalWidth > 0;
       });
-      await page.waitForTimeout(60);
+      await nextFrames(page); // L68 : deux images (mise en page et ResizeObserver joués), pas 60 ms fixes
       const m = await page.evaluate(VIEWER_STATE);
       assertViewerSound(m, `${width}×${height}, capture ${i + 1} (${m.src})`);
       await page.keyboard.press('Escape');
@@ -490,7 +494,7 @@ test('R6 (L53) — visionneuse au bureau : l’image ne s’effondre jamais, la 
   }
 });
 
-test('R7 (L53) — visionneuse ouverte à 1440×900 puis fenêtre réduite à 1024×500 : l’image ne s’effondre pas, pour toutes les captures', { timeout: 180_000 }, async (t) => {
+test('R7 (L53) — visionneuse ouverte à 1440×900 puis fenêtre réduite à 1024×500 : l’image ne s’effondre pas, pour toutes les captures', { timeout: 600_000 }, async (t) => {
   const env = await setupBrowser(t);
   if (!env) return;
   const context = await env.browser.newContext({ viewport: { width: 1440, height: 900 } });
@@ -509,7 +513,10 @@ test('R7 (L53) — visionneuse ouverte à 1440×900 puis fenêtre réduite à 10
     });
     for (const [width, height] of [[1024, 500], [1366, 768]]) {
       await page.setViewportSize({ width, height });
-      await page.waitForTimeout(250);
+      // L68 (comme L60 pour R1) : nouvelle taille vue par la page, puis deux images pour « resize » et ResizeObserver ;
+      // 250 ms fixes passaient parfois avant sous charge, et la légende était mesurée périmée (« légende tronquée »).
+      await page.waitForFunction(([w, h]) => innerWidth === w && innerHeight === h, [width, height]);
+      await nextFrames(page);
       const m = await page.evaluate(VIEWER_STATE);
       assertViewerSound(m, `capture ${i + 1} (${m.src}) réduite à ${width}×${height}`);
     }
@@ -519,7 +526,7 @@ test('R7 (L53) — visionneuse ouverte à 1440×900 puis fenêtre réduite à 10
   await context.close();
 });
 
-test('R3 (L53) — la vérification « légende tronquée » sait échouer : un cadre qui rogne la légende est détecté', { timeout: 90_000 }, async (t) => {
+test('R3 (L53) — la vérification « légende tronquée » sait échouer : un cadre qui rogne la légende est détecté', { timeout: 300_000 }, async (t) => {
   const env = await setupBrowser(t);
   if (!env) return;
   const context = await env.browser.newContext({ viewport: { width: 390, height: 844 } });
@@ -534,7 +541,7 @@ test('R3 (L53) — la vérification « légende tronquée » sait échouer : un 
   await context.close();
 });
 
-test('R4 (L53) — visionneuse : le texte de la capture n’est lu qu’une fois (image décorative, la légende le porte)', { timeout: 90_000 }, async (t) => {
+test('R4 (L53) — visionneuse : le texte de la capture n’est lu qu’une fois (image décorative, la légende le porte)', { timeout: 300_000 }, async (t) => {
   const env = await setupBrowser(t);
   if (!env) return;
   const context = await env.browser.newContext({ viewport: { width: 1440, height: 900 } });
@@ -550,7 +557,7 @@ test('R4 (L53) — visionneuse : le texte de la capture n’est lu qu’une fois
   await context.close();
 });
 
-test('R5 (L53) — visionneuse à 320×800 : la légende ne laisse pas d’écart sous le cadre', { timeout: 90_000 }, async (t) => {
+test('R5 (L53) — visionneuse à 320×800 : la légende ne laisse pas d’écart sous le cadre', { timeout: 300_000 }, async (t) => {
   const env = await setupBrowser(t);
   if (!env) return;
   const context = await env.browser.newContext({ viewport: { width: 320, height: 800 } });

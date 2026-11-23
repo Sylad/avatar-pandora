@@ -139,6 +139,14 @@ Astro 7 (L59, 17-11-2026) embarque Vite 8 : l'ancien `overrides.vite` (qui forç
 `compressHTML: true` dans `astro.config.mjs` garde les espaces entre éléments en ligne (défaut `'jsx'` d'Astro 7 :
 le texte des 81 pages changeait). Le minifieur CSS de Vite 8 fusionne `transform` et `translate` d'une même règle en
 un seul `transform` : ne pas les poser ensemble quand `translate` doit annuler un utilitaire Tailwind 4 (tiroir de la Sidebar).
+Tests navigateur sous charge (L68, 23-11-2026 : portes rouges sans changement de code quand d'autres runs chargent
+Big-Blue) : jamais un délai fixe au mur du runner avant de lire un état. Attendre l'état (`waitForFunction`), deux
+images rendues (`nextFrames`) ou la fin des transitions sur l'horloge de la page (`settleAnimations` de
+`scripts/lib/e2e-dist.mjs`, qui rend aussi leur durée propre pour garder une exigence de temps) ; un délai exigé se
+mesure dans la page (`performance.now`, temps de la scène comme `__eywaWater.time`), pas avec `Date.now` du runner.
+Les délais de Playwright sont relevés dans `setupBrowser` (120 s par action, 180 s par navigation) : ce sont des
+garde-fous. Éprouver une porte sous charge : `node scripts/lib/charge.mjs 48 1800 &` (fils de calcul, stress-ng absent)
+puis la porte ; aucun chiffre qui en sort ne mesure la fluidité.
 `EYWA_E2E_SHOTS=<dossier>` enregistre des captures de /nouveautes/ à 1440, 390 et 320 px.
 
 ⚠ ClientRouter : un script `is:inline` identique sur toutes les pages ne s'exécute qu'au premier

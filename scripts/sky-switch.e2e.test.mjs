@@ -35,7 +35,7 @@ async function newPage(env, { width, height, reducedMotion = 'no-preference', bi
 
 const inside = (b, w, h) => b && b.x >= 0 && b.y >= 0 && b.x + b.width <= w + 0.5 && b.y + b.height <= h + 0.5;
 
-test('réglage jour et nuit : panneau dans la fenêtre, ordre du focus, rien de masqué (L35 r1)', { timeout: 900_000 }, async (t) => {
+test('réglage jour et nuit : panneau dans la fenêtre, ordre du focus, rien de masqué (L35 r1)', { timeout: 1_800_000 }, async (t) => {
   const env = await setupBrowser(t);
   if (!env) return;
 
@@ -76,7 +76,9 @@ test('réglage jour et nuit : panneau dans la fenêtre, ordre du focus, rien de 
         for (const [label, mode] of [['Nuit', 'nuit'], ['Jour', 'jour'], ['Selon ton heure', 'auto']]) {
           const l = page.locator('#eywa-sky-panel label', { hasText: new RegExp(`^\\s*${label}\\s*$`) });
           try {
-            await l.click({ timeout: 3000 });
+            // L68 : 30 s (et non 3) pour que Playwright voie le choix stable sur deux images sous charge ; un choix
+            // recouvert échoue toujours (le clic attend que le point visé soit le libellé).
+            await l.click({ timeout: 30_000 });
             const got = await page.evaluate(() => document.documentElement.dataset.skyMode);
             if (got !== mode) failures.push(`${tag} : « ${label} » → ${got}`);
           } catch (e) {

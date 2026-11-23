@@ -95,8 +95,11 @@ test('eau vivante sur les fiches de l’océan (L36)', { timeout: 300_000 }, asy
     const x = b.x + b.width * 0.45, y = b.y + b.height * 0.5;
     const r = Math.min(b.height / 2 - 2, 64);
     const before = await changedShare(page, x, y, r);
+    // L68 : 250 ms de la SCÈNE après le toucher (temps de l'eau, qui avance de 50 ms au plus par image), plus 250 ms au
+    // mur : sous charge, la page rendait trop peu d'images et l'anneau mesuré n'avait pas encore grandi.
+    const t0 = (await stats(page)).time;
     await page.touchscreen.tap(x, y);
-    await page.waitForTimeout(250);
+    await page.waitForFunction((t) => window.__eywaWater.time >= t + 250, t0);
     const after = await changedShare(page, x, y, r);
     const s = await stats(page);
     t.diagnostic(`pixels changés autour du doigt : ${(after * 100).toFixed(1)} % (plancton seul : ${(before * 100).toFixed(1)} %)`);
@@ -134,9 +137,15 @@ test('eau vivante sur les fiches de l’océan (L36)', { timeout: 300_000 }, asy
   await t.test('sans rien faire, une goutte tombe et le plancton dérive', async () => {
     const { context, page } = await open(env, '/films/voie-de-leau/');
     if (!(await stats(page)).gl) { await context.close(); return; }
-    await page.waitForFunction(() => (window.__eywaWater?.drops ?? 0) > 0, null, { timeout: 15_000 });
-    const f0 = (await stats(page)).frames;
-    await page.waitForTimeout(600);
+    // L68 : la première goutte tombe à 1,8 s du temps de l'eau (FIRST_DROP_MS), qui avance de 50 ms au plus par image ;
+    // sous charge (peu d'images), 15 s au mur n'y suffisaient pas. On attend la goutte (délai du test) et on vérifie
+    // qu'elle est tombée sans geste, au temps de la scène prévu.
+    await page.waitForFunction(() => (window.__eywaWater?.drops ?? 0) > 0);
+    const s1 = await stats(page);
+    assert.equal(s1.touches, 0, 'goutte attendue sans geste');
+    t.diagnostic(`première goutte vue à ${Math.round(s1.time)} ms du temps de l’eau`);
+    const f0 = s1.frames;
+    await page.waitForFunction((t) => window.__eywaWater.time >= t + 600, s1.time, { timeout: 60_000 }).catch(() => {});
     assert.ok((await stats(page)).frames > f0, 'le plancton ne bouge pas');
     await context.close();
   });

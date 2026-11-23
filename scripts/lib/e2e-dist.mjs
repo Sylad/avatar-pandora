@@ -52,6 +52,23 @@ export async function setupBrowser(t, { scrollbars = false } = {}) {
     t.skip(`Chromium indisponible (${String(e.message).split('\n')[0]})`);
     return null;
   }
+  // Délais par défaut de Playwright (30 s) relevés (L68) : ce sont des garde-fous contre un blocage, pas une exigence.
+  // Sous charge 40-70 (autres runs sur Big-Blue), un `goto` jusqu'à `load` ou une action dont Playwright attend la
+  // stabilité sur deux images dépassait 30 s sans aucun défaut de la page ; le délai du test borne toujours l'ensemble.
+  const newContext = browser.newContext.bind(browser);
+  browser.newContext = async (options) => {
+    const context = await newContext(options);
+    context.setDefaultTimeout(120_000);
+    context.setDefaultNavigationTimeout(180_000);
+    return context;
+  };
+  const newPage = browser.newPage.bind(browser);
+  browser.newPage = async (options) => {
+    const page = await newPage(options);
+    page.context().setDefaultTimeout(120_000);
+    page.context().setDefaultNavigationTimeout(180_000);
+    return page;
+  };
   const server = await serveDist();
   t.after(async () => {
     await browser.close();
@@ -66,6 +83,28 @@ export async function setupBrowser(t, { scrollbars = false } = {}) {
 //   `scrollIntoViewIfNeeded` (qui en attendent une) dépassaient leur délai de 30 s.
 // - Après un redimensionnement : l'événement `resize` et les rappels ResizeObserver partent au rendu d'une image,
 //   pas après un délai fixe ; deux images garantissent qu'ils ont tourné.
+// Attend la FIN des transitions et animations finies (iterations ≠ Infinity) de l'élément `selector` n° `index` et de
+// ses descendants, pseudo-éléments compris, sur l'horloge de la page (L68) — au lieu d'un délai fixe au mur du runner :
+// sous charge, la page produit peu d'images et une transition de 700 ms n'avait parfois pas commencé 900 ms après le
+// survol (brightness encore 0,55). Renvoie la durée PROPRE de chacune, lue dans la page ({ prop, end } : délai +
+// durée active en ms, `prop` = propriété de la transition ou nom de l'animation), pour que le test garde son exigence
+// de temps (ex. « éclairée en 900 ms ») sans la mesurer à la montre de Playwright. Appeler après le geste (et après
+// `nextFrames` si le geste passe par un état CSS comme :hover) : getAnimations() recalcule le style et crée les transitions.
+export function settleAnimations(page, selector, index = 0) {
+  return page.evaluate(async ([sel, i]) => {
+    const el = document.querySelectorAll(sel)[i];
+    const finite = el.getAnimations({ subtree: true })
+      .filter((a) => a.effect && a.effect.getComputedTiming().iterations !== Infinity);
+    const timings = finite.map((a) => ({
+      prop: a.transitionProperty ?? a.animationName ?? '',
+      end: a.effect.getComputedTiming().endTime,
+    }));
+    // Une transition remplacée (état changé entre-temps) rejette `finished` : elle ne bloque pas l'attente.
+    await Promise.all(finite.map((a) => a.finished.catch(() => {})));
+    return timings;
+  }, [selector, index]);
+}
+
 export function nextFrames(page, n = 2) {
   return page.evaluate((count) => new Promise((resolve) => {
     const step = () => (--count <= 0 ? resolve() : requestAnimationFrame(step));
