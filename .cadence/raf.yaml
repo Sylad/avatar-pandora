@@ -536,12 +536,13 @@ lots:
     finished: 2026-11-23
   - id: L47
     title: "Vidéos, suite de L11 : descriptions des cartes coupées par line-clamp sans moyen de lire la suite (4/13 à 320 px, 1/13 à 1440 px — WCAG 1.4.10), « (nouvel onglet) » placé dans le h3 (nom du titre pour la navigation par titres) au lieu du lien ; intro de section sur les particules à 1,62:1 à traiter avec L13"
-    status: todo
+    status: doing
     estimate: 0.25
     visible: true
     created: 2026-10-31
     notes:
       - { date: 2026-10-31, text: "QA 31-10 (40f3435) : la vignette maxresdefault de muEMyQAJreg renvoie 404 (repli hqdefault avec erreur console) — servir hqdefault d'emblée ; ajouter la section /videos/ à docs/qa/expectations.md" }
+    started: 2026-11-23
   - id: L48
     title: "À propos : anneau de focus visible sur le lien en ligne « Claude Code » (au lieu du 1 px automatique) et regex du test R4 qui ignore ⚔️ (mineurs de la revue UX de L12 ; le soulignement est déjà fait par d747d61)"
     status: done
