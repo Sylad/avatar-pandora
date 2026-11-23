@@ -6,8 +6,7 @@ après chaque livraison. Site 100 % statique : pas d'API, donc aucune ligne `api
 ordres de grandeur du jour sur `frontend/dist` (Chromium sans tête, 1440×900 et 390×900), pas des seuils —
 l'attendu est la forme décrite. Les seuils chiffrés des fiches (16 px, `.entry-body` non vide) sont rejoués à chaque
 build par `scripts/qa-expectations.test.mjs` (`cd frontend && npm run test:scripts`). Non couvert : l'ambiance
-de l'accueil (boucle de 75 s, particules WebGL), `/langue/` (couverts
-par leurs propres tests de `scripts/`).
+de l'accueil (boucle de 75 s, particules WebGL), couverte par ses propres tests de `scripts/`.
 
 ## *
 - never: défilement horizontal de la page (scrollWidth == clientWidth) à 390 et à 1440 px (mesuré le 29-10 sur `/` et `/nouveautes/`) ; à 320 px aussi, **avec une barre de défilement classique** (clientWidth 305, pas 320 : un navigateur sans tête la masque et laisse passer le débordement ; `scripts/template-ux.e2e.test.mjs` R4 compare scrollWidth à clientWidth)
@@ -47,6 +46,20 @@ par leurs propres tests de `scripts/`).
 - shows: deux éléments `[lang=en]` (« Vibe coded » et « Made with curiosity »)
 - never: texte visible de `main` sous 12 px ; ChatGPT cité nulle part
 - Rejoué sur la page construite par `scripts/qa-expectations.test.mjs` (R5), sans le texte sous 12 px ni l'anneau, mesurés par la QA dans un navigateur.
+
+## /langue/
+Brouillon de la QA de L10 (30-10), revu le 23-11 (lot L46) sur `frontend/dist` (Chromium sans tête, 320, 390 et 1440 px) : chaque attendu ci-dessous y a été mesuré.
+- shows: le titre de l'onglet « Langue Na'vi — Eywa », `html lang=fr` ; un seul `h1` « La langue Na'vi » ; cinq `h2` dans l'ordre : Une langue, pas un effet sonore ; Alphabet & sons ; Grammaire en cinq points ; Lexique de base ; Pour aller plus loin
+- shows: un lien « Aller au contenu » premier arrêt de Tab, qui place le focus sur `main#contenu` ; repères nommés sans doublon (`aside` aria-label « Navigation du codex », `nav` aria-label « Sections du codex »)
+- shows: 5 liens sortants dans l'`article` (`a[target=_blank]`, `rel=noopener`) avec un vrai `href` — naviteri.org et learnnavi.org dans l'introduction, puis naviteri.org, learnnavi.org et le Wiktionary (`en.wiktionary.org/wiki/Category:Na%27vi_lemmas`) sous « Pour aller plus loin » — tous soulignés (`text-decoration-line: underline`) et portant le texte caché « (nouvel onglet) » (un `.sr-only` par lien)
+- shows: le lexique en `table` nommée par `aria-labelledby="lexique"` (le `h2` « Lexique de base »), 13 lignes dans `tbody`, deux en-têtes `th scope=col` « Na'vi » et « Français »
+- shows: les mots Na'vi balisés `[lang="art-x-navi"]`, 20 en tout (13 dans le lexique, 7 dans les exemples de grammaire) ; aucune autre valeur de `lang` que `fr` et `art-x-navi`
+- shows: le pied « Source : travaux du Dr Paul Frommer + communauté Naviteri. » lisible (pas d'opacité réduite, mesuré à 1 le 30-10)
+- never: défilement horizontal à 320, 390 et 1440 px (scrollWidth == clientWidth, barre de défilement comprise : `scripts/template-ux.e2e.test.mjs` R4) ; texte visible de `main` sous 12 px (aucun le 23-11)
+- never: image cassée — la page n'a qu'une `img`, celle de la visionneuse, cachée et sans source (à ne pas compter comme cassée) ; erreur dans la console (0 aux trois largeurs le 23-11)
+- never: ChatGPT cité nulle part ; « NaN » au sens strict seulement — le motif insensible à la casse touche « consonantiques » (faux positif vu par la QA de L10)
+- Appels : site statique, aucune ligne `api:`. La page ne dépend que de ses fichiers du même site (`/_astro/*.css` et `*.js`, polices `/fonts/cormorant-garamond/` et `/fonts/orbitron/`) : 19 réponses le 23-11, aucune ≥ 400, aucun appel vers un autre domaine au chargement (les 5 liens sortants ne se chargent qu'au clic).
+- Rejoué à chaque build par `scripts/langue-ux.e2e.test.mjs` (soulignement, « (nouvel onglet) », tableau nommé à en-têtes de colonne, mots Na'vi balisés) ; le nombre exact de lignes du lexique et de mots balisés n'est mesuré que par la QA.
 
 ## /plan-de-travail/
 - shows: le titre de l'onglet « Plan de travail — Eywa » ; un seul `h1` « Ce qui se prépare » ; trois `h2` dans l'ordre, En cours, Prévu, Récemment livré, chacun avec son nombre de lots entre parenthèses quand la liste n'est pas vide (mesuré le 01-11 sur `frontend/dist`)
