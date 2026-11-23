@@ -407,12 +407,15 @@ lots:
   - id: L36
     title: "Pandora vivant 5 — eau vivante : les pages des Metkayina et de l'océan ondoient sous le doigt (anneau qui déforme l'image, plancton lumineux qui s'écarte), d'après le prototype validé le 10-10 ; ondulation à rendre plus visible (WebGL si besoin)"
     public: L'eau ondule sous le doigt
-    status: doing
+    status: done
     estimate: 0.5
     visible: true
     after: [ L17 ]
     created: 2026-10-10
     started: 2026-11-23
+    review: { date: 2026-11-23, verdict: "conforme (lead) r1 5a5da26 : Agrandir ne dépend plus de la scène (img du bandeau), montage unique par arrivée (mountedCanvas), contextlost → dropScene sans loseContext, contexte rendu si shader refusé, anneau de focus + halo, touch-action pan-y pinch-zoom ; 6 tests e2e rouges sur efeb0c4. Porte rouge du run = machine saturée (5 passages, 5e 360/360).", commit: 5a5da26a15d2899a03570a29f10dd3ab4396d126 }
+    ux: { date: 2026-11-23, verdict: "conforme (lead) : points de la revue UX r0 (tmp/ux-avatar-L36.md) traités — Agrandir en mouvement réduit/sans WebGL, focus 1.4.11/2.4.13 mesuré par test, pinch-zoom 1.4.4 ; choix « toucher = onde, Agrandir = visionneuse » gardé ; fluidité à mesurer dans le Chrome de mini-blue après livraison" }
+    finished: 2026-11-23
   - id: L37
     title: "Plan déplacé vers .cadence/raf.yaml avec raf migrate (cadence L284, L305) : --dry-run d'abord, chaque lecteur du chemin (scripts plan-data, tests, CI, CLAUDE.md, skills) mis à jour ou signalé ; un lecteur non traité (chemin construit à la main) corrigé à la main dans le même lot ; tests, build et raf check verts ; l'avertissement « ancien emplacement » disparaît"
     status: done
