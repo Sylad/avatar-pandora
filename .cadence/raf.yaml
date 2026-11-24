@@ -836,6 +836,7 @@ lots:
     notes:
       - { date: 2026-11-24, text: "Ajout du lead (24-11, revue UX L73 r2, m3) : /about/ — « refactoringui », « Finance » et « COMMUNAUTÉ » sortent de leur carte de 1 à 31 px entre 145 et 200 % de texte (320-430 px). Avancer le seuil du gabarit étroit, et mesurer dans P4 le texte contre le bord de sa carte (pas seulement le défilement de la page). Capture tmp/ux-avatar-L73-r2/about-refactoringui-385-t185-hors-carte.png" }
     started: 2026-11-24
+    review: { date: 2026-11-24, verdict: "conforme — 0 bloquant, 4 mineurs en notes (tmp/revue-avatar-L74.md) : liste des noms lue par P7 dans la table contrôlée, gabarit dual écrit deux fois, titres doublés sans CSS, rendered.html sans images", commit: 106137563a2de5d16573f7f568985670e87b6e52 }
   - id: L75
     title: "D-31 du registre parent : adopter cadence analyse (L801, cadence ≥ 2.0.18) — déclarer analyse: dans cadence.yaml avec les outils de la pile du projet (JS/TS : ESLint + typescript-eslint + eslint-plugin-sonarjs avec les seuils de cadence : max-lines 400, max-lines-per-function 80, max-depth 4, max-params 5, complexity 15, cognitive-complexity 15, plus tsc ; Python : ruff), base figée à l'existant (cadence analyse --init), aucune correction de l'existant ; la porte de cadence run le joue ensuite à chaque lot. Mesurer le temps ajouté à la porte (cible < 1 min) et le nombre de violations figées par outil, à rendre dans le rapport"
     status: todo
