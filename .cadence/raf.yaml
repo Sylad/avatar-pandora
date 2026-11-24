@@ -808,6 +808,7 @@ lots:
     status: done
     estimate: 1
     visible: true
+    delivered: { date: 2026-11-24, sha: 3dd37334805c08976da696120af8cbc4eb9e5e4e }
     created: 2026-11-24
     started: 2026-11-24
     review: { date: 2026-11-24, verdict: "r1 conforme (lead) : écouteur copy + aria-label sans U+00AD, tests C1/C2 vus rouges puis verts ; hyphens manual + 3 lettres, repli à 2 lettres avant dans les seuls titres de section (minimum typographique français, nécessaire pour L71), exception nommée « technologie humaine » 390 px 200 % ; suite 394/394", commit: 886d5699172c63aaa6f186032d07af33cad985cc }
