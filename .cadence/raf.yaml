@@ -794,11 +794,14 @@ lots:
     finished: 2026-11-24
   - id: L71
     title: "Codex à 320 px texte 200 % : 15 mots de titre cassés sans trait (« tec/hno-/logie », « hu-/main/e », « (2009/) ») depuis L70, que 816f681 évitait avec des titres plus petits — 0 mot cassé sans trait à 320 px sans réduire les titres sous le texte (revue UX r2 de L70, tmp/ux-avatar-L70-r2.md m1)"
-    status: doing
+    status: done
     estimate: 1
     visible: true
     created: 2026-11-24
     started: 2026-11-24
+    review: { date: 2026-11-24, verdict: "conforme (lead, ff56b54) : marges latérales du gabarit, du bandeau et des cartes reprises à leur taille normale quand le gabarit fait moins de 10,75 em (seulement 320 px texte 175/200 %), titres toujours en rem ; R1 étendu à 320 px (rouge avant : 14 mots), R5 à 320 px, R6 borne le resserrement ; géométrie : 0 écart hors 320 px 175/200 % sur 46 704 éléments", commit: ff56b544e0067d6c9ba97196dc3c897ffe1d5cde }
+    ux: { date: 2026-11-24, verdict: "conforme (lead, d'après les captures du run et les tests R1/R5/R6) : à 320 px texte 200 %, « tech-/nolo-/gie hu-/maine » coupé avec traits, « Avatar (2009) » entier, titres plus grands que le texte ; rien ne change de 390 à 1440 px ni à 100 %" }
+    finished: 2026-11-24
   - id: L72
     title: "Titres du codex : coupures conditionnelles (U+00AD) gardées au copier-coller et dans le nom accessible brut de Chromium, mots anglais coupés à la française (« di-rehorse », « Woods-prites », « guns-hip »), jusqu'à 5 lignes à trait de suite — retirer les U+00AD dans un écouteur copy, table d'exceptions dans titleBreaks, hyphenate-limit-chars (revue UX r2 de L70, m2 et m3)"
     status: todo
