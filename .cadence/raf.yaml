@@ -819,6 +819,7 @@ lots:
     status: done
     estimate: 1
     visible: true
+    delivered: { date: 2026-11-24, sha: 5394be08245e688f8f2cd588be43e31e0a9f02a2 }
     created: 2026-11-24
     started: 2026-11-24
     review: { date: 2026-11-24, verdict: "conforme r2 (84f0811) : 5 tests adaptés sans baisse d'exigence, title-breaks 11/11 — tmp/revue-avatar-L73-r2.md", commit: 84f08116a9634ab9180371103bf350619d42d503 }
