@@ -805,10 +805,11 @@ lots:
     finished: 2026-11-24
   - id: L72
     title: "Titres du codex : coupures conditionnelles (U+00AD) gardées au copier-coller et dans le nom accessible brut de Chromium, mots anglais coupés à la française (« di-rehorse », « Woods-prites », « guns-hip »), jusqu'à 5 lignes à trait de suite — retirer les U+00AD dans un écouteur copy, table d'exceptions dans titleBreaks, hyphenate-limit-chars (revue UX r2 de L70, m2 et m3)"
-    status: todo
+    status: doing
     estimate: 1
     visible: true
     created: 2026-11-24
+    started: 2026-11-24
 acknowledged:
   - { sha: cef464dffb920ea7b161b1b0e06fe54d3efbdcc4, subject: "plan: verdicts UX de Sylvain enregistrés, trois bloquants de la revue des Personnages clos", date: 2026-10-10, reason: entretien du plan et régénération des Nouveautés }
   - { sha: 4bc75e983dc5bff0366190611a9c578d4ed071c8, subject: "plan: prototype Pandora vivant clos, cinq idées retenues par Sylvain posées après les images", date: 2026-10-10, reason: entretien du plan et régénération des Nouveautés (fichier désormais déclaré dérivé) }
