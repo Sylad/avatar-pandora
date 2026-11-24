@@ -816,13 +816,14 @@ lots:
     finished: 2026-11-24
   - id: L73
     title: "L73 Page /langue/ à 320 px texte 175 et 200 % : titres coupés sans trait (h1 « lang|ue », « Na'|vi » ; h2 « Alphab|et », « Gramm|aire », « Lexiqu|e »), hyphens: manual sans titleBreaks, overflow-wrap: anywhere, défilement horizontal 333 > 305 px — appliquer à /langue/ (et à toute page hors codex qui a le même défaut) la même règle que L71/L72 ; QA L71 contre-vérifiée par le lead le 24-11 (tmp/lead-avatar-langue-320-200.png)"
-    status: doing
+    status: done
     estimate: 1
     visible: true
     created: 2026-11-24
     started: 2026-11-24
-    review: { date: 2026-11-24, verdict: "conforme (lead d'après cadence:code-reviewer, tmp/revue-avatar-L73.md) : règle de coupure partagée (titleBreaks), 5 tests adaptés sans perte, nouveau test sur le rendu ; mineurs : entrée linksthesun morte, exemption /nouveautes/ trop large dans P1, règle « adresse » écrite deux fois", commit: d547d4aa95afaddca7a5320a188fd9d350aa58f2 }
+    review: { date: 2026-11-24, verdict: "conforme r2 (84f0811) : 5 tests adaptés sans baisse d'exigence, title-breaks 11/11 — tmp/revue-avatar-L73-r2.md", commit: 84f08116a9634ab9180371103bf350619d42d503 }
     ux: { date: 2026-11-24, verdict: "conforme r2 après 1 correction mineure (m3 : sur /about/, « refactoringui », « Finance », « COMMUNAUTÉ » sortent de leur carte de 1 à 31 px entre 145 et 200 %, 320-430 px, sans défilement de page — renvoyé à L74) ; M1, m1, m2 et la note de r1 corrigés — tmp/ux-avatar-L73-r2.md" }
+    finished: 2026-11-24
   - id: L74
     title: "Fiches du codex (~70) à 320 px, texte à 175 et 200 % : le h1 entry-title et les intertitres Markdown se coupent sans trait d'union — même règle que les titres hors codex (L73, titleBreaks partagé), aucun défilement horizontal ; avec : « bioluminescente » et « permanent » cassés sans trait dans le texte courant de /nouveautes/ ; mineurs de la revue L73 (entrée linksthesun morte, exemption /nouveautes/ trop large dans le test P1, règle « adresse » écrite deux fois)"
     status: todo
