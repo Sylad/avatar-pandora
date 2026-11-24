@@ -860,6 +860,12 @@ lots:
     notes:
       - { date: 2026-11-24, text: "Notes de la revue de code r2 de L74 (24-11) : ProseText.astro:14 refait segmentHtml (le commentaire de prose-breaks.ts:72 dit « partagé », c'est faux) ; seuil « 5 lettres ou moins » (prose-breaks.ts:28) et « 6 lettres ou plus » (CLAUDE.md:238) périmés depuis « 8 4 4 » ; nom élidé collé à une espace insécable non protégé ; regex de P8 sans échappement" }
     started: 2026-11-24
+  - id: L78
+    title: "QA de L74 en prod (24-11, tmp/qa-avatar-L74.md) : à 320 px et texte à 200 %, /films/avatar-2009/ coupe le h1 « Avata|r » et les h2 « production », « synopsis » sans trait d'union, /films/ coupe son h1 lettre par lettre (« Troi|s », « œuv|res ») — ces pages ont hyphens:manual + overflow-wrap:anywhere au lieu de la règle des fiches (titleBreaks) ; mineur : /about/ « refactorin|gui.com » sans trait. Appliquer la même règle à toutes les pages (test sur les 81 routes), pas seulement aux fiches du codex. Bruit à noter : /bestiaire/pali/ a répondu 500 une fois puis 200"
+    status: todo
+    estimate: 0.5
+    visible: true
+    created: 2026-11-24
 acknowledged:
   - { sha: cef464dffb920ea7b161b1b0e06fe54d3efbdcc4, subject: "plan: verdicts UX de Sylvain enregistrés, trois bloquants de la revue des Personnages clos", date: 2026-10-10, reason: entretien du plan et régénération des Nouveautés }
   - { sha: 4bc75e983dc5bff0366190611a9c578d4ed071c8, subject: "plan: prototype Pandora vivant clos, cinq idées retenues par Sylvain posées après les images", date: 2026-10-10, reason: entretien du plan et régénération des Nouveautés (fichier désormais déclaré dérivé) }
