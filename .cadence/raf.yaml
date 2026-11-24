@@ -785,6 +785,7 @@ lots:
     status: done
     estimate: 1
     visible: true
+    delivered: { date: 2026-11-24, sha: c09bd8386107171b9dc45a02e0e2ab34f449c831 }
     created: 2026-11-23
     started: 2026-11-23
     ux: { date: 2026-11-24, verdict: "conforme (ux-reviewer r2, tmp/ux-avatar-L70-r2.md) : B1 levé — h1 et titres de carte ×1,75/×2,00 de 320 à 1440 px (390 px 200 % : h1 64,8 px, carte 39,4 px) ; 150 coupures toutes avec trait, 0 mot cassé sans trait, 0 défilement de 390 à 1440 ; 0 césure à 100 %, géométrie identique sur 10 950 éléments ; mineurs en sous-lots (320 px, U+00AD au copier, coupures discutables)" }
