@@ -316,6 +316,16 @@ const spores = Array.from({ length: SPORE_COUNT }, (_, i) => {
       hyphens: manual;
     }
   }
+  /* L74 : les noms de personnes ne se coupent plus. « Ateyo'itan » (235 px pour une ligne de 231 à 320 et 390 px texte
+     200 %) se cassait « Ateyo'ita / n » : sous 7 em de contenu de carte (6,6 em à 320 et 390 px texte 200 % ; ailleurs le
+     nom tient à 93 % au plus), lettres à leur espacement normal, 16 px gagnés, le nom tient à 93 %. Pas plus large : à
+     390 px texte 175 % (8,2 em), les lignes d'« Ilu — la monture aquatique des Metkayina » changeaient et trois
+     finissaient de suite par un trait. */
+  @container eywa-card (max-width: 7em) {
+    .entry-card__title {
+      letter-spacing: normal;
+    }
+  }
 
   .entry-card__summary {
     font-family: var(--font-body);

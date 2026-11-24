@@ -5,19 +5,36 @@
 // « LinksTheSun »). Attendu, comme les 7 sections du codex (L71, L72) : coupures aux seuls U+00AD de titleBreaks,
 // 3 lettres de chaque côté (repli à 2 avant dans un titre de section seulement), au plus 2 lignes à trait de suite,
 // aucun U+00AD copié ni dans un nom accessible, aucun défilement horizontal. Rien ne change à 100 %.
+// L74 : mêmes règles sur les ~70 fiches du codex (h1, intertitres, texte courant : P7), le texte courant des Nouveautés
+// n'est plus exempté (P1), et le texte d'À propos ne sort plus de sa carte (P4).
 // Texte agrandi joué comme les revues : taille de police de <html>. Lit frontend/dist ; skip sans playwright-core.
 import test from 'node:test';
+import { readdirSync } from 'node:fs';
 import assert from 'node:assert/strict';
-import { nextFrames, setupBrowser } from './lib/e2e-dist.mjs';
+import { DIST, nextFrames, setupBrowser } from './lib/e2e-dist.mjs';
 import { titleLines } from './lib/title-lines.mjs';
 import { wordBreaks } from './lib/word-breaks.mjs';
-import { syllableBreaks } from '../frontend/src/lib/title-breaks.ts';
+import { EXCEPTIONS, addressParts, syllableBreaks } from '../frontend/src/lib/title-breaks.ts';
 
 const SHY = '­';
 const PAGES = ['/langue/', '/about/', '/404.html', '/nouveautes/', '/plan-de-travail/', '/videos/', '/'];
 // Titres de section (repli à 2 lettres permis) : le h1 de /langue/ (section VI) et le bandeau de /videos/.
 const SECTION_TITLES = new Set(["La langue Na'vi", 'Les voix qui ont fait grandir Pandora hors écran']);
 const TITLES = ['h1', 'h2', 'h3', '.about-site .block.font-display', '.channel-link__name', '.channel-card__name'];
+
+// Les fiches des 7 sections du codex, lues dans frontend/dist.
+const CODEX_SECTIONS = ['pandora', 'clans', 'bestiaire', 'flore', 'personnages', 'films', 'engins'];
+const FICHES = CODEX_SECTIONS.flatMap((s) => readdirSync(DIST + s, { withFileTypes: true }).filter((d) => d.isDirectory()).map((d) => `/${s}/${d.name}/`));
+// Noms de personnes, jamais coupés (L73 m2, L74) : les entrées de EXCEPTIONS sans coupure, lues dans le texte affiché.
+const NEVER_CUT = new Set(Object.entries(EXCEPTIONS).filter(([, v]) => !v.includes('-')).map(([k]) => k));
+
+// Texte affiché d'un élément (L74 : un titre de fiche porte deux versions, l'une en `display: none`).
+function visibleText(el) {
+  const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+  let text = '';
+  for (let n = walker.nextNode(); n; n = walker.nextNode()) if (n.parentElement.checkVisibility()) text += n.data;
+  return text;
+}
 
 async function setText(page, factor) {
   await page.evaluate((f) => { document.documentElement.style.fontSize = `calc(109.375% * ${f})`; }, factor);
@@ -54,14 +71,16 @@ test('P1 — 320 et 390 px, texte 125 à 200 % : aucun défilement de côté, ti
           }
           if (r.dashRun > 2) failures.push(`${at} : ${r.dashRun} lignes à trait de suite — ${r.lines.join(' / ')}`);
         }
-        // Hors du texte courant des Nouveautés (césure du navigateur, « anywhere » en secours), aucun mot cassé sans trait.
+        // Aucun mot cassé sans trait, texte courant des Nouveautés compris (L74 : « bioluminescen|te » y était cassé).
         await page.evaluate(() => { document.body.id ||= 'eywa-body'; });
         const { broken } = await wordBreaks(page, await page.evaluate(() => document.body.id));
         // Une adresse (« refactoringui.com », À propos) passe à la ligne avant son point, puis se coupe sans trait si son nom
-        // ne tient pas : jamais de trait ajouté dans une adresse.
-        const domains = await page.evaluate(() => [...document.querySelectorAll('.about-source-name')].map((e) => e.textContent.trim()).filter((s) => /\.[a-z]{2,4}\b/.test(s)));
+        // ne tient pas : jamais de trait ajouté dans une adresse. Même règle que la page (addressParts).
+        const names = await page.evaluate(() => [...document.querySelectorAll('.about-source-name')]
+          .map((e) => [...e.childNodes].filter((n) => !n.classList?.contains('sr-only')).map((n) => n.textContent).join('').trim()));
+        const domains = names.filter((n) => addressParts(n)).map((n) => addressParts(n).join(''));
         const words = broken.filter((w) => !domains.some((d) => d.startsWith(w.split(' ')[0])));
-        if (path !== '/nouveautes/' && words.length) failures.push(`${where} : mots cassés ${words.join(', ')}`);
+        if (words.length) failures.push(`${where} : mots cassés ${words.join(', ')}`);
       }
     }
     await page.close();
@@ -70,31 +89,36 @@ test('P1 — 320 et 390 px, texte 125 à 200 % : aucun défilement de côté, ti
   assert.deepEqual(failures, [], `${failures.length} défaut(s) :\n${failures.slice(0, 40).join('\n')}`);
 });
 
-test('P2 — /langue/ à 320 px texte 200 % : titre copié sans U+00AD, noms accessibles des titres et liens sans U+00AD', { timeout: 300_000 }, async (t) => {
+test('P2 — /langue/ et une fiche à 320 px texte 200 % : titres copiés sans U+00AD, noms accessibles des titres et liens sans U+00AD', { timeout: 300_000 }, async (t) => {
   const env = await setupBrowser(t);
   if (!env) return;
   const failures = [];
   const context = await env.browser.newContext({ viewport: { width: 320, height: 900 }, permissions: ['clipboard-read', 'clipboard-write'], reducedMotion: 'reduce' });
   const page = await context.newPage();
-  await page.goto(env.base + '/langue/', { waitUntil: 'load' });
-  await setText(page, 2);
-  assert.ok(await page.evaluate(() => document.querySelector('h1').textContent.includes('­')), 'le h1 de /langue/ ne porte plus de coupure');
-  await page.evaluate(() => {
-    const range = document.createRange();
-    range.selectNodeContents(document.querySelector('h1'));
-    getSelection().removeAllRanges();
-    getSelection().addRange(range);
-  });
-  await page.keyboard.press('ControlOrMeta+C');
-  const copied = await page.evaluate(async () => {
-    const out = {};
-    for (const item of await navigator.clipboard.read()) for (const type of item.types) out[type] = await (await item.getType(type)).text();
-    return out;
-  });
-  if (copied['text/plain'] !== "La langue Na'vi") failures.push(`h1 copié : ${JSON.stringify(copied['text/plain'])}`);
-  if (!copied['text/html'] || copied['text/html'].includes(SHY)) failures.push(`h1 copié (HTML) : ${JSON.stringify(copied['text/html'])}`);
+  // L74 : h1 et intertitre d'une fiche (deux versions dans le DOM, une seule affichée : copiée une fois).
+  const COPIES = [['/langue/', 'h1', "La langue Na'vi"], ['/pandora/bioluminescent-night/', 'h1', "La nuit bioluminescente — quand Pandora s'allume"],
+    ['/bestiaire/akula/', '.entry-body h2', 'Morphologie']];
+  for (const [path, sel, expected] of COPIES) {
+    await page.goto(env.base + path, { waitUntil: 'load' });
+    await setText(page, 2);
+    assert.ok(await page.evaluate(([s, f]) => eval(`(${f})`)(document.querySelector(s)).includes('­'), [sel, visibleText.toString()]), `${path} ${sel} ne porte plus de coupure`);
+    await page.evaluate((s) => {
+      const range = document.createRange();
+      range.selectNodeContents(document.querySelector(s));
+      getSelection().removeAllRanges();
+      getSelection().addRange(range);
+    }, sel);
+    await page.keyboard.press('ControlOrMeta+C');
+    const copied = await page.evaluate(async () => {
+      const out = {};
+      for (const item of await navigator.clipboard.read()) for (const type of item.types) out[type] = await (await item.getType(type)).text();
+      return out;
+    });
+    if (copied['text/plain']?.trim() !== expected) failures.push(`${path} ${sel} copié : ${JSON.stringify(copied['text/plain'])}`);
+    if (!copied['text/html'] || copied['text/html'].includes(SHY)) failures.push(`${path} ${sel} copié (HTML) : ${JSON.stringify(copied['text/html'])}`);
+  }
   const cdp = await context.newCDPSession(page);
-  for (const path of PAGES) {
+  for (const path of [...PAGES, '/pandora/bioluminescent-night/', '/bestiaire/akula/', '/personnages/tsutey/', '/pandora/sites-sacres/']) {
     await page.goto(env.base + path, { waitUntil: 'load' });
     await setText(page, 2);
     const { nodes } = await cdp.send('Accessibility.getFullAXTree');
@@ -102,8 +126,8 @@ test('P2 — /langue/ à 320 px texte 200 % : titre copié sans U+00AD, noms acc
       if (['heading', 'link'].includes(n.role?.value) && n.name?.value?.includes(SHY)) failures.push(`${path} ${n.role.value} « ${n.name.value.replaceAll(SHY, '·')} »`);
     }
     // Chaque titre coupé garde son nom exact (texte sans U+00AD).
-    const titles = await page.evaluate(() => [...document.querySelectorAll('h1, h2, h3')].filter((h) => h.textContent.includes('­'))
-      .map((h) => h.textContent.replaceAll('­', '').replace(/[ \t\n\u00a0\u202f]+/g, ' ').trim()));
+    const titles = await page.evaluate((f) => [...document.querySelectorAll('h1, h2, h3')].map(eval(`(${f})`)).filter((t) => t.includes('­'))
+      .map((t) => t.replaceAll('­', '').replace(/[ \t\n\u00a0\u202f]+/g, ' ').trim()), visibleText.toString());
     // Espaces insécables (« : » des titres, L73 r1 ; guillemets) lues comme des espaces des deux côtés.
     const names = new Set(nodes.filter((n) => n.role?.value === 'heading').map((n) => n.name?.value?.replace(/[\u00a0\u202f]/g, ' ')));
     for (const title of titles) if (!names.has(title)) failures.push(`${path} : aucun titre nommé « ${title} »`);
@@ -118,10 +142,12 @@ test('P3 — texte 100 %, 390 à 1440 px : aucun titre coupé, aucun mot en boî
   const failures = [];
   for (const width of [390, 768, 1024, 1440]) {
     const page = await env.browser.newPage({ viewport: { width, height: 900 } });
-    for (const path of [...PAGES, '/flore/', '/engins/', '/films/']) {
+    // L74 : des fiches aussi (rendu identique à celui d'avant L74 à 100 %, intertitre « Iknimaya » de /pandora/sites-sacres/
+    // compris : il remplit sa ligne au pixel près à 1024 px).
+    for (const path of [...PAGES, '/flore/', '/engins/', '/films/', '/pandora/sites-sacres/', '/pandora/bioluminescent-night/', '/bestiaire/akula/', '/personnages/grace/']) {
       await page.goto(env.base + path, { waitUntil: 'load' });
       await setText(page, 1);
-      for (const r of await titleLines(page, [...TITLES, '#contenu .entry-card__title'])) {
+      for (const r of await titleLines(page, [...TITLES, '#contenu .entry-card__title', '#contenu .entry-body h2', '#contenu .entry-body h3'])) {
         if (r.cuts.length) failures.push(`${path} @${width}px : « ${r.lines.join(' / ')} » coupé`);
       }
       const split = await page.evaluate(() => [...document.querySelectorAll('.title-word')].filter((w) => w.getClientRects().length > 1 || w.getBoundingClientRect().height > parseFloat(getComputedStyle(w).fontSize) * 2).map((w) => w.textContent));
@@ -136,11 +162,15 @@ test('P3 — texte 100 %, 390 à 1440 px : aucun titre coupé, aucun mot en boî
 // 375 px 180 % +13, 390 px 185 % +11, 414 px 195 % +15 ; « refactoringui.com » sortait de sa carte), juste sous le seuil
 // du gabarit étroit. Attendu (WCAG 1.4.10) : aucun défilement horizontal de 100 à 200 %, par pas de 5 %, aux largeurs
 // citées ; les autres pages sont balayées aussi.
-test('P4 — 320, 375, 390, 414 et 768 px, texte 100 à 200 % par pas de 5 : aucune page ne défile de côté', { timeout: 900_000 }, async (t) => {
+// Revue UX r2 de L73, m3 : sur /about/, « refactoringui », « Finance » et « COMMUNAUTÉ » sortaient de leur carte de 1 à
+// 31 px entre 145 et 200 % de texte, de 320 à 430 px, sans que la page défile (le contenu de la carte débordait dans la
+// marge). Mesuré ici : le bord droit de chaque ligne de texte contre le bord intérieur de sa carte.
+test('P4 — 320 à 768 px, texte 100 à 200 % par pas de 5 : aucune page ne défile de côté, texte d’À propos dans sa carte', { timeout: 900_000 }, async (t) => {
   const env = await setupBrowser(t);
   if (!env) return;
   const failures = [];
-  for (const width of [320, 375, 390, 414, 768]) {
+  let measured = 0;
+  for (const width of [320, 375, 385, 390, 414, 430, 768, 1024]) {
     const page = await env.browser.newPage({ viewport: { width, height: 900 }, reducedMotion: 'reduce' });
     for (const path of PAGES) {
       await page.goto(env.base + path, { waitUntil: 'load' });
@@ -148,10 +178,37 @@ test('P4 — 320, 375, 390, 414 et 768 px, texte 100 à 200 % par pas de 5 : auc
         await setText(page, pct / 100);
         const [sw, cw] = await page.evaluate(() => [document.documentElement.scrollWidth, document.documentElement.clientWidth]);
         if (sw > cw) failures.push(`${path} @${width}px texte ${pct} % : la page défile de côté (${sw} px pour ${cw})`);
+        if (path !== '/about/') continue;
+        const out = await page.evaluate(() => {
+          const res = [];
+          let n = 0;
+          for (const card of document.querySelectorAll('.about-card, .about-site, .about-box, .about-stack > div')) {
+            const cs = getComputedStyle(card);
+            const box = card.getBoundingClientRect();
+            const right = box.right - parseFloat(cs.borderRightWidth);
+            const left = box.left + parseFloat(cs.borderLeftWidth);
+            const walker = document.createTreeWalker(card, NodeFilter.SHOW_TEXT);
+            for (let t = walker.nextNode(); t; t = walker.nextNode()) {
+              if (!t.data.trim() || t.parentElement.closest('.sr-only, svg') || !t.parentElement.checkVisibility()) continue;
+              const r = document.createRange();
+              r.selectNodeContents(t);
+              for (const rect of r.getClientRects()) {
+                if (rect.width < 0.5) continue;
+                n++;
+                const over = Math.max(rect.right - right, left - rect.left);
+                if (over > 0.5) res.push(`« ${t.data.trim().slice(0, 30)} » sort de sa carte (${card.className.split(' ')[0]}) de ${over.toFixed(1)} px`);
+              }
+            }
+          }
+          return { res, n };
+        });
+        measured += out.n;
+        for (const o of out.res) failures.push(`${path} @${width}px texte ${pct} % : ${o}`);
       }
     }
     await page.close();
   }
+  assert.ok(measured > 1000, `${measured} lignes de texte mesurées dans les cartes d'À propos seulement`);
   assert.deepEqual(failures, [], `${failures.length} défaut(s) :\n${failures.slice(0, 40).join('\n')}`);
 });
 
@@ -248,4 +305,55 @@ test('P6 — /videos/ : titres anglais coupés aux seules syllabes anglaises', {
   }
   await page.close();
   assert.deepEqual(failures, [], failures.join('\n'));
+});
+
+// L74 — les ~70 fiches du codex à 320 et 390 px, texte 125 à 200 % : le h1 et les intertitres se coupaient sans trait
+// (« Morpholog|ie », « propulsi|on », 549 défauts mesurés avant L74) et 29 réglages défilaient de côté (« qu'approxima-
+// tivement », 360 px pour 320). Attendu (règle de L73) : aucun défilement de côté ; un titre ne se coupe qu'à un U+00AD,
+// avec son trait, 3 lettres de chaque côté, et seulement si le mot ne tient pas sur la ligne ; un nom de personne jamais ;
+// aucun mot du texte courant cassé sans trait (césure française du navigateur).
+test('P7 — fiches du codex, 320 et 390 px, texte 125 à 200 % : titres et texte coupés à une syllabe, avec un trait, sans défilement', { timeout: 1_800_000 }, async (t) => {
+  const env = await setupBrowser(t);
+  if (!env) return;
+  assert.ok(FICHES.length >= 60, `${FICHES.length} fiches seulement dans dist/`);
+  const failures = [];
+  let cuts = 0;
+  for (const width of [320, 390]) {
+    const page = await env.browser.newPage({ viewport: { width, height: 900 }, reducedMotion: 'reduce' });
+    for (const path of FICHES) {
+      await page.goto(env.base + path, { waitUntil: 'load' });
+      for (const factor of [1.25, 1.5, 1.75, 2]) {
+        await setText(page, factor);
+        const where = `${path} @${width}px texte ${factor * 100} %`;
+        const [sw, cw] = await page.evaluate(() => [document.documentElement.scrollWidth, document.documentElement.clientWidth]);
+        if (sw > cw) failures.push(`${where} : la page défile de côté (${sw} px pour ${cw})`);
+        for (const r of await titleLines(page, ['#contenu h1', '#contenu .entry-body h2', '#contenu .entry-body h3', '#contenu .entry-body h4'])) {
+          for (const c of r.cuts) {
+            cuts++;
+            const at = `${where} « ${c.word} »`;
+            if (c.kind !== 'shy') failures.push(`${at} coupé sans trait`);
+            else if (c.before < 3 || c.after < 3) failures.push(`${at} : ${c.before}/${c.after} lettres de part et d'autre`);
+            const word = c.word.replace('-', '').toLowerCase().replace(/^[ld][’']/, '').replace(/[^\p{L}'’]/gu, '');
+            if (NEVER_CUT.has(word.replace(/[’']s$/, ''))) failures.push(`${at} : nom de personne coupé`);
+          }
+        }
+        // Un mot de titre en boîte ne se coupe que s'il est plus large que la ligne (arrondi : une demi-unité de marge).
+        const fits = await page.evaluate(() => [...document.querySelectorAll('#contenu .title-word')].filter((w) => w.checkVisibility()).flatMap((w) => {
+          const lh = parseFloat(getComputedStyle(w).lineHeight) || parseFloat(getComputedStyle(w).fontSize) * 1.2;
+          if (w.getBoundingClientRect().height < lh * 1.5) return [];
+          const line = w.getBoundingClientRect().width;
+          w.style.width = 'max-content';
+          const natural = w.getBoundingClientRect().width;
+          w.style.width = '';
+          return natural <= line - 0.5 ? [`« ${w.textContent.replaceAll('­', '')} » coupé alors qu'il tient (${natural.toFixed(0)} px, ligne ${line.toFixed(0)})`] : [];
+        }));
+        for (const f of fits) failures.push(`${where} : ${f}`);
+        const { broken } = await wordBreaks(page);
+        if (broken.length) failures.push(`${where} : mots cassés ${broken.join(', ')}`);
+      }
+    }
+    await page.close();
+  }
+  assert.ok(cuts > 100, `${cuts} coupures seulement : la mesure ne voit plus les titres coupés`);
+  assert.deepEqual(failures, [], `${failures.length} défaut(s) :\n${failures.slice(0, 40).join('\n')}`);
 });

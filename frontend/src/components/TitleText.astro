@@ -6,6 +6,11 @@
  * le texte copié en est purgé (lib/soft-hyphen-copy.ts). `section` : titre d'une section du codex, repli à 2 lettres
  * permis pour un mot qui n'a aucune coupure à 3 lettres. `lang="en"` : titre anglais, coupé à la seule table anglaise
  * (EN_EXCEPTIONS), le titre (ou un parent) porte lui-même `lang="en"`.
+ *
+ * `dual` (L74, titres des fiches du codex) : le texte d'origine (`.title-plain`) et sa version en boîtes
+ * (`.title-boxed`), l'une ou l'autre affichée selon le gabarit (global.css, seuil de 17,5 em). Les boîtes ne servent
+ * que dans un gabarit étroit pour son texte ; ailleurs, même en `display: contents`, elles changeaient l'arrondi d'une
+ * ligne pleine au pixel près (« Iknimaya — Le chemin vers le ciel », 499 px pour 499, passait sur deux lignes à 1024 px).
  */
 import { titleSegments, type SegmentOptions } from '../lib/title-breaks';
 
@@ -13,8 +18,12 @@ interface Props {
   text: string;
   section?: boolean;
   lang?: SegmentOptions['lang'];
+  dual?: boolean;
 }
-const { text, section = false, lang } = Astro.props;
+const { text, section = false, lang, dual = false } = Astro.props;
 const segments = titleSegments(text, { lang, ...(section ? { fallbackBefore: 2 } : {}) });
+const boxed = segments.some((s) => s.word);
 ---
-{segments.map((s) => (s.word ? <span class="title-word">{s.text}</span> : s.text))}
+{dual && boxed
+  ? <Fragment><span class="title-plain">{text}</span><span class="title-boxed">{segments.map((s) => (s.word ? <span class="title-word">{s.text}</span> : s.text))}</span></Fragment>
+  : dual ? text : segments.map((s) => (s.word ? <span class="title-word">{s.text}</span> : s.text))}

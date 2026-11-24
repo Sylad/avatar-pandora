@@ -144,6 +144,27 @@
     font-size: clamp(1.3rem, 10cqi, 2.25rem);
     line-height: 1.15;
   }
+  /*
+    L74 — texte courant d'une fiche dans une colonne très étroite pour son texte (moins de 10 em de la police de
+    l'article : 320 px dès 150 %, 390 px dès 175 %, 414 px à 200 % ; 13,8 em à 320 px et 17,8 em à 390 px au réglage
+    normal, où rien ne change). Le plus long mot (« qu'approximativement », « supraconductrices, ») ne tenait plus
+    sur la ligne dès 8,24 em de colonne et la page défilait de côté (360 px pour 320, 29 réglages sur ~70 fiches) : il
+    se coupe à la césure française du navigateur, avec son trait, 3 lettres au moins de chaque côté ; « anywhere »
+    reste le secours, jamais le défilement de côté. Les mots collés à une espace insécable sont isolés au build
+    (lib/prose-breaks.ts), sans quoi Chromium ne les césure pas.
+  */
+  @container (max-width: 10em) {
+    .entry-summary,
+    .entry-body {
+      hyphens: auto;
+      hyphenate-limit-chars: 6 3 3;
+      overflow-wrap: anywhere;
+    }
+    /* Intertitres : coupés aux seuls U+00AD de leurs boîtes de mots (titleBreaks), jamais au dictionnaire. */
+    .entry-body > :is(h2, h3, h4) {
+      hyphens: manual;
+    }
+  }
 
   /*
     Grille des cartes des sections du codex (L70, WCAG 1.4.4). Avec des colonnes en points de rupture de la
@@ -248,6 +269,39 @@
 @media (min-width: 640px) {
   .reading-veil {
     padding: 2rem 2.5rem;
+  }
+}
+/* L74 — gabarit très étroit pour son texte (moins de 12,5 em : 320 px dès 150 %, 360 et 375 px dès 175 %, 390 et
+   414 px à 200 % ; jamais un réglage à 100 %, où le gabarit fait au moins 18,3 em) : marges latérales du voile d'une fiche à 0,375 rem au lieu de
+   1,25 rem qui grandissait avec le texte (44 px de chaque côté à 200 %), et lettres du titre à leur espacement normal
+   (0,05 em sinon). La place va aux titres, dont la taille ne change pas (WCAG 1.4.4) : à 320 px texte 200 %, « Aonung »,
+   « lumière », « canoës » (mots sans coupure permise) ne tenaient pas dans les 198 px de la colonne, ni « Neteyam »,
+   « Quaritch », « d'assaut » à 390 px texte 200 %, et se cassaient sans trait ; les noms de personnes, jamais coupés
+   (« Augustine », « Ateyo'itan »), font ici au plus 97 % de la ligne. À 11,5 em (seuil de /nouveautes/), ces deux noms
+   se cassaient encore juste au-dessus (320 px 150 %, 360 et 375 px 175 %, 414 px 200 %). */
+@container eywa-codex (max-width: 12.5em) {
+  article.reading-veil:has(> .entry-title) {
+    padding-inline: 0.375rem;
+  }
+  .entry-title {
+    letter-spacing: normal;
+  }
+}
+
+/* L74 — titre et intertitres d'une fiche en deux versions (TitleText `dual`, lib/prose-breaks.ts) : le texte d'origine
+   au réglage normal, la version en boîtes de mots (.title-word) dans un gabarit étroit pour son texte. Seuil mesuré :
+   un mot de titre dépasse sa ligne jusqu'à 15,7 em de gabarit (480 px texte 175 %), jamais au-dessus ; au réglage
+   normal, le gabarit fait 22,3 em à 390 px. Hors du seuil, rendu identique à celui d'avant L74 (les boîtes, même
+   invisibles, changeaient l'arrondi d'une ligne pleine au pixel près). */
+.title-boxed {
+  display: none;
+}
+@container eywa-codex (max-width: 17.5em) {
+  .title-plain {
+    display: none;
+  }
+  .title-boxed {
+    display: inline;
   }
 }
 

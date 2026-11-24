@@ -12,11 +12,15 @@ export async function titleLines(page, selectors = ['.section-hero__title', '#co
     const out = [];
     for (const sel of sels) {
       for (const el of document.querySelectorAll(sel)) {
-        const text = el.textContent;
-        const chars = [];
+        // Texte affiché seulement (L74) : un titre de fiche porte deux versions, l'une en `display: none`
+        // (`.title-plain` / `.title-boxed`) ; avec textContent, « Morphologie » se lisait « MorphologieMorpho-logie ».
+        const nodes = [];
         const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+        for (let n = walker.nextNode(); n; n = walker.nextNode()) if (n.parentElement.checkVisibility()) nodes.push(n);
+        const text = nodes.map((n) => n.data).join('');
+        const chars = [];
         let offset = 0;
-        for (let n = walker.nextNode(); n; n = walker.nextNode()) {
+        for (const n of nodes) {
           for (let i = 0; i < n.data.length; i++) {
             const c = n.data[i];
             if (c !== SHY && !/\s/.test(c)) {

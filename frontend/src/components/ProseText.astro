@@ -1,0 +1,14 @@
+---
+/**
+ * Texte courant (L74) : chaque long mot collé à une espace insécable isolé dans
+ * un `<span>` nu, pour que la césure du navigateur puisse le couper avec son trait (lib/prose-breaks.ts). Rendu inchangé
+ * quand la césure est éteinte.
+ */
+import { proseSegments } from '../lib/prose-breaks';
+
+interface Props {
+  text: string;
+}
+const { text } = Astro.props;
+---
+{proseSegments(text).map((s) => (s.word ? <span>{s.text}</span> : s.text))}

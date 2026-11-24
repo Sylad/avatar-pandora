@@ -3,6 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import FollowLinks from '../components/FollowLinks.astro';
 import EywaLogo from '../components/EywaLogo.astro';
 import TitleText from '../components/TitleText.astro';
+import { addressParts } from '../lib/title-breaks';
 
 const STACK = [
   {
@@ -162,14 +163,14 @@ const SOURCES = [
       <p class="text-sm text-eywa-text-muted mb-5 font-body">
         Pas une copie, mais des sources que j'ai consultées ou des principes que j'ai essayé d'appliquer.
       </p>
-      <ul class="about-sources grid grid-cols-1 md:grid-cols-2 gap-3 list-none p-0 m-0">
-        {SOURCES.map((i) => (
+      <ul class="about-sources grid grid-cols-1 gap-3 list-none p-0 m-0">
+        {SOURCES.map((i) => ({ ...i, address: addressParts(i.name) })).map((i) => (
           <li class="min-w-0">
           <a href={i.url} target="_blank" rel="noopener" aria-label={`${i.name} (nouvel onglet) par ${i.by} ${i.why}`}
              class="about-card group h-full rounded-md border border-eywa-text-muted/15 bg-eywa-text/[0.02] p-4 flex flex-col gap-1.5 hover:border-eywa-bio-primary/40 hover:bg-eywa-text/[0.04] transition-all">
             <div class="about-card__head flex items-center justify-between">
               <span class="about-source-name min-w-0 font-display font-semibold text-eywa-text group-hover:text-eywa-bio-primary transition-colors">
-                {/\.[a-z]+$/.test(i.name) ? <Fragment>{i.name.replace(/\.[a-z]+$/, '')}<wbr />{i.name.match(/\.[a-z]+$/)[0]}</Fragment> : <TitleText text={i.name} />}<span class="sr-only"> (nouvel onglet)</span>
+                {i.address ? <Fragment>{i.address[0]}<wbr />{i.address[1]}</Fragment> : <TitleText text={i.name} />}<span class="sr-only"> (nouvel onglet)</span>
               </span>
               <span class="text-eywa-text-muted group-hover:text-eywa-bio-primary text-xs transition-colors" aria-hidden="true">↗</span>
             </div>
@@ -189,7 +190,7 @@ const SOURCES = [
         Quatre autres apps perso vibe-codées avec Claude Code, puis relues et enrichies au fil
         des sessions avec Codex.
       </p>
-      <ul class="about-sites grid grid-cols-1 md:grid-cols-2 gap-3 list-none p-0 m-0">
+      <ul class="about-sites grid grid-cols-1 gap-3 list-none p-0 m-0">
         {[
           { tag: '🦖', name: 'Evatosorus', desc: 'Codex Mésozoïque (cadeau pour Eva)', url: 'https://evatosorus.pages.dev' },
           { tag: '⚔️', name: 'Warhammer 40K Codex', desc: 'Fan codex narratif W40K', url: 'https://github.com/Sylad/warhammer40k' },
@@ -232,14 +233,29 @@ const SOURCES = [
 </BaseLayout>
 
 <style>
-  /* L73 — texte très agrandi pour la largeur (320 px dès 150 %, 390 px dès 175 % : page sous 13 em) : marges
-     latérales de la page, des encadrés et des cartes de sources à leur taille du réglage normal, comme le codex (L71).
-     Sinon « Claude » (275 px à 320 px texte 200 %) se cassait sans trait dans un titre de 215 px, et « Pandorapedia »
-     faisait défiler la page de côté. */
+  /* L73 — texte très agrandi pour la largeur (page sous 14,5 em : 320 px dès 125 %, 390 px dès 155 %, 430 px dès
+     170 % ; jamais un réglage à 100 % au-dessus de 254 px) : marges latérales de la page, des encadrés et des cartes de
+     sources à leur taille du réglage normal, comme le codex (L71). Sinon « Claude » (275 px à 320 px texte 200 %) se
+     cassait sans trait dans un titre de 215 px, et « Pandorapedia » faisait défiler la page de côté.
+     L74 (revue UX r2 de L73, m3) : à 13 em, le seuil venait trop tard — entre 13 et 14,1 em de page, « refactoringui »,
+     « Finance » et « COMMUNAUTÉ » sortaient de leur carte de 1 à 37 px (320 px 130–140 %, 385 px 155–165 %, 430 px
+     175–185 %), sans faire défiler la page. */
   .about-frame {
     container: eywa-about / inline-size;
   }
-  @container eywa-about (max-width: 13em) {
+  /* L74 — sources et sites sur deux colonnes dès 768 px (ancien `md:grid-cols-2`), mais seulement si la page fait au
+     moins 24 em de sa police : un point de rupture de la fenêtre ne voit pas le texte agrandi, et à 768 px texte 195 et
+     200 %, « refactoringui », « Finance » et « COMMUNAUTÉ » sortaient de leur carte de 5 à 18 px (même règle que la
+     grille du codex, L70). Au réglage normal, la page fait 43,9 em à 768 px : rendu inchangé. */
+  @media (min-width: 48rem) {
+    @container eywa-about (min-width: 24em) {
+      .about-sources,
+      .about-sites {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+  }
+  @container eywa-about (max-width: 14.5em) {
     main {
       padding-inline: 0.5rem;
     }
@@ -255,6 +271,11 @@ const SOURCES = [
        se coupe ici sans trait en dernier recours (usage typographique : jamais de trait ajouté dans une adresse). */
     .about-source-name {
       overflow-wrap: anywhere;
+    }
+    /* « PAR COMMUNAUTÉ DE FANS » en capitales espacées : « COMMUNAUTÉ » dépassait de sa carte de 4 px à 320 px texte
+       200 % ; lettres à leur espacement normal ici (13 px gagnés). */
+    .about-by {
+      letter-spacing: normal;
     }
     /* Écart entre le nom et la flèche seulement ici : à 100 %, la ligne garde sa géométrie d'avant L73. */
     .about-card__head {

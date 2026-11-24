@@ -1,7 +1,10 @@
 ---
-import { getCollection, render } from 'astro:content';
+import { getCollection } from 'astro:content';
 import CodexLayout from '../../layouts/CodexLayout.astro';
 import EntryCover from '../../components/EntryCover.astro';
+import TitleText from '../../components/TitleText.astro';
+import ProseText from '../../components/ProseText.astro';
+import { proseHtml } from '../../lib/prose-breaks';
 
 export async function getStaticPaths() {
   const entries = await getCollection('bestiaire');
@@ -12,17 +15,17 @@ export async function getStaticPaths() {
 }
 
 const { entry } = Astro.props;
-const { Content } = await render(entry);
+// L74 : le HTML rendu, passé par proseHtml (intertitres coupés comme les titres, mots collés isolés pour la césure).
+const html = entry.rendered?.html;
+if (html === undefined) throw new Error(`fiche ${entry.id} sans HTML rendu`);
 
 ---
 <CodexLayout title={`${entry.data.title} — Eywa`} current="bestiaire">
   <article class="reading-veil max-w-3xl mx-auto">
     <EntryCover cover={entry.data.cover} coverAlt={entry.data.coverAlt} coverCredit={entry.data.coverCredit} pandorapedia={entry.data.pandorapedia} water={entry.data.water} title={entry.data.title} section="Bestiaire" />
-    <h1 class="entry-title font-display text-eywa-bio-primary mb-3">{entry.data.title}</h1>
-    <p class="text-eywa-text-muted text-lg italic mb-10">{entry.data.summary}</p>
-    <div class="entry-body text-eywa-text leading-relaxed font-body text-lg sm:text-xl">
-      <Content />
-    </div>
+    <h1 class="entry-title font-display text-eywa-bio-primary mb-3" aria-label={entry.data.title}><TitleText text={entry.data.title} dual /></h1>
+    <p class="entry-summary text-eywa-text-muted text-lg italic mb-10"><ProseText text={entry.data.summary} /></p>
+    <div class="entry-body text-eywa-text leading-relaxed font-body text-lg sm:text-xl" set:html={proseHtml(html)} />
     <nav aria-label="Retour à la liste" class="mt-16 pt-8 border-t border-eywa-text-muted/20">
       <a href="/bestiaire/" class="inline-flex items-center min-h-11 text-eywa-text-muted hover:text-eywa-bio-primary transition">
         ← Tout le bestiaire

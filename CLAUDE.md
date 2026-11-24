@@ -228,6 +228,15 @@ espace insécable avant « : ; ! ? » ; titre anglais (`lang="en"`, vidéos) cou
 la division française. Une adresse (« refactoringui.com ») passe à la ligne avant son point (`<wbr>`). Contrôlé par
 `scripts/title-breaks-pages.e2e.test.mjs` (P4 : aucun défilement de côté de 100 à 200 % par pas de 5 sur /about/ ; P5 : mot
 coupé alors qu'il tenait ; P6 : syllabes anglaises).
+Fiches du codex (L74) : h1 et intertitres en deux versions (`TitleText dual`, `proseHtml` de `lib/prose-breaks.ts` qui passe
+`entry.rendered.html` : Sätteri, le moteur Markdown d'Astro 7, refuse les plugins rehype sans dépendance de plus) — texte
+d'origine (`.title-plain`) et boîtes de mots (`.title-boxed`), celles-ci seulement sous 17,5 em de gabarit `eywa-codex` :
+même invisibles, les boîtes changeaient l'arrondi d'une ligne pleine au pixel près (« Iknimaya », 1024 px). Noms de personnes
+jamais coupés (`EXCEPTIONS` sans trait ; titre de carte à l'espacement normal sous 7 em de carte, pour « Ateyo'itan »). Texte courant : césure du navigateur sous 10 em de colonne (`hyphens: auto`,
+`hyphenate-limit-chars: 6 3 3`) ; Chromium ne césure pas un mot collé à une espace insécable (guillemets), d'où un `<span>` nu
+autour (`proseSegments`). Voile et titre resserrés sous 12,5 em. À propos : sources et sites sur deux colonnes seulement si la
+page fait 24 em de sa police (768 px texte 195 % débordait) ; règle « adresse » unique `addressParts`. Contrôlé par P7 (toutes
+les fiches), P2, P3 et P4 (texte contre le bord de sa carte) de `title-breaks-pages.e2e.test.mjs` et `prose-breaks.test.mjs`.
 
 **Plan de travail** (page `/plan-de-travail/`, L20, modèle evatosorus/finance-tracker) : en cours, prévu,
 récemment livré, rendue **au build** depuis `.cadence/raf.yaml` (`src/lib/plan-public.ts`, lu depuis

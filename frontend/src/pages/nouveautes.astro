@@ -14,6 +14,7 @@ import MetaHeader from '../components/MetaHeader.astro';
 import FrDate from '../components/FrDate.astro';
 import TitleText from '../components/TitleText.astro';
 import { captureAlt } from '../lib/news-alt';
+import { proseHtml } from '../lib/prose-breaks';
 import news from '../../public/nouveautes-data/nouveautes.json';
 
 interface NewsEntry {
@@ -78,7 +79,7 @@ const pngSize = (rel: string) => {
               </p>
               <h2 id={`${e.slug}-titre`} aria-label={e.title}><TitleText text={e.title} /></h2>
               {/* HTML produit par cadence depuis le Markdown du dépôt (texte échappé à la génération). */}
-              <div class="news-body" set:html={e.html} />
+              <div class="news-body" set:html={proseHtml(e.html)} />
               {e.captures.length > 0 && (
                 <div class="news-captures" data-lightbox>
                   {e.captures.map((c, i) => {
@@ -148,6 +149,7 @@ const pngSize = (rel: string) => {
          règle de body en texte agrandi, global.css), jamais le défilement de côté. */
       .news-body {
         hyphens: auto;
+        hyphenate-limit-chars: 6 3 3;
         overflow-wrap: anywhere;
       }
     }

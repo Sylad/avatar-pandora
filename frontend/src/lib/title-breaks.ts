@@ -33,7 +33,7 @@ export const MIN_AFTER = 3;
 /**
  * Mots que la division française coupe mal (L72) : mots anglais et composés, coupés à leurs vraies frontières
  * (« dire-horse », pas « di-re-horse » ; « gun-ship », pas « guns-hip »), noms na'vi aux digraphes de la langue
- * (« ng », « ts » : « Rong-loa », « Ang-tsìk »), et « inter-stel-laire » (préfixe). Clé en minuscules ; « - » marque
+ * (« ng », « ts » : « Ang-tsìk » ; « Rongloa », nom de personne, n'est plus coupé depuis L74), et « inter-stel-laire » (préfixe). Clé en minuscules ; « - » marque
  * chaque coupure permise, un mot sans « - » n'est jamais coupé. La règle des 3 lettres s'applique aussi ici.
  */
 export const EXCEPTIONS: Record<string, string> = {
@@ -47,20 +47,32 @@ export const EXCEPTIONS: Record<string, string> = {
   skimwing: 'skim-wing',
   crabsuit: 'crab-suit',
   sturmbeest: 'sturm-beest',
-  selfridge: 'self-ridge',
   // L73 (revue UX de L72, m2) : noms de personnes jamais coupés (usage typographique français ; « Qua-ritch » se lisait
   // contre la prononciation). Ils tiennent dans la carte à 320 px texte 200 % (R1 de codex-grid-text).
   spellman: 'spellman',
   quaritch: 'quaritch',
   chacon: 'chacon',
+  // L74 : les noms de personnes des titres et intertitres des fiches, jamais coupés non plus (« Ney-tiri », « Tono-wari »,
+  // « Self-ridge », « Rong-loa » avant L74). Ils tiennent à 320 px texte 200 % (title-breaks-pages, P7).
+  neytiri: 'neytiri',
+  tonowari: 'tonowari',
+  tsireya: 'tsireya',
+  payakan: 'payakan',
+  eytukan: 'eytukan',
+  augustine: 'augustine',
+  selfridge: 'selfridge',
+  parker: 'parker',
+  scoresby: 'scoresby',
+  spider: 'spider',
+  rongloa: 'rongloa',
+  "ateyo'itan": "ateyo'itan",
   scorpion: 'scor-pion',
   interstellaire: 'inter-stel-laire',
-  rongloa: 'rong-loa',
   angtsìk: 'ang-tsìk',
   tskaha: 'tskaha',
-  // L73 : nom de chaîne en un mot (/videos/), coupé à ses mots ; « plectroscope » à ses racines (revue UX r1 de L73, m2 :
-  // la division française donnait « Plectros-cope »).
-  linksthesun: 'links-the-sun',
+  // L73 : « plectroscope » (titre d'une vidéo de /videos/) à ses racines (revue UX r1 de L73, m2 : la division française
+  // donnait « Plectros-cope »). L'entrée « linksthesun » est retirée (L74, revue de L73) : les noms de chaînes ne passent
+  // pas par titleBreaks.
   plectroscope: 'plec-tro-scope',
 };
 
@@ -200,6 +212,17 @@ export function titleBreaks(title: string, options: BreakOptions = {}): string {
  * U+202F fine devant les autres, typographie française) pour qu'elle ne soit jamais rejetée seule en début de ligne
  * (« Personnages / : le bandeau », revue UX r1 de L73). Pas dans un titre anglais (`lang: 'en'`), qui n'a pas d'espace.
  */
+/**
+ * Une adresse (« refactoringui.com ») : son nom et son domaine, ou `null` pour un nom qui n'en est pas une. Une adresse
+ * ne reçoit jamais de trait ajouté (usage typographique) : elle passe à la ligne avant son point (`<wbr>`, À propos) et
+ * se coupe sans trait en dernier recours. Règle unique (L74, revue de L73 : la même expression était écrite trois fois
+ * dans about.astro et une quatrième, différente, dans le test P1).
+ */
+export function addressParts(name: string): [string, string] | null {
+  const m = name.match(/^(.+?)(\.[a-z]{2,6})$/);
+  return m ? [m[1], m[2]] : null;
+}
+
 export type TitleSegment = { text: string; word: boolean };
 export type SegmentOptions = BreakOptions;
 

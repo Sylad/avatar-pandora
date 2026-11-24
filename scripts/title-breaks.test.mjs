@@ -4,14 +4,14 @@
 // lettres, jamais entre deux voyelles ni contre une apostrophe.
 // L72 (revue UX r2 de L70, m3) : au moins 3 lettres de chaque côté (« di- », « in- », « en-tre » refusés), table
 // d'exceptions pour les mots anglais et les noms na'vi (« dire-horse », pas « di-re-horse » ; « gun-ship », pas
-// « guns-hip » ; « Rong-loa » ; « Tskaha » jamais coupé). Repli à 2 lettres avant, pour les seuls titres de bandeau et
+// « guns-hip » ; « Tskaha » jamais coupé ; L74 : « Rongloa » et les noms de personnes jamais coupés). Repli à 2 lettres avant, pour les seuls titres de bandeau et
 // les seuls mots sans autre coupure (« ré-seaux ») : sans lui, ces mots cassaient sans trait à 320–1024 px (L71).
 // Tests de L70 mis à jour en conséquence (« Ar-bres », « ré-seaux », « sa-crées » seulement en repli ; « Wood-sprites »,
 // « héli-cop-tè-res », « Recom-bi-nants », « Atmos-phère »).
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readdirSync, readFileSync } from 'node:fs';
-import { EN_EXCEPTIONS, EXCEPTIONS, frenchSpaces, MIN_AFTER, MIN_BEFORE, SOFT_HYPHEN, syllableBreaks, titleBreaks, titleSegments } from '../frontend/src/lib/title-breaks.ts';
+import { EN_EXCEPTIONS, EXCEPTIONS, addressParts, frenchSpaces, MIN_AFTER, MIN_BEFORE, SOFT_HYPHEN, syllableBreaks, titleBreaks, titleSegments } from '../frontend/src/lib/title-breaks.ts';
 
 const show = (s) => s.replaceAll(SOFT_HYPHEN, '-');
 const HERO = { fallbackBefore: 2 };
@@ -22,7 +22,7 @@ test('mots que Chromium ne coupe pas : coupés à leurs syllabes', () => {
   assert.equal(show(titleBreaks('Arbres, réseaux et plantes sacrées')), 'Arbres, réseaux et plan-tes sacrées');
   assert.equal(show(titleBreaks('Arbres, réseaux et plantes sacrées', HERO)), 'Ar-bres, ré-seaux et plan-tes sa-crées');
   assert.equal(show(titleBreaks('jungle')), 'jun-gle');
-  assert.equal(show(titleBreaks("Ateyo'itan")), "Ateyo'i-tan");
+  assert.equal(show(titleBreaks("Ateyo'itan")), "Ateyo'itan"); // L74 : nom de personne, jamais coupé
 });
 
 test('digraphes et groupes inséparables', () => {
@@ -58,10 +58,10 @@ test('L72 — exceptions : mots anglais à leurs vraies frontières, noms na’v
   assert.equal(show(titleBreaks('Unobtainium')), 'Unob-tain-ium');
   assert.equal(show(titleBreaks('Samson SA-2 — le tiltrotor')), 'Sam-son SA-2 — le tilt-ro-tor');
   assert.equal(show(titleBreaks('le vaisseau interstellaire')), 'le vais-seau inter-stel-laire');
-  assert.equal(show(titleBreaks("Tsu'tey te Rongloa Ateyo'itan")), "Tsu'tey te Rong-loa Ateyo'i-tan");
+  assert.equal(show(titleBreaks("Tsu'tey te Rongloa Ateyo'itan")), "Tsu'tey te Rongloa Ateyo'itan");
   assert.equal(show(titleBreaks('Angtsìk')), 'Ang-tsìk');
   assert.equal(show(titleBreaks('Tsahìk')), 'Tsa-hìk'); // « ì » est une voyelle
-  assert.equal(titleBreaks("Neytiri te Tskaha Mo'at'ite"), "Ney­tiri te Tskaha Mo'at'ite");
+  assert.equal(titleBreaks("Neytiri te Tskaha Mo'at'ite"), "Neytiri te Tskaha Mo'at'ite");
   // La règle des 3 lettres vaut aussi pour la table, et ses clés sont en minuscules.
   for (const [key, value] of Object.entries(EXCEPTIONS)) {
     assert.equal(key, key.toLowerCase());
@@ -111,7 +111,9 @@ test('L72 — titres du site : 3 lettres de chaque côté de chaque coupure (rep
 // L73 (revue UX de L72, m2) : noms de personnes jamais coupés (« Qua-ritch » se lisait contre la prononciation).
 test('L73 — noms de personnes des fiches : jamais coupés', () => {
   for (const name of ['Miles Quaritch', 'Norm Spellman', 'Trudy Chacon']) assert.equal(titleBreaks(name).includes(SOFT_HYPHEN), false, name);
-  assert.equal(show(titleBreaks('Parker Selfridge')), 'Par-ker Self-ridge'); // mot composé anglais : inchangé (L72)
+  // L74 : tous les noms de personnes des titres et intertitres des fiches (« Par-ker Self-ridge » jusqu'à L73).
+  for (const name of ['Parker Selfridge', 'Neytiri', 'Tonowari', 'Tsireya', 'Payakan', 'Eytukan', 'Grace Augustine', 'Miles « Spider » Socorro',
+    "Ateyo'itan", 'Scoresby']) assert.equal(titleBreaks(name).includes(SOFT_HYPHEN), false, name);
 });
 
 // L73 (revue UX de L72, m1 ; /langue/) : chaque mot qui porte une coupure est une boîte qui passe entière à la ligne.
@@ -159,4 +161,13 @@ test('L73 — espace insécable avant la ponctuation haute, sauf en anglais', ()
   assert.equal(seg('Personnages : le bandeau'), '[Per-son-na-ges\u00A0:] le [ban-deau]');
   assert.equal(text('Avatar: Fire and Ash', { lang: 'en' }), 'Avatar: Fire and Ash');
   assert.equal(frenchSpaces('Déjà insécable\u00A0: rien'), 'Déjà insécable\u00A0: rien');
+});
+
+// L74 (revue de L73) : la règle « adresse » écrite une seule fois, partagée par À propos et le test P1.
+test('L74 — adresse : nom et domaine, sans trait ajouté', () => {
+  assert.deepEqual(addressParts('refactoringui.com'), ['refactoringui', '.com']);
+  assert.deepEqual(addressParts('avatar.fandom.com'), ['avatar.fandom', '.com']);
+  assert.equal(addressParts('Pandorapedia'), null);
+  assert.equal(addressParts('Refactoring UI'), null);
+  assert.equal(addressParts('refactoringui.com (nouvel onglet)'), null);
 });
