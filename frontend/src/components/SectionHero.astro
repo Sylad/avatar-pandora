@@ -231,6 +231,13 @@ const size = isIllustration(cover) ? ILLUSTRATION_SIZES.fiche : undefined;
       padding: 2.5rem min(2.5rem, 7cqi) 2rem;
     }
   }
+  /* L71 — gabarit du codex très étroit pour son texte (320 px texte 175 et 200 %, seuil de CodexLayout) : marges
+     latérales à leur taille du réglage normal, « seaux » (3,7 em du titre) tient dans le bandeau. */
+  @container eywa-codex (max-width: 10.75em) {
+    .section-hero__content {
+      padding-inline: 0.5rem;
+    }
+  }
 
   .section-hero__roman {
     font-family: var(--font-display);

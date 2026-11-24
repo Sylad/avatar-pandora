@@ -448,6 +448,16 @@ const ambient = AMBIENTS[current ?? ''] ?? AMBIENTS.pandora;
   }
   /* Le contenu commence sous la bande. */
   :global(main.eywa-codex-main) { padding-top: 5.5rem; }
+  /*
+    L71 — gabarit très étroit pour son texte (moins de 10,75 em : 320 px texte 175 % = 10,45 em, 200 % = 9,1 em ;
+    390 px texte 200 % = 11,1 em et tout réglage à 100 % restent hors de ce cas, rendu inchangé). Les marges
+    latérales gardent leur taille du réglage normal au lieu de grandir avec le texte : la place va aux titres, qui
+    eux grandissent (WCAG 1.4.4). Sans cela, à 320 px texte 200 %, « seaux » (238 px) ne tenait pas dans les 203 px
+    du bandeau et 14 mots de titre se cassaient sans trait. Même seuil dans SectionHero et EntryCard.
+  */
+  @container eywa-codex (max-width: 10.75em) {
+    :global(main.eywa-codex-main) { padding-inline: 0.5rem; }
+  }
   @media (min-width: 64rem) {
     @container eywa-codex (min-width: 44em) {
       .eywa-topbar { display: none; }

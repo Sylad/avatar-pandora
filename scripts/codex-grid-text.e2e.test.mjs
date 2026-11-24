@@ -7,6 +7,8 @@
 // Revue UX de L70 (WCAG 1.4.4, F94) : les titres plafonnés en cqi ne grandissaient plus avec le texte. Titres en rem,
 // longs mots coupés à leurs syllabes AVEC un trait (césure, coupures de lib/title-breaks.ts) : une telle coupure est
 // permise, une coupure lettre à lettre sans trait reste un mot cassé ; au réglage normal, aucun titre n'est coupé.
+// L71 (revue UX de L70, m1) : à 320 px texte 200 %, 15 mots de titre étaient cassés sans trait (« tec/hno-/logie »,
+// « (2009/) ») : R1 et R5 couvrent aussi 320 px.
 // Texte agrandi joué comme la revue : taille de police de <html> (×1 = les 109,375 % du site).
 // Lit frontend/dist (lancer `npm run build` avant) ; skip sans playwright-core/Chromium.
 import test from 'node:test';
@@ -15,7 +17,7 @@ import { nextFrames, setupBrowser } from './lib/e2e-dist.mjs';
 import { wordBreaks } from './lib/word-breaks.mjs';
 
 const SECTIONS = ['/bestiaire/', '/pandora/', '/clans/', '/flore/', '/personnages/', '/films/', '/engins/'];
-const WIDTHS = [390, 768, 1024, 1280, 1440];
+const WIDTHS = [320, 390, 768, 1024, 1280, 1440];
 const FACTORS = [1, 1.25, 1.75, 2];
 
 async function setText(page, factor) {
@@ -41,7 +43,7 @@ async function measure(page) {
   return { ...grid, ...(await wordBreaks(page)) };
 }
 
-test('R1 — sections du codex, 390 à 1440 px, texte 100 à 200 % : aucun mot cassé sans trait, aucun défilement horizontal', { timeout: 600_000 }, async (t) => {
+test('R1 — sections du codex, 320 à 1440 px, texte 100 à 200 % : aucun mot cassé sans trait, aucun défilement horizontal', { timeout: 600_000 }, async (t) => {
   const env = await setupBrowser(t);
   if (!env) return;
   const failures = [];
@@ -66,7 +68,7 @@ test('R1 — sections du codex, 390 à 1440 px, texte 100 à 200 % : aucun mot c
   assert.deepEqual(failures, [], `${failures.length} défaut(s) :\n${failures.join('\n')}`);
 });
 
-test('R5 — texte 200 % : chaque titre grandit au moins autant que le texte courant (390, 768, 1024, 1440 px)', { timeout: 300_000 }, async (t) => {
+test('R5 — texte 200 % : chaque titre grandit au moins autant que le texte courant (320, 390, 768, 1024, 1440 px)', { timeout: 300_000 }, async (t) => {
   // Revue UX de L70 (WCAG 1.4.4, échec F94) : plafonnés en cqi, le titre de section restait à 100 % de sa taille et
   // les titres de carte à 117 % à 390 px texte 200 %, plus petits que le résumé et l'accroche qu'ils annoncent.
   const env = await setupBrowser(t);
@@ -81,7 +83,7 @@ test('R5 — texte 200 % : chaque titre grandit au moins autant que le texte cou
     };
   });
   const failures = [];
-  for (const width of [390, 768, 1024, 1440]) {
+  for (const width of [320, 390, 768, 1024, 1440]) {
     const page = await env.browser.newPage({ viewport: { width, height: 900 } });
     for (const path of SECTIONS) {
       await page.goto(env.base + path, { waitUntil: 'load' });
@@ -102,6 +104,37 @@ test('R5 — texte 200 % : chaque titre grandit au moins autant que le texte cou
     await page.close();
   }
   assert.deepEqual(failures, [], `${failures.length} défaut(s) :\n${failures.slice(0, 20).join('\n')}`);
+});
+
+test('R6 — marges latérales resserrées seulement à 320 px texte 175 et 200 % (L71), jamais à 390 px ni à 100 %', { timeout: 120_000 }, async (t) => {
+  // L71 : dans un gabarit du codex de moins de 10,75 em, les marges de la page, du bandeau et des cartes gardent leur
+  // taille du réglage normal. Ailleurs, elles suivent le texte comme avant (1 rem, min(1,25 rem, 7cqi), 1,25 rem).
+  const env = await setupBrowser(t);
+  if (!env) return;
+  const failures = [];
+  for (const width of [320, 390]) {
+    const page = await env.browser.newPage({ viewport: { width, height: 900 } });
+    await page.goto(env.base + '/films/', { waitUntil: 'load' });
+    for (const factor of FACTORS) {
+      await setText(page, factor);
+      const m = await page.evaluate(() => {
+        const pl = (sel) => parseFloat(getComputedStyle(document.querySelector(sel)).paddingLeft);
+        return {
+          rem: parseFloat(getComputedStyle(document.documentElement).fontSize),
+          main: pl('#contenu'), hero: pl('.section-hero__content'), carte: pl('#contenu .entry-card__body'),
+        };
+      });
+      const narrow = width === 320 && factor >= 1.75;
+      const want = narrow
+        ? { main: 0.5 * m.rem, hero: 0.5 * m.rem, carte: 0.75 * m.rem }
+        : { main: m.rem, hero: Math.min(1.25 * m.rem, 0.07 * width), carte: 1.25 * m.rem };
+      for (const k of ['main', 'hero', 'carte']) {
+        if (Math.abs(m[k] - want[k]) > 0.3) failures.push(`@${width}px texte ${factor * 100} % : marge ${k} ${m[k]} px au lieu de ${want[k].toFixed(2)}`);
+      }
+    }
+    await page.close();
+  }
+  assert.deepEqual(failures, [], failures.join('\n'));
 });
 
 test('R2 — le texte grandit, les colonnes diminuent : /bestiaire/ à 1280 et 1440 px', { timeout: 120_000 }, async (t) => {

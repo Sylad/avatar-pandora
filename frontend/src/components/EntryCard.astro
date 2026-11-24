@@ -284,6 +284,13 @@ const spores = Array.from({ length: SPORE_COUNT }, (_, i) => {
     /* Cadre du titre (L70) : la césure ne s'allume que dans une carte trop étroite pour le plus long mot. */
     container: eywa-card / inline-size;
   }
+  /* L71 — gabarit du codex très étroit pour son texte (320 px texte 175 et 200 %, seuil de CodexLayout) : marges
+     latérales réduites, « Mo'at'ite » (4,8 em du titre) et « (2009) » tiennent dans la carte. */
+  @container eywa-codex (max-width: 10.75em) {
+    .entry-card__body {
+      padding-inline: 0.75rem;
+    }
+  }
 
   /* Taille en rem : le titre grandit avec le texte (WCAG 1.4.4 ; revue UX de L70, un plafond en cqi le laissait à
      117 % à 390 px texte 200 %, plus petit que le résumé). Un mot plus long que la carte (« bioluminescente »,

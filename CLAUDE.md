@@ -217,9 +217,11 @@ laissait à 100–117 %, plus petits que le texte (WCAG 1.4.4, F94 ; revue UX de
 avec un trait : `titleBreaks` (`lib/title-breaks.ts`) pose des U+00AD (le dictionnaire de Chromium refuse « peu-ples »,
 « œu-vres » ; un mot qui porte un U+00AD perd ses césures automatiques, d'où toutes les syllabes), actives seulement en
 `hyphens: auto`, posé par container query quand le cadre est plus étroit que le plus long mot (`hyphens: none` sinon : rendu à
-100 % inchangé). Marges latérales du bandeau `min(…, 7cqi)`. Détecteur commun des mots cassés : `scripts/lib/word-breaks.mjs`
+100 % inchangé). Marges latérales du bandeau `min(…, 7cqi)`. Gabarit très étroit pour son texte (L71, `@container eywa-codex (max-width: 10.75em)`, soit 320 px texte
+175 et 200 %, jamais 390 px ni 100 %) : marges latérales de la page, du bandeau et des cartes à leur taille du réglage normal
+(0,5 / 0,5 / 0,75 rem), pour que la plus longue syllabe tienne (« seaux », « Mo'at'ite », « (2009) »). Détecteur commun des mots cassés : `scripts/lib/word-breaks.mjs`
 (une coupure à une césure, avec trait, est permise). Mouvement réduit : tiroir, voile et bouton menu sans transition. Contrôlé
-par `scripts/codex-grid-text.e2e.test.mjs` (dont R5 : chaque titre grandit autant que le texte à 200 %) et `title-breaks.test.mjs`.
+par `scripts/codex-grid-text.e2e.test.mjs` (R1 et R5 de 320 à 1440 px ; R5 : chaque titre grandit autant que le texte à 200 % ; R6 : où le mode étroit s'allume) et `title-breaks.test.mjs`.
 
 **Plan de travail** (page `/plan-de-travail/`, L20, modèle evatosorus/finance-tracker) : en cours, prévu,
 récemment livré, rendue **au build** depuis `.cadence/raf.yaml` (`src/lib/plan-public.ts`, lu depuis

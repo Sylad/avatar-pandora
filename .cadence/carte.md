@@ -16,3 +16,10 @@
   - `glow-snake` n'a aucune bonne image et garde `CoverFallback` ;
   - 20-11, décision de Sylvain sur la planche : `akula`, `nantang` et `hexapede` (modèles 3D sur grille tirés de la vidéo de comparaison, pas des plans du film) reprennent `CoverFallback`. Leurs entrées restent dans `films.json` avec `"retenue": false` et leur raison ; `films.py` les saute.
 - Tests : `scripts/illustrations.test.mjs` contrôle la source et le crédit tracés (R10 et R11), le crédit en légende et dans la visionneuse, ainsi que la liste du bestiaire (R7) ; R12 contrôle les images refusées (raison notée, rien de servi).
+
+## Titres du codex à 320 px, texte agrandi (L71)
+
+- Écrans : les 7 listes du codex (bandeau `SectionHero` et cartes `EntryCard`), et toute page sous `CodexLayout` (fiches comprises) à 320 px avec le texte à 175 ou 200 %.
+- Décision : pas de titre plus petit ni de coupure forcée. Dans un gabarit `eywa-codex` de moins de 10,75 em (320 px texte 175 % = 10,45 em, 200 % = 9,1 em ; 390 px texte 200 % = 11,1 em), les marges latérales de la page, du bandeau et des cartes reprennent leur taille du réglage normal (0,5 / 0,5 / 0,75 rem). « seaux » (238 px) tient alors dans le bandeau (248 px) et « Mo'at'ite » (190 px) comme « (2009) » tiennent dans la carte (230 px). Le même seuil est écrit dans CodexLayout, SectionHero et EntryCard.
+- Mesure : la géométrie est identique au commit précédent (46 704 éléments, 10 pages, 320 à 1440 px, texte 100 à 200 %), sauf à 320 px texte 175 et 200 % ; une mesure témoin (ancien contre ancien) donne 0 écart.
+- Tests : `scripts/codex-grid-text.e2e.test.mjs`. R1 (aucun mot cassé sans trait) et R5 (titres ×2 avec le texte) couvrent 320 px ; R6 vérifie que le mode étroit ne s'allume qu'à 320 px texte 175 et 200 %.
