@@ -859,7 +859,9 @@ lots:
     created: 2026-11-24
     notes:
       - { date: 2026-11-24, text: "Notes de la revue de code r2 de L74 (24-11) : ProseText.astro:14 refait segmentHtml (le commentaire de prose-breaks.ts:72 dit « partagé », c'est faux) ; seuil « 5 lettres ou moins » (prose-breaks.ts:28) et « 6 lettres ou plus » (CLAUDE.md:238) périmés depuis « 8 4 4 » ; nom élidé collé à une espace insécable non protégé ; regex de P8 sans échappement" }
+      - { date: 2026-11-24, text: "Demain : verdict UX (captures .cadence-run/avatar-pandora-20261124161751-2214832.captures/), entrée Nouveautés ou visible off, porte et livraison" }
     started: 2026-11-24
+    review: { date: 2026-11-24, verdict: "conforme (revue Opus, tmp/revue-avatar-L77.md : 5 noms dans PERSON_NAMES, césure 10 5 5 partagée fiches/Nouveautés, 4 notes r2 de L74 traitées, CLAUDE.md suivi ; prose-breaks 8/8, P8 et P9 verts)", commit: aa8794e0c197275b776d8f5cdb5370389dbb4f66 }
   - id: L78
     title: "QA de L74 en prod (24-11, tmp/qa-avatar-L74.md) : à 320 px et texte à 200 %, /films/avatar-2009/ coupe le h1 « Avata|r » et les h2 « production », « synopsis » sans trait d'union, /films/ coupe son h1 lettre par lettre (« Troi|s », « œuv|res ») — ces pages ont hyphens:manual + overflow-wrap:anywhere au lieu de la règle des fiches (titleBreaks) ; mineur : /about/ « refactorin|gui.com » sans trait. Appliquer la même règle à toutes les pages (test sur les 81 routes), pas seulement aux fiches du codex. Bruit à noter : /bestiaire/pali/ a répondu 500 une fois puis 200"
     status: todo
