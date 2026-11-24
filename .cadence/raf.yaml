@@ -794,10 +794,11 @@ lots:
     finished: 2026-11-24
   - id: L71
     title: "Codex à 320 px texte 200 % : 15 mots de titre cassés sans trait (« tec/hno-/logie », « hu-/main/e », « (2009/) ») depuis L70, que 816f681 évitait avec des titres plus petits — 0 mot cassé sans trait à 320 px sans réduire les titres sous le texte (revue UX r2 de L70, tmp/ux-avatar-L70-r2.md m1)"
-    status: todo
+    status: doing
     estimate: 1
     visible: true
     created: 2026-11-24
+    started: 2026-11-24
   - id: L72
     title: "Titres du codex : coupures conditionnelles (U+00AD) gardées au copier-coller et dans le nom accessible brut de Chromium, mots anglais coupés à la française (« di-rehorse », « Woods-prites », « guns-hip »), jusqu'à 5 lignes à trait de suite — retirer les U+00AD dans un écouteur copy, table d'exceptions dans titleBreaks, hyphenate-limit-chars (revue UX r2 de L70, m2 et m3)"
     status: todo
