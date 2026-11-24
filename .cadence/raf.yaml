@@ -832,6 +832,7 @@ lots:
     estimate: 1
     visible: true
     after: [ L73 ]
+    delivered: { date: 2026-11-24, sha: 11ff3869dcc35c86c2da9def9da3745511fb928b }
     created: 2026-11-24
     notes:
       - { date: 2026-11-24, text: "Ajout du lead (24-11, revue UX L73 r2, m3) : /about/ — « refactoringui », « Finance » et « COMMUNAUTÉ » sortent de leur carte de 1 à 31 px entre 145 et 200 % de texte (320-430 px). Avancer le seuil du gabarit étroit, et mesurer dans P4 le texte contre le bord de sa carte (pas seulement le défilement de la page). Capture tmp/ux-avatar-L73-r2/about-refactoringui-385-t185-hors-carte.png" }
