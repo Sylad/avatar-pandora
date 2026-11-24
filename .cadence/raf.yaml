@@ -822,6 +822,7 @@ lots:
     created: 2026-11-24
     started: 2026-11-24
     review: { date: 2026-11-24, verdict: "conforme (lead d'après cadence:code-reviewer, tmp/revue-avatar-L73.md) : règle de coupure partagée (titleBreaks), 5 tests adaptés sans perte, nouveau test sur le rendu ; mineurs : entrée linksthesun morte, exemption /nouveautes/ trop large dans P1, règle « adresse » écrite deux fois", commit: d547d4aa95afaddca7a5320a188fd9d350aa58f2 }
+    ux: { date: 2026-11-24, verdict: "r1 non conforme (lead d'après cadence:ux-reviewer, tmp/ux-avatar-L73.md) : majeur /about/ défile encore de 11 à 15 px entre 150 et 195 % (refactoringui.com sort de sa carte, WCAG 1.4.10) ; mineurs : /flore/ h1 « plan-tes », « sa-crées » coupés alors qu'ils tiennent ; /videos/ titres anglais coupés à la française" }
   - id: L74
     title: "Fiches du codex (~70) à 320 px, texte à 175 et 200 % : le h1 entry-title et les intertitres Markdown se coupent sans trait d'union — même règle que les titres hors codex (L73, titleBreaks partagé), aucun défilement horizontal ; avec : « bioluminescente » et « permanent » cassés sans trait dans le texte courant de /nouveautes/ ; mineurs de la revue L73 (entrée linksthesun morte, exemption /nouveautes/ trop large dans le test P1, règle « adresse » écrite deux fois)"
     status: todo
