@@ -822,6 +822,13 @@ lots:
     created: 2026-11-24
     started: 2026-11-24
     review: { date: 2026-11-24, verdict: "conforme (lead d'après cadence:code-reviewer, tmp/revue-avatar-L73.md) : règle de coupure partagée (titleBreaks), 5 tests adaptés sans perte, nouveau test sur le rendu ; mineurs : entrée linksthesun morte, exemption /nouveautes/ trop large dans P1, règle « adresse » écrite deux fois", commit: d547d4aa95afaddca7a5320a188fd9d350aa58f2 }
+  - id: L74
+    title: "Fiches du codex (~70) à 320 px, texte à 175 et 200 % : le h1 entry-title et les intertitres Markdown se coupent sans trait d'union — même règle que les titres hors codex (L73, titleBreaks partagé), aucun défilement horizontal ; avec : « bioluminescente » et « permanent » cassés sans trait dans le texte courant de /nouveautes/ ; mineurs de la revue L73 (entrée linksthesun morte, exemption /nouveautes/ trop large dans le test P1, règle « adresse » écrite deux fois)"
+    status: todo
+    estimate: 1
+    visible: true
+    after: [ L73 ]
+    created: 2026-11-24
 acknowledged:
   - { sha: cef464dffb920ea7b161b1b0e06fe54d3efbdcc4, subject: "plan: verdicts UX de Sylvain enregistrés, trois bloquants de la revue des Personnages clos", date: 2026-10-10, reason: entretien du plan et régénération des Nouveautés }
   - { sha: 4bc75e983dc5bff0366190611a9c578d4ed071c8, subject: "plan: prototype Pandora vivant clos, cinq idées retenues par Sylvain posées après les images", date: 2026-10-10, reason: entretien du plan et régénération des Nouveautés (fichier désormais déclaré dérivé) }
