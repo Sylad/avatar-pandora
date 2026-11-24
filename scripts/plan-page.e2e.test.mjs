@@ -21,6 +21,8 @@ const { parse } = require('yaml');
 const RAF = parse(readFileSync(new URL('../.cadence/raf.yaml', import.meta.url), 'utf8'));
 const PAGE = join(DIST, 'plan-de-travail', 'index.html');
 const html = () => readFileSync(PAGE, 'utf8');
+// L73 : un titre coupable est rendu en boîtes (<span class="title-word">) avec des U+00AD ; on compare son texte lu.
+const untitle = (s) => s.replace(/<span class="title-word">([^<]*)<\/span>/g, '$1').replaceAll('\u00ad', '');
 
 const decode = (s) => s
   .replace(/&#(\d+);/g, (_, n) => String.fromCodePoint(+n))
@@ -93,7 +95,7 @@ test('dist/plan-de-travail/index.html est construit, titré « Plan de travail �
 });
 
 test('trois sections titrées ; tous les lots en cours et prévus, dans l’ordre du plan, avec leur état écrit', () => {
-  const page = decode(html());
+  const page = untitle(decode(html()));
   for (const h of ['En cours', 'Prévu', 'Récemment livré']) assert.match(page, new RegExp(`<h2[^>]*>${h}`), `section « ${h} » absente`);
   for (const status of ['doing', 'todo']) {
     const ids = [...page.matchAll(new RegExp(`<li[^>]*class="plan-lot" data-status="${status}"[^>]*data-id="([^"]+)"`, 'g'))].map((m) => m[1]);
@@ -343,14 +345,17 @@ test('320 px : le sur-titre des pages méta ne laisse jamais « · » en fin de 
     await page.evaluate(() => document.fonts.ready);
     const lines = await page.evaluate(() => {
       // Texte de chaque ligne rendue : caractères groupés par ordonnée.
-      const node = document.querySelector('.meta-eyebrow').firstChild;
+      // Tous les nœuds texte du sur-titre (L73 : « · Eywa » est une boîte à part, insécable).
       const rows = new Map();
-      for (let i = 0; i < node.textContent.length; i++) {
-        const r = document.createRange(); r.setStart(node, i); r.setEnd(node, i + 1);
-        const rect = r.getClientRects()[0];
-        if (!rect) continue;
-        const y = Math.round(rect.top);
-        rows.set(y, (rows.get(y) ?? '') + node.textContent[i]);
+      const walker = document.createTreeWalker(document.querySelector('.meta-eyebrow'), NodeFilter.SHOW_TEXT);
+      for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+        for (let i = 0; i < node.textContent.length; i++) {
+          const r = document.createRange(); r.setStart(node, i); r.setEnd(node, i + 1);
+          const rect = r.getClientRects()[0];
+          if (!rect) continue;
+          const y = Math.round(rect.top);
+          rows.set(y, (rows.get(y) ?? '') + node.textContent[i]);
+        }
       }
       return [...rows.values()].map((s) => s.trim());
     });

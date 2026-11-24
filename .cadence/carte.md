@@ -35,3 +35,17 @@
   - repli à 2 lettres avant pour les seuls bandeaux et les seuls mots de 6 lettres ou plus sans autre coupure (« ré-seaux », « sa-crées », « hu-maine », « ar-bres ») : sans ce repli, ces mots cassaient sans trait à 320–1024 px, ce qui contredit L71 ;
   - au plus 2 lignes à trait de suite, sauf « tech- / nolo- / gie hu- / maine » (/engins/ à 390 px texte 200 %) : les largeurs des mots l'imposent, et ni `text-wrap: pretty` ni `balance` n'y changent rien.
 - Tests : `scripts/title-breaks.test.mjs` (règles, table, tous les titres du site) et `scripts/title-breaks.e2e.test.mjs` (C1 presse-papier, C2 arbre d'accessibilité par CDP, C3 coupures ligne par ligne de 320 à 1440 px avec `scripts/lib/title-lines.mjs`).
+
+## Titres hors des listes du codex, et mots en boîte (L73)
+
+- Écrans : /langue/ (h1 de section, intertitres, lexique), À propos, 404, Nouveautés, Plan de travail, Vidéos ; le sur-titre de `MetaHeader` ; le h1 des bandeaux `SectionHero`.
+- Mécanisme : `TitleText.astro` rend un titre par `titleSegments` (`lib/title-breaks.ts`). Chaque mot qui porte une coupure devient une boîte `.title-word` (`inline-block`, `hyphens: manual`, global.css). La boîte passe entière à la ligne et ne se coupe à ses U+00AD que si elle est plus large que la ligne. Chaque titre porte `aria-label` sans U+00AD, et le copier passe par `lib/soft-hyphen-copy.ts` (L72).
+- Décisions :
+  - pages hors codex en `wrap: 'all'` ; bandeaux du codex en `wrap: 'fallback'`. Dans ce second mode, seules les parties d'un mot composé coupées par le repli à 2 lettres sont en boîte (« ar·bres- », « ré·seaux »). Une boîte autour d'un mot plus large que la ligne coûte une ligne (« tes / sa- / crées » à 1440 px 175 %) ;
+  - le trait d'union d'un composé compte dans « 2 lignes à trait de suite au plus » (C3, `dashRun`). « Les ar- / bres- / ré- / seaux » ne reste que là où ni « arbres- » ni « réseaux » ne tient seul sur une ligne (320 px 150 à 200 %, 390 px et 768 px 200 %, mesures dans le test) ;
+  - Quaritch, Spellman et Chacon ne sont jamais coupés (table `EXCEPTIONS`, revue de L72 m2) ;
+  - écrans étroits pour leur texte, par container query : `eywa-codex` (11,5 em) pour /langue/, Nouveautés, Vidéos et MetaHeader ; `eywa-about` (13 em) pour À propos ; `not-found` (10,8 em) pour le h1 du 404, qui passe à 1,5 rem car « n'existe » n'a aucune coupure permise. Le lexique de /langue/ s'y empile (rôles ARIA de tableau dans le balisage) ;
+  - sur-titre de MetaHeader : « · Eywa » est une boîte insécable (`inline-block`), au lieu d’espaces insécables qui rendaient tout le sur-titre insécable et faisaient défiler la page (378 px pour 320).
+- Mesure : à 100 %, de 390 à 1440 px, la géométrie est identique au commit précédent (18 384 éléments, 15 pages, 0 écart > 0,5 px).
+- Non traité : les ~70 fiches du codex (h1 `entry-title` et intertitres du Markdown) ont le même défaut à 320 px 175 et 200 %. Le texte courant de Nouveautés garde deux mots cassés par `anywhere` à 320 px 200 %.
+- Tests : `scripts/title-breaks-pages.e2e.test.mjs` (P1 : coupures et défilement de 320 à 390 px, texte 125 à 200 % ; P2 : copier et noms accessibles ; P3 : rien ne change à 100 %), `title-breaks.test.mjs` (titleSegments, noms propres), C3 de `title-breaks.e2e.test.mjs` (150 % ajouté).

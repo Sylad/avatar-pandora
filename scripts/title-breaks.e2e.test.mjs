@@ -97,9 +97,21 @@ test('C2 — nom accessible (arbre de Chromium) : titres et liens des cartes san
 // ne tiennent sur une ligne du bandeau, et le navigateur remplit chaque ligne au plus loin (« tech- / nolo- / gie hu- /
 // maine ») ; aucun réglage CSS ne l'en détourne dans Chromium (text-wrap pretty et balance essayés, hyphenate-limit-lines
 // non pris en charge). Toute autre occurrence fait échouer le test.
-const RUN_EXCEPTIONS = new Set(['/engins/ @390px texte 200 % La technologie humaine']);
+// L73 (revue UX de L72, m1) : le trait d'union d'un mot composé compte aussi. « Les ar- / bres- / ré- / seaux » ne reste
+// que là où NI « arbres- » NI « réseaux » ne tient seul sur une ligne du bandeau (mesuré : 320 px texte 150 % 225 et 243 px pour 221 ; 175 % 262 et
+// 281 px pour 257 ; 200 % 299 et 323 pour 248 ; 390 px 200 % pour 263 ; 768 px 200 % 567 et 611 pour 554) : les mots du
+// repli sont des boîtes qui passent entières à la ligne (titleSegments), le reste du temps il n'y a plus que 2 traits.
+const FLORE = 'Les arbres-réseaux et plantes sacrées';
+const RUN_EXCEPTIONS = new Set([
+  '/engins/ @390px texte 200 % La technologie humaine',
+  `/flore/ @320px texte 150 % ${FLORE}`,
+  `/flore/ @320px texte 175 % ${FLORE}`,
+  `/flore/ @320px texte 200 % ${FLORE}`,
+  `/flore/ @390px texte 200 % ${FLORE}`,
+  `/flore/ @768px texte 200 % ${FLORE}`,
+]);
 
-test('C3 — coupures de 320 à 1440 px, texte 125 à 200 % : seulement aux U+00AD, 3 lettres de chaque côté, 2 lignes à trait de suite au plus', { timeout: 900_000 }, async (t) => {
+test('C3 — coupures de 320 à 1440 px, texte 125 à 200 % (150 % compris, L73) : seulement aux U+00AD, 3 lettres de chaque côté, 2 lignes à trait de suite au plus', { timeout: 900_000 }, async (t) => {
   const env = await setupBrowser(t);
   if (!env) return;
   const failures = [];
@@ -108,7 +120,7 @@ test('C3 — coupures de 320 à 1440 px, texte 125 à 200 % : seulement aux U+00
     const page = await env.browser.newPage({ viewport: { width, height: 900 } });
     for (const path of SECTIONS) {
       await page.goto(env.base + path, { waitUntil: 'load' });
-      for (const factor of [1.25, 1.75, 2]) {
+      for (const factor of [1.25, 1.5, 1.75, 2]) {
         await setText(page, factor);
         for (const r of await titleLines(page)) {
           const where = `${path} @${width}px texte ${factor * 100} % ${r.title}`;
@@ -120,7 +132,8 @@ test('C3 — coupures de 320 à 1440 px, texte 125 à 200 % : seulement aux U+00
             if (c.before < 3 && !fallback) failures.push(`${where} : « ${c.word} », ${c.before} lettre(s) en fin de ligne`);
             if (c.after < 3) failures.push(`${where} : « ${c.word} », ${c.after} lettre(s) en début de ligne`);
           }
-          if (r.hyphenRun > 2 && !RUN_EXCEPTIONS.has(where)) failures.push(`${where} : ${r.hyphenRun} lignes à trait de suite — ${r.lines.join(' / ')}`);
+          // L73 (revue UX de L72, m1) : le trait d'union d'un mot composé compte (« arbres- / ré- / seaux »).
+          if (r.dashRun > 2 && !RUN_EXCEPTIONS.has(where)) failures.push(`${where} : ${r.dashRun} lignes à trait de suite — ${r.lines.join(' / ')}`);
         }
       }
     }

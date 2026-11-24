@@ -19,7 +19,7 @@ import IkranSky from './IkranSky.astro';
 import CoverFallback from './CoverFallback.astro';
 import { coverImageSrc, isIllustration, ILLUSTRATION_SIZES } from '../lib/cover';
 import SkySpots from './SkySpots.astro';
-import { titleBreaks } from '../lib/title-breaks';
+import TitleText from './TitleText.astro';
 
 const { roman, label, title, tagline, cover, ikrans = false } = Astro.props;
 
@@ -48,7 +48,7 @@ const size = isIllustration(cover) ? ILLUSTRATION_SIZES.fiche : undefined;
   <div class="section-hero__veil"></div>
   <div class="section-hero__content">
     <p class="section-hero__roman">{roman} — {label}</p>
-    <h1 class="section-hero__title" aria-label={title}>{titleBreaks(title, { fallbackBefore: 2 })}</h1>
+    <h1 class="section-hero__title" aria-label={title}><TitleText text={title} section wrap="fallback" /></h1>
     <p class="section-hero__tagline">{tagline}</p>
   </div>
 </header>

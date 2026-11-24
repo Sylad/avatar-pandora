@@ -2,6 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import FollowLinks from '../components/FollowLinks.astro';
 import EywaLogo from '../components/EywaLogo.astro';
+import TitleText from '../components/TitleText.astro';
 
 const STACK = [
   {
@@ -61,21 +62,22 @@ const SOURCES = [
 ];
 ---
 <BaseLayout title="À propos — Eywa" description="Le pourquoi d'Eywa, et un mot pour Eva.">
+  <div class="about-frame">
   <main id="contenu" tabindex="-1" class="max-w-4xl mx-auto px-6 lg:px-8 py-16 lg:py-20 space-y-10">
 
     <header class="flex flex-col gap-2 mb-2">
       <p class="text-xs uppercase tracking-[0.22em] text-eywa-text-muted font-display font-semibold">
         À propos · Eywa
       </p>
-      <h1 class="font-display text-3xl lg:text-4xl font-bold text-eywa-bio-primary">
-        <span lang="en">Vibe coded</span> avec Claude Code & Codex
+      <h1 class="font-display text-3xl lg:text-4xl font-bold text-eywa-bio-primary" aria-label="Vibe coded avec Claude Code & Codex">
+        <span lang="en"><TitleText text="Vibe coded" /></span> <TitleText text="avec Claude Code & Codex" />
       </h1>
       <p class="text-eywa-text-muted max-w-2xl font-body text-lg">
         Un codex visuel de Pandora — construit comme un cadeau, exécuté comme un labo.
       </p>
     </header>
 
-    <section class="relative overflow-hidden rounded-md border border-eywa-text-muted/20 bg-eywa-text/[0.02] p-6 lg:p-8">
+    <section class="about-box relative overflow-hidden rounded-md border border-eywa-text-muted/20 bg-eywa-text/[0.02] p-6 lg:p-8">
       <div class="absolute -top-12 -right-12 w-64 h-64 rounded-full bg-eywa-bio-primary/10 blur-3xl pointer-events-none"></div>
       <div class="absolute -bottom-16 -left-12 w-64 h-64 rounded-full bg-eywa-bio-secondary/10 blur-3xl pointer-events-none"></div>
       <div class="relative flex flex-col sm:flex-row items-start gap-6">
@@ -83,8 +85,8 @@ const SOURCES = [
           <EywaLogo size={140} />
         </div>
         <div class="flex-1 min-w-0 font-body text-eywa-text leading-relaxed space-y-4">
-          <h2 class="font-display text-xl font-bold text-eywa-bio-primary mb-1">
-            L'histoire courte
+          <h2 class="font-display text-xl font-bold text-eywa-bio-primary mb-1" aria-label="L'histoire courte">
+            <TitleText text="L'histoire courte" />
           </h2>
           <p>
             À Eva, fan absolue des grands bleus de Pandora. Moi je trouve ça moyen, mais bon —
@@ -153,9 +155,9 @@ const SOURCES = [
       ))}
     </section>
 
-    <section class="rounded-md border border-eywa-text-muted/20 bg-eywa-text/[0.02] p-6">
-      <h2 class="font-display text-lg font-semibold text-eywa-bio-primary mb-1">
-        Sources & inspirations
+    <section class="about-box rounded-md border border-eywa-text-muted/20 bg-eywa-text/[0.02] p-6">
+      <h2 class="font-display text-lg font-semibold text-eywa-bio-primary mb-1" aria-label="Sources & inspirations">
+        <TitleText text="Sources & inspirations" />
       </h2>
       <p class="text-sm text-eywa-text-muted mb-5 font-body">
         Pas une copie, mais des sources que j'ai consultées ou des principes que j'ai essayé d'appliquer.
@@ -163,11 +165,11 @@ const SOURCES = [
       <ul class="about-sources grid grid-cols-1 md:grid-cols-2 gap-3 list-none p-0 m-0">
         {SOURCES.map((i) => (
           <li class="min-w-0">
-          <a href={i.url} target="_blank" rel="noopener"
-             class="group h-full rounded-md border border-eywa-text-muted/15 bg-eywa-text/[0.02] p-4 flex flex-col gap-1.5 hover:border-eywa-bio-primary/40 hover:bg-eywa-text/[0.04] transition-all">
-            <div class="flex items-center justify-between">
-              <span class="font-display font-semibold text-eywa-text group-hover:text-eywa-bio-primary transition-colors">
-                {i.name}<span class="sr-only"> (nouvel onglet)</span>
+          <a href={i.url} target="_blank" rel="noopener" aria-label={`${i.name} (nouvel onglet) par ${i.by} ${i.why}`}
+             class="about-card group h-full rounded-md border border-eywa-text-muted/15 bg-eywa-text/[0.02] p-4 flex flex-col gap-1.5 hover:border-eywa-bio-primary/40 hover:bg-eywa-text/[0.04] transition-all">
+            <div class="about-card__head flex items-center justify-between">
+              <span class="about-source-name min-w-0 font-display font-semibold text-eywa-text group-hover:text-eywa-bio-primary transition-colors">
+                {/\.[a-z]+$/.test(i.name) ? i.name : <TitleText text={i.name} />}<span class="sr-only"> (nouvel onglet)</span>
               </span>
               <span class="text-eywa-text-muted group-hover:text-eywa-bio-primary text-xs transition-colors" aria-hidden="true">↗</span>
             </div>
@@ -181,8 +183,8 @@ const SOURCES = [
       </ul>
     </section>
 
-    <section class="rounded-md border border-eywa-text-muted/20 bg-eywa-text/[0.02] p-6">
-      <h2 class="font-display text-lg font-semibold text-eywa-bio-primary mb-1">Mes autres sites</h2>
+    <section class="about-box rounded-md border border-eywa-text-muted/20 bg-eywa-text/[0.02] p-6">
+      <h2 class="font-display text-lg font-semibold text-eywa-bio-primary mb-1" aria-label="Mes autres sites"><TitleText text="Mes autres sites" /></h2>
       <p class="text-sm text-eywa-text-muted mb-5 font-body">
         Quatre autres apps perso vibe-codées avec Claude Code, puis relues et enrichies au fil
         des sessions avec Codex.
@@ -195,11 +197,11 @@ const SOURCES = [
           { tag: '💸', name: 'Finance Tracker', desc: 'Suivi finances perso (PDF Claude)', url: 'https://github.com/Sylad/finance-tracker' },
         ].map((s) => (
           <li class="min-w-0">
-          <a href={s.url} target="_blank" rel="noopener"
-            class="h-full rounded-md border border-eywa-text-muted/20 p-3 flex items-center gap-3 hover:border-eywa-bio-primary/60 transition-colors group">
+          <a href={s.url} target="_blank" rel="noopener" aria-label={`${s.name} (nouvel onglet) ${s.desc}`}
+            class="about-site h-full rounded-md border border-eywa-text-muted/20 p-3 flex items-center gap-3 hover:border-eywa-bio-primary/60 transition-colors group">
             <span class="text-2xl select-none" aria-hidden="true">{s.tag}</span>
             <span class="flex-1 min-w-0">
-              <span class="block font-display font-semibold text-eywa-text group-hover:text-eywa-bio-primary transition-colors">{s.name}<span class="sr-only"> (nouvel onglet)</span></span>
+              <span class="block font-display font-semibold text-eywa-text group-hover:text-eywa-bio-primary transition-colors"><TitleText text={s.name} /><span class="sr-only"> (nouvel onglet)</span></span>
               <span class="about-site-desc block text-xs text-eywa-text-muted font-body">{s.desc}</span>
             </span>
             <span class="text-eywa-text-muted group-hover:text-eywa-bio-primary shrink-0" aria-hidden="true">↗</span>
@@ -226,9 +228,57 @@ const SOURCES = [
     </div>
 
   </main>
+  </div>
 </BaseLayout>
 
 <style>
+  /* L73 — texte très agrandi pour la largeur (320 px dès 150 %, 390 px dès 175 % : page sous 13 em) : marges
+     latérales de la page, des encadrés et des cartes de sources à leur taille du réglage normal, comme le codex (L71).
+     Sinon « Claude » (275 px à 320 px texte 200 %) se cassait sans trait dans un titre de 215 px, et « Pandorapedia »
+     faisait défiler la page de côté. */
+  .about-frame {
+    container: eywa-about / inline-size;
+  }
+  @container eywa-about (max-width: 13em) {
+    main {
+      padding-inline: 0.5rem;
+    }
+    .about-box {
+      padding-inline: 0.5rem;
+    }
+    .about-card {
+      padding-inline: 0.5rem;
+    }
+    /* Nom d'une source : coupé à ses syllabes (TitleText ; le lien porte son nom sans U+00AD en aria-label), sauf
+       « refactoringui.com » (342 px à 320 px texte 175 %), une adresse, qui se coupe sans trait (usage typographique :
+       jamais de trait ajouté dans une adresse). */
+    .about-source-name {
+      overflow-wrap: anywhere;
+    }
+    /* Écart entre le nom et la flèche seulement ici : à 100 %, la ligne garde sa géométrie d'avant L73. */
+    .about-card__head {
+      column-gap: 0.5rem;
+    }
+    /* « Mes autres sites » : nom et description sous l'emoji et la flèche (nom en mots coupés à leurs syllabes, le lien
+       porte son nom sans U+00AD en aria-label). À côté d'eux, « Evatosorus » avait 60 px. */
+    .about-site {
+      flex-wrap: wrap;
+      padding-inline: 0.5rem;
+    }
+    .about-site > .flex-1 {
+      order: 3;
+      flex-basis: 100%;
+    }
+    .about-site > :last-child {
+      margin-inline-start: auto;
+    }
+    /* Rangée « Suivre le codex » : sa marge négative (-0,6 rem sous 400 px) dépassait la marge réduite de la page. */
+    .about-frame :global(.landing-follow) {
+      margin-inline: 0;
+      max-width: 100%;
+    }
+  }
+
   /* Anneau de focus clavier explicite (WCAG 2.4.7 / 1.4.11) : l'anneau « auto » reste à 1 px
      sur ces cartes translucides et sur le lien en ligne des paragraphes. */
   .about-sources a:focus-visible,

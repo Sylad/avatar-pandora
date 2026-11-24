@@ -1,12 +1,13 @@
 ---
 import CodexLayout from '../layouts/CodexLayout.astro';
+import TitleText from '../components/TitleText.astro';
 ---
 <CodexLayout title="Langue Na'vi — Eywa" current="langue">
   <header class="reading-veil max-w-none mb-6">
     <p class="text-xs uppercase tracking-[0.25em] text-eywa-text-muted font-display mb-3">
       VI — Lì'fya leNa'vi
     </p>
-    <h1 class="font-display text-4xl text-eywa-bio-primary mb-4">La langue Na'vi</h1>
+    <h1 class="font-display text-4xl text-eywa-bio-primary mb-4" aria-label="La langue Na'vi"><TitleText text="La langue Na'vi" section /></h1>
     <p class="text-lg text-eywa-text-muted font-body italic max-w-2xl">
       « Kaltxì. » Bonjour. Construite par le Dr Paul Frommer pour les films, vraie langue avec grammaire complète.
     </p>
@@ -15,14 +16,14 @@ import CodexLayout from '../layouts/CodexLayout.astro';
   <article class="reading-veil max-w-none font-body text-lg text-eywa-text leading-relaxed space-y-12">
 
     <section>
-      <h2 class="font-display text-2xl text-eywa-bio-primary mb-4">Une langue, pas un effet sonore</h2>
+      <h2 class="font-display text-2xl text-eywa-bio-primary mb-4" aria-label="Une langue, pas un effet sonore"><TitleText text="Une langue, pas un effet sonore" /></h2>
       <p>
         Quand James Cameron a entrepris <em>Avatar</em>, il voulait une langue Na'vi qui se tienne au-delà des bulles cosmétiques de cinéma. En 2005, il recrute le <strong>Dr Paul Frommer</strong>, linguiste de l'University of Southern California, qui passe quatre ans à construire une langue avec phonologie, morphologie, syntaxe et lexique cohérents. Le résultat se parle, s'écrit, et a même été appris par une communauté de fans qui le pratiquent encore aujourd'hui sur <a href="https://naviteri.org" target="_blank" rel="noopener" class="text-eywa-bio-primary underline underline-offset-2 hover:no-underline">Naviteri<span class="sr-only"> (nouvel onglet)</span></a> et <a href="https://learnnavi.org" target="_blank" rel="noopener" class="text-eywa-bio-primary underline underline-offset-2 hover:no-underline">LearnNavi<span class="sr-only"> (nouvel onglet)</span></a>.
       </p>
     </section>
 
     <section>
-      <h2 class="font-display text-2xl text-eywa-bio-primary mb-4">Alphabet & sons</h2>
+      <h2 class="font-display text-2xl text-eywa-bio-primary mb-4" aria-label="Alphabet & sons"><TitleText text="Alphabet & sons" /></h2>
       <p class="mb-4">
         Le Na'vi utilise une trentaine de phonèmes distincts. Pas de tons, pas d'accents toniques marqués, mais quelques particularités qui distinguent immédiatement un Na'vi d'un humain mal entraîné :
       </p>
@@ -35,7 +36,7 @@ import CodexLayout from '../layouts/CodexLayout.astro';
     </section>
 
     <section>
-      <h2 class="font-display text-2xl text-eywa-bio-primary mb-4">Grammaire en cinq points</h2>
+      <h2 class="font-display text-2xl text-eywa-bio-primary mb-4" aria-label="Grammaire en cinq points"><TitleText text="Grammaire en cinq points" /></h2>
       <ul class="list-disc list-inside space-y-2 ml-2">
         <li><strong>Ordre des mots libre</strong> — les déclinaisons portent le sens, pas la position. <em lang="art-x-navi">Oel ngati kameie</em> et <em lang="art-x-navi">Ngati oel kameie</em> veulent tous deux dire « je te vois ».</li>
         <li><strong>Cinq cas grammaticaux</strong> — sujet, agent, patient, génitif, datif. Le système de cas est plus proche du finnois ou du basque que des langues romanes.</li>
@@ -46,34 +47,34 @@ import CodexLayout from '../layouts/CodexLayout.astro';
     </section>
 
     <section>
-      <h2 id="lexique" class="font-display text-2xl text-eywa-bio-primary mb-4">Lexique de base</h2>
-      <table aria-labelledby="lexique" class="w-full text-base border-collapse">
-        <thead>
-          <tr class="border-b border-eywa-text-muted/30">
-            <th scope="col" class="text-left font-display py-3 text-eywa-bio-primary tracking-wide">Na'vi</th>
-            <th scope="col" class="text-left font-display py-3 text-eywa-bio-primary tracking-wide">Français</th>
+      <h2 id="lexique" class="font-display text-2xl text-eywa-bio-primary mb-4" aria-label="Lexique de base"><TitleText text="Lexique de base" /></h2>
+      <table aria-labelledby="lexique" role="table" class="lexique w-full text-base border-collapse">
+        <thead role="rowgroup">
+          <tr role="row" class="border-b border-eywa-text-muted/30">
+            <th role="columnheader" scope="col" class="text-left font-display py-3 text-eywa-bio-primary tracking-wide">Na'vi</th>
+            <th role="columnheader" scope="col" class="text-left font-display py-3 text-eywa-bio-primary tracking-wide">Français</th>
           </tr>
         </thead>
-        <tbody class="font-body">
-          <tr class="border-b border-eywa-text-muted/15"><td class="py-2 text-eywa-text"><em lang="art-x-navi">kaltxì</em></td><td class="text-eywa-text-muted">bonjour</td></tr>
-          <tr class="border-b border-eywa-text-muted/15"><td class="py-2 text-eywa-text"><em lang="art-x-navi">kìyevame</em></td><td class="text-eywa-text-muted">au revoir (litt. « à bientôt te revoir »)</td></tr>
-          <tr class="border-b border-eywa-text-muted/15"><td class="py-2 text-eywa-text"><em lang="art-x-navi">irayo</em></td><td class="text-eywa-text-muted">merci</td></tr>
-          <tr class="border-b border-eywa-text-muted/15"><td class="py-2 text-eywa-text"><em lang="art-x-navi">oel ngati kameie</em></td><td class="text-eywa-text-muted">« je te vois » — salutation spirituelle</td></tr>
-          <tr class="border-b border-eywa-text-muted/15"><td class="py-2 text-eywa-text"><em lang="art-x-navi">tsaheylu</em></td><td class="text-eywa-text-muted">le lien (queue à queue, neural)</td></tr>
-          <tr class="border-b border-eywa-text-muted/15"><td class="py-2 text-eywa-text"><em lang="art-x-navi">eywa ngahu</em></td><td class="text-eywa-text-muted">« qu'Eywa soit avec toi »</td></tr>
-          <tr class="border-b border-eywa-text-muted/15"><td class="py-2 text-eywa-text"><em lang="art-x-navi">tsmukan / tsmuke</em></td><td class="text-eywa-text-muted">frère / sœur</td></tr>
-          <tr class="border-b border-eywa-text-muted/15"><td class="py-2 text-eywa-text"><em lang="art-x-navi">eveng</em></td><td class="text-eywa-text-muted">enfant</td></tr>
-          <tr class="border-b border-eywa-text-muted/15"><td class="py-2 text-eywa-text"><em lang="art-x-navi">tsahìk</em></td><td class="text-eywa-text-muted">guide spirituelle (féminin)</td></tr>
-          <tr class="border-b border-eywa-text-muted/15"><td class="py-2 text-eywa-text"><em lang="art-x-navi">olo'eyktan</em></td><td class="text-eywa-text-muted">chef de clan</td></tr>
-          <tr class="border-b border-eywa-text-muted/15"><td class="py-2 text-eywa-text"><em lang="art-x-navi">txon</em></td><td class="text-eywa-text-muted">nuit</td></tr>
-          <tr class="border-b border-eywa-text-muted/15"><td class="py-2 text-eywa-text"><em lang="art-x-navi">trr</em></td><td class="text-eywa-text-muted">jour</td></tr>
-          <tr class="border-b border-eywa-text-muted/15"><td class="py-2 text-eywa-text"><em lang="art-x-navi">skxawng</em></td><td class="text-eywa-text-muted">idiot (insulte familière)</td></tr>
+        <tbody role="rowgroup" class="font-body">
+          <tr role="row" class="border-b border-eywa-text-muted/15"><td role="cell" class="py-2 text-eywa-text"><em lang="art-x-navi">kaltxì</em></td><td role="cell" class="text-eywa-text-muted">bonjour</td></tr>
+          <tr role="row" class="border-b border-eywa-text-muted/15"><td role="cell" class="py-2 text-eywa-text"><em lang="art-x-navi">kìyevame</em></td><td role="cell" class="text-eywa-text-muted">au revoir (litt. « à bientôt te revoir »)</td></tr>
+          <tr role="row" class="border-b border-eywa-text-muted/15"><td role="cell" class="py-2 text-eywa-text"><em lang="art-x-navi">irayo</em></td><td role="cell" class="text-eywa-text-muted">merci</td></tr>
+          <tr role="row" class="border-b border-eywa-text-muted/15"><td role="cell" class="py-2 text-eywa-text"><em lang="art-x-navi">oel ngati kameie</em></td><td role="cell" class="text-eywa-text-muted">« je te vois » — salutation spirituelle</td></tr>
+          <tr role="row" class="border-b border-eywa-text-muted/15"><td role="cell" class="py-2 text-eywa-text"><em lang="art-x-navi">tsaheylu</em></td><td role="cell" class="text-eywa-text-muted">le lien (queue à queue, neural)</td></tr>
+          <tr role="row" class="border-b border-eywa-text-muted/15"><td role="cell" class="py-2 text-eywa-text"><em lang="art-x-navi">eywa ngahu</em></td><td role="cell" class="text-eywa-text-muted">« qu'Eywa soit avec toi »</td></tr>
+          <tr role="row" class="border-b border-eywa-text-muted/15"><td role="cell" class="py-2 text-eywa-text"><em lang="art-x-navi">tsmukan / tsmuke</em></td><td role="cell" class="text-eywa-text-muted">frère / sœur</td></tr>
+          <tr role="row" class="border-b border-eywa-text-muted/15"><td role="cell" class="py-2 text-eywa-text"><em lang="art-x-navi">eveng</em></td><td role="cell" class="text-eywa-text-muted">enfant</td></tr>
+          <tr role="row" class="border-b border-eywa-text-muted/15"><td role="cell" class="py-2 text-eywa-text"><em lang="art-x-navi">tsahìk</em></td><td role="cell" class="text-eywa-text-muted">guide spirituelle (féminin)</td></tr>
+          <tr role="row" class="border-b border-eywa-text-muted/15"><td role="cell" class="py-2 text-eywa-text"><em lang="art-x-navi">olo'eyktan</em></td><td role="cell" class="text-eywa-text-muted">chef de clan</td></tr>
+          <tr role="row" class="border-b border-eywa-text-muted/15"><td role="cell" class="py-2 text-eywa-text"><em lang="art-x-navi">txon</em></td><td role="cell" class="text-eywa-text-muted">nuit</td></tr>
+          <tr role="row" class="border-b border-eywa-text-muted/15"><td role="cell" class="py-2 text-eywa-text"><em lang="art-x-navi">trr</em></td><td role="cell" class="text-eywa-text-muted">jour</td></tr>
+          <tr role="row" class="border-b border-eywa-text-muted/15"><td role="cell" class="py-2 text-eywa-text"><em lang="art-x-navi">skxawng</em></td><td role="cell" class="text-eywa-text-muted">idiot (insulte familière)</td></tr>
         </tbody>
       </table>
     </section>
 
     <section>
-      <h2 class="font-display text-2xl text-eywa-bio-primary mb-4">Pour aller plus loin</h2>
+      <h2 class="font-display text-2xl text-eywa-bio-primary mb-4" aria-label="Pour aller plus loin"><TitleText text="Pour aller plus loin" /></h2>
       <ul class="list-disc list-inside space-y-1 ml-2">
         <li><a href="https://naviteri.org" target="_blank" rel="noopener" class="text-eywa-bio-primary underline underline-offset-2 hover:no-underline">Naviteri.org<span class="sr-only"> (nouvel onglet)</span></a> — blog officiel du Dr Paul Frommer (créateur de la langue, mises à jour régulières)</li>
         <li><a href="https://learnnavi.org" target="_blank" rel="noopener" class="text-eywa-bio-primary underline underline-offset-2 hover:no-underline">LearnNavi.org<span class="sr-only"> (nouvel onglet)</span></a> — communauté + dictionnaire Eana Eltu de référence</li>
@@ -86,3 +87,35 @@ import CodexLayout from '../layouts/CodexLayout.astro';
     </p>
   </article>
 </CodexLayout>
+
+<style>
+  /* L73 — page de lecture très étroite pour son texte (320 px texte 175 et 200 %, 390 px texte 200 % : gabarit du codex
+     sous 11,5 em) : marges latérales du voile à leur taille du réglage normal, pour qu'un mot de titre sans coupure
+     permise tienne sur sa ligne (« Na'vi », 237 px à 320 px texte 200 %, dans 250 px au lieu de 198). */
+  @container eywa-codex (max-width: 11.5em) {
+    .reading-veil {
+      padding-inline: 0.5rem;
+    }
+  }
+  /* Lexique : à 320 px texte 200 %, la plus longue entrée de chaque colonne (« olo'eyktan », « spirituelle ») ne tenait
+     pas côte à côte (302 px pour 250) et la page défilait de côté. Une ligne par entrée : le mot na'vi, puis sa
+     traduction en retrait, et l'en-tête empilé de la même façon (« Na'vi », puis « Français » en retrait), visible.
+     Rôles ARIA de tableau posés dans le balisage : l'affichage en blocs ne retire pas la sémantique du tableau. */
+  @container eywa-codex (max-width: 11.5em) {
+    .lexique tr,
+    .lexique th,
+    .lexique td {
+      display: block;
+    }
+    .lexique tr {
+      padding-block: 0.5rem;
+    }
+    .lexique th,
+    .lexique td {
+      padding-block: 0;
+    }
+    .lexique :is(th, td) + :is(th, td) {
+      padding-inline-start: 1rem;
+    }
+  }
+</style>

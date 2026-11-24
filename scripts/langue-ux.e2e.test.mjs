@@ -38,7 +38,7 @@ test('R3 — le lexique est un tableau nommé, à en-têtes de colonne déclaré
     const table = document.querySelector('article table');
     const ref = table.getAttribute('aria-labelledby');
     return {
-      name: ref ? document.getElementById(ref)?.textContent.trim() : null,
+      name: ref ? document.getElementById(ref)?.textContent.replaceAll('\u00ad', '').trim() : null, // L73 : U+00AD des coupures, invisibles
       scopes: [...table.querySelectorAll('th')].map((th) => th.getAttribute('scope')),
     };
   });

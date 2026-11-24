@@ -38,6 +38,8 @@ function section(md, titre) {
 }
 
 const dist = (chemin) => join(DIST, chemin, 'index.html');
+// L73 : un titre coupable est rendu en boîtes (<span class="title-word">) avec des U+00AD ; on compare son texte lu.
+const untitle = (s) => s.replace(/<span class="title-word">([^<]*)<\/span>/g, '$1').replaceAll('\u00ad', '');
 
 test('R5 — expectations.md porte une section /about/ dont chaque attendu se vérifie sur la page construite', (t) => {
   const bloc = section(readFileSync(DOC, 'utf8'), '/about/');
@@ -162,7 +164,7 @@ test('R8 — expectations.md décrit /plan-de-travail/ (titre, h1, trois section
   assert.match(bloc, /^- never: .*(notes|verdicts)/m, 'aucun texte privé du plan');
   assert.doesNotMatch(md.split(/^## /m)[0], /Non couvert :[^]*`\/plan-de-travail\/`/, '/plan-de-travail/ n\'est plus « non couverte »');
   if (!existsSync(dist('plan-de-travail'))) return t.skip('frontend/dist absent : lancer le build');
-  const html = readFileSync(dist('plan-de-travail'), 'utf8');
+  const html = untitle(readFileSync(dist('plan-de-travail'), 'utf8'));
   assert.match(html, /<title>Plan de travail — Eywa<\/title>/);
   assert.equal([...html.matchAll(/<h1[ >]/g)].length, 1, 'un seul h1');
   assert.match(html, /<h1[^>]*>Ce qui se prépare/);

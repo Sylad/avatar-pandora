@@ -11,7 +11,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readdirSync, readFileSync } from 'node:fs';
-import { EXCEPTIONS, MIN_AFTER, MIN_BEFORE, SOFT_HYPHEN, syllableBreaks, titleBreaks } from '../frontend/src/lib/title-breaks.ts';
+import { EXCEPTIONS, MIN_AFTER, MIN_BEFORE, SOFT_HYPHEN, syllableBreaks, titleBreaks, titleSegments } from '../frontend/src/lib/title-breaks.ts';
 
 const show = (s) => s.replaceAll(SOFT_HYPHEN, '-');
 const HERO = { fallbackBefore: 2 };
@@ -106,4 +106,31 @@ test('L72 — titres du site : 3 lettres de chaque côté de chaque coupure (rep
     }
   }
   assert.deepEqual(bad, []);
+});
+
+// L73 (revue UX de L72, m2) : noms de personnes jamais coupés (« Qua-ritch » se lisait contre la prononciation).
+test('L73 — noms de personnes des fiches : jamais coupés', () => {
+  for (const name of ['Miles Quaritch', 'Norm Spellman', 'Trudy Chacon']) assert.equal(titleBreaks(name).includes(SOFT_HYPHEN), false, name);
+  assert.equal(show(titleBreaks('Parker Selfridge')), 'Par-ker Self-ridge'); // mot composé anglais : inchangé (L72)
+});
+
+// L73 (revue UX de L72, m1 ; /langue/) : chaque mot qui porte une coupure est une boîte qui passe entière à la ligne.
+const seg = (title, options) => titleSegments(title, options).map((s) => (s.word ? `[${show(s.text)}]` : show(s.text))).join('');
+
+test('L73 — titleSegments : mots coupables en boîte, ponctuation comprise, composé séparé après son trait d’union', () => {
+  assert.equal(seg("La langue Na'vi", HERO), "La [lan-gue] Na'vi");
+  assert.equal(seg('Trois œuvres, vingt-cinq ans de Pandora'), 'Trois [œu-vres,] vingt-cinq ans de [Pan-dora]');
+  assert.equal(seg('Lexique de base'), '[Lexi-que] de base');
+  assert.equal(seg('Cette page n’existe pas'), 'Cette page n’existe pas'); // aucun mot coupable : aucune boîte
+  // Le texte rendu est le titre, aux seuls U+00AD près.
+  for (const title of ["Tsu'tey te Rongloa Ateyo'itan", 'Les arbres-réseaux et plantes sacrées', 'Miles « Spider » Socorro']) {
+    assert.equal(titleSegments(title, HERO).map((s) => s.text).join('').replaceAll(SOFT_HYPHEN, ''), title);
+  }
+});
+
+test('L73 — bandeaux (wrap fallback) : seules les parties d’un composé coupées par le repli à 2 lettres sont en boîte', () => {
+  const opts = { ...HERO, wrap: 'fallback' };
+  assert.equal(seg('Les arbres-réseaux et plantes sacrées', opts), 'Les [ar-bres-][ré-seaux] et plan-tes sa-crées');
+  assert.equal(seg('La technologie humaine', opts), 'La tech-no-lo-gie hu-maine');
+  assert.equal(seg('Les peuples de Pandora', opts), 'Les peu-ples de Pan-dora');
 });

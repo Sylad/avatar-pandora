@@ -1,0 +1,19 @@
+---
+/**
+ * Texte d'un titre avec ses coupures (L73) : U+00AD de titleBreaks, et chaque mot qui en porte dans une boîte
+ * `.title-word` (inline-block, `hyphens: manual`, global.css) — il passe entier à la ligne et ne se coupe que s'il est
+ * plus large qu'une ligne. Le titre qui l'emploie porte `aria-label={text}` : son nom accessible reste sans U+00AD, et
+ * le texte copié en est purgé (lib/soft-hyphen-copy.ts). `section` : titre d'une section du codex, repli à 2 lettres
+ * permis pour un mot qui n'a aucune coupure à 3 lettres.
+ */
+import { titleSegments, type SegmentOptions } from '../lib/title-breaks';
+
+interface Props {
+  text: string;
+  section?: boolean;
+  wrap?: SegmentOptions['wrap'];
+}
+const { text, section = false, wrap = 'all' } = Astro.props;
+const segments = titleSegments(text, { wrap, ...(section ? { fallbackBefore: 2 } : {}) });
+---
+{segments.map((s) => (s.word ? <span class="title-word">{s.text}</span> : s.text))}

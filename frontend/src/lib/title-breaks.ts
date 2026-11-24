@@ -48,12 +48,18 @@ export const EXCEPTIONS: Record<string, string> = {
   crabsuit: 'crab-suit',
   sturmbeest: 'sturm-beest',
   selfridge: 'self-ridge',
-  spellman: 'spell-man',
+  // L73 (revue UX de L72, m2) : noms de personnes jamais coupés (usage typographique français ; « Qua-ritch » se lisait
+  // contre la prononciation). Ils tiennent dans la carte à 320 px texte 200 % (R1 de codex-grid-text).
+  spellman: 'spellman',
+  quaritch: 'quaritch',
+  chacon: 'chacon',
   scorpion: 'scor-pion',
   interstellaire: 'inter-stel-laire',
   rongloa: 'rong-loa',
   angtsìk: 'ang-tsìk',
   tskaha: 'tskaha',
+  // L73 : nom de chaîne en un mot (/videos/), coupé à ses mots.
+  linksthesun: 'links-the-sun',
 };
 
 type Unit = { text: string; at: number; kind: 'V' | 'C' | 'A' };
@@ -147,4 +153,41 @@ export function titleBreaks(title: string, options: BreakOptions = {}): string {
     const breaks = syllableBreaks(word, options);
     return breaks.reduceRight((w, at) => w.slice(0, at) + SOFT_HYPHEN + w.slice(at), word);
   });
+}
+
+/**
+ * L73 — titres hors des listes du codex (/langue/, /videos/, À propos, Nouveautés, Plan de travail, 404) et mots du
+ * repli des bandeaux. Le navigateur remplit chaque ligne au plus loin : avec des U+00AD actifs, il coupe un mot qui
+ * tiendrait seul sur la ligne suivante (« Les ar- / bres- / ré- / seaux », revue UX de L72, m1). Chaque mot qui porte
+ * une coupure est rendu dans une boîte `inline-block` (`.title-word`, global.css) : le mot passe d'abord entier à la
+ * ligne, et ne se coupe, à ses U+00AD, que s'il est plus large qu'une ligne entière. Au réglage normal, où tout mot
+ * tient sur une ligne, le rendu ne change pas.
+ *
+ * Un « mot » va d'une espace à l'autre, ponctuation comprise (« Nouveautés, », « (Palulukan) ») ; un mot composé se
+ * sépare après son trait d'union (« arbres- » | « réseaux »), où la ligne peut toujours passer. `wrap: 'all'` met en
+ * boîte tout mot qui a une coupure ; `'fallback'` (bandeaux du codex) seulement les parties d'un mot composé qui ont
+ * une coupure du repli à 2 lettres (« ar·bres- », « ré·seaux »), les autres gardant le rendu de L72 : une boîte ne
+ * sert à rien autour d'un mot plus large que la ligne, et elle y coûte une ligne (« sacrées », trop large à 1440 px
+ * texte 175 %, donnait « tes / sa- / crées » au lieu de « tes sa- / crées »).
+ */
+export type TitleSegment = { text: string; word: boolean };
+export type SegmentOptions = BreakOptions & { wrap?: 'all' | 'fallback' };
+
+export function titleSegments(title: string, { wrap = 'all', ...options }: SegmentOptions = {}): TitleSegment[] {
+  const out: TitleSegment[] = [];
+  const push = (text: string, word: boolean) => {
+    const last = out.at(-1);
+    if (last && !last.word && !word) last.text += text;
+    else if (text) out.push({ text, word });
+  };
+  for (const token of title.split(/( +)/)) {
+    if (/^ *$/.test(token)) { push(token, false); continue; }
+    const parts = token.split(/(?<=[-‐])(?=.)/u);
+    for (const part of parts) {
+      const broken = titleBreaks(part, options);
+      const boxed = wrap === 'all' ? broken !== part : parts.length > 1 && broken !== titleBreaks(part);
+      push(broken, boxed);
+    }
+  }
+  return out;
 }

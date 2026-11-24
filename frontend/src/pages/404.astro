@@ -10,11 +10,11 @@ import CodexLayout from '../layouts/CodexLayout.astro';
 ---
 <CodexLayout title="Page introuvable — Eywa">
   <div class="reading-veil max-w-2xl">
-    <header class="mb-6">
+    <header class="not-found-head mb-6">
       <p class="text-xs uppercase tracking-[0.25em] text-eywa-text-muted font-display mb-3">
         Erreur 404
       </p>
-      <h1 class="font-display text-4xl text-eywa-bio-primary mb-4">Cette page n'existe pas</h1>
+      <h1 class="not-found-title font-display text-4xl text-eywa-bio-primary mb-4">Cette page n'existe pas</h1>
       <p class="text-lg text-eywa-text font-body leading-relaxed">
         Même Eywa ne trouve pas ce chemin dans la forêt. L'adresse est peut-être mal tapée, ou la page a changé de place.
       </p>
@@ -27,3 +27,27 @@ import CodexLayout from '../layouts/CodexLayout.astro';
     </nav>
   </div>
 </CodexLayout>
+
+<style>
+  /* L73 — page de lecture très étroite pour son texte (320 px texte 175 et 200 %, 390 px texte 200 % : gabarit du codex
+     sous 11,5 em) : marges latérales du voile à leur taille du réglage normal, pour qu'un mot de titre sans coupure
+     permise tienne sur sa ligne (« Na'vi », 237 px à 320 px texte 200 %, dans 250 px au lieu de 198). */
+  @container eywa-codex (max-width: 11.5em) {
+    .reading-veil {
+      padding-inline: 0.5rem;
+    }
+  }
+  /* « n'existe » n'a aucune coupure permise (« n'exis-te » rejetterait 2 lettres, une syllabe muette finale) et fait
+     10,6 em du texte dans le titre en 2,25 rem (371 px à 320 px texte 200 %). Quand l'en-tête est plus étroit (texte
+     agrandi sur un écran étroit : 320 px dès 125 %, 390 px dès 150 %), titre à 1,5 rem, où il fait 7,1 em (247 px dans
+     250 à 320 px texte 200 %). Au réglage normal, l'en-tête fait 14 em ou plus : rien ne change. */
+  .not-found-head {
+    container: not-found / inline-size;
+  }
+  @container not-found (max-width: 10.8em) {
+    .not-found-title {
+      font-size: 1.5rem;
+      line-height: 1.15;
+    }
+  }
+</style>

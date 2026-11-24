@@ -114,6 +114,17 @@
   }
 }
 
+/*
+  L73 — mot d'un titre qui porte des coupures (TitleText, lib/title-breaks.ts : titleSegments). En boîte, il passe
+  entier à la ligne et ne se coupe, à ses U+00AD et avec son trait, que s'il est plus large qu'une ligne entière : plus
+  de « Les ar- / bres- / ré- / seaux » quand « arbres- » tenait seul (revue UX de L72, m1), plus de mot de titre cassé
+  sans trait à 320 px texte 200 % (« lang|ue », /langue/). Au réglage normal, tout mot tient : rendu inchangé.
+*/
+.title-word {
+  display: inline-block;
+  hyphens: manual;
+}
+
 @layer components {
   /*
     Titre d'une fiche du codex (revue de d9f745c) : à 2,25 rem fixes, le plus long mot d'un titre

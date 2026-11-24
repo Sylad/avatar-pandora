@@ -12,6 +12,7 @@ import { join } from 'node:path';
 import CodexLayout from '../layouts/CodexLayout.astro';
 import MetaHeader from '../components/MetaHeader.astro';
 import FrDate from '../components/FrDate.astro';
+import TitleText from '../components/TitleText.astro';
 import { captureAlt } from '../lib/news-alt';
 import news from '../../public/nouveautes-data/nouveautes.json';
 
@@ -75,7 +76,7 @@ const pngSize = (rel: string) => {
                   <span class="sr-only">Copier le lien : {e.title}</span>
                 </button>
               </p>
-              <h2 id={`${e.slug}-titre`}>{e.title}</h2>
+              <h2 id={`${e.slug}-titre`} aria-label={e.title}><TitleText text={e.title} /></h2>
               {/* HTML produit par cadence depuis le Markdown du dépôt (texte échappé à la génération). */}
               <div class="news-body" set:html={e.html} />
               {e.captures.length > 0 && (
@@ -135,6 +136,21 @@ const pngSize = (rel: string) => {
     }
     /* Arrivée par /nouveautes/#<slug> : l'entrée s'arrête sous le bouton menu (téléphone)
        et s'illumine. */
+    /* L73 — texte très agrandi pour la largeur (gabarit du codex sous 11,5 em : 320 px texte 175 et 200 %, 390 px texte
+       200 %) : marges latérales de la carte à leur taille du réglage normal. Sinon « d'ordinateur » débordait de la carte
+       et la page défilait de côté (433 px pour 320). */
+    @container eywa-codex (max-width: 11.5em) {
+      .news-entry {
+        padding-inline: 0.5rem;
+      }
+      /* Texte courant : un mot plus large que la ligne (« correspondantes. », 272 px dans une puce de 200 à 320 px texte
+         200 %) se coupe à la césure française du navigateur, avec son trait ; « anywhere » reste le secours (comme la
+         règle de body en texte agrandi, global.css), jamais le défilement de côté. */
+      .news-body {
+        hyphens: auto;
+        overflow-wrap: anywhere;
+      }
+    }
     .news-entry {
       scroll-margin-top: 5rem;
     }

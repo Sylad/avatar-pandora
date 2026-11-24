@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import CodexLayout from '../layouts/CodexLayout.astro';
 import SectionHero from '../components/SectionHero.astro';
+import TitleText from '../components/TitleText.astro';
 import { thumbFor, maxresFor } from '../lib/video-thumb';
 
 const channels = await getCollection('videosChannels');
@@ -36,7 +37,7 @@ const typeLabel: Record<string, string> = {
 
   <!-- Section 1 : Chaînes recommandées (priority) -->
   <section class="mb-16">
-    <h2 class="vid-section-title">Chaînes recommandées</h2>
+    <h2 class="vid-section-title" aria-label="Chaînes recommandées"><TitleText text="Chaînes recommandées" /></h2>
     <p class="vid-section-intro codex-text-veil">
       Quelques voix qui valent qu'on s'y arrête — officielles, encyclopédiques, ou techniquement
       les meilleures du genre.
@@ -64,7 +65,7 @@ const typeLabel: Record<string, string> = {
 
   <!-- Section 2 : Vidéos en vedette -->
   <section>
-    <h2 class="vid-section-title">Vidéos en vedette</h2>
+    <h2 class="vid-section-title" aria-label="Vidéos en vedette"><TitleText text="Vidéos en vedette" /></h2>
     <p class="vid-section-intro codex-text-veil">
       Sélection — du teaser officiel au cours de linguistique en passant par
       le breakdown VFX. Le clic ouvre YouTube dans un nouvel onglet.
@@ -101,7 +102,7 @@ const typeLabel: Record<string, string> = {
               <span class="video-card__type" aria-hidden="true">{typeLabel[v.data.type] ?? v.data.type}</span>
             </div>
             <div class="video-card__body">
-              <h3 class="video-card__title"><span lang={v.data.lang === 'EN' ? 'en' : undefined}>{v.data.title}</span></h3>
+              <h3 class="video-card__title" aria-label={v.data.title}><span lang={v.data.lang === 'EN' ? 'en' : undefined}><TitleText text={v.data.title} /></span></h3>
               {/* Hors du h3 (L47) : la navigation par titres lit le titre seul ; le lien garde l'indication. */}
               <span class="sr-only"> (nouvel onglet)</span>
               <div class="video-card__meta">
@@ -121,7 +122,7 @@ const typeLabel: Record<string, string> = {
 
   <!-- Section 3 : Toutes les chaînes (rappel complet) -->
   <section class="mt-16">
-    <h2 class="vid-section-title">Toutes les chaînes</h2>
+    <h2 class="vid-section-title" aria-label="Toutes les chaînes"><TitleText text="Toutes les chaînes" /></h2>
     <p class="vid-section-intro codex-text-veil">
       La liste complète des sources mobilisées pour cette page — aller plus loin que la sélection.
     </p>
@@ -508,6 +509,14 @@ const typeLabel: Record<string, string> = {
     background: rgba(10, 10, 31, 0.78);
     text-decoration: none;
     transition: border-color 300ms ease, background 300ms ease;
+  }
+
+  /* L73 — texte très agrandi pour la largeur (gabarit du codex sous 11,5 em) : marges de la ligne à leur taille du
+     réglage normal ; « LinksTheSun » (233 px à 320 px texte 200 %) tient alors sur sa ligne au lieu d'être cassé. */
+  @container eywa-codex (max-width: 11.5em) {
+    .channel-link {
+      padding-inline: 0.5rem;
+    }
   }
 
   .channel-link:hover {

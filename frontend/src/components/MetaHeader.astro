@@ -12,11 +12,13 @@ interface Props {
 }
 const { eyebrow: rawEyebrow, title, lede } = Astro.props;
 // « · Eywa » insécable : à 320 px, « Plan de travail · Eywa » passait à la ligne en
-// laissant « · » seul en fin de ligne (revue UX L20).
-const eyebrow = rawEyebrow.replace(/ · /g, '\u00a0·\u00a0');
+// laissant « · » seul en fin de ligne (revue UX L20). L73 : « · Eywa » est une boîte qui
+// passe ENTIÈRE à la ligne quand le sur-titre ne tient pas (320 px texte 175 et 200 % :
+// « Nouveautés · Eywa », tout insécable, faisait défiler la page de côté, 378 px pour 320).
+const [eyebrowHead, ...eyebrowTail] = rawEyebrow.split(' · ');
 ---
 <header class="meta-header">
-  <p class="meta-eyebrow">{eyebrow}</p>
+  <p class="meta-eyebrow">{eyebrowHead}{eyebrowTail.map((part) => <Fragment> <span class="meta-eyebrow__tail">·{'\u00a0'}{part}</span></Fragment>)}</p>
   <h1 class="meta-title">{title}</h1>
   <p class="meta-lede">{lede}</p>
   <slot />
@@ -50,6 +52,17 @@ const eyebrow = rawEyebrow.replace(/ · /g, '\u00a0·\u00a0');
      à 320 px, dans le halo cyan du bouton). */
   .meta-eyebrow {
     padding-right: 3.75rem;
+  }
+  /* L73 — texte très agrandi pour la largeur (gabarit du codex sous 11,5 em : 320 px texte 175 et 200 %, 390 px
+     texte 200 %) : « NOUVEAUTÉS » ne tenait plus à gauche du bouton menu et la page défilait de côté (378 px pour 320).
+     Le sur-titre prend toute la ligne et passe sous le bouton menu (même hauteur que lui, plus sa marge). */
+  @container eywa-codex (max-width: 11.5em) {
+    .meta-eyebrow {
+      padding-right: 0;
+    }
+  }
+  .meta-eyebrow__tail {
+    display: inline-block;
   }
   /* Barre latérale (même double condition que CodexLayout, L69) : pas de bouton menu. */
   @media (min-width: 64rem) {
