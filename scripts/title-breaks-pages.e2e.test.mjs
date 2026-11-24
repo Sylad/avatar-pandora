@@ -6,7 +6,8 @@
 // 3 lettres de chaque côté (repli à 2 avant dans un titre de section seulement), au plus 2 lignes à trait de suite,
 // aucun U+00AD copié ni dans un nom accessible, aucun défilement horizontal. Rien ne change à 100 %.
 // L74 : mêmes règles sur les ~70 fiches du codex (h1, intertitres, texte courant : P7), le texte courant des Nouveautés
-// n'est plus exempté (P1), et le texte d'À propos ne sort plus de sa carte (P4).
+// n'est plus exempté (P1), et le texte d'À propos ne sort plus de sa carte (P4). L74 r1 : aucun nom de personne coupé
+// dans le texte courant des fiches et des Nouveautés (P8).
 // Texte agrandi joué comme les revues : taille de police de <html>. Lit frontend/dist ; skip sans playwright-core.
 import test from 'node:test';
 import { readdirSync } from 'node:fs';
@@ -15,6 +16,7 @@ import { DIST, nextFrames, setupBrowser } from './lib/e2e-dist.mjs';
 import { titleLines } from './lib/title-lines.mjs';
 import { wordBreaks } from './lib/word-breaks.mjs';
 import { EXCEPTIONS, addressParts, syllableBreaks } from '../frontend/src/lib/title-breaks.ts';
+import { PERSON_NAMES } from '../frontend/src/lib/prose-breaks.ts';
 
 const SHY = '­';
 const PAGES = ['/langue/', '/about/', '/404.html', '/nouveautes/', '/plan-de-travail/', '/videos/', '/'];
@@ -356,4 +358,48 @@ test('P7 — fiches du codex, 320 et 390 px, texte 125 à 200 % : titres et text
   }
   assert.ok(cuts > 100, `${cuts} coupures seulement : la mesure ne voit plus les titres coupés`);
   assert.deepEqual(failures, [], `${failures.length} défaut(s) :\n${failures.slice(0, 40).join('\n')}`);
+});
+
+// L74 r1 (revue UX, M1) : la césure du navigateur coupait les noms de personnes du texte courant — 313 fois dans les
+// fiches (« Qua-ritch », « Ney-tiri ») et 6 sur /nouveautes/, dont l'entrée L74 qui dit le contraire (« Ron-gloa », 320 px
+// texte 200 %). Chaque occurrence d'un nom de PERSON_NAMES dans <main> doit tenir sur une seule ligne.
+test('P8 — fiches et /nouveautes/, 320 et 390 px, texte 150 à 200 % : aucun nom de personne coupé', { timeout: 1_200_000 }, async (t) => {
+  const env = await setupBrowser(t);
+  if (!env) return;
+  const failures = [];
+  let seen = 0;
+  const source = PERSON_NAMES.map((n) => n.replace(/'/g, "['’]")).join('|');
+  for (const width of [320, 390]) {
+    const page = await env.browser.newPage({ viewport: { width, height: 900 }, reducedMotion: 'reduce' });
+    for (const path of [...FICHES, '/nouveautes/']) {
+      await page.goto(env.base + path, { waitUntil: 'load' });
+      for (const factor of [1.5, 1.75, 2]) {
+        await setText(page, factor);
+        const r = await page.evaluate((src) => {
+          const re = new RegExp(`(?<![\\p{L}\\p{N}])(?:${src})(?![\\p{L}\\p{N}])`, 'gu');
+          const cut = [];
+          let count = 0;
+          const walker = document.createTreeWalker(document.getElementById('contenu'), NodeFilter.SHOW_TEXT);
+          for (let n = walker.nextNode(); n; n = walker.nextNode()) {
+            if (!n.parentElement.checkVisibility()) continue;
+            for (const m of n.data.matchAll(re)) {
+              const range = document.createRange();
+              range.setStart(n, m.index);
+              range.setEnd(n, m.index + m[0].length);
+              const rects = [...range.getClientRects()].filter((x) => x.width > 0.5);
+              if (!rects.length) continue;
+              count++;
+              if (rects.some((a) => rects.some((b) => b.top > a.top + a.height / 2))) cut.push(m[0]);
+            }
+          }
+          return { count, cut };
+        }, source);
+        seen += r.count;
+        for (const w of r.cut) failures.push(`${path} @${width}px texte ${factor * 100} % : « ${w} » coupé`);
+      }
+    }
+    await page.close();
+  }
+  assert.ok(seen > 1000, `${seen} noms seulement : la mesure ne les voit plus`);
+  assert.deepEqual(failures, [], `${failures.length} nom(s) coupé(s) :\n${failures.slice(0, 40).join('\n')}`);
 });

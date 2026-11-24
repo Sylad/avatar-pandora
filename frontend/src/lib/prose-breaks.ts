@@ -19,22 +19,59 @@
  */
 import { titleSegments } from './title-breaks.ts'; // extension : les tests (node --test) importent ce module tel quel
 
-export type ProseSegment = { text: string; word: boolean };
+/**
+ * L74 r1 (revue UX, M1) — noms de personnes jamais coupés dans le texte courant non plus. La césure du navigateur ne
+ * connaît pas la table EXCEPTIONS des titres : à 320 px texte 200 %, « Qua-ritch », « Ney-tiri », « Ron-gloa » (313 fois
+ * dans les fiches, 6 sur /nouveautes/). Chaque nom de cette liste est mis au build dans un `<span class="prose-name">`
+ * (`hyphens: manual`, global.css) : il passe entier à la ligne. Le plus long, « Ateyo'itan » ou « Worthington », tient
+ * sur une ligne à 320 px texte 200 % ; `overflow-wrap: anywhere` reste le secours. Personnages des films, acteurs et
+ * équipe (« Cameron », « Frommer ») ; un nom de 5 lettres ou moins (« Grace », « Kiri ») n'est jamais césuré
+ * (`hyphenate-limit-chars: 6 3 3`) et n'a pas besoin d'y être. Forme écrite dans le texte, majuscule comprise ; les
+ * apostrophes droite et typographique valent l'une pour l'autre.
+ */
+export const PERSON_NAMES = [
+  // Personnages
+  'Quaritch', 'Neytiri', 'Neteyam', 'Payakan', 'Tonowari', 'Tsireya', 'Eytukan', 'Aonung', 'Peylak', 'Varang', 'Spider',
+  'Selfridge', 'Augustine', 'Spellman', 'Chacon', 'Scoresby', 'Parker', "Tsu'tey", 'Rongloa', "Ateyo'itan", 'Wainfleet',
+  'Walker', 'Prager', 'Tuktirey', 'Ardmore', 'Garvin',
+  // Personnes réelles (films, distribution, langue)
+  'Cameron', 'Sigourney', 'Weaver', 'Winslet', 'Chaplin', 'Curtis', 'Frommer', 'Pounder', 'Alonso', 'Jackson',
+  'Worthington', 'Saldana', 'Landau', 'Horner', 'Franglen',
+] as const;
+
+export type ProseSegment = { text: string; word: boolean; name?: boolean };
+
+const escapeRegExp = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+const NAME_SOURCE = [...PERSON_NAMES]
+  .sort((a, b) => b.length - a.length)
+  .map((n) => escapeRegExp(n).replace(/'/g, "['’]"))
+  .join('|');
+/** Un nom de la liste, mot entier (« d'Eytukan » : le nom seul ; jamais « Parkers » ni « Spiderman »). */
+const NAME = new RegExp(`(?<![\\p{L}\\p{N}])(?:${NAME_SOURCE})(?![\\p{L}\\p{N}])`, 'u');
 
 const GLUED = /[\p{L}\p{N}'’]{7,}(?=[\u00A0\u202F])|(?<=[\u00A0\u202F])[\p{L}\p{N}'’]{7,}/gu;
 
-/** Le texte courant en morceaux : `word` = mot à isoler dans un `<span>` (collé à une espace insécable). */
+const SEGMENT = new RegExp(`(${NAME.source})|${GLUED.source}`, 'gu');
+
+/**
+ * Le texte courant en morceaux : `word` = mot à isoler dans un `<span>` (collé à une espace insécable) ; `name` en plus
+ * = nom de personne, `<span class="prose-name">`, jamais césuré.
+ */
 export function proseSegments(text: string): ProseSegment[] {
   const out: ProseSegment[] = [];
   let last = 0;
-  for (const m of text.matchAll(GLUED)) {
+  for (const m of text.matchAll(SEGMENT)) {
     if (m.index > last) out.push({ text: text.slice(last, m.index), word: false });
-    out.push({ text: m[0], word: true });
+    out.push(m[1] ? { text: m[0], word: true, name: true } : { text: m[0], word: true });
     last = m.index + m[0].length;
   }
   if (last < text.length || !out.length) out.push({ text: text.slice(last), word: false });
   return out;
 }
+
+/** Un morceau du texte courant en HTML (partagé avec ProseText.astro). */
+export const segmentHtml = (s: ProseSegment) =>
+  s.name ? `<span class="prose-name">${escapeHtml(s.text)}</span>` : s.word ? `<span>${escapeHtml(s.text)}</span>` : escapeHtml(s.text);
 
 const escapeHtml = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 const decode = (s: string) =>
@@ -86,7 +123,7 @@ function proseTextHtml(text: string): string {
   const plain = decode(text);
   const segments = proseSegments(plain);
   if (segments.length === 1 && !segments[0].word && segments[0].text === plain) return text;
-  return segments.map((s) => (s.word ? `<span>${escapeHtml(s.text)}</span>` : escapeHtml(s.text))).join('');
+  return segments.map(segmentHtml).join('');
 }
 
 /** Un intertitre : chaque morceau de texte en boîtes de mots (L73), nom accessible = texte du titre sans U+00AD ; le texte

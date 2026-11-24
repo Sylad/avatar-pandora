@@ -4,7 +4,8 @@
 // (texte d'origine hors du gabarit étroit), nom accessible sans U+00AD.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { proseHtml, proseSegments } from '../frontend/src/lib/prose-breaks.ts';
+import { PERSON_NAMES, proseHtml, proseSegments } from '../frontend/src/lib/prose-breaks.ts';
+import { EXCEPTIONS } from '../frontend/src/lib/title-breaks.ts';
 
 const SHY = '­';
 const seg = (t) => proseSegments(t).map((s) => (s.word ? `[${s.text}]` : s.text)).join('');
@@ -41,4 +42,32 @@ test('proseHtml : intertitre en deux versions, boîtes de mots coupables, nom ac
   // Nom de personne jamais coupé.
   assert.equal(proseHtml('<h2>Neytiri</h2>'), '<h2>Neytiri</h2>');
   assert.ok(!proseHtml('<h2>Neytiri</h2>').includes(SHY));
+});
+
+// L74 r1 (revue UX, M1) : la césure du navigateur coupait les noms de personnes du texte courant (« Qua-ritch »,
+// « Ron-gloa » dans l'entrée L74 elle-même, à 320 px texte 200 %).
+const names = (t) => proseSegments(t).map((s) => (s.name ? `{${s.text}}` : s.word ? `[${s.text}]` : s.text)).join('');
+
+test('proseSegments : noms de personnes isolés comme noms, mot entier seulement', () => {
+  assert.equal(names("l'arc dramatique de Quaritch, puis Neytiri"), "l'arc dramatique de {Quaritch}, puis {Neytiri}");
+  assert.equal(names("Tsu'tey te Rongloa Ateyo'itan"), "{Tsu'tey} te {Rongloa} {Ateyo'itan}");
+  assert.equal(names('Tsu’tey et d’Eytukan'), '{Tsu’tey} et d’{Eytukan}'); // apostrophe typographique, élision
+  assert.equal(names('Spiderman, Parkers, quaritch'), 'Spiderman, Parkers, quaritch'); // jamais un morceau de mot
+  // Collé à une espace insécable : nom, pas simple mot à césurer.
+  assert.equal(names('«\u202FPayakan\u202F»'), '«\u202F{Payakan}\u202F»');
+  assert.equal(names('«\u202Fbioluminescente\u202F» de Quaritch'), '«\u202F[bioluminescente]\u202F» de {Quaritch}');
+});
+
+test('proseHtml : nom de personne en <span class="prose-name">, hors des attributs et des intertitres', () => {
+  assert.equal(proseHtml('<p>la mère de Neytiri</p>'), '<p>la mère de <span class="prose-name">Neytiri</span></p>');
+  const alt = '<p><img alt="Neytiri" src="x.webp"></p>';
+  assert.equal(proseHtml(alt), alt);
+  assert.equal(proseHtml('<h2>Neytiri</h2>'), '<h2>Neytiri</h2>');
+});
+
+test('PERSON_NAMES : tous les noms de personnes jamais coupés des titres (EXCEPTIONS) y sont', () => {
+  const listed = new Set(PERSON_NAMES.map((n) => n.toLowerCase()));
+  const nonPersons = new Set(['tskaha']);
+  const missing = Object.entries(EXCEPTIONS).filter(([k, v]) => !v.includes('-') && !nonPersons.has(k) && !listed.has(k)).map(([k]) => k);
+  assert.deepEqual(missing, []);
 });

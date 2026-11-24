@@ -125,6 +125,16 @@
   hyphens: manual;
 }
 
+/*
+  L74 r1 (revue UX, M1) — nom de personne dans le texte courant des fiches et des Nouveautés (lib/prose-breaks.ts,
+  PERSON_NAMES) : jamais césuré, il passe entier à la ligne (« Qua-ritch », « Ron-gloa » à 320 px texte 200 % avant).
+  Hors de la règle en couche de .entry-body / .news-body, qu'il doit battre. Au réglage normal, la césure est éteinte :
+  rendu inchangé.
+*/
+.prose-name {
+  hyphens: manual;
+}
+
 @layer components {
   /*
     Titre d'une fiche du codex (revue de d9f745c) : à 2,25 rem fixes, le plus long mot d'un titre
@@ -149,15 +159,20 @@
     l'article : 320 px dès 150 %, 390 px dès 175 %, 414 px à 200 % ; 13,8 em à 320 px et 17,8 em à 390 px au réglage
     normal, où rien ne change). Le plus long mot (« qu'approximativement », « supraconductrices, ») ne tenait plus
     sur la ligne dès 8,24 em de colonne et la page défilait de côté (360 px pour 320, 29 réglages sur ~70 fiches) : il
-    se coupe à la césure française du navigateur, avec son trait, 3 lettres au moins de chaque côté ; « anywhere »
+    se coupe à la césure française du navigateur, avec son trait, 4 lettres au moins de chaque côté (L74 r1) ; « anywhere »
     reste le secours, jamais le défilement de côté. Les mots collés à une espace insécable sont isolés au build
     (lib/prose-breaks.ts), sans quoi Chromium ne les césure pas.
+    L74 r1 (revue UX, m1) : « 6 3 3 » laissait de longues suites de lignes finies par un trait (91 suites de 4 lignes ou
+    plus sur les fiches à 320 et 390 px, texte 150 à 200 % ; l'usage en tolère 3). Chromium ignore
+    hyphenate-limit-lines : la césure ne sert plus qu'aux mots de 8 lettres ou plus, 4 de chaque côté — 15 suites de 4
+    ou plus, 0 défilement de côté, 0 mot cassé sans trait (P7 de title-breaks-pages). Noms de personnes jamais césurés
+    (.prose-name).
   */
   @container (max-width: 10em) {
     .entry-summary,
     .entry-body {
       hyphens: auto;
-      hyphenate-limit-chars: 6 3 3;
+      hyphenate-limit-chars: 8 4 4;
       overflow-wrap: anywhere;
     }
     /* Intertitres : coupés aux seuls U+00AD de leurs boîtes de mots (titleBreaks), jamais au dictionnaire. */
