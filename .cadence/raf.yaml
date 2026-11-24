@@ -828,7 +828,7 @@ lots:
     finished: 2026-11-24
   - id: L74
     title: "Fiches du codex (~70) à 320 px, texte à 175 et 200 % : le h1 entry-title et les intertitres Markdown se coupent sans trait d'union — même règle que les titres hors codex (L73, titleBreaks partagé), aucun défilement horizontal ; avec : « bioluminescente » et « permanent » cassés sans trait dans le texte courant de /nouveautes/ ; mineurs de la revue L73 (entrée linksthesun morte, exemption /nouveautes/ trop large dans le test P1, règle « adresse » écrite deux fois)"
-    status: doing
+    status: done
     estimate: 1
     visible: true
     after: [ L73 ]
@@ -836,8 +836,9 @@ lots:
     notes:
       - { date: 2026-11-24, text: "Ajout du lead (24-11, revue UX L73 r2, m3) : /about/ — « refactoringui », « Finance » et « COMMUNAUTÉ » sortent de leur carte de 1 à 31 px entre 145 et 200 % de texte (320-430 px). Avancer le seuil du gabarit étroit, et mesurer dans P4 le texte contre le bord de sa carte (pas seulement le défilement de la page). Capture tmp/ux-avatar-L73-r2/about-refactoringui-385-t185-hors-carte.png" }
     started: 2026-11-24
-    review: { date: 2026-11-24, verdict: "conforme — 0 bloquant, 4 mineurs en notes (tmp/revue-avatar-L74.md) : liste des noms lue par P7 dans la table contrôlée, gabarit dual écrit deux fois, titres doublés sans CSS, rendered.html sans images", commit: 106137563a2de5d16573f7f568985670e87b6e52 }
+    review: { date: 2026-11-24, verdict: conforme (r2 sur 15e637a ; 4 notes mineures reportées sur L77 ; rapport tmp/revue-avatar-L74-r2.md), commit: 15e637a33f193924f4a3db6d4274d739326aa17d }
     ux: { date: 2026-11-24, verdict: "conforme (r2 sur 15e637a : 0 nom coupé sur 12 183 occurrences, 0 défilement de côté, 0 U+00AD copié, rendu identique à la prod hors entrée L74 ; mineur en note : 25 suites de 4 à 6 coupures contre 101 ; rapport tmp/ux-avatar-L74-r2.md)" }
+    finished: 2026-11-24
   - id: L75
     title: "D-31 du registre parent : adopter cadence analyse (L801, cadence ≥ 2.0.18) — déclarer analyse: dans cadence.yaml avec les outils de la pile du projet (JS/TS : ESLint + typescript-eslint + eslint-plugin-sonarjs avec les seuils de cadence : max-lines 400, max-lines-per-function 80, max-depth 4, max-params 5, complexity 15, cognitive-complexity 15, plus tsc ; Python : ruff), base figée à l'existant (cadence analyse --init), aucune correction de l'existant ; la porte de cadence run le joue ensuite à chaque lot. Mesurer le temps ajouté à la porte (cible < 1 min) et le nombre de violations figées par outil, à rendre dans le rapport"
     status: todo
@@ -854,6 +855,8 @@ lots:
     estimate: 0.25
     visible: true
     created: 2026-11-24
+    notes:
+      - { date: 2026-11-24, text: "Notes de la revue de code r2 de L74 (24-11) : ProseText.astro:14 refait segmentHtml (le commentaire de prose-breaks.ts:72 dit « partagé », c'est faux) ; seuil « 5 lettres ou moins » (prose-breaks.ts:28) et « 6 lettres ou plus » (CLAUDE.md:238) périmés depuis « 8 4 4 » ; nom élidé collé à une espace insécable non protégé ; regex de P8 sans échappement" }
 acknowledged:
   - { sha: cef464dffb920ea7b161b1b0e06fe54d3efbdcc4, subject: "plan: verdicts UX de Sylvain enregistrés, trois bloquants de la revue des Personnages clos", date: 2026-10-10, reason: entretien du plan et régénération des Nouveautés }
   - { sha: 4bc75e983dc5bff0366190611a9c578d4ed071c8, subject: "plan: prototype Pandora vivant clos, cinq idées retenues par Sylvain posées après les images", date: 2026-10-10, reason: entretien du plan et régénération des Nouveautés (fichier désormais déclaré dérivé) }
