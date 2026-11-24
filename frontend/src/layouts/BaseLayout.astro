@@ -65,6 +65,10 @@ const newsIndex = JSON.stringify(
         seenSeparatorIndex, seenSeparatorLabel, sinceLabel, unseenLabel,
         type DatedEntry, type NewsSeen,
       } from '../lib/news-seen';
+      import { installCleanCopy } from '../lib/soft-hyphen-copy';
+
+      // Titres du codex copiés sans leurs coupures conditionnelles U+00AD (L72).
+      installCleanCopy();
 
       const storage = () => {
         try { return window.localStorage; } catch { return null; }

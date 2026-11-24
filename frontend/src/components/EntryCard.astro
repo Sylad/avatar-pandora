@@ -68,7 +68,7 @@ const spores = Array.from({ length: SPORE_COUNT }, (_, i) => {
     </div>
   )}
   <div class="entry-card__body">
-    <h2 class="entry-card__title">{titleBreaks(title)}</h2>
+    <h2 class="entry-card__title" aria-label={title}>{titleBreaks(title)}</h2>
     <p class="entry-card__summary">{summary}</p>
   </div>
 </a>
@@ -294,15 +294,18 @@ const spores = Array.from({ length: SPORE_COUNT }, (_, i) => {
 
   /* Taille en rem : le titre grandit avec le texte (WCAG 1.4.4 ; revue UX de L70, un plafond en cqi le laissait à
      117 % à 390 px texte 200 %, plus petit que le résumé). Un mot plus long que la carte (« bioluminescente »,
-     9,74 em du titre = 10,96 em de la carte, dans une colonne unique de 390 px texte 200 %) se coupe à une césure
-     française, avec son trait (la page est en lang="fr") ; « overflow-wrap: anywhere » des h2 (global.css) reste
+     9,74 em du titre = 10,96 em de la carte, dans une colonne unique de 390 px texte 200 %) se coupe à une coupure
+     de titleBreaks, avec son trait (`hyphens: manual` depuis L72) ; « overflow-wrap: anywhere » des h2 (global.css) reste
      le secours. Césure seulement sous 11 em : dans la grille (colonnes ≥ 14,5 em, 12 em de texte), tous les mots
-     tiennent, et `hyphens: auto` partout aurait coupé des titres au réglage normal (« Palulu-kan » à 1280 px).
+     tiennent, et la césure partout aurait coupé des titres au réglage normal (« Palulu-kan » à 1280 px).
      Hors de ce cas, `hyphens: none` rend inertes les coupures conditionnelles de titleBreaks (lib/title-breaks.ts). */
   .entry-card__title {
     font-family: var(--font-display);
     font-size: 1.125rem;
     hyphens: none;
+    /* L72 : jamais moins de 3 lettres de part et d'autre d'une coupure (même règle dans titleBreaks). `hyphens: manual` :
+       le navigateur ne coupe qu'aux U+00AD de titleBreaks, jamais à son dictionnaire (« Ts-kaha »). */
+    hyphenate-limit-chars: 6 3 3;
     color: var(--color-eywa-text);
     letter-spacing: 0.04em;
     margin-bottom: 0.5rem;
@@ -310,7 +313,7 @@ const spores = Array.from({ length: SPORE_COUNT }, (_, i) => {
   }
   @container eywa-card (max-width: 11em) {
     .entry-card__title {
-      hyphens: auto;
+      hyphens: manual;
     }
   }
 

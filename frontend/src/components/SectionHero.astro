@@ -48,7 +48,7 @@ const size = isIllustration(cover) ? ILLUSTRATION_SIZES.fiche : undefined;
   <div class="section-hero__veil"></div>
   <div class="section-hero__content">
     <p class="section-hero__roman">{roman} — {label}</p>
-    <h1 class="section-hero__title">{titleBreaks(title)}</h1>
+    <h1 class="section-hero__title" aria-label={title}>{titleBreaks(title, { fallbackBefore: 2 })}</h1>
     <p class="section-hero__tagline">{tagline}</p>
   </div>
 </header>
@@ -251,7 +251,8 @@ const size = isIllustration(cover) ? ILLUSTRATION_SIZES.fiche : undefined;
 
   /* Taille en rem : le titre grandit avec le texte (WCAG 1.4.4 ; revue UX de L70, un plafond en cqi le laissait à
      100 % à 390 px texte 200 %, sous son accroche). Un mot plus large que le bandeau (« technologie »,
-     « Pandora » à 390 px texte 175 %) se coupe à une césure française, avec son trait ; « overflow-wrap:
+     « Pandora » à 390 px texte 175 %) se coupe à une coupure de titleBreaks, avec son trait (`hyphens: manual` depuis
+     L72 : jamais au dictionnaire du navigateur) ; « overflow-wrap:
      anywhere » des h1 (global.css) reste le secours. Césure seulement quand le bandeau est plus étroit que le plus
      long mot (« technologie », 6,9 em du titre, soit 12,8 / 19 / 24,2 em du bandeau selon la taille du titre) :
      au réglage normal, aucun titre de section n'est coupé. Hors de ce cas, `hyphens: none` rend inertes les coupures
@@ -260,6 +261,9 @@ const size = isIllustration(cover) ? ILLUSTRATION_SIZES.fiche : undefined;
     font-family: var(--font-display);
     font-size: 1.85rem;
     hyphens: none;
+    /* L72 : au moins 3 lettres après une coupure, 3 avant sauf le repli à 2 des mots qui n'ont rien d'autre (« ré-seaux »,
+       titleBreaks avec fallbackBefore). `hyphens: manual` : le navigateur ne coupe qu'aux U+00AD de titleBreaks. */
+    hyphenate-limit-chars: 6 2 3;
     line-height: 1.05;
     color: var(--color-eywa-text);
     text-shadow:
@@ -282,20 +286,20 @@ const size = isIllustration(cover) ? ILLUSTRATION_SIZES.fiche : undefined;
 
   @container eywa-hero (max-width: 13em) {
     .section-hero__title {
-      hyphens: auto;
+      hyphens: manual;
     }
   }
   @media (min-width: 640px) {
     @container eywa-hero (max-width: 19.5em) {
       .section-hero__title {
-        hyphens: auto;
+        hyphens: manual;
       }
     }
   }
   @media (min-width: 768px) {
     @container eywa-hero (max-width: 24.5em) {
       .section-hero__title {
-        hyphens: auto;
+        hyphens: manual;
       }
     }
   }

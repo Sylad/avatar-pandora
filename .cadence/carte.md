@@ -23,3 +23,15 @@
 - Décision : pas de titre plus petit ni de coupure forcée. Dans un gabarit `eywa-codex` de moins de 10,75 em (320 px texte 175 % = 10,45 em, 200 % = 9,1 em ; 390 px texte 200 % = 11,1 em), les marges latérales de la page, du bandeau et des cartes reprennent leur taille du réglage normal (0,5 / 0,5 / 0,75 rem). « seaux » (238 px) tient alors dans le bandeau (248 px) et « Mo'at'ite » (190 px) comme « (2009) » tiennent dans la carte (230 px). Le même seuil est écrit dans CodexLayout, SectionHero et EntryCard.
 - Mesure : la géométrie est identique au commit précédent (46 704 éléments, 10 pages, 320 à 1440 px, texte 100 à 200 %), sauf à 320 px texte 175 et 200 % ; une mesure témoin (ancien contre ancien) donne 0 écart.
 - Tests : `scripts/codex-grid-text.e2e.test.mjs`. R1 (aucun mot cassé sans trait) et R5 (titres ×2 avec le texte) couvrent 320 px ; R6 vérifie que le mode étroit ne s'allume qu'à 320 px texte 175 et 200 %.
+
+## Coupures des titres du codex, vues du lecteur (L72)
+
+- Écrans : bandeaux `SectionHero` et cartes `EntryCard` des 7 listes du codex, quand le texte est agrandi et que la césure s'allume.
+- Copier : un seul écouteur `copy` sur le document (`lib/soft-hyphen-copy.ts`, posé par `BaseLayout`) retire les U+00AD du texte et du HTML copiés. Nom accessible : `aria-label={title}` sans U+00AD sur le h1 et le h2 des cartes (le lien de la carte garde le titre en tête de son nom).
+- Décisions :
+  - titres en `hyphens: manual` : le navigateur ne coupe qu'aux U+00AD de `titleBreaks`, jamais à son dictionnaire (« Ts-kaha » n'est plus coupé) ;
+  - au moins 3 lettres de chaque côté (`MIN_BEFORE`, `MIN_AFTER`, `hyphenate-limit-chars`), « œ » compté pour 2 lettres ;
+  - table `EXCEPTIONS` pour les mots anglais et les noms na'vi (« dire-horse », « gun-ship », « Rong-loa », « Ang-tsìk ») ;
+  - repli à 2 lettres avant pour les seuls bandeaux et les seuls mots de 6 lettres ou plus sans autre coupure (« ré-seaux », « sa-crées », « hu-maine », « ar-bres ») : sans ce repli, ces mots cassaient sans trait à 320–1024 px, ce qui contredit L71 ;
+  - au plus 2 lignes à trait de suite, sauf « tech- / nolo- / gie hu- / maine » (/engins/ à 390 px texte 200 %) : les largeurs des mots l'imposent, et ni `text-wrap: pretty` ni `balance` n'y changent rien.
+- Tests : `scripts/title-breaks.test.mjs` (règles, table, tous les titres du site) et `scripts/title-breaks.e2e.test.mjs` (C1 presse-papier, C2 arbre d'accessibilité par CDP, C3 coupures ligne par ligne de 320 à 1440 px avec `scripts/lib/title-lines.mjs`).

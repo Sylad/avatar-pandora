@@ -216,7 +216,7 @@ Titres des cartes et du bandeau en rem, JAMAIS plafonnés par leur cadre (cqi, v
 laissait à 100–117 %, plus petits que le texte (WCAG 1.4.4, F94 ; revue UX de L70). Un mot trop long se coupe à ses syllabes,
 avec un trait : `titleBreaks` (`lib/title-breaks.ts`) pose des U+00AD (le dictionnaire de Chromium refuse « peu-ples »,
 « œu-vres » ; un mot qui porte un U+00AD perd ses césures automatiques, d'où toutes les syllabes), actives seulement en
-`hyphens: auto`, posé par container query quand le cadre est plus étroit que le plus long mot (`hyphens: none` sinon : rendu à
+`hyphens: manual` (L72 : jamais le dictionnaire ; 3 lettres de chaque côté, table `EXCEPTIONS` des mots anglais et na'vi, repli à 2 lettres pour les seuls bandeaux ; U+00AD retirés du texte copié par `lib/soft-hyphen-copy.ts` et absents du nom accessible par `aria-label`, contrôlé par `scripts/title-breaks.e2e.test.mjs`), posé par container query quand le cadre est plus étroit que le plus long mot (`hyphens: none` sinon : rendu à
 100 % inchangé). Marges latérales du bandeau `min(…, 7cqi)`. Gabarit très étroit pour son texte (L71, `@container eywa-codex (max-width: 10.75em)`, soit 320 px texte
 175 et 200 %, jamais 390 px ni 100 %) : marges latérales de la page, du bandeau et des cartes à leur taille du réglage normal
 (0,5 / 0,5 / 0,75 rem), pour que la plus longue syllabe tienne (« seaux », « Mo'at'ite », « (2009) »). Détecteur commun des mots cassés : `scripts/lib/word-breaks.mjs`

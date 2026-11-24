@@ -1,10 +1,11 @@
 // Mots cassés au milieu dans une page (WCAG 1.4.4 : texte agrandi), partagé par les tests du codex (L69, L70).
 // Un mot (sans trait d'union ni tiret) dont les morceaux tiennent sur deux lignes est cassé, SAUF s'il est coupé à un
-// point de césure, dans un élément en `hyphens: auto` : le navigateur rend alors un trait (L70, titres du codex).
+// point de césure, dans un élément en `hyphens: auto` ou `manual` (titres du codex depuis L72, coupures U+00AD seules) :
+// le navigateur rend alors un trait (L70, titres du codex).
 // Toute autre coupure — lettre à lettre par `overflow-wrap`, sans trait — reste un mot cassé.
 
 // Points de césure qu'offre le navigateur pour `word` dans la police et la langue de `host` : le mot est posé dans une
-// sonde de 1 px de large, en `hyphens: auto` sans `overflow-wrap`, qui ne peut alors passer à la ligne qu'à une
+// sonde de 1 px de large, avec le `hyphens` de `host`, sans `overflow-wrap`, qui ne peut alors passer à la ligne qu'à une
 // césure ; chaque changement de ligne donne un indice de coupure.
 function hyphenationPoints(word, host) {
   const cs = getComputedStyle(host);
@@ -14,7 +15,7 @@ function hyphenationPoints(word, host) {
     position: 'absolute', left: '-10000px', top: '0', display: 'block', inlineSize: '1px',
     fontFamily: cs.fontFamily, fontSize: cs.fontSize, fontWeight: cs.fontWeight, fontStyle: cs.fontStyle,
     letterSpacing: cs.letterSpacing, textTransform: cs.textTransform,
-    hyphens: 'auto', overflowWrap: 'normal', wordBreak: 'normal', whiteSpace: 'normal',
+    hyphens: cs.hyphens, overflowWrap: 'normal', wordBreak: 'normal', whiteSpace: 'normal',
   });
   probe.textContent = word;
   document.body.append(probe);
@@ -34,7 +35,7 @@ function hyphenationPoints(word, host) {
 }
 
 // Colonnes de la grille et mots cassés au milieu dans le contenu (un mot dont les morceaux tiennent sur deux lignes).
-// Un mot coupé à un point de césure du français, dans un élément en `hyphens: auto`, porte son trait : il est compté
+// Un mot coupé à un point de césure, dans un élément en `hyphens: auto` ou `manual`, porte son trait : il est compté
 // à part (`hyphenated`), pas comme cassé. Toute autre coupure (lettre à lettre, sans trait) est un mot cassé.
 // Renvoie { broken, hyphenated } pour le texte sous `rootId` (mots, coupure au besoin marquée « - »).
 export async function wordBreaks(page, rootId = 'contenu') {
@@ -69,7 +70,7 @@ export async function wordBreaks(page, rootId = 'contenu') {
           top = rect.top;
         }
         const word = m[0].replaceAll('\u00AD', '');
-        const points = cs.hyphens === 'auto' ? hyphenationPoints(m[0], host) : new Set();
+        const points = cs.hyphens !== 'none' ? hyphenationPoints(m[0], host) : new Set();
         if (cuts.length && cuts.every((i) => points.has(i))) {
           hyphenated.push(`${cuts.reduceRight((w, i) => `${w.slice(0, i)}-${w.slice(i)}`, m[0]).replaceAll('\u00AD', '')} (${host.className.split(' ')[0]})`);
         } else broken.push(`${word} (coupé à ${cuts.join(', ') || '?'})`);
