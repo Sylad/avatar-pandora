@@ -797,6 +797,7 @@ lots:
     status: done
     estimate: 1
     visible: true
+    delivered: { date: 2026-11-24, sha: 153dedb699070a0a5454418294b88d8550637994 }
     created: 2026-11-24
     started: 2026-11-24
     review: { date: 2026-11-24, verdict: "conforme (lead, ff56b54) : marges latérales du gabarit, du bandeau et des cartes reprises à leur taille normale quand le gabarit fait moins de 10,75 em (seulement 320 px texte 175/200 %), titres toujours en rem ; R1 étendu à 320 px (rouge avant : 14 mots), R5 à 320 px, R6 borne le resserrement ; géométrie : 0 écart hors 320 px 175/200 % sur 46 704 éléments", commit: ff56b544e0067d6c9ba97196dc3c897ffe1d5cde }
