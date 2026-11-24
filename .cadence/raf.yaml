@@ -805,12 +805,14 @@ lots:
     finished: 2026-11-24
   - id: L72
     title: "Titres du codex : coupures conditionnelles (U+00AD) gardées au copier-coller et dans le nom accessible brut de Chromium, mots anglais coupés à la française (« di-rehorse », « Woods-prites », « guns-hip »), jusqu'à 5 lignes à trait de suite — retirer les U+00AD dans un écouteur copy, table d'exceptions dans titleBreaks, hyphenate-limit-chars (revue UX r2 de L70, m2 et m3)"
-    status: doing
+    status: done
     estimate: 1
     visible: true
     created: 2026-11-24
     started: 2026-11-24
     review: { date: 2026-11-24, verdict: "r1 conforme (lead) : écouteur copy + aria-label sans U+00AD, tests C1/C2 vus rouges puis verts ; hyphens manual + 3 lettres, repli à 2 lettres avant dans les seuls titres de section (minimum typographique français, nécessaire pour L71), exception nommée « technologie humaine » 390 px 200 % ; suite 394/394", commit: 886d5699172c63aaa6f186032d07af33cad985cc }
+    ux: { date: 2026-11-24, verdict: "conforme (ux-reviewer r1, tmp/ux-avatar-L72.md) : C1 471 copies sans U+00AD, C2, C3, C5, C6 tenus ; m1 /flore/ « ar-/bres-/ré-/seaux » 3 traits de suite autour du trait d'union du composé et m2 noms propres coupés (« Qua-ritch ») versés dans L73" }
+    finished: 2026-11-24
   - id: L73
     title: "L73 Page /langue/ à 320 px texte 175 et 200 % : titres coupés sans trait (h1 « lang|ue », « Na'|vi » ; h2 « Alphab|et », « Gramm|aire », « Lexiqu|e »), hyphens: manual sans titleBreaks, overflow-wrap: anywhere, défilement horizontal 333 > 305 px — appliquer à /langue/ (et à toute page hors codex qui a le même défaut) la même règle que L71/L72 ; QA L71 contre-vérifiée par le lead le 24-11 (tmp/lead-avatar-langue-320-200.png)"
     status: todo
