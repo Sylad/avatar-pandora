@@ -25,18 +25,19 @@ import { titleSegments } from './title-breaks.ts'; // extension : les tests (nod
  * dans les fiches, 6 sur /nouveautes/). Chaque nom de cette liste est mis au build dans un `<span class="prose-name">`
  * (`hyphens: manual`, global.css) : il passe entier à la ligne. Le plus long, « Ateyo'itan » ou « Worthington », tient
  * sur une ligne à 320 px texte 200 % ; `overflow-wrap: anywhere` reste le secours. Personnages des films, acteurs et
- * équipe (« Cameron », « Frommer ») ; un nom de 5 lettres ou moins (« Grace », « Kiri ») n'est jamais césuré
- * (`hyphenate-limit-chars: 6 3 3`) et n'a pas besoin d'y être. Forme écrite dans le texte, majuscule comprise ; les
- * apostrophes droite et typographique valent l'une pour l'autre.
+ * équipe (« Cameron », « Frommer ») ; un nom de 9 lettres ou moins (« Grace », « Michelle ») n'est jamais césuré
+ * (`hyphenate-limit-chars: 10 5 5` depuis L77), mais tout nom de 8 lettres ou plus y est inscrit, au cas où le seuil
+ * redescendrait (L77 : « Rodriguez », « Flatters », « Michelle », « Giovanni », « Mo'at'ite »). Forme écrite dans le
+ * texte, majuscule comprise ; les apostrophes droite et typographique valent l'une pour l'autre.
  */
 export const PERSON_NAMES = [
   // Personnages
   'Quaritch', 'Neytiri', 'Neteyam', 'Payakan', 'Tonowari', 'Tsireya', 'Eytukan', 'Aonung', 'Peylak', 'Varang', 'Spider',
   'Selfridge', 'Augustine', 'Spellman', 'Chacon', 'Scoresby', 'Parker', "Tsu'tey", 'Rongloa', "Ateyo'itan", 'Wainfleet',
-  'Walker', 'Prager', 'Tuktirey', 'Ardmore', 'Garvin',
+  'Walker', 'Prager', 'Tuktirey', 'Ardmore', 'Garvin', "Mo'at'ite",
   // Personnes réelles (films, distribution, langue)
   'Cameron', 'Sigourney', 'Weaver', 'Winslet', 'Chaplin', 'Curtis', 'Frommer', 'Pounder', 'Alonso', 'Jackson',
-  'Worthington', 'Saldana', 'Landau', 'Horner', 'Franglen',
+  'Worthington', 'Saldana', 'Landau', 'Horner', 'Franglen', 'Michelle', 'Rodriguez', 'Flatters', 'Giovanni',
 ] as const;
 
 export type ProseSegment = { text: string; word: boolean; name?: boolean };
@@ -46,7 +47,9 @@ const NAME_SOURCE = [...PERSON_NAMES]
   .sort((a, b) => b.length - a.length)
   .map((n) => escapeRegExp(n).replace(/'/g, "['’]"))
   .join('|');
-/** Un nom de la liste, mot entier (« d'Eytukan » : le nom seul ; jamais « Parkers » ni « Spiderman »). */
+/** Un nom de la liste, mot entier (« d'Eytukan » : le nom seul ; jamais « Parkers » ni « Spiderman »). Source partagée
+ * avec P8 de title-breaks-pages (noms échappés). */
+export const PERSON_NAME_SOURCE = NAME_SOURCE;
 const NAME = new RegExp(`(?<![\\p{L}\\p{N}])(?:${NAME_SOURCE})(?![\\p{L}\\p{N}])`, 'u');
 
 const GLUED = /[\p{L}\p{N}'’]{7,}(?=[\u00A0\u202F])|(?<=[\u00A0\u202F])[\p{L}\p{N}'’]{7,}/gu;
@@ -62,14 +65,23 @@ export function proseSegments(text: string): ProseSegment[] {
   let last = 0;
   for (const m of text.matchAll(SEGMENT)) {
     if (m.index > last) out.push({ text: text.slice(last, m.index), word: false });
-    out.push(m[1] ? { text: m[0], word: true, name: true } : { text: m[0], word: true });
+    // Mot collé qui contient un nom (« «\u202Fd'Eytukan\u202F» », élision) : le nom seul en `.prose-name`, l'élision
+    // en texte. Sans quoi la sous-expression des mots collés, qui commence plus tôt (à « d' »), le prenait pour un mot
+    // à césurer (revue de code r2 de L74).
+    const inner = m[1] ? null : m[0].match(NAME);
+    if (inner) {
+      if (inner.index) out.push({ text: m[0].slice(0, inner.index), word: false });
+      out.push({ text: inner[0], word: true, name: true });
+      const rest = m[0].slice(inner.index + inner[0].length);
+      if (rest) out.push({ text: rest, word: false });
+    } else out.push(m[1] ? { text: m[0], word: true, name: true } : { text: m[0], word: true });
     last = m.index + m[0].length;
   }
   if (last < text.length || !out.length) out.push({ text: text.slice(last), word: false });
   return out;
 }
 
-/** Un morceau du texte courant en HTML (partagé avec ProseText.astro). */
+/** Un morceau du texte courant en HTML, pour `proseHtml` et ProseText.astro (même balisage aux deux endroits). */
 export const segmentHtml = (s: ProseSegment) =>
   s.name ? `<span class="prose-name">${escapeHtml(s.text)}</span>` : s.word ? `<span>${escapeHtml(s.text)}</span>` : escapeHtml(s.text);
 

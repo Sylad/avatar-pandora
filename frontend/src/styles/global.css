@@ -167,12 +167,15 @@
     hyphenate-limit-lines : la césure ne sert plus qu'aux mots de 8 lettres ou plus, 4 de chaque côté — 15 suites de 4
     ou plus, 0 défilement de côté, 0 mot cassé sans trait (P7 de title-breaks-pages). Noms de personnes jamais césurés
     (.prose-name).
+    L77 : « 8 4 4 » laissait encore 18 suites de 4 à 6 lignes à trait (pire : /flore/unobtainium/ à 320 px texte 200 %,
+    6 de suite). « 10 5 5 » (mots de 10 lettres ou plus, 5 de chaque côté) : 3 de suite au plus, sur toutes les fiches et
+    /nouveautes/ à 320 et 390 px, texte 125 à 200 % (25 suites de 3) ; 0 mot cassé sans trait. Contrôlé par P9.
   */
   @container (max-width: 10em) {
     .entry-summary,
     .entry-body {
       hyphens: auto;
-      hyphenate-limit-chars: 8 4 4;
+      hyphenate-limit-chars: 10 5 5;
       overflow-wrap: anywhere;
     }
     /* Intertitres : coupés aux seuls U+00AD de leurs boîtes de mots (titleBreaks), jamais au dictionnaire. */

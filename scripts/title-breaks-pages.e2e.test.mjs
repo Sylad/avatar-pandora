@@ -7,7 +7,8 @@
 // aucun U+00AD copié ni dans un nom accessible, aucun défilement horizontal. Rien ne change à 100 %.
 // L74 : mêmes règles sur les ~70 fiches du codex (h1, intertitres, texte courant : P7), le texte courant des Nouveautés
 // n'est plus exempté (P1), et le texte d'À propos ne sort plus de sa carte (P4). L74 r1 : aucun nom de personne coupé
-// dans le texte courant des fiches et des Nouveautés (P8).
+// dans le texte courant des fiches et des Nouveautés (P8). L77 : au plus 3 lignes de suite finies par une coupure dans
+// ce texte (P9, usage typographique ; « 8 4 4 » en laissait 6 de suite sur /flore/unobtainium/ à 320 px texte 200 %).
 // Texte agrandi joué comme les revues : taille de police de <html>. Lit frontend/dist ; skip sans playwright-core.
 import test from 'node:test';
 import { readdirSync } from 'node:fs';
@@ -15,8 +16,9 @@ import assert from 'node:assert/strict';
 import { DIST, nextFrames, setupBrowser } from './lib/e2e-dist.mjs';
 import { titleLines } from './lib/title-lines.mjs';
 import { wordBreaks } from './lib/word-breaks.mjs';
+import { hyphenRuns } from './lib/hyphen-runs.mjs';
 import { EXCEPTIONS, addressParts, syllableBreaks } from '../frontend/src/lib/title-breaks.ts';
-import { PERSON_NAMES } from '../frontend/src/lib/prose-breaks.ts';
+import { PERSON_NAME_SOURCE } from '../frontend/src/lib/prose-breaks.ts';
 
 const SHY = '­';
 const PAGES = ['/langue/', '/about/', '/404.html', '/nouveautes/', '/plan-de-travail/', '/videos/', '/'];
@@ -368,7 +370,7 @@ test('P8 — fiches et /nouveautes/, 320 et 390 px, texte 150 à 200 % : aucun n
   if (!env) return;
   const failures = [];
   let seen = 0;
-  const source = PERSON_NAMES.map((n) => n.replace(/'/g, "['’]")).join('|');
+  const source = PERSON_NAME_SOURCE; // noms échappés, apostrophes droite et typographique (revue de code r2 de L74)
   for (const width of [320, 390]) {
     const page = await env.browser.newPage({ viewport: { width, height: 900 }, reducedMotion: 'reduce' });
     for (const path of [...FICHES, '/nouveautes/']) {
@@ -402,4 +404,31 @@ test('P8 — fiches et /nouveautes/, 320 et 390 px, texte 150 à 200 % : aucun n
   }
   assert.ok(seen > 1000, `${seen} noms seulement : la mesure ne les voit plus`);
   assert.deepEqual(failures, [], `${failures.length} nom(s) coupé(s) :\n${failures.slice(0, 40).join('\n')}`);
+});
+
+test('P9 — fiches et /nouveautes/, 320 et 390 px, texte 125 à 200 % : au plus 3 lignes de suite finies par une coupure, sans défilement', { timeout: 1_200_000 }, async (t) => {
+  const env = await setupBrowser(t);
+  if (!env) return;
+  const failures = [];
+  let cutLines = 0;
+  for (const width of [320, 390]) {
+    const page = await env.browser.newPage({ viewport: { width, height: 900 }, reducedMotion: 'reduce' });
+    for (const path of [...FICHES, '/nouveautes/']) {
+      await page.goto(env.base + path, { waitUntil: 'load' });
+      for (const factor of [1.25, 1.5, 1.75, 2]) {
+        await setText(page, factor);
+        const where = `${path} @${width}px texte ${factor * 100} %`;
+        const [sw, cw] = await page.evaluate(() => [document.documentElement.scrollWidth, document.documentElement.clientWidth]);
+        if (sw > cw) failures.push(`${where} : la page défile de côté (${sw} px pour ${cw})`);
+        for (const r of await hyphenRuns(page, '#contenu .entry-summary, #contenu .entry-body, #contenu .news-body')) {
+          cutLines += r.length;
+          if (r.length > 3) failures.push(`${where} : ${r.length} lignes à trait de suite (${r.words.join(' | ')}) dans « ${r.block}… »`);
+        }
+      }
+    }
+    await page.close();
+  }
+  // Mesure vivante : des milliers de lignes finies par une coupure sur ces 552 vues (5 300 environ au réglage de L77).
+  assert.ok(cutLines > 1000, `${cutLines} lignes à trait seulement : la mesure ne les voit plus`);
+  assert.deepEqual(failures, [], `${failures.length} défaut(s) :\n${failures.slice(0, 40).join('\n')}`);
 });

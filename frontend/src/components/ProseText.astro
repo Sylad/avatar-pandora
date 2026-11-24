@@ -4,11 +4,11 @@
  * un `<span>` nu, pour que la césure du navigateur puisse le couper avec son trait (lib/prose-breaks.ts). Rendu inchangé
  * quand la césure est éteinte. Noms de personnes en `<span class="prose-name">`, jamais césurés (L74 r1).
  */
-import { proseSegments } from '../lib/prose-breaks';
+import { proseSegments, segmentHtml } from '../lib/prose-breaks';
 
 interface Props {
   text: string;
 }
 const { text } = Astro.props;
 ---
-{proseSegments(text).map((s) => (s.name ? <span class="prose-name">{s.text}</span> : s.word ? <span>{s.text}</span> : s.text))}
+<Fragment set:html={proseSegments(text).map(segmentHtml).join('')} />

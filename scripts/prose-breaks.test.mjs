@@ -71,3 +71,20 @@ test('PERSON_NAMES : tous les noms de personnes jamais coupés des titres (EXCEP
   const missing = Object.entries(EXCEPTIONS).filter(([k, v]) => !v.includes('-') && !nonPersons.has(k) && !listed.has(k)).map(([k]) => k);
   assert.deepEqual(missing, []);
 });
+
+// L77 (revue de code r2 de L74) : un nom élidé collé à une espace insécable (« « d'Eytukan » ») était pris
+// par la sous-expression des mots collés, qui commence à « d' » : simple `<span>`, césurable.
+test('proseSegments : nom élidé collé à une espace insécable, toujours un nom', () => {
+  assert.equal(names("« d'Eytukan »"), "« d'{Eytukan} »");
+  assert.equal(names('l’ombre d’Ateyo’itan'), '[l’ombre] d’{Ateyo’itan}');
+  assert.equal(names("« Quaritch's »"), "« {Quaritch}'s »");
+  assert.equal(proseHtml("<p>«&nbsp;d'Eytukan&nbsp;»</p>"), "<p>«\u00A0d'<span class=\"prose-name\">Eytukan</span>\u00A0»</p>");
+});
+
+// L77 : noms de 8 lettres ou plus du texte des fiches, absents de la liste à la revue UX r2 de L74.
+test('PERSON_NAMES : noms des fiches ajoutés après L74, reconnus dans le texte', () => {
+  for (const n of ['Rodriguez', 'Flatters', 'Michelle', 'Giovanni', "Mo'at'ite"]) assert.ok(PERSON_NAMES.includes(n), n);
+  assert.equal(names('Interprétée par Michelle Rodriguez.'), 'Interprétée par {Michelle} {Rodriguez}.');
+  assert.equal(names('Jamie Flatters, Giovanni Ribisi'), 'Jamie {Flatters}, {Giovanni} Ribisi');
+  assert.equal(names('Neytiri te Tskaha Mo’at’ite'), '{Neytiri} te Tskaha {Mo’at’ite}');
+});
