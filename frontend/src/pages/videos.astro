@@ -102,7 +102,7 @@ const typeLabel: Record<string, string> = {
               <span class="video-card__type" aria-hidden="true">{typeLabel[v.data.type] ?? v.data.type}</span>
             </div>
             <div class="video-card__body">
-              <h3 class="video-card__title" aria-label={v.data.title}><span lang={v.data.lang === 'EN' ? 'en' : undefined}><TitleText text={v.data.title} /></span></h3>
+              <h3 class="video-card__title" aria-label={v.data.title}><span lang={v.data.lang === 'EN' ? 'en' : undefined}><TitleText text={v.data.title} lang={v.data.lang === 'EN' ? 'en' : undefined} /></span></h3>
               {/* Hors du h3 (L47) : la navigation par titres lit le titre seul ; le lien garde l'indication. */}
               <span class="sr-only"> (nouvel onglet)</span>
               <div class="video-card__meta">

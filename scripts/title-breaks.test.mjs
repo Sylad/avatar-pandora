@@ -11,7 +11,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readdirSync, readFileSync } from 'node:fs';
-import { EXCEPTIONS, MIN_AFTER, MIN_BEFORE, SOFT_HYPHEN, syllableBreaks, titleBreaks, titleSegments } from '../frontend/src/lib/title-breaks.ts';
+import { EN_EXCEPTIONS, EXCEPTIONS, frenchSpaces, MIN_AFTER, MIN_BEFORE, SOFT_HYPHEN, syllableBreaks, titleBreaks, titleSegments } from '../frontend/src/lib/title-breaks.ts';
 
 const show = (s) => s.replaceAll(SOFT_HYPHEN, '-');
 const HERO = { fallbackBefore: 2 };
@@ -128,9 +128,35 @@ test('L73 — titleSegments : mots coupables en boîte, ponctuation comprise, co
   }
 });
 
-test('L73 — bandeaux (wrap fallback) : seules les parties d’un composé coupées par le repli à 2 lettres sont en boîte', () => {
-  const opts = { ...HERO, wrap: 'fallback' };
-  assert.equal(seg('Les arbres-réseaux et plantes sacrées', opts), 'Les [ar-bres-][ré-seaux] et plan-tes sa-crées');
-  assert.equal(seg('La technologie humaine', opts), 'La tech-no-lo-gie hu-maine');
-  assert.equal(seg('Les peuples de Pandora', opts), 'Les peu-ples de Pan-dora');
+// Revue UX r1 de L73, m1 : hors boîte, « plantes » et « sacrées » se coupaient alors qu'ils tenaient sur la ligne.
+test('L73 — bandeaux : tout mot coupable en boîte, repli à 2 lettres compris', () => {
+  assert.equal(seg('Les arbres-réseaux et plantes sacrées', HERO), 'Les [ar-bres-][ré-seaux] et [plan-tes] [sa-crées]');
+  assert.equal(seg('La technologie humaine', HERO), 'La [tech-no-lo-gie] [hu-maine]');
+  assert.equal(seg('Les peuples de Pandora', HERO), 'Les [peu-ples] de [Pan-dora]');
+});
+
+// Revue UX r1 de L73, m2 : titres anglais de /videos/ coupés à la française (« Unders-tands », « Filmma-kers »).
+test('L73 — titres anglais : coupés à la seule table anglaise, jamais à la division française', () => {
+  const en = { lang: 'en' };
+  assert.equal(show(titleBreaks("James Cameron Understands What Most Filmmakers Don't", en)), "James Cam-eron Under-stands What Most Film-mak-ers Don't");
+  assert.equal(show(titleBreaks("The Pandora Encyclopaedia: 60 Minutes of Na'vi Lore", en)), "The Pan-dora Encyclo-pae-dia: 60 Min-utes of Na'vi Lore");
+  assert.equal(show(titleBreaks("The Biology of James Cameron's Avatar", en)), "The Biol-ogy of James Cam-eron's Ava-tar");
+  assert.equal(show(titleBreaks('Paul Frommer (TEDxUSC)', en)), 'Paul Frommer (TEDx-USC)');
+  assert.equal(show(titleBreaks('Sweet Nothings in Explainer', en)), 'Sweet Nothings in Explainer'); // hors table : jamais coupé
+  assert.equal(show(titleBreaks('VFX Artists React to Weta Gunship', en)), 'VFX Artists React to Weta Gun-ship'); // composés de EXCEPTIONS
+  for (const [word, cut] of Object.entries(EN_EXCEPTIONS)) {
+    assert.equal(cut.replaceAll('-', ''), word, `${word} : table mal écrite`);
+    assert.equal(show(titleBreaks(word, en)), cut, `${word} : coupure hors des 3 lettres de chaque côté`);
+  }
+  assert.equal(show(titleBreaks('Avatar — Le Plectroscope')), 'Ava-tar — Le Plec-tro-scope');
+});
+
+// Note de la revue UX r1 de L73 (/nouveautes/) : « : » rejeté seul en début de ligne.
+test('L73 — espace insécable avant la ponctuation haute, sauf en anglais', () => {
+  const text = (title, o) => titleSegments(title, o).map((s) => s.text).join('').replaceAll(SOFT_HYPHEN, '');
+  assert.equal(text('Personnages : le bandeau'), 'Personnages\u00A0: le bandeau');
+  assert.equal(text('Vraiment ? Oui ! Bon ; voilà'), 'Vraiment\u202F? Oui\u202F! Bon\u202F; voilà');
+  assert.equal(seg('Personnages : le bandeau'), '[Per-son-na-ges\u00A0:] le [ban-deau]');
+  assert.equal(text('Avatar: Fire and Ash', { lang: 'en' }), 'Avatar: Fire and Ash');
+  assert.equal(frenchSpaces('Déjà insécable\u00A0: rien'), 'Déjà insécable\u00A0: rien');
 });

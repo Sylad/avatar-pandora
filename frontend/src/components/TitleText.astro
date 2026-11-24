@@ -4,16 +4,17 @@
  * `.title-word` (inline-block, `hyphens: manual`, global.css) — il passe entier à la ligne et ne se coupe que s'il est
  * plus large qu'une ligne. Le titre qui l'emploie porte `aria-label={text}` : son nom accessible reste sans U+00AD, et
  * le texte copié en est purgé (lib/soft-hyphen-copy.ts). `section` : titre d'une section du codex, repli à 2 lettres
- * permis pour un mot qui n'a aucune coupure à 3 lettres.
+ * permis pour un mot qui n'a aucune coupure à 3 lettres. `lang="en"` : titre anglais, coupé à la seule table anglaise
+ * (EN_EXCEPTIONS), le titre (ou un parent) porte lui-même `lang="en"`.
  */
 import { titleSegments, type SegmentOptions } from '../lib/title-breaks';
 
 interface Props {
   text: string;
   section?: boolean;
-  wrap?: SegmentOptions['wrap'];
+  lang?: SegmentOptions['lang'];
 }
-const { text, section = false, wrap = 'all' } = Astro.props;
-const segments = titleSegments(text, { wrap, ...(section ? { fallbackBefore: 2 } : {}) });
+const { text, section = false, lang } = Astro.props;
+const segments = titleSegments(text, { lang, ...(section ? { fallbackBefore: 2 } : {}) });
 ---
 {segments.map((s) => (s.word ? <span class="title-word">{s.text}</span> : s.text))}

@@ -169,7 +169,7 @@ const SOURCES = [
              class="about-card group h-full rounded-md border border-eywa-text-muted/15 bg-eywa-text/[0.02] p-4 flex flex-col gap-1.5 hover:border-eywa-bio-primary/40 hover:bg-eywa-text/[0.04] transition-all">
             <div class="about-card__head flex items-center justify-between">
               <span class="about-source-name min-w-0 font-display font-semibold text-eywa-text group-hover:text-eywa-bio-primary transition-colors">
-                {/\.[a-z]+$/.test(i.name) ? i.name : <TitleText text={i.name} />}<span class="sr-only"> (nouvel onglet)</span>
+                {/\.[a-z]+$/.test(i.name) ? <Fragment>{i.name.replace(/\.[a-z]+$/, '')}<wbr />{i.name.match(/\.[a-z]+$/)[0]}</Fragment> : <TitleText text={i.name} />}<span class="sr-only"> (nouvel onglet)</span>
               </span>
               <span class="text-eywa-text-muted group-hover:text-eywa-bio-primary text-xs transition-colors" aria-hidden="true">↗</span>
             </div>
@@ -250,8 +250,9 @@ const SOURCES = [
       padding-inline: 0.5rem;
     }
     /* Nom d'une source : coupé à ses syllabes (TitleText ; le lien porte son nom sans U+00AD en aria-label), sauf
-       « refactoringui.com » (342 px à 320 px texte 175 %), une adresse, qui se coupe sans trait (usage typographique :
-       jamais de trait ajouté dans une adresse). */
+       « refactoringui.com » (342 px à 320 px texte 175 %), une adresse, qui passe à la ligne avant son point (<wbr>,
+       aussi au-dessus de ce gabarit : revue UX r1 de L73, elle sortait de sa carte de 4 à 15 px entre 150 et 195 %) et
+       se coupe ici sans trait en dernier recours (usage typographique : jamais de trait ajouté dans une adresse). */
     .about-source-name {
       overflow-wrap: anywhere;
     }

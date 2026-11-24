@@ -265,7 +265,7 @@ test('R14 — le nom accessible de chaque carte vidéo commence par le titre de 
   const bad = [];
   for (let i = 0; i < n; i++) {
     const card = cards.nth(i);
-    const title = (await card.locator('h3').textContent()).replaceAll('\u00ad', '').trim(); // L73 : sans les U+00AD des coupures
+    const title = (await card.locator('h3').textContent()).replaceAll('\u00ad', '').replace(/[\u00a0\u202f]/g, ' ').trim(); // L73 : sans les U+00AD des coupures, insécables lues comme des espaces
     const snap = await card.ariaSnapshot();
     // Première ligne du snapshot : « - link "…" », entre apostrophes YAML quand le nom en contient (' doublée).
     const first = snap.split('\n')[0].replace(/''/g, "'");

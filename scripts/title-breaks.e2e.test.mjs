@@ -55,7 +55,8 @@ test('C1 — titre copié (bandeau et carte) : ni le texte ni le HTML du presse-
     const where = `@${width}px texte ${factor * 100} %`;
     if (hero['text/plain'] !== 'Les peuples de Pandora') failures.push(`${where} h1 : texte copié ${JSON.stringify(hero['text/plain'])}`);
     if (!hero['text/html'] || hero['text/html'].includes(SHY) || hero['text/html'].includes('&shy;')) failures.push(`${where} h1 : HTML copié ${JSON.stringify(hero['text/html'])}`);
-    if (!hero['text/html']?.includes('Les peuples de Pandora')) failures.push(`${where} h1 : HTML copié sans le titre`);
+    // L73 (revue UX r1) : tout mot coupable du bandeau est dans sa boîte (<span class="title-word">) ; titre lu sans les balises.
+    if (!hero['text/html']?.replace(/<[^>]+>/g, '').includes('Les peuples de Pandora')) failures.push(`${where} h1 : HTML copié sans le titre`);
     const card = await copyOf(page, '#contenu .entry-card__title');
     if (!card['text/plain'] || card['text/plain'].includes(SHY)) failures.push(`${where} carte : texte copié ${JSON.stringify(card['text/plain'])}`);
     if (!card['text/html'] || card['text/html'].includes(SHY)) failures.push(`${where} carte : HTML copié ${JSON.stringify(card['text/html'])}`);

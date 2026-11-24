@@ -18,7 +18,9 @@ const DATA = JSON.parse(readFileSync(new URL('../frontend/public/nouveautes-data
 const PAGE = join(DIST, 'nouveautes', 'index.html');
 const html = () => readFileSync(PAGE, 'utf8');
 // L73 : un titre coupable est rendu en boîtes (<span class="title-word">) avec des U+00AD ; on compare son texte lu.
-const untitle = (s) => s.replace(/<span class="title-word">([^<]*)<\/span>/g, '$1').replaceAll('\u00ad', '');
+// Revue UX r1 de L73 : espace insécable avant « : » dans les titres ; comparé comme une espace (les deux côtés).
+const spaces = (s) => s.replace(/[\u00a0\u202f]/g, ' ');
+const untitle = (s) => spaces(s.replace(/<span class="title-word">([^<]*)<\/span>/g, '$1').replaceAll('\u00ad', ''));
 // Balise <a> qui mène à /nouveautes/ dans la barre latérale d'une page construite.
 const sidebarLink = (page) => {
   const aside = page.slice(page.indexOf('<aside id="eywa-sidebar"'), page.indexOf('</aside>'));
@@ -40,7 +42,7 @@ test('une entrée par nouveauté, dans l’ordre du JSON (la plus récente en ha
     const block = page.slice(start, page.indexOf('</article>', start));
     assert.ok(block.includes(`<time datetime="${e.date}"`), `${e.slug} : date absente`);
     // Astro échappe l'apostrophe (&#39;) dans le titre : le comparer au titre échappé, pas à celui du JSON.
-    assert.ok(new RegExp(`<h2 id="${e.slug}-titre"[^>]*>${e.title.replace(/&/g, '&amp;').replace(/'/g, '&#39;').replace(/"/g, '&quot;').replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}</h2>`).test(untitle(block)), `${e.slug} : titre absent`);
+    assert.ok(new RegExp(`<h2 id="${e.slug}-titre"[^>]*>${spaces(e.title).replace(/&/g, '&amp;').replace(/'/g, '&#39;').replace(/"/g, '&quot;').replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}</h2>`).test(untitle(block)), `${e.slug} : titre absent`);
     assert.ok(block.includes(e.html.slice(0, 60)), `${e.slug} : texte absent`);
     for (const c of e.captures) {
       assert.ok(block.includes(`src="/nouveautes-data/${c}"`), `${e.slug} : capture ${c} absente`);

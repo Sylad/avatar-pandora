@@ -222,6 +222,12 @@ avec un trait : `titleBreaks` (`lib/title-breaks.ts`) pose des U+00AD (le dictio
 (0,5 / 0,5 / 0,75 rem), pour que la plus longue syllabe tienne (« seaux », « Mo'at'ite », « (2009) »). Détecteur commun des mots cassés : `scripts/lib/word-breaks.mjs`
 (une coupure à une césure, avec trait, est permise). Mouvement réduit : tiroir, voile et bouton menu sans transition. Contrôlé
 par `scripts/codex-grid-text.e2e.test.mjs` (R1 et R5 de 320 à 1440 px ; R5 : chaque titre grandit autant que le texte à 200 % ; R6 : où le mode étroit s'allume) et `title-breaks.test.mjs`.
+Titres hors des listes du codex et bandeaux (L73) : `components/TitleText.astro` (`titleSegments`) met en boîte inline-block
+(`.title-word`) tout mot qui porte une coupure : il passe entier à la ligne et ne se coupe que s'il est plus large qu'elle ;
+espace insécable avant « : ; ! ? » ; titre anglais (`lang="en"`, vidéos) coupé à la seule table `EN_EXCEPTIONS`, jamais à
+la division française. Une adresse (« refactoringui.com ») passe à la ligne avant son point (`<wbr>`). Contrôlé par
+`scripts/title-breaks-pages.e2e.test.mjs` (P4 : aucun défilement de côté de 100 à 200 % par pas de 5 sur /about/ ; P5 : mot
+coupé alors qu'il tenait ; P6 : syllabes anglaises).
 
 **Plan de travail** (page `/plan-de-travail/`, L20, modèle evatosorus/finance-tracker) : en cours, prévu,
 récemment livré, rendue **au build** depuis `.cadence/raf.yaml` (`src/lib/plan-public.ts`, lu depuis

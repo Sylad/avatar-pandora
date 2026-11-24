@@ -58,8 +58,33 @@ export const EXCEPTIONS: Record<string, string> = {
   rongloa: 'rong-loa',
   angtsìk: 'ang-tsìk',
   tskaha: 'tskaha',
-  // L73 : nom de chaîne en un mot (/videos/), coupé à ses mots.
+  // L73 : nom de chaîne en un mot (/videos/), coupé à ses mots ; « plectroscope » à ses racines (revue UX r1 de L73, m2 :
+  // la division française donnait « Plectros-cope »).
   linksthesun: 'links-the-sun',
+  plectroscope: 'plec-tro-scope',
+};
+
+/**
+ * Titres en anglais (`lang: 'en'`, titres des vidéos anglaises de /videos/, revue UX r1 de L73, m2) : la division
+ * française y coupait à faux (« Unders-tands », « Filmma-kers », « Minu-tes », « Came-ron »). Un mot anglais ne se
+ * coupe qu'aux frontières de cette table (césure anglaise des dictionnaires, 3 lettres de chaque côté), ou à celles de
+ * EXCEPTIONS (mots composés, noms na'vi) ; tout autre mot anglais n'est jamais coupé. Le possessif suit son nom
+ * (« Cam-eron's »). Clé en minuscules, « - » marque chaque coupure permise.
+ */
+export const EN_EXCEPTIONS: Record<string, string> = {
+  understands: 'under-stands',
+  filmmakers: 'film-mak-ers',
+  minutes: 'min-utes',
+  cameron: 'cam-eron',
+  encyclopaedia: 'encyclo-pae-dia',
+  everything: 'every-thing',
+  biology: 'biol-ogy',
+  official: 'offi-cial',
+  sigourney: 'sig-our-ney',
+  winning: 'win-ning',
+  pandora: 'pan-dora',
+  avatar: 'ava-tar',
+  tedxusc: 'tedx-usc', // « (TEDxUSC) », marque et université : coupé entre les deux
 };
 
 type Unit = { text: string; at: number; kind: 'V' | 'C' | 'A' };
@@ -100,12 +125,15 @@ const inseparable = (a: string, b: string) => {
  * sans trait (L71). Pour ce seul mot, s'il a au moins 6 lettres, la première coupure qui laisse 2 lettres avant (minimum de la typographie
  * française, `lefthyphenmin` 2 de TeX) est permise. Jamais pour les cartes, qui n'en ont pas besoin.
  */
-export type BreakOptions = { fallbackBefore?: number };
+export type BreakOptions = { fallbackBefore?: number; lang?: 'fr' | 'en' };
 
 /** Indices (en unités UTF-16 de `word`) où une coupure est permise. */
-export function syllableBreaks(word: string, { fallbackBefore }: BreakOptions = {}): number[] {
-  const known = EXCEPTIONS[word.toLowerCase()];
+export function syllableBreaks(word: string, { fallbackBefore, lang = 'fr' }: BreakOptions = {}): number[] {
+  const key = word.toLowerCase();
+  const stem = lang === 'en' ? key.replace(/['’]s$/, '') : key;
+  const known = (lang === 'en' ? EN_EXCEPTIONS[stem] : undefined) ?? EXCEPTIONS[key];
   if (known) return withinLimits(word, [...known].reduce<number[]>((acc, c, i) => (c === '-' ? [...acc, i - acc.length] : acc), []), 0);
+  if (lang === 'en') return [];
   const raw = rawBreaks(word);
   const elision = word.match(/^(?:qu|\p{L}{1,2})['’]/iu)?.[0].length ?? 0;
   const strict = withinLimits(word, raw, elision);
@@ -164,29 +192,34 @@ export function titleBreaks(title: string, options: BreakOptions = {}): string {
  * tient sur une ligne, le rendu ne change pas.
  *
  * Un « mot » va d'une espace à l'autre, ponctuation comprise (« Nouveautés, », « (Palulukan) ») ; un mot composé se
- * sépare après son trait d'union (« arbres- » | « réseaux »), où la ligne peut toujours passer. `wrap: 'all'` met en
- * boîte tout mot qui a une coupure ; `'fallback'` (bandeaux du codex) seulement les parties d'un mot composé qui ont
- * une coupure du repli à 2 lettres (« ar·bres- », « ré·seaux »), les autres gardant le rendu de L72 : une boîte ne
- * sert à rien autour d'un mot plus large que la ligne, et elle y coûte une ligne (« sacrées », trop large à 1440 px
- * texte 175 %, donnait « tes / sa- / crées » au lieu de « tes sa- / crées »).
+ * sépare après son trait d'union (« arbres- » | « réseaux »), où la ligne peut toujours passer. Tout mot qui a une
+ * coupure est en boîte, bandeaux du codex compris (revue UX r1 de L73, m1 : hors boîte, « plantes » et « sacrées » se
+ * coupaient alors qu'ils tenaient entiers sur la ligne, « et plan- / tes sa- / crées »).
+ *
+ * Ponctuation haute (« : », « ; », « ! », « ? ») : l'espace qui la précède devient insécable (U+00A0 devant « : »,
+ * U+202F fine devant les autres, typographie française) pour qu'elle ne soit jamais rejetée seule en début de ligne
+ * (« Personnages / : le bandeau », revue UX r1 de L73). Pas dans un titre anglais (`lang: 'en'`), qui n'a pas d'espace.
  */
 export type TitleSegment = { text: string; word: boolean };
-export type SegmentOptions = BreakOptions & { wrap?: 'all' | 'fallback' };
+export type SegmentOptions = BreakOptions;
 
-export function titleSegments(title: string, { wrap = 'all', ...options }: SegmentOptions = {}): TitleSegment[] {
+export function frenchSpaces(title: string): string {
+  return title.replace(/ +([:;!?])/g, (_, p: string) => (p === ':' ? '\u00A0' : '\u202F') + p);
+}
+
+export function titleSegments(title: string, options: SegmentOptions = {}): TitleSegment[] {
   const out: TitleSegment[] = [];
   const push = (text: string, word: boolean) => {
     const last = out.at(-1);
     if (last && !last.word && !word) last.text += text;
     else if (text) out.push({ text, word });
   };
-  for (const token of title.split(/( +)/)) {
+  const text = options.lang === 'en' ? title : frenchSpaces(title);
+  for (const token of text.split(/( +)/)) {
     if (/^ *$/.test(token)) { push(token, false); continue; }
-    const parts = token.split(/(?<=[-‐])(?=.)/u);
-    for (const part of parts) {
+    for (const part of token.split(/(?<=[-‐])(?=.)/u)) {
       const broken = titleBreaks(part, options);
-      const boxed = wrap === 'all' ? broken !== part : parts.length > 1 && broken !== titleBreaks(part);
-      push(broken, boxed);
+      push(broken, broken !== part);
     }
   }
   return out;
