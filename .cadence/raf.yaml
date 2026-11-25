@@ -871,6 +871,7 @@ lots:
     status: done
     estimate: 0.5
     visible: true
+    delivered: { date: 2026-11-25, sha: 860b98f87fd2dc4fc9474b95b3d9d7e60205ff09 }
     created: 2026-11-24
     started: 2026-11-25
     review: { date: 2026-11-25, verdict: "conforme (1 majeur antérieur depuis L74, étendu au h1 du Plan de travail : titre doublé dans le text/html copié des titres dual → lot à part ; 1 mineur : phrase « Tout titre passe par TitleText » inexacte (404, EntryCard))", commit: 7d67a423cda1e3fc8a0c12f89ff9ec8c658ac166 }
