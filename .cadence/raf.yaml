@@ -885,6 +885,7 @@ lots:
     title: "Copie d'un titre dual (fiches depuis L74, h1 du Plan de travail depuis L78) : le text/html du presse-papier contient title-plain ET title-boxed → titre doublé au collage riche ; ne garder que la version affichée, avec un test ; corriger aussi la phrase CLAUDE.md « Tout titre passe par TitleText » (404.astro:17, EntryCard.astro:71) (revue de code L78, 25-11)"
     status: done
     estimate: 1
+    delivered: { date: 2026-11-25, sha: a0cf3ee20c000b2679d6591cb36c313792e3c4e9 }
     created: 2026-11-25
     started: 2026-11-25
     review: { date: 2026-11-25, verdict: "compliant: C4 red without the fix (14 failures, 4 cases) and green with it, C1 unchanged, 10 edge cases clean; 1 minor (CLAUDE.md:247 « sauf deux » omits about.astro:143)", commit: 8b167cde238996f618d96ae46a29e2a24551cf24 }
