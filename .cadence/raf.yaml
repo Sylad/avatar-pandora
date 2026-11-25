@@ -883,9 +883,10 @@ lots:
     finished: 2026-11-25
   - id: L79
     title: "Copie d'un titre dual (fiches depuis L74, h1 du Plan de travail depuis L78) : le text/html du presse-papier contient title-plain ET title-boxed → titre doublé au collage riche ; ne garder que la version affichée, avec un test ; corriger aussi la phrase CLAUDE.md « Tout titre passe par TitleText » (404.astro:17, EntryCard.astro:71) (revue de code L78, 25-11)"
-    status: todo
+    status: doing
     estimate: 1
     created: 2026-11-25
+    started: 2026-11-25
   - id: L80
     title: "Tiroir à 320 px police 32 px : le bouton rond jour/nuit et la croix recouvrent le logo, puis le lien « Langue Na'vi » une fois défilé — préexistant, vu par le correctif L78 (25-11, capture .cadence-run/avatar-pandora-20261125111327-147462.captures/drawer-320-200.png)"
     status: todo
