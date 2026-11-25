@@ -237,6 +237,15 @@ const size = isIllustration(cover) ? ILLUSTRATION_SIZES.fiche : undefined;
     .section-hero__content {
       padding-inline: 0.5rem;
     }
+    /* L78 r2 : lettres du titre à leur espacement normal (0,05 em sinon) — à 305 px de page (320 px et la barre de
+       défilement d'un Chrome de bureau) texte 200 %, « seaux » d'« arbres-réseaux » ne tenait plus dans le bandeau. */
+    .section-hero__title {
+      letter-spacing: normal;
+    }
+    /* Sur-titre en capitales espacées (0,25 em) : « PERSONNAGES » ne tenait plus sur sa ligne (lettres à leur espacement normal). */
+    .section-hero__content .section-hero__roman {
+      letter-spacing: normal;
+    }
   }
 
   .section-hero__roman {

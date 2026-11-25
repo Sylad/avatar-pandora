@@ -225,7 +225,9 @@ for (const [width, scale] of R11_CASES) {
         narrow,
         chips,
         // Rien du contenu ne sort de la fenêtre (une carte qui cache son trop-plein le couperait sans défilement).
-        out: [...document.querySelectorAll('main *')].filter((e) => {
+        // Décor hors du compte (`aria-hidden`) : les points lumineux du bandeau (SkySpots) sont rognés par son
+        // `overflow: hidden` ; depuis L78 r2 (marge de la page à 0,25 rem à 320 px texte 200 %), l'un d'eux déborde de 4 px.
+        out: [...document.querySelectorAll('main *')].filter((e) => !e.closest('[aria-hidden="true"]')).filter((e) => {
           const b = e.getBoundingClientRect();
           return b.width > 0 && (b.right > innerWidth + 1 || b.left < -1);
         }).map((e) => e.textContent.slice(0, 40)),

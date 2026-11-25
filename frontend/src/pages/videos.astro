@@ -518,6 +518,14 @@ const typeLabel: Record<string, string> = {
       padding-inline: 0.5rem;
     }
   }
+  /* L78 r2 (QA de prod du 25-11) — sous 10,75 em (320 px texte 175 et 200 %) : marges du texte des cartes à 0,5 rem. À
+     305 px de page (320 px et la barre de défilement d'un Chrome de bureau) texte 200 %, « Frommer » (195 px pour 191)
+     et les syllabes d'« Encyclopaedia » se cassaient sans trait dans le titre. */
+  @container eywa-codex (max-width: 10.75em) {
+    .video-card__body {
+      padding-inline: 0.5rem;
+    }
+  }
 
   .channel-link:hover {
     border-color: rgba(95, 255, 230, 0.35);

@@ -142,7 +142,7 @@ const SOURCES = [
     <section class="about-stack grid grid-cols-1 lg:grid-cols-3 gap-4">
       <h2 class="sr-only">Sous le capot</h2>
       {STACK.map((s) => (
-        <div class="rounded-md border border-eywa-text-muted/20 bg-eywa-text/[0.02] p-5 hover:border-eywa-bio-primary/40 transition-colors">
+        <div class="about-stack-card rounded-md border border-eywa-text-muted/20 bg-eywa-text/[0.02] p-5 hover:border-eywa-bio-primary/40 transition-colors">
           <h3 class="font-display font-semibold text-eywa-bio-primary tracking-wide text-sm uppercase mb-4 pb-3 border-b border-eywa-text-muted/20" aria-label={s.group}>
             <TitleText text={s.group} />
           </h3>
@@ -214,7 +214,7 @@ const SOURCES = [
       </ul>
     </section>
 
-    <section class="rounded-md border border-eywa-text-muted/20 bg-eywa-text/[0.02] p-6 text-center">
+    <section class="about-end rounded-md border border-eywa-text-muted/20 bg-eywa-text/[0.02] p-6 text-center">
       <p class="text-eywa-text-muted text-sm leading-relaxed max-w-2xl mx-auto font-body">
         Si tu veux faire pareil : prends un sujet qui t'enflamme, ouvre un assistant de code,
         décris en langage naturel ce que tu rêves de voir exister, puis itère. Tu seras surpris
@@ -308,6 +308,24 @@ const SOURCES = [
     .about-frame :global(.landing-follow) {
       margin-inline: 0;
       max-width: 100%;
+    }
+  }
+
+  /* L78 r2 (QA de prod du 25-11) — page plus étroite encore pour son texte (sous 10,75 em, seuil du codex : 320 px texte
+     175 et 200 %, jamais un réglage à 100 %). À 320 px, un Chrome de bureau garde 15 px à sa barre de défilement : la
+     page n'a que 305 px, et à texte 200 % « Claude » (h1, 275 px pour 270), « refactoring », « COMMUNAUTÉ »,
+     « bioluminescente » et « CURIOSITY » dépassaient leur ligne et se cassaient sans trait. Marges de la page à 0,25 rem,
+     encadrés de la pile et de la fin à la marge des autres, lettres de la signature à leur espacement normal. */
+  @container eywa-about (max-width: 10.75em) {
+    main {
+      padding-inline: 0.25rem;
+    }
+    .about-stack-card,
+    .about-end {
+      padding-inline: 0.5rem;
+    }
+    .about-sign {
+      letter-spacing: normal;
     }
   }
 

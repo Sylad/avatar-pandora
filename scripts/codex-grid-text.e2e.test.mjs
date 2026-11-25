@@ -108,7 +108,7 @@ test('R5 — texte 200 % : chaque titre grandit au moins autant que le texte cou
 
 test('R6 — marges latérales resserrées seulement à 320 px texte 175 et 200 % (L71), jamais à 390 px ni à 100 %', { timeout: 120_000 }, async (t) => {
   // L71 : dans un gabarit du codex de moins de 10,75 em, les marges de la page, du bandeau et des cartes gardent leur
-  // taille du réglage normal. Ailleurs, elles suivent le texte comme avant (1 rem, min(1,25 rem, 7cqi), 1,25 rem).
+  // taille du réglage normal (la page à 0,25 rem depuis L78 r2). Ailleurs, elles suivent le texte comme avant (1 rem, min(1,25 rem, 7cqi), 1,25 rem).
   const env = await setupBrowser(t);
   if (!env) return;
   const failures = [];
@@ -126,7 +126,8 @@ test('R6 — marges latérales resserrées seulement à 320 px texte 175 et 200 
       });
       const narrow = width === 320 && factor >= 1.75;
       const want = narrow
-        ? { main: 0.5 * m.rem, hero: 0.5 * m.rem, carte: 0.75 * m.rem }
+        // L78 r2 : marge de la page à 0,25 rem (305 px de page avec la barre de défilement d'un Chrome de bureau).
+        ? { main: 0.25 * m.rem, hero: 0.5 * m.rem, carte: 0.75 * m.rem }
         : { main: m.rem, hero: Math.min(1.25 * m.rem, 0.07 * width), carte: 1.25 * m.rem };
       for (const k of ['main', 'hero', 'carte']) {
         if (Math.abs(m[k] - want[k]) > 0.3) failures.push(`@${width}px texte ${factor * 100} % : marge ${k} ${m[k]} px au lieu de ${want[k].toFixed(2)}`);

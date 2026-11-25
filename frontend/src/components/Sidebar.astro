@@ -1,6 +1,7 @@
 ---
 import EywaLogo from './EywaLogo.astro';
 import NewsBadge from './NewsBadge.astro';
+import TitleText from './TitleText.astro';
 
 interface Props {
   current?: string;
@@ -46,8 +47,9 @@ const sections = [
             : 'text-eywa-text-muted hover:text-eywa-bio-primary hover:bg-eywa-bio-primary/5 hover:shadow-[0_0_18px_-4px_rgba(95,255,230,0.40)]',
         ]}
         aria-current={current === s.slug ? 'page' : undefined}
+        aria-label={s.label}
       >
-        {s.label}
+        <TitleText text={s.label} />
       </a>
     ))}
   </nav>
@@ -120,6 +122,30 @@ const sections = [
   /* Tiroir : il (20rem) ne dépasse jamais l'écran, même à 320 px. */
   .eywa-sidebar {
     max-width: 88vw;
+  }
+  /* L78 r2 (QA de prod du 25-11) — gabarit très étroit pour son texte (seuil de CodexLayout, 10,75 em : 320 px texte
+     175 et 200 % ; jamais un réglage à 100 %) : le tiroir prend toute la largeur de la page, marges à leur taille du
+     réglage normal. Avec la police réglée à 28 ou 32 px dans le navigateur, les liens grandissent avec elle (30,6 px à
+     200 %), et dans 88vw moins 2 × 1,5 rem de marge « Personnages », « Nouveautés », « Pandora » se cassaient lettre à
+     lettre. Le bouton menu (croix) reste au-dessus du tiroir, en haut à droite, et le referme. */
+  /* Libellés des sections en boîtes de mots (TitleText, `aria-label` sans U+00AD) : un mot plus large que le tiroir
+     (« Personnages », Orbitron à 30,6 px) se coupe à ses syllabes, avec un trait, jamais lettre à lettre. */
+  @container eywa-codex (max-width: 10.75em) {
+    .eywa-sidebar {
+      max-width: 100%;
+      padding-inline: 0.5rem;
+    }
+    .eywa-nav-link {
+      padding-inline: 0.5rem;
+      letter-spacing: normal;
+    }
+    /* Liens du bas (Nouveautés, Plan de travail, À propos) : le libellé passe sous l'icône s'il n'a pas la place à côté
+       (« Nouveautés », 28 px à 200 %, n'avait que 160 px à côté de l'icône). */
+    .eywa-sidebar .eywa-about__link {
+      flex-wrap: wrap;
+      padding-inline: 0.5rem;
+      letter-spacing: normal;
+    }
   }
 
   /* Barre latérale (L69 : même double condition que CodexLayout) : collante, dans le flux. */

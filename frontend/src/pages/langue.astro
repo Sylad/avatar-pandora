@@ -1,6 +1,11 @@
 ---
 import CodexLayout from '../layouts/CodexLayout.astro';
 import TitleText from '../components/TitleText.astro';
+import { addressParts } from '../lib/title-breaks';
+
+// L78 r2 (QA de prod du 25-11) : une adresse passe à la ligne entre les mots de son nom et avant son point (<wbr>),
+// jamais avec un trait (même règle qu'À propos) — « LearnNavi.org » se cassait en « LearnNavi.or|g » à 320 px texte 200 %.
+const address = (name: string, words: string[] = []) => addressParts(name, words) ?? [name];
 ---
 <CodexLayout title="Langue Na'vi — Eywa" current="langue">
   <header class="reading-veil max-w-none mb-6">
@@ -76,8 +81,8 @@ import TitleText from '../components/TitleText.astro';
     <section>
       <h2 class="font-display text-2xl text-eywa-bio-primary mb-4" aria-label="Pour aller plus loin"><TitleText text="Pour aller plus loin" /></h2>
       <ul class="list-disc list-inside space-y-1 ml-2">
-        <li><a href="https://naviteri.org" target="_blank" rel="noopener" class="text-eywa-bio-primary underline underline-offset-2 hover:no-underline">Naviteri.org<span class="sr-only"> (nouvel onglet)</span></a> — blog officiel du Dr Paul Frommer (créateur de la langue, mises à jour régulières)</li>
-        <li><a href="https://learnnavi.org" target="_blank" rel="noopener" class="text-eywa-bio-primary underline underline-offset-2 hover:no-underline">LearnNavi.org<span class="sr-only"> (nouvel onglet)</span></a> — communauté + dictionnaire Eana Eltu de référence</li>
+        <li><a href="https://naviteri.org" target="_blank" rel="noopener" class="text-eywa-bio-primary underline underline-offset-2 hover:no-underline">{address('Naviteri.org').map((part, k) => <Fragment>{k > 0 && <wbr />}{part}</Fragment>)}<span class="sr-only"> (nouvel onglet)</span></a> — blog officiel du Dr Paul Frommer (créateur de la langue, mises à jour régulières)</li>
+        <li><a href="https://learnnavi.org" target="_blank" rel="noopener" class="text-eywa-bio-primary underline underline-offset-2 hover:no-underline">{address('LearnNavi.org', ['Learn', 'Navi']).map((part, k) => <Fragment>{k > 0 && <wbr />}{part}</Fragment>)}<span class="sr-only"> (nouvel onglet)</span></a> — communauté + dictionnaire Eana Eltu de référence</li>
         <li><a href="https://en.wiktionary.org/wiki/Category:Na%27vi_lemmas" target="_blank" rel="noopener" class="text-eywa-bio-primary underline underline-offset-2 hover:no-underline">Wiktionary Na'vi<span class="sr-only"> (nouvel onglet)</span></a> — lemmes en accès libre</li>
       </ul>
     </section>
