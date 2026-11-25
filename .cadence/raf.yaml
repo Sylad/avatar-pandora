@@ -887,6 +887,9 @@ lots:
     estimate: 1
     created: 2026-11-25
     started: 2026-11-25
+    review: { date: 2026-11-25, verdict: "compliant: C4 red without the fix (14 failures, 4 cases) and green with it, C1 unchanged, 10 edge cases clean; 1 minor (CLAUDE.md:247 « sauf deux » omits about.astro:143)", commit: 8b167cde238996f618d96ae46a29e2a24551cf24 }
+    notes:
+      - { date: 2026-11-25, text: "revue mineure : CLAUDE.md:247 « sauf deux » omet le h2 sr-only d'about.astro:143" }
   - id: L80
     title: "Tiroir à 320 px police 32 px : le bouton rond jour/nuit et la croix recouvrent le logo, puis le lien « Langue Na'vi » une fois défilé — préexistant, vu par le correctif L78 (25-11, capture .cadence-run/avatar-pandora-20261125111327-147462.captures/drawer-320-200.png)"
     status: todo
