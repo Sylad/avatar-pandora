@@ -14,8 +14,8 @@
         "captures/L78-about-apres.png"
       ],
       "alts": [
-        "Avant : carte de la source « refactoringui.com » dans À propos, sur un téléphone de 320 pixels, texte agrandi deux fois ; l'adresse se casse au milieu d'un mot, « refactori / ngui.com »",
-        "Après : même écran, même texte agrandi ; l'adresse passe à la ligne entre ses deux mots, « refactoring / ui.com », suivie de sa flèche"
+        "Avant : carte de la source « refactoringui.com » dans À propos, sur un téléphone de 320 pixels, texte agrandi deux fois ; l'adresse se casse au milieu d'un mot, « refactori / ngui.com »",
+        "Après : même écran, même texte agrandi ; l'adresse passe à la ligne entre ses deux mots, « refactoring / ui.com », suivie de sa flèche"
       ],
       "html": "<p>Si tu agrandis beaucoup le texte sur un petit écran, tous les titres du site se coupent maintenant comme ceux des fiches : un mot passe entier à la ligne, et ne se coupe entre deux syllabes, avec un trait, que s'il est plus large que la ligne. C'est vrai aussi des titres des Nouveautés, du Plan de travail et des encadrés de À propos, et même si une partie de l'habillage de la page ne se charge pas : la page Films cassait alors ses titres sans trait (« Avata / r »).</p>\n<p>Sur À propos, l'adresse du livre Refactoring UI passe à la ligne entre ses deux mots, au lieu de se casser au milieu de l'un d'eux. Au réglage normal, rien ne change.</p>"
     },
