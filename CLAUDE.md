@@ -147,6 +147,10 @@ mesure dans la page (`performance.now`, temps de la scène comme `__eywaWater.ti
 Les délais de Playwright sont relevés dans `setupBrowser` (120 s par action, 180 s par navigation) : ce sont des
 garde-fous. Éprouver une porte sous charge : `node scripts/lib/charge.mjs 48 1800 &` (fils de calcul, stress-ng absent)
 puis la porte ; aucun chiffre qui en sort ne mesure la fluidité.
+Cache (L82) : le HTML n'a AUCUNE règle `Cache-Control` dans `frontend/public/_headers` (défaut Pages : `max-age=0,
+must-revalidate`) ; jamais de `Cache-Control` sur `/*` (Pages concatène les valeurs des règles) ni sur un dossier qui porte des
+pages (l'ancienne règle d'images `/films/*` servait `/films/…/` 30 jours). `_astro/*` un an `immutable`, `/illustrations/*` un
+jour (noms non versionnés). Contrôlé par `scripts/cache-headers.test.mjs` ; après livraison, `curl -I` d'une page `/films/…/`.
 `EYWA_E2E_SHOTS=<dossier>` enregistre des captures de /nouveautes/ à 1440, 390 et 320 px.
 
 ⚠ ClientRouter : un script `is:inline` identique sur toutes les pages ne s'exécute qu'au premier

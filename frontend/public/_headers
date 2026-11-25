@@ -18,20 +18,18 @@
 /audio/*
   Cache-Control: public, max-age=31536000, immutable
 
-# Polices hébergées (noms non versionnés : cache d'un mois, comme les images)
+# Polices hébergées (noms non versionnés : cache d’un mois)
 /fonts/*
   Cache-Control: public, max-age=2592000
 
-# Images statiques (silhouettes, species, films)
-/silhouettes/*
-  Cache-Control: public, max-age=2592000
-/species/*
-  Cache-Control: public, max-age=2592000
-/films/*
-  Cache-Control: public, max-age=2592000
-/species-life/*
-  Cache-Control: public, max-age=2592000
+# Illustrations des fiches (noms non versionnés, refaites sous le même nom par
+# films.py) : un jour, pas plus — une image remplacée doit arriver vite.
+/illustrations/*
+  Cache-Control: public, max-age=86400
 
-# HTML — cache court (peut changer à chaque build)
-/*.html
-  Cache-Control: public, max-age=300, must-revalidate
+# HTML : AUCUNE règle Cache-Control. Le défaut de Cloudflare Pages
+# (public, max-age=0, must-revalidate + ETag) revalide chaque page à chaque visite.
+# Ne jamais poser Cache-Control sur /* (Pages concatène les valeurs de toutes
+# les règles qui s'appliquent : _astro/* recevrait deux max-age), ni sur un
+# dossier qui porte aussi des pages (L82 : l'ancienne règle d'images /films/*
+# servait /films/avatar-2009/ 30 jours). Contrôlé par scripts/cache-headers.test.mjs.
