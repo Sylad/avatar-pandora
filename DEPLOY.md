@@ -82,7 +82,7 @@ Cloudflare Pages a un free tier généreux qui suffit pour un site personnel à 
 
 ## Limites à connaître
 
-- **Cache** : les pages HTML ont un cache court (5 min) ; polices et images statiques un cache d'un mois (voir `frontend/public/_headers`).
+- **Cache** (voir `frontend/public/_headers`, contrôlé par `scripts/cache-headers.test.mjs`) : les pages HTML n'ont **aucune** règle `Cache-Control` et gardent le défaut de Cloudflare Pages (`public, max-age=0, must-revalidate` + ETag), donc revalidées à chaque visite ; `_astro/*` (noms à empreinte), audio et vidéos un an `immutable` ; polices un mois ; illustrations des fiches un jour (noms non versionnés). Jamais de `Cache-Control` sur `/*` ni sur un dossier qui porte des pages (L82 : `/films/*` servait les pages `/films/…/` 30 jours).
 
 ## Si jamais tu veux passer le repo en public
 

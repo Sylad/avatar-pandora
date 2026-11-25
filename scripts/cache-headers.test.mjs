@@ -20,11 +20,14 @@ export function parseHeaders(text) {
     const line = raw.replace(/\s+$/, '');
     if (!line.trim() || line.trim().startsWith('#')) continue;
     if (!/^\s/.test(line)) {
-      rules.push({ pattern: line.trim(), headers: [] });
+      rules.push({ pattern: line.trim(), headers: [], detach: [] });
     } else {
-      const m = line.trim().match(/^([^:]+):\s*(.*)$/);
-      assert.ok(m && rules.length, `ligne d'en-tête illisible dans _headers : « ${line} »`);
-      rules.at(-1).headers.push({ name: m[1].trim().toLowerCase(), value: m[2] });
+      // « ! Nom » détache un en-tête posé par les autres règles qui couvrent le chemin (doc Pages).
+      const detach = line.trim().match(/^!\s*([^:\s]+)$/);
+      const m = detach ? null : line.trim().match(/^([^:]+):\s*(.*)$/);
+      assert.ok((detach || m) && rules.length, `ligne d'en-tête illisible dans _headers : « ${line} »`);
+      if (detach) rules.at(-1).detach.push(detach[1].toLowerCase());
+      else rules.at(-1).headers.push({ name: m[1].trim().toLowerCase(), value: m[2] });
     }
   }
   return rules;
@@ -43,14 +46,18 @@ function patternRegex(pattern) {
 }
 
 export function cacheControlsFor(rules, path) {
-  return rules
-    .filter((r) => patternRegex(r.pattern).test(path))
+  const matching = rules.filter((r) => patternRegex(r.pattern).test(path));
+  // Une règle qui détache Cache-Control efface les valeurs des AUTRES règles ; les siennes restent.
+  const detachers = new Set(matching.filter((r) => r.detach.includes('cache-control')));
+  return matching
+    .filter((r) => detachers.size === 0 || detachers.has(r))
     .flatMap((r) => r.headers.filter((h) => h.name === 'cache-control').map((h) => ({ pattern: r.pattern, value: h.value })));
 }
 
-function maxAge(value) {
-  const m = value.match(/(?:^|,)\s*(?:s-)?max-age\s*=\s*(\d+)/i);
-  return m ? Number(m[1]) : null;
+export function maxAge(value) {
+  // Le plus grand de max-age et s-maxage (cache du CDN) : l'un ou l'autre suffit à garder une page.
+  const ages = [...value.matchAll(/(?:^|,)\s*(?:s-maxage|max-age)\s*=\s*(\d+)/gi)].map((m) => Number(m[1]));
+  return ages.length ? Math.max(...ages) : null;
 }
 
 function htmlRoutes(dir) {
@@ -68,14 +75,19 @@ function htmlRoutes(dir) {
   });
 }
 
+// Règles globales ou HTML qui posent un Cache-Control fautif : tout Cache-Control sur /*, un max-age > 0 ailleurs.
+export function htmlRuleFaults(rules) {
+  return rules
+    .filter((r) => ['/*', '/*.html', '/*/', '/'].includes(r.pattern))
+    .flatMap((r) => r.headers.filter((h) => h.name === 'cache-control').map((h) => ({ pattern: r.pattern, value: h.value })))
+    .filter((h) => (maxAge(h.value) ?? 0) > 0 || h.pattern === '/*')
+    .map((h) => `${h.pattern} → ${h.value}`);
+}
+
 const rules = parseHeaders(readFileSync(HEADERS, 'utf8'));
 
 test('C1 — aucune règle globale ni HTML ne pose un max-age > 0', () => {
-  const fautes = rules
-    .filter((r) => ['/*', '/*.html', '/*/', '/'].includes(r.pattern))
-    .flatMap((r) => r.headers.filter((h) => h.name === 'cache-control').map((h) => `${r.pattern} → ${h.value}`))
-    .filter((f) => (maxAge(f) ?? 0) > 0 || f.startsWith('/* →'));
-  assert.deepEqual(fautes, [], 'une règle /* ou HTML pose Cache-Control (le HTML doit garder le défaut Pages, max-age=0)');
+  assert.deepEqual(htmlRuleFaults(rules), [], 'une règle /* ou HTML pose Cache-Control (le HTML doit garder le défaut Pages, max-age=0)');
 });
 
 test('C2 — chaque page de dist/ est revalidée à chaque visite (aucun max-age > 0)', () => {
@@ -120,4 +132,22 @@ test('C4 — le lecteur de _headers suit la règle de Pages (garde-fou du test l
   assert.ok(!patternRegex('/a/:slug').test('/a/b/c'));
   assert.equal(maxAge('public, max-age=2592000'), 2592000);
   assert.equal(maxAge('public, max-age=0, must-revalidate'), 0);
+});
+
+test('C5 — détachement « ! Cache-Control », s-maxage et valeur nue dans C1 (revue de L82)', () => {
+  // Détachement documenté par Pages : lu, et il retire les valeurs des autres règles.
+  const d = parseHeaders('/fonts/*\n  Cache-Control: public, max-age=2592000\n/fonts/x.woff2\n  ! Cache-Control\n  Cache-Control: public, max-age=60\n/fonts/y.woff2\n  ! Cache-Control\n');
+  assert.deepEqual(d[1].detach, ['cache-control']);
+  assert.deepEqual(cacheControlsFor(d, '/fonts/x.woff2').map((c) => c.value), ['public, max-age=60']);
+  assert.deepEqual(cacheControlsFor(d, '/fonts/y.woff2'), []);
+  assert.equal(cacheControlsFor(d, '/fonts/z.woff2').length, 1);
+  assert.throws(() => parseHeaders('/a\n  pas un en-tête\n'), /illisible/);
+  // s-maxage (cache du CDN) est lu, et compte s'il dépasse max-age.
+  assert.equal(maxAge('public, s-maxage=600'), 600);
+  assert.equal(maxAge('public, max-age=0, s-maxage=600'), 600);
+  assert.equal(maxAge('s-max-age=600'), null);
+  // C1 lit une valeur qui commence par max-age=, sans « public, » devant.
+  assert.deepEqual(htmlRuleFaults(parseHeaders('/*.html\n  Cache-Control: max-age=300\n')), ['/*.html → max-age=300']);
+  assert.deepEqual(htmlRuleFaults(parseHeaders('/*.html\n  Cache-Control: max-age=0, must-revalidate\n')), []);
+  assert.equal(htmlRuleFaults(parseHeaders('/*\n  Cache-Control: no-cache\n')).length, 1);
 });
