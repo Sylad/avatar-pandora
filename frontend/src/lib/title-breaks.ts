@@ -218,9 +218,13 @@ export function titleBreaks(title: string, options: BreakOptions = {}): string {
  * se coupe sans trait en dernier recours. Règle unique (L74, revue de L73 : la même expression était écrite trois fois
  * dans about.astro et une quatrième, différente, dans le test P1).
  */
-export function addressParts(name: string): [string, string] | null {
+export function addressParts(name: string, words: readonly string[] = []): string[] | null {
   const m = name.match(/^(.+?)(\.[a-z]{2,6})$/);
-  return m ? [m[1], m[2]] : null;
+  if (!m) return null;
+  // L78 : les mots dont le nom est fait (« Refactoring UI » → « refactoring », « ui ») donnent d'autres points de passage
+  // à la ligne, sans trait : « refactoring / ui.com » plutôt que « refactorin / gui.com » (QA de L74, 320 px texte 200 %).
+  // Ignorés s'ils ne recomposent pas exactement le nom.
+  return words.length > 1 && words.join('') === m[1] ? [...words, m[2]] : [m[1], m[2]];
 }
 
 export type TitleSegment = { text: string; word: boolean };

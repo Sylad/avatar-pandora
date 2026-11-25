@@ -240,6 +240,8 @@ autour (`proseSegments`). Voile et titre resserrés sous 12,5 em. À propos : so
 page fait 24 em de sa police (768 px texte 195 % débordait) ; règle « adresse » unique `addressParts`. Contrôlé par P7 (toutes
 les fiches), P2, P3 et P4 (texte contre le bord de sa carte) de `title-breaks-pages.e2e.test.mjs` et `prose-breaks.test.mjs`.
 
+Toutes les pages (L78, QA de L74 : « Avata|r » sans trait sur /films/avatar-2009/ quand la feuille de CodexLayout ne chargeait pas) : le conteneur `eywa-codex` est déclaré dans `global.css`, avec les règles qui l'interrogent, et la version SÛRE d'un titre `dual` (boîtes) est celle par défaut — `.title-plain` ne s'affiche que sous `@container eywa-codex (width > 17.5em)`. Tout titre passe par `TitleText` (MetaHeader de Nouveautés et Plan de travail en `dual`, h3 d'À propos). Une adresse passe à la ligne entre les mots de son nom (`addressParts(name, words)`, « refactoring / ui.com »), jamais avec un trait. Contrôlé par `scripts/all-routes-breaks.e2e.test.mjs` sur toutes les routes de `dist/` : R1 (320 px texte 175 et 200 %, 32 et 35 px), R2 (seule la feuille globale servie), R3 (1440 px texte 100 % : rien de coupé, versions d'origine).
+
 **Plan de travail** (page `/plan-de-travail/`, L20, modèle evatosorus/finance-tracker) : en cours, prévu,
 récemment livré, rendue **au build** depuis `.cadence/raf.yaml` (`src/lib/plan-public.ts`, lu depuis
 `frontend/` : `../.cadence/raf.yaml`, vrai aussi sur Cloudflare Pages dont la commande est

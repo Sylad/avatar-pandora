@@ -170,4 +170,8 @@ test('L74 — adresse : nom et domaine, sans trait ajouté', () => {
   assert.equal(addressParts('Pandorapedia'), null);
   assert.equal(addressParts('Refactoring UI'), null);
   assert.equal(addressParts('refactoringui.com (nouvel onglet)'), null);
+  // L78 : mots du nom, points de passage à la ligne de plus, sans trait ; ignorés s'ils ne recomposent pas le nom.
+  assert.deepEqual(addressParts('refactoringui.com', ['refactoring', 'ui']), ['refactoring', 'ui', '.com']);
+  assert.deepEqual(addressParts('refactoringui.com', ['refactor', 'ui']), ['refactoringui', '.com']);
+  assert.deepEqual(addressParts('refactoringui.com', ['refactoringui']), ['refactoringui', '.com']);
 });

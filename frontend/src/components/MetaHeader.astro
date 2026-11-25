@@ -1,4 +1,5 @@
 ---
+import TitleText from './TitleText.astro';
 /*
   En-tête des pages « méta » du codex (Nouveautés, Plan de travail — L20) : sur-titre,
   titre h1, chapeau, posés sans carte sur l'ambiance du codex. Un seul gabarit pour que le
@@ -11,6 +12,8 @@ interface Props {
   lede: string;
 }
 const { eyebrow: rawEyebrow, title, lede } = Astro.props;
+// L78 : titre coupé comme ceux des fiches (TitleText `dual`, titleBreaks) — « Ce qui se prépa|re » se cassait sans trait à
+// 320 px texte 200 % dès que la marge étroite du gabarit manquait. Version d'origine au réglage normal : rendu inchangé.
 // « · Eywa » insécable : à 320 px, « Plan de travail · Eywa » passait à la ligne en
 // laissant « · » seul en fin de ligne (revue UX L20). L73 : « · Eywa » est une boîte qui
 // passe ENTIÈRE à la ligne quand le sur-titre ne tient pas (320 px texte 175 et 200 % :
@@ -19,7 +22,7 @@ const [eyebrowHead, ...eyebrowTail] = rawEyebrow.split(' · ');
 ---
 <header class="meta-header">
   <p class="meta-eyebrow">{eyebrowHead}{eyebrowTail.map((part) => <Fragment> <span class="meta-eyebrow__tail">·{'\u00a0'}{part}</span></Fragment>)}</p>
-  <h1 class="meta-title">{title}</h1>
+  <h1 class="meta-title" aria-label={title}><TitleText text={title} dual /></h1>
   <p class="meta-lede">{lede}</p>
   <slot />
 </header>

@@ -56,6 +56,8 @@ const SOURCES = [
   },
   {
     name: 'refactoringui.com',
+    // Mots du nom (« Refactoring UI ») : l'adresse passe à la ligne entre eux, jamais au milieu d'un mot (L78).
+    words: ['refactoring', 'ui'],
     by: 'Adam Wathan & Steve Schoger',
     why: 'Le bouquin de chevet pour les non-designers : grille, contraste, hiérarchie, espacement.',
     url: 'https://refactoringui.com/',
@@ -141,8 +143,8 @@ const SOURCES = [
       <h2 class="sr-only">Sous le capot</h2>
       {STACK.map((s) => (
         <div class="rounded-md border border-eywa-text-muted/20 bg-eywa-text/[0.02] p-5 hover:border-eywa-bio-primary/40 transition-colors">
-          <h3 class="font-display font-semibold text-eywa-bio-primary tracking-wide text-sm uppercase mb-4 pb-3 border-b border-eywa-text-muted/20">
-            {s.group}
+          <h3 class="font-display font-semibold text-eywa-bio-primary tracking-wide text-sm uppercase mb-4 pb-3 border-b border-eywa-text-muted/20" aria-label={s.group}>
+            <TitleText text={s.group} />
           </h3>
           <ul class="space-y-2 text-sm text-eywa-text-muted font-body">
             {s.items.map((it) => (
@@ -164,13 +166,13 @@ const SOURCES = [
         Pas une copie, mais des sources que j'ai consultées ou des principes que j'ai essayé d'appliquer.
       </p>
       <ul class="about-sources grid grid-cols-1 gap-3 list-none p-0 m-0">
-        {SOURCES.map((i) => ({ ...i, address: addressParts(i.name) })).map((i) => (
+        {SOURCES.map((i) => ({ ...i, address: addressParts(i.name, 'words' in i ? i.words : []) })).map((i) => (
           <li class="min-w-0">
           <a href={i.url} target="_blank" rel="noopener" aria-label={`${i.name} (nouvel onglet) par ${i.by} ${i.why}`}
              class="about-card group h-full rounded-md border border-eywa-text-muted/15 bg-eywa-text/[0.02] p-4 flex flex-col gap-1.5 hover:border-eywa-bio-primary/40 hover:bg-eywa-text/[0.04] transition-all">
             <div class="about-card__head flex items-center justify-between">
               <span class="about-source-name min-w-0 font-display font-semibold text-eywa-text group-hover:text-eywa-bio-primary transition-colors">
-                {i.address ? <Fragment>{i.address[0]}<wbr />{i.address[1]}</Fragment> : <TitleText text={i.name} />}<span class="sr-only"> (nouvel onglet)</span>
+                {i.address ? i.address.map((part, k) => <Fragment>{k > 0 && <wbr />}{part}</Fragment>) : <TitleText text={i.name} />}<span class="sr-only"> (nouvel onglet)</span>
               </span>
               <span class="text-eywa-text-muted group-hover:text-eywa-bio-primary text-xs transition-colors" aria-hidden="true">↗</span>
             </div>
@@ -259,15 +261,18 @@ const SOURCES = [
     main {
       padding-inline: 0.5rem;
     }
+    /* L78 : 0,25 rem (0,5 avant) — à 320 px texte 200 % du réglage du navigateur (35 px), « refactoring » (215 px)
+       dépassait de 4 px la carte (211 px) et se coupait sans trait ; les cartes gardent leur marge intérieure. */
     .about-box {
-      padding-inline: 0.5rem;
+      padding-inline: 0.25rem;
     }
     .about-card {
       padding-inline: 0.5rem;
     }
     /* Nom d'une source : coupé à ses syllabes (TitleText ; le lien porte son nom sans U+00AD en aria-label), sauf
        « refactoringui.com » (342 px à 320 px texte 175 %), une adresse, qui passe à la ligne avant son point (<wbr>,
-       aussi au-dessus de ce gabarit : revue UX r1 de L73, elle sortait de sa carte de 4 à 15 px entre 150 et 195 %) et
+       aussi au-dessus de ce gabarit : revue UX r1 de L73, elle sortait de sa carte de 4 à 15 px entre 150 et 195 %), puis
+       entre les mots de son nom (L78 : « refactoring / ui.com », jusqu'à 320 px texte 200 % et 35 px) et
        se coupe ici sans trait en dernier recours (usage typographique : jamais de trait ajouté dans une adresse). */
     .about-source-name {
       overflow-wrap: anywhere;
@@ -277,9 +282,14 @@ const SOURCES = [
     .about-by {
       letter-spacing: normal;
     }
-    /* Écart entre le nom et la flèche seulement ici : à 100 %, la ligne garde sa géométrie d'avant L73. */
+    /* Écart entre le nom et la flèche seulement ici : à 100 %, la ligne garde sa géométrie d'avant L73.
+       L78 : la flèche suit le nom dans le texte au lieu de lui prendre une colonne — le nom a toute la largeur de la
+       carte et « refactoring » (198 px à 320 px texte 200 %) tient sur sa ligne (192 px à côté de la flèche). */
     .about-card__head {
-      column-gap: 0.5rem;
+      display: block;
+    }
+    .about-card__head > [aria-hidden='true'] {
+      margin-inline-start: 0.5rem;
     }
     /* « Mes autres sites » : nom et description sous l'emoji et la flèche (nom en mots coupés à leurs syllabes, le lien
        porte son nom sans U+00AD en aria-label). À côté d'eux, « Evatosorus » avait 60 px. */

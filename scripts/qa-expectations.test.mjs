@@ -167,7 +167,8 @@ test('R8 — expectations.md décrit /plan-de-travail/ (titre, h1, trois section
   const html = untitle(readFileSync(dist('plan-de-travail'), 'utf8'));
   assert.match(html, /<title>Plan de travail — Eywa<\/title>/);
   assert.equal([...html.matchAll(/<h1[ >]/g)].length, 1, 'un seul h1');
-  assert.match(html, /<h1[^>]*>Ce qui se prépare/);
+  // L78 : h1 en deux versions (TitleText dual, MetaHeader) : nom accessible et texte d'origine.
+  assert.match(html, /<h1[^>]*aria-label="Ce qui se prépare"[^>]*><span class="title-plain">Ce qui se prépare<\/span>/);
   for (const titre of ['En cours', 'Prévu', 'Récemment livré']) {
     assert.match(html, new RegExp(`<h2 id="plan-[a-z-]+"[^>]*>${titre}`), `h2 « ${titre} »`);
   }

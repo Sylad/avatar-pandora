@@ -289,6 +289,12 @@
     padding: 2rem 2.5rem;
   }
 }
+/* Conteneur du gabarit du codex (L69, posé par CodexLayout) : déclaré ici depuis L78, avec les règles de titres qui
+   l'interrogent (voir CodexLayout pour la double condition barre latérale ou tiroir). Dans la feuille de CodexLayout, il
+   manquait à toutes ces règles dès que cette seule feuille ne chargeait pas. */
+.eywa-codex {
+  container: eywa-codex / inline-size;
+}
 /* L74 — gabarit très étroit pour son texte (moins de 12,5 em : 320 px dès 150 %, 360 et 375 px dès 175 %, 390 et
    414 px à 200 % ; jamais un réglage à 100 %, où le gabarit fait au moins 18,3 em) : marges latérales du voile d'une fiche à 0,375 rem au lieu de
    1,25 rem qui grandissait avec le texte (44 px de chaque côté à 200 %), et lettres du titre à leur espacement normal
@@ -311,15 +317,20 @@
    un mot de titre dépasse sa ligne jusqu'à 15,7 em de gabarit (480 px texte 175 %), jamais au-dessus ; au réglage
    normal, le gabarit fait 22,3 em à 390 px. Hors du seuil, rendu identique à celui d'avant L74 (les boîtes, même
    invisibles, changeaient l'arrondi d'une ligne pleine au pixel près). */
-.title-boxed {
+/* L78 — la version sûre (boîtes) est celle par défaut, le texte d'origine ne s'affiche que si le gabarit est assez large
+   (plus de 17,5 em) : sans conteneur `eywa-codex` reconnu, le titre reste coupé à ses syllabes, avec un trait. Avant L78,
+   c'était l'inverse : la feuille de CodexLayout (qui déclarait le conteneur) refusée une fois par le serveur, le QA de
+   L74 a vu « Avata|r », « producti|on » et « synopsi|s » sans trait à 320 px texte 200 % (/films/avatar-2009/).
+   Conteneur ci-dessous, dans la même feuille que les règles qui en dépendent. Même rendu qu'avant quand tout est chargé. */
+.title-plain {
   display: none;
 }
-@container eywa-codex (max-width: 17.5em) {
+@container eywa-codex (width > 17.5em) {
   .title-plain {
-    display: none;
+    display: inline;
   }
   .title-boxed {
-    display: inline;
+    display: none;
   }
 }
 

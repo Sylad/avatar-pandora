@@ -399,9 +399,8 @@ const ambient = AMBIENTS[current ?? ''] ?? AMBIENTS.pandora;
     rien ne change. À 1024 px texte 200 % (29 em) ou 1280 px texte 200 % (36 em) : tiroir.
     Même double condition dans Sidebar, SkySwitch, AtmospherePause, MetaHeader et nouveautes.
   */
-  .eywa-codex {
-    container: eywa-codex / inline-size;
-  }
+  /* `.eywa-codex { container: eywa-codex / inline-size }` : dans global.css depuis L78, avec les règles de titres qui
+     l'interrogent (une feuille de ce gabarit refusée par le serveur leur ôtait le conteneur). */
   @media (min-width: 64rem) {
     @container eywa-codex (min-width: 44em) {
       :global(aside.eywa-sidebar) {

@@ -91,7 +91,8 @@ const RECENT = recentDone();
 test('dist/plan-de-travail/index.html est construit, titré « Plan de travail »', () => {
   assert.ok(existsSync(PAGE), 'page absente : lancer `npx astro build`');
   assert.match(html(), /<title>Plan de travail — Eywa<\/title>/);
-  assert.match(html(), /<h1[^>]*>[^<]+<\/h1>/);
+  // L78 : le h1 porte ses deux versions (TitleText dual) ; texte d'origine non vide.
+  assert.match(html(), /<h1[^>]*><span class="title-plain">[^<]+<\/span>/);
 });
 
 test('trois sections titrées ; tous les lots en cours et prévus, dans l’ordre du plan, avec leur état écrit', () => {
