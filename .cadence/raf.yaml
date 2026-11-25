@@ -855,6 +855,7 @@ lots:
     title: "Suites de L74 : ajouter à PERSON_NAMES Rodriguez, Flatters, Michelle, Giovanni et Mo'at'ite (règle du CLAUDE.md, aucun coupé aujourd'hui) ; réduire les 25 suites de 4 à 6 coupures en fin de ligne (pire : /flore/unobtainium/ à 320 px et 200 %, usage typographique : 3 au plus)"
     status: done
     estimate: 0.25
+    delivered: { date: 2026-11-25, sha: f58b20756ad9db561ad46c814e8b0e7e0682a4a0 }
     created: 2026-11-24
     notes:
       - { date: 2026-11-24, text: "Notes de la revue de code r2 de L74 (24-11) : ProseText.astro:14 refait segmentHtml (le commentaire de prose-breaks.ts:72 dit « partagé », c'est faux) ; seuil « 5 lettres ou moins » (prose-breaks.ts:28) et « 6 lettres ou plus » (CLAUDE.md:238) périmés depuis « 8 4 4 » ; nom élidé collé à une espace insécable non protégé ; regex de P8 sans échappement" }
