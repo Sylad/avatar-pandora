@@ -869,7 +869,7 @@ lots:
     finished: 2026-11-25
   - id: L78
     title: "QA de L74 en prod (24-11, tmp/qa-avatar-L74.md) : à 320 px et texte à 200 %, /films/avatar-2009/ coupe le h1 « Avata|r » et les h2 « production », « synopsis » sans trait d'union, /films/ coupe son h1 lettre par lettre (« Troi|s », « œuv|res ») — ces pages ont hyphens:manual + overflow-wrap:anywhere au lieu de la règle des fiches (titleBreaks) ; mineur : /about/ « refactorin|gui.com » sans trait. Appliquer la même règle à toutes les pages (test sur les 81 routes), pas seulement aux fiches du codex. Bruit à noter : /bestiaire/pali/ a répondu 500 une fois puis 200"
-    status: todo
+    status: doing
     estimate: 0.5
     visible: true
     delivered: { date: 2026-11-25, sha: 860b98f87fd2dc4fc9474b95b3d9d7e60205ff09 }
