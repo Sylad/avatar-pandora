@@ -869,7 +869,7 @@ lots:
     finished: 2026-11-25
   - id: L78
     title: "QA de L74 en prod (24-11, tmp/qa-avatar-L74.md) : à 320 px et texte à 200 %, /films/avatar-2009/ coupe le h1 « Avata|r » et les h2 « production », « synopsis » sans trait d'union, /films/ coupe son h1 lettre par lettre (« Troi|s », « œuv|res ») — ces pages ont hyphens:manual + overflow-wrap:anywhere au lieu de la règle des fiches (titleBreaks) ; mineur : /about/ « refactorin|gui.com » sans trait. Appliquer la même règle à toutes les pages (test sur les 81 routes), pas seulement aux fiches du codex. Bruit à noter : /bestiaire/pali/ a répondu 500 une fois puis 200"
-    status: done
+    status: todo
     estimate: 0.5
     visible: true
     delivered: { date: 2026-11-25, sha: 860b98f87fd2dc4fc9474b95b3d9d7e60205ff09 }
@@ -877,7 +877,8 @@ lots:
     started: 2026-11-25
     review: { date: 2026-11-25, verdict: "conforme (1 majeur antérieur depuis L74, étendu au h1 du Plan de travail : titre doublé dans le text/html copié des titres dual → lot à part ; 1 mineur : phrase « Tout titre passe par TitleText » inexacte (404, EntryCard))", commit: 7d67a423cda1e3fc8a0c12f89ff9ec8c658ac166 }
     ux: { date: 2026-11-25, verdict: "conforme (lead, 25-11) : captures À propos 320 px texte 200 % — « refactori/ngui.com » devient « refactoring / ui.com » sans trait, aucun chevauchement ni débordement ; test R1/R2/R3 sur 82 pages rouge avant (609 coupures sans trait), vert après" }
-    finished: 2026-11-25
+    notes:
+      - { date: 2026-11-25, text: "rouvert (était done) : QA prod 25-11 non conforme : à 320 px texte 200 %, h1 /about/ « Claud|e » et titre /personnages/grace/ « Augustine » coupés sans trait ; « refactorin|g » dans l'adresse ; mots cassés hors titre (bioluminescente, Communauté, curiosity, unobtainium.)" }
   - id: L79
     title: "Copie d'un titre dual (fiches depuis L74, h1 du Plan de travail depuis L78) : le text/html du presse-papier contient title-plain ET title-boxed → titre doublé au collage riche ; ne garder que la version affichée, avec un test ; corriger aussi la phrase CLAUDE.md « Tout titre passe par TitleText » (404.astro:17, EntryCard.astro:71) (revue de code L78, 25-11)"
     status: todo
