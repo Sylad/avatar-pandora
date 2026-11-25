@@ -900,6 +900,7 @@ lots:
     title: "Cache des pages : le HTML est servi avec cache-control public, max-age=2592000 (30 j) par frontend/public/_headers — un visiteur qui revient garde l'ancienne version jusqu'à 30 jours (QA de L78 le 25-11 : /films/* servis en c4bec4f et cd3a5fe au lieu de fb56b9b). Attendu : HTML revalidé à chaque visite (max-age=0, must-revalidate, comme codex et evatosorus), cache long gardé pour les ressources à empreinte (_astro/*) et les images ; test qui lit _headers et échoue si une règle HTML ou /* a un max-age > 0 ; vérification en prod par curl -I après livraison"
     status: done
     estimate: 0.25
+    delivered: { date: 2026-11-25, sha: 77d619d8dcc487994eb415f75a134afadc64d461 }
     created: 2026-11-25
     started: 2026-11-25
     review: { date: 2026-11-25, verdict: "conforme (relu par le lead 25-11 : DEPLOY.md aligné sur _headers, lecteur du test accepte « ! Cache-Control », lit s-maxage, C1 sur la valeur ; C5 couvre chaque point, 5/5 verts)", commit: 543a5d23e763e2199531b734c960fc52715c4b94 }
