@@ -868,11 +868,19 @@ lots:
     finished: 2026-11-25
   - id: L78
     title: "QA de L74 en prod (24-11, tmp/qa-avatar-L74.md) : à 320 px et texte à 200 %, /films/avatar-2009/ coupe le h1 « Avata|r » et les h2 « production », « synopsis » sans trait d'union, /films/ coupe son h1 lettre par lettre (« Troi|s », « œuv|res ») — ces pages ont hyphens:manual + overflow-wrap:anywhere au lieu de la règle des fiches (titleBreaks) ; mineur : /about/ « refactorin|gui.com » sans trait. Appliquer la même règle à toutes les pages (test sur les 81 routes), pas seulement aux fiches du codex. Bruit à noter : /bestiaire/pali/ a répondu 500 une fois puis 200"
-    status: doing
+    status: done
     estimate: 0.5
     visible: true
     created: 2026-11-24
     started: 2026-11-25
+    review: { date: 2026-11-25, verdict: "conforme (1 majeur antérieur depuis L74, étendu au h1 du Plan de travail : titre doublé dans le text/html copié des titres dual → lot à part ; 1 mineur : phrase « Tout titre passe par TitleText » inexacte (404, EntryCard))", commit: 7d67a423cda1e3fc8a0c12f89ff9ec8c658ac166 }
+    ux: { date: 2026-11-25, verdict: "conforme (lead, 25-11) : captures À propos 320 px texte 200 % — « refactori/ngui.com » devient « refactoring / ui.com » sans trait, aucun chevauchement ni débordement ; test R1/R2/R3 sur 82 pages rouge avant (609 coupures sans trait), vert après" }
+    finished: 2026-11-25
+  - id: L79
+    title: "Copie d'un titre dual (fiches depuis L74, h1 du Plan de travail depuis L78) : le text/html du presse-papier contient title-plain ET title-boxed → titre doublé au collage riche ; ne garder que la version affichée, avec un test ; corriger aussi la phrase CLAUDE.md « Tout titre passe par TitleText » (404.astro:17, EntryCard.astro:71) (revue de code L78, 25-11)"
+    status: todo
+    estimate: 1
+    created: 2026-11-25
 acknowledged:
   - { sha: cef464dffb920ea7b161b1b0e06fe54d3efbdcc4, subject: "plan: verdicts UX de Sylvain enregistrés, trois bloquants de la revue des Personnages clos", date: 2026-10-10, reason: entretien du plan et régénération des Nouveautés }
   - { sha: 4bc75e983dc5bff0366190611a9c578d4ed071c8, subject: "plan: prototype Pandora vivant clos, cinq idées retenues par Sylvain posées après les images", date: 2026-10-10, reason: entretien du plan et régénération des Nouveautés (fichier désormais déclaré dérivé) }
