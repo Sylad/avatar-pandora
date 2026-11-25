@@ -70,6 +70,55 @@ test('C1 — titre copié (bandeau et carte) : ni le texte ni le HTML du presse-
   assert.deepEqual(failures, [], failures.join('\n'));
 });
 
+// L79 (revue de code de L78) : un titre `dual` (TitleText) porte deux versions, `.title-plain` et `.title-boxed`, dont
+// une seule est affichée. Le HTML du presse-papier gardait les deux : au collage riche (traitement de texte, courriel),
+// le titre était doublé. Attendu : le HTML copié (titre seul, puis toute la page) ne contient le titre qu'une fois, dans
+// la version affichée — texte d'origine au réglage normal, boîtes de mots à 320 px texte 200 % ; texte copié exact.
+const DUAL_TITLES = [
+  ['/bestiaire/prolemuris/', 'h1.entry-title', 'Prolemuris — le pont entre les branches'],
+  ['/plan-de-travail/', 'h1.meta-title', 'Ce qui se prépare'],
+];
+const htmlText = (html) => html.replace(/<[^>]+>/g, '').replaceAll(SHY, '').replaceAll('&nbsp;', ' ')
+  .replaceAll('&#39;', "'").replaceAll('&amp;', '&');
+const occurrences = (text, title) => text.split(title).length - 1;
+
+test('C4 — titre dual copié (fiche, Plan de travail) : le HTML du presse-papier ne porte le titre qu\'une fois, dans sa version affichée', { timeout: 180_000 }, async (t) => {
+  const env = await setupBrowser(t);
+  if (!env) return;
+  const failures = [];
+  for (const [width, factor, shown] of [[1440, 1, 'plain'], [320, 2, 'boxed']]) {
+    const context = await env.browser.newContext({ viewport: { width, height: 900 }, permissions: ['clipboard-read', 'clipboard-write'], reducedMotion: 'reduce' });
+    const page = await context.newPage();
+    for (const [path, sel, title] of DUAL_TITLES) {
+      await page.goto(env.base + path, { waitUntil: 'load' });
+      await setText(page, factor);
+      const where = `${path} @${width}px texte ${factor * 100} %`;
+      const visible = await page.evaluate((s) => [...document.querySelectorAll(`${s} .title-plain, ${s} .title-boxed`)]
+        .filter((e) => e.checkVisibility()).map((e) => e.className), sel);
+      if (visible.join() !== `title-${shown}`) failures.push(`${where} : versions affichées ${JSON.stringify(visible)}, attendu title-${shown}`);
+      const copied = await copyOf(page, sel);
+      const html = copied['text/html'] ?? '';
+      if (copied['text/plain'] !== title) failures.push(`${where} : texte copié ${JSON.stringify(copied['text/plain'])}`);
+      const n = occurrences(htmlText(html), title);
+      if (n !== 1) failures.push(`${where} : titre ${n} fois dans le HTML copié ${JSON.stringify(html)}`);
+      const hidden = shown === 'plain' ? 'title-boxed' : 'title-plain';
+      if (html.includes(hidden)) failures.push(`${where} : version masquée (${hidden}) dans le HTML copié`);
+      if (html.includes('title-word') !== (shown === 'boxed')) failures.push(`${where} : HTML copié hors de la version affichée ${JSON.stringify(html)}`);
+      // Toute la page (Ctrl+A) : le titre une seule fois aussi.
+      await page.evaluate(() => getSelection().selectAllChildren(document.body));
+      await page.keyboard.press('ControlOrMeta+C');
+      const all = await page.evaluate(async () => {
+        for (const item of await navigator.clipboard.read()) if (item.types.includes('text/html')) return (await item.getType('text/html')).text();
+        return '';
+      });
+      const inAll = occurrences(htmlText(all), title);
+      if (inAll < 1 || all.includes(hidden)) failures.push(`${where} page entière : titre ${inAll} fois, version masquée ${all.includes(hidden) ? 'copiée' : 'absente'}`);
+    }
+    await context.close();
+  }
+  assert.deepEqual(failures, [], failures.join('\n'));
+});
+
 test('C2 — nom accessible (arbre de Chromium) : titres et liens des cartes sans U+00AD, titres de section exacts', { timeout: 180_000 }, async (t) => {
   const env = await setupBrowser(t);
   if (!env) return;
