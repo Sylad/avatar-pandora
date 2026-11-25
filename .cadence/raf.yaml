@@ -876,7 +876,7 @@ lots:
     delivered: { date: 2026-11-25, sha: 860b98f87fd2dc4fc9474b95b3d9d7e60205ff09 }
     created: 2026-11-24
     started: 2026-11-25
-    review: { date: 2026-11-25, verdict: "conforme (1 note mineure : R11 de videos-ux écarte tous les éléments aria-hidden, plus large que le décor .sky coupé)", commit: 9ba357ecbbfa95bbe4a00fb3693e8b765eba97d3 }
+    review: { date: 2026-11-25, verdict: "QA prod 25-11 (fb56b9b) : conforme — 19 routes, 636 titres à 200 % à 320/390 px, aucun mot coupé sans trait, 0 débordement, 0 erreur ; défaut hors lot : HTML en cache 30 j → lot ouvert", commit: 9ba357ecbbfa95bbe4a00fb3693e8b765eba97d3 }
     ux: { date: 2026-11-25, verdict: "conforme (lead) : noms accessibles du tiroir sans trait (aria-label), cibles 68-132 px à 200 %, rien de changé à 100 %, captures avant/après de /about/ vérifiées (revue avatar-L78b-code.md)" }
     notes:
       - { date: 2026-11-25, text: "rouvert (était done) : QA prod 25-11 non conforme : à 320 px texte 200 %, h1 /about/ « Claud|e » et titre /personnages/grace/ « Augustine » coupés sans trait ; « refactorin|g » dans l'adresse ; mots cassés hors titre (bioluminescente, Communauté, curiosity, unobtainium.)" }
@@ -896,6 +896,12 @@ lots:
     status: todo
     estimate: 1
     created: 2026-11-25
+  - id: L82
+    title: "Cache des pages : le HTML est servi avec cache-control public, max-age=2592000 (30 j) par frontend/public/_headers — un visiteur qui revient garde l'ancienne version jusqu'à 30 jours (QA de L78 le 25-11 : /films/* servis en c4bec4f et cd3a5fe au lieu de fb56b9b). Attendu : HTML revalidé à chaque visite (max-age=0, must-revalidate, comme codex et evatosorus), cache long gardé pour les ressources à empreinte (_astro/*) et les images ; test qui lit _headers et échoue si une règle HTML ou /* a un max-age > 0 ; vérification en prod par curl -I après livraison"
+    status: doing
+    estimate: 0.25
+    created: 2026-11-25
+    started: 2026-11-25
 acknowledged:
   - { sha: cef464dffb920ea7b161b1b0e06fe54d3efbdcc4, subject: "plan: verdicts UX de Sylvain enregistrés, trois bloquants de la revue des Personnages clos", date: 2026-10-10, reason: entretien du plan et régénération des Nouveautés }
   - { sha: 4bc75e983dc5bff0366190611a9c578d4ed071c8, subject: "plan: prototype Pandora vivant clos, cinq idées retenues par Sylvain posées après les images", date: 2026-10-10, reason: entretien du plan et régénération des Nouveautés (fichier désormais déclaré dérivé) }
