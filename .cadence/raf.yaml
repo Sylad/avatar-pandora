@@ -898,11 +898,12 @@ lots:
     created: 2026-11-25
   - id: L82
     title: "Cache des pages : le HTML est servi avec cache-control public, max-age=2592000 (30 j) par frontend/public/_headers — un visiteur qui revient garde l'ancienne version jusqu'à 30 jours (QA de L78 le 25-11 : /films/* servis en c4bec4f et cd3a5fe au lieu de fb56b9b). Attendu : HTML revalidé à chaque visite (max-age=0, must-revalidate, comme codex et evatosorus), cache long gardé pour les ressources à empreinte (_astro/*) et les images ; test qui lit _headers et échoue si une règle HTML ou /* a un max-age > 0 ; vérification en prod par curl -I après livraison"
-    status: doing
+    status: done
     estimate: 0.25
     created: 2026-11-25
     started: 2026-11-25
-    review: { date: 2026-11-25, verdict: "non conforme pour un correctif court : code du cache juste (test rouge sans le correctif, doc Pages relue), mais DEPLOY.md:85 décrit encore l'ancien cache ; 2 mineurs du lecteur de test (ligne « ! Cache-Control » refusée, s-maxage mal écrit)", commit: d4bd7065841f10302b65e1be9d3dd365d3b124e3 }
+    review: { date: 2026-11-25, verdict: "conforme (relu par le lead 25-11 : DEPLOY.md aligné sur _headers, lecteur du test accepte « ! Cache-Control », lit s-maxage, C1 sur la valeur ; C5 couvre chaque point, 5/5 verts)", commit: 543a5d23e763e2199531b734c960fc52715c4b94 }
+    finished: 2026-11-25
 acknowledged:
   - { sha: cef464dffb920ea7b161b1b0e06fe54d3efbdcc4, subject: "plan: verdicts UX de Sylvain enregistrés, trois bloquants de la revue des Personnages clos", date: 2026-10-10, reason: entretien du plan et régénération des Nouveautés }
   - { sha: 4bc75e983dc5bff0366190611a9c578d4ed071c8, subject: "plan: prototype Pandora vivant clos, cinq idées retenues par Sylvain posées après les images", date: 2026-10-10, reason: entretien du plan et régénération des Nouveautés (fichier désormais déclaré dérivé) }
